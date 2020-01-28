@@ -15,6 +15,14 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    return Bg();
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("cibic"),
+        ),
+        body: Center(
+          child: Text("cibic"),
+        ),)
+    );
   }
 }
