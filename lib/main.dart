@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import './bg.dart';
 
-
 void main() => runApp(App());
 
 class App extends StatefulWidget {
