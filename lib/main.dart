@@ -22,12 +22,12 @@ class MyApp extends StatelessWidget {
               ],
             ),
             title: SizedBox(
-              height: 45,
+              height: 40,
               child: TextFormField(
-                textAlignVertical: TextAlignVertical.bottom,
+                textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
                   fillColor: Color(0xffFFFFFF),
-                  contentPadding: EdgeInsets.fromLTRB(20, 5, 5, 0),
+                  contentPadding: EdgeInsets.fromLTRB(15, 0, 5, 0),
                   border: new OutlineInputBorder(
                     borderRadius:
                         const BorderRadius.all(const Radius.circular(20)),
