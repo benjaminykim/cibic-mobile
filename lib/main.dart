@@ -21,16 +21,20 @@ class MyApp extends StatelessWidget {
                 Tab(icon: Icon(Icons.poll)),
               ],
             ),
-            title: TextFormField(
-              decoration: InputDecoration(
-                fillColor: Color(0xffFFFFFF),
-                border: new OutlineInputBorder(
-                  borderRadius: const BorderRadius.all(
-                    const Radius.circular(40)
-                    ),
+            title: SizedBox(
+              height: 45,
+              child: TextFormField(
+                textAlignVertical: TextAlignVertical.bottom,
+                decoration: InputDecoration(
+                  fillColor: Color(0xffFFFFFF),
+                  contentPadding: EdgeInsets.fromLTRB(20, 5, 5, 0),
+                  border: new OutlineInputBorder(
+                    borderRadius:
+                        const BorderRadius.all(const Radius.circular(20)),
+                  ),
+                  filled: true,
+                  hintText: 'buscar...',
                 ),
-                filled: true,
-                hintText: 'buscar...',
               ),
             ),
           ),
