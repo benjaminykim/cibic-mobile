@@ -1,27 +1,49 @@
 import 'package:flutter/material.dart';
 
-import './bg.dart';
+void main() => runApp(MyApp());
 
-void main() => runApp(App());
-
-class App extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return _AppState();
-  }
-}
-
-class _AppState extends State<App> {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("cibic"),
+      home: DefaultTabController(
+        length: 4,
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color(0xff335c9d),
+            leading: Icon(Icons.menu),
+            bottom: TabBar(
+              indicator: BoxDecoration(color: Color(0xff7898ca)),
+              tabs: [
+                Tab(icon: Icon(Icons.public)),
+                Tab(icon: Icon(Icons.people_outline)),
+                Tab(icon: Icon(Icons.person_outline)),
+                Tab(icon: Icon(Icons.poll)),
+              ],
+            ),
+            title: TextFormField(
+              decoration: InputDecoration(
+                fillColor: Color(0xffFFFFFF),
+                border: new OutlineInputBorder(
+                  borderRadius: const BorderRadius.all(
+                    const Radius.circular(40)
+                    ),
+                ),
+                filled: true,
+                hintText: 'buscar...',
+              ),
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              Icon(Icons.public),
+              Icon(Icons.people_outline),
+              Icon(Icons.person_outline),
+              Icon(Icons.poll),
+            ],
+          ),
         ),
-        body: Center(
-          child: Text("cibic"),
-        ),)
+      ),
     );
   }
 }
