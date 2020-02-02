@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import './constants.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -10,10 +12,10 @@ class MyApp extends StatelessWidget {
         length: 4,
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Color(0xff335c9d),
+            backgroundColor: APP_BAR_BG,
             leading: Icon(Icons.menu),
             bottom: TabBar(
-              indicator: BoxDecoration(color: Color(0xff7898ca)),
+              indicator: BoxDecoration(color: APP_BAR_SELECTED),
               tabs: [
                 Tab(icon: Icon(Icons.public)),
                 Tab(icon: Icon(Icons.people_outline)),
@@ -26,14 +28,14 @@ class MyApp extends StatelessWidget {
               child: TextFormField(
                 textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
-                  fillColor: Color(0xffFFFFFF),
+                  fillColor: Colors.white,
                   contentPadding: EdgeInsets.fromLTRB(15, 0, 5, 0),
                   border: new OutlineInputBorder(
                     borderRadius:
                         const BorderRadius.all(const Radius.circular(20)),
                   ),
                   filled: true,
-                  hintText: 'buscar...',
+                  hintText: 'buscar..a.',
                 ),
               ),
             ),
