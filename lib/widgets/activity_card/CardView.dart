@@ -28,7 +28,9 @@ class CardView extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            SizedBox(child: Icon(Icons.keyboard_arrow_left, size: 28)),
+            //left
+            Icon(Icons.keyboard_arrow_left, size: 28),
+            //center
             SizedBox(
               width: MediaQuery.of(context).size.width - 20 - 56,
               child: Padding(
@@ -69,21 +71,31 @@ class CardView extends StatelessWidget {
                       ),
                     ),
                     // Content
-                    Text(
-                      text,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    )
+                    ((label == "Poll") ?
+                      (Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: Icon(Icons.thumb_down, size: 50),
+                          ),
+                          Icon(Icons.thumb_up, size: 50)
+                        ],
+                      ))
+                      : Text(
+                        text,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ))
                   ],
                 ),
               ),
             ),
-            SizedBox(
-              child: Icon(Icons.keyboard_arrow_right, size: 28),
-            ),
+            // right
+            Icon(Icons.keyboard_arrow_right, size: 28),
           ],
         ),
       ),
