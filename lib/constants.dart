@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 const APP_BAR_BG = Color(0xff2D9CDB);
-const APP_BAR_SELECTED = Color(0xff518cad);
-const APP_BAR_BOTTOM = Color(0xff6cbae6);
+const APP_BAR_SELECTED = Color(0xff518CAD);
+const APP_BAR_BOTTOM = Color(0xff6CBAE6);
+const CARD_BACKGROUND = Color(0xffFFFFFF);
+const CARD_DIVIDER = Color(0xff2D9CDB);
 
 ThemeData get cibicTheme {
   return ThemeData(
@@ -25,7 +27,12 @@ ThemeData get cibicTheme {
         fontWeight: FontWeight.w200,
         fontFamily: "Montserrat",
         color: Color(0xfff2f2f2),
-      )
+      ),
+      body2: TextStyle(
+        fontSize: 14.0,
+        fontFamily: "Montserrat",
+        color: Color(0xff828282),
+      ),
     ),
   );
 }
