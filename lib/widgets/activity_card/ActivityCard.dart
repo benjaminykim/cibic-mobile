@@ -6,7 +6,7 @@ import './CardMetaData.dart';
 import './CardViewScroll.dart';
 
 class ActivityCard extends StatelessWidget {
-  final Map<String, String> data;
+  final Map<String, Object> data;
 
   ActivityCard(this.data);
 

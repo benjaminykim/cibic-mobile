@@ -4,7 +4,7 @@ import './card_view/CardView.dart';
 import '../../constants.dart';
 
 class CardViewScroll extends StatelessWidget {
-  final Map<String, String> data;
+  final Map<String, Object> data;
 
   CardViewScroll(this.data);
 
@@ -16,9 +16,9 @@ class CardViewScroll extends StatelessWidget {
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: <Widget>[
-          CardView(data['title'], data['label'], data['text'], CARD_DEFAULT),
-          CardView(data['title'], data['label'], data['text'], CARD_COMMENT),
-          CardView(data['title'], data['label'], data['text'], CARD_LAST),
+          CardView(data['title'], data['type'], data['text'], CARD_DEFAULT),
+          CardView(data['title'], data['type'], data['text'], CARD_COMMENT),
+          CardView(data['title'], data['type'], data['text'], CARD_LAST),
         ],
       ),
     );

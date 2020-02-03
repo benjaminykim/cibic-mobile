@@ -7,12 +7,11 @@ import './CardContents.dart';
 
 class CardView extends StatelessWidget {
   final String title;
-  final String label;
+  final int type;
   final String text;
   final int mode;
 
-
-  CardView(this.title, this.label, this.text, this.mode);
+  CardView(this.title, this.type, this.text, this.mode);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +30,7 @@ class CardView extends StatelessWidget {
             //left
             CardSideLeft(mode),
             //center
-            CardContents(title, label, text, mode),
+            CardContents(title, type, text, mode),
             // right
             CardSideRight(mode),
           ],
