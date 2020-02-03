@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../constants.dart';
+import './UserMetaData.dart';
+import './CardMetaData.dart';
+import './CardView.dart';
 
 class ActivityCard extends StatelessWidget {
   @override
@@ -10,33 +13,9 @@ class ActivityCard extends StatelessWidget {
       height: 230,
       child: Column(
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Text('user-name', style: Theme.of(context).textTheme.body2),
-              Text('czp #', style: Theme.of(context).textTheme.body2),
-              Text('cabildo-name', style: Theme.of(context).textTheme.body2),
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 10, bottom: 10),
-            child: Container(
-              width: MediaQuery.of(context).size.width - 20,
-              height: 162,
-              decoration: BoxDecoration(
-                color: CARD_BACKGROUND,
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Text('# pings', style: Theme.of(context).textTheme.body2),
-              Text('# comments', style: Theme.of(context).textTheme.body2),
-              Text('date-time', style: Theme.of(context).textTheme.body2),
-            ],
-          ),
+          UserMetaData(),
+          CardView(),
+          CardMetaData(),
           Divider(
             color: CARD_DIVIDER,
             thickness: 3,
