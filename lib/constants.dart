@@ -21,7 +21,7 @@ ThemeData get cibicTheme {
         fontWeight: FontWeight.bold,
       ),
       title: TextStyle(
-        fontSize: 28.0,
+        fontSize: 30.0,
         fontWeight: FontWeight.w400,
         fontFamily: "Montserrat",
         color: Color(0xfff2f2f2),
