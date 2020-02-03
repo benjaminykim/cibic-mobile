@@ -12,6 +12,9 @@ const CARD_DEFAULT = 0;
 const CARD_COMMENT = 1;
 const CARD_LAST = 2;
 const CARD_POLL = 3;
+const ACTIVITY_DISCUSS = 0;
+const ACTIVITY_PROPOSAL = 1;
+const ACTIVITY_POLL = 2;
 
 ThemeData get cibicTheme {
   return ThemeData(

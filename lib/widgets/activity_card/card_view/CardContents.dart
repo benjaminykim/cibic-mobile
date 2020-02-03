@@ -4,16 +4,21 @@ import '../../../constants.dart';
 
 class CardContents extends StatelessWidget {
   final String title;
-  final String label;
+  final int type;
   final String text;
   final int mode;
-  final Map<String, Color> labelColorPicker = {
-    'Proposal': LABEL_PROPOSAL_COLOR,
-    'Discuss': LABEL_DISCUSS_COLOR,
-    'Poll': LABEL_POLL_COLOR,
+  final Map<int, Color> labelColorPicker = {
+    ACTIVITY_PROPOSAL: LABEL_PROPOSAL_COLOR,
+    ACTIVITY_DISCUSS: LABEL_DISCUSS_COLOR,
+    ACTIVITY_POLL: LABEL_POLL_COLOR,
+  };
+  final Map<int, String> labelTextPicker = {
+    ACTIVITY_PROPOSAL: 'Proposal',
+    ACTIVITY_DISCUSS: 'Discuss',
+    ACTIVITY_POLL: 'Poll',
   };
 
-  CardContents(this.title, this.label, this.text, this.mode);
+  CardContents(this.title, this.type, this.text, this.mode);
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +48,7 @@ class CardContents extends StatelessWidget {
                 width: 80,
                 child: Center(
                   child: Text(
-                    label,
+                    labelTextPicker[type],
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 12,
@@ -52,12 +57,12 @@ class CardContents extends StatelessWidget {
                   ),
                 ),
                 decoration: BoxDecoration(
-                    border: Border.all(color: labelColorPicker[label]),
+                    border: Border.all(color: labelColorPicker[type]),
                     borderRadius: BorderRadius.circular(20)),
               ),
             ),
             // Content
-            ((label == "Poll")
+            ((type == ACTIVITY_POLL)
                 ? (Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[

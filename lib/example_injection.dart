@@ -1,9 +1,11 @@
+import './constants.dart';
+
 const data_0 = const {
   'userName': 'Sharon Gomez',
   'cp': '1.1k',
   'cabildoName': 'chile-cannabis',
   'title': 'Legalize Cannabis',
-  'label': 'Proposal',
+  'type': ACTIVITY_PROPOSAL,
   'text':
       'Cannabis should be legalized because it offers very few negative effects to society, and it is an essential medicine for a lot of people',
   'pingNum': '22.1k',
@@ -16,7 +18,7 @@ const data_1 = const {
   'cp': '5.2k',
   'cabildoName': 'Freedom Chile',
   'title': 'Remove the President',
-  'label': 'Discuss',
+  'type': ACTIVITY_DISCUSS,
   'text':
       'The president should be removed from office as he is unfit to lead the country. He does not represent the ideas of Chile',
   'pingNum': '15.2k',
@@ -29,7 +31,7 @@ const data_2 = const {
   'cp': '208',
   'cabildoName': 'santiago-macul',
   'title': 'Should people have guns?',
-  'label': 'Poll',
+  'type:': ACTIVITY_POLL,
   'text': '',
   'pingNum': '590',
   'commentNum': '49',
@@ -41,7 +43,7 @@ const data_3 = const {
   'cp': '60k',
   'cabildoName': 'all',
   'title': 'What do you think about free healthcare?',
-  'label': 'Discuss',
+  'type': ACTIVITY_DISCUSS,
   'text':
       'What do you think about free healthcare in Chile? It should be paid for by taxes',
   'pingNum': '10.2k',
@@ -54,7 +56,7 @@ const data_4 = const {
   'cp': '20',
   'cabildoName': 'Freedom Chile',
   'title': 'Police illegally arrest 2 people',
-  'label': 'Discuss',
+  'type': ACTIVITY_DISCUSS,
   'text':
     'The police illegally detained two teenagers in Santiago at a protest last Sunday. They were peacefully protesting at Civic Square.',
   'pingNum': '4.9k',
@@ -67,7 +69,7 @@ const data_5 = const {
   'cp': '900',
   'cabildoName': 'santiago-chile',
   'title': 'Public education should be free',
-  'label': 'Poll',
+  'type': ACTIVITY_POLL,
   'text': '',
   'pingNum': '1.1k',
   'commentNum': '271',
