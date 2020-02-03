@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import './widgets/BaseAppBar.dart';
-import './widgets/BaseMenuOverlay.dart';
+import './widgets/app_bar/AppBar.dart';
+import './widgets/app_bar/MenuOverlay.dart';
+import './constants.dart';
 
 void main() => runApp(MyApp());
 
@@ -9,6 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: cibicTheme,
       home: DefaultTabController(
         length: 4,
         child: Scaffold(

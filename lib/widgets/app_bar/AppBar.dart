@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../constants.dart';
-import './BaseTabBar.dart';
-import './BaseSearchBar.dart';
+import '../../constants.dart';
+import './TabBar.dart';
+import './SearchBar.dart';
 
 class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
