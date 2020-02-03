@@ -6,15 +6,9 @@ const APP_BAR_BOTTOM = Color(0xff6cbae6);
 
 ThemeData get cibicTheme {
   return ThemeData(
-// Define the default brightness and colors.
     primaryColor: Color(0xff2D9CDB),
     accentColor: Colors.cyan[600],
-
-    // Define the default font family.
     fontFamily: 'Montserrat',
-
-    // Define the default TextTheme. Use this to specify the default
-    // text styling for headlines, titles, bodies of text, and more.
     textTheme: TextTheme(
       headline: TextStyle(
         fontSize: 72.0,
