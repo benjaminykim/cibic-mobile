@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../constants.dart';
 import './UserMetaData.dart';
 import './CardMetaData.dart';
-import './CardView.dart';
+import './CardViewScroll.dart';
 
 class ActivityCard extends StatelessWidget {
   final Map<String, String> data;
@@ -13,12 +13,11 @@ class ActivityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
       height: 240,
       child: Column(
         children: <Widget>[
           UserMetaData(data['userName'], data['cp'], data['cabildoName']),
-          CardView(data['title'], data['label'], data['text']),
+          CardViewScroll(data),
           CardMetaData(data['pingNum'], data['commentNum'], data['dateTime']),
           Divider(
             color: CARD_DIVIDER,
