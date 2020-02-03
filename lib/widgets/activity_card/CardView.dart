@@ -20,43 +20,51 @@ class CardView extends StatelessWidget {
             SizedBox(child: Icon(Icons.keyboard_arrow_left, size: 28)),
             SizedBox(
               width: MediaQuery.of(context).size.width - 20 - 56,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "Legalize Cannabis",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  Container(
-                    width: 60,
-                    child: Center(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 17, 0, 5),
                       child: Text(
-                        "Proposal",
+                        "Legalize Cannabis",
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w300,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(20)),
-                  ),
-                  Text(
-                    "Cannabis should be legalized because it offers very few negative effects to society, and it is an essential medicine for a lot of people (140). ",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w300,
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                      child: Container(
+                        width: 60,
+                        child: Center(
+                          child: Text(
+                            "Proposal",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: LABEL_PROPOSAL_COLOR),
+                            borderRadius: BorderRadius.circular(20)),
+                      ),
                     ),
-                  )
-                  // text
-                ],
+                    Text(
+                      "Cannabis should be legalized because it offers very few negative effects to society, and it is an essential medicine for a lot of people (140). ",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
             SizedBox(
