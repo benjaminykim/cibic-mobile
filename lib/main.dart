@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import './widgets/app_bar/AppBar.dart';
 import './widgets/app_bar/MenuOverlay.dart';
+import './widgets/ActivityFeed.dart';
 import './constants.dart';
 
 void main() => runApp(MyApp());
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
           appBar: BaseAppBar(),
           body: TabBarView(
             children: [
-              Icon(Icons.public),
+              ActivityFeed(),
               Icon(Icons.people_outline),
               Icon(Icons.person_outline),
               Icon(Icons.poll),
