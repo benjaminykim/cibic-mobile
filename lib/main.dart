@@ -26,6 +26,10 @@ class MyApp extends StatelessWidget {
             ],
           ),
           drawer: MenuOverlay(),
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () {},
+            backgroundColor: APP_BAR_BG,),
         ),
       ),
     );

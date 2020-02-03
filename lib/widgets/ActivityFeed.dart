@@ -47,7 +47,10 @@ class ActivityFeed extends StatelessWidget {
           children: <Widget>[
             ActivityCard(data_0),
             ActivityCard(data_1),
-            ActivityCard(data_2)
+            ActivityCard(data_2),
+            ActivityCard(data_0),
+            ActivityCard(data_1),
+            ActivityCard(data_2),
           ],
       ),
     );
