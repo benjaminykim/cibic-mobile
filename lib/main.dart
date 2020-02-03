@@ -19,9 +19,9 @@ class MyApp extends StatelessWidget {
           body: TabBarView(
             children: [
               ActivityFeed(),
-              Icon(Icons.people_outline),
-              Icon(Icons.person_outline),
-              Icon(Icons.poll),
+              ActivityFeed(),
+              ActivityFeed(),
+              ActivityFeed(),
             ],
           ),
           drawer: MenuOverlay(),
