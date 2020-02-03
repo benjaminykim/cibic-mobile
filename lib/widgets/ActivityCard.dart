@@ -12,10 +12,20 @@ class ActivityCard extends StatelessWidget {
           // card
           // card metadata
           Row(
-            children: <Widget>[],
+            children: <Widget>[
+              Text('user-name'),
+              Text('czp: #'),
+              Text('cabildo-name'),
+            ],
           ),
           Container(),
-          Row(),
+          Row(
+            children: <Widget>[
+              Text('# pings'),
+              Text('# comments'),
+              Text('date-time'),
+            ],
+          ),
           Padding(
             child: Divider(
               color: Color(0xff2d9cdb),
