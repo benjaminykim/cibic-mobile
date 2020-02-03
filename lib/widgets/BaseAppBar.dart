@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
+import './BaseTabBar.dart';
 
 class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -8,15 +9,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: APP_BAR_BG,
       leading: Icon(Icons.menu),
-      bottom: TabBar(
-        indicator: BoxDecoration(color: APP_BAR_SELECTED),
-        tabs: [
-          Tab(icon: Icon(Icons.public)),
-          Tab(icon: Icon(Icons.people_outline)),
-          Tab(icon: Icon(Icons.person_outline)),
-          Tab(icon: Icon(Icons.poll)),
-        ],
-      ),
+      bottom: BaseTabBar(),
       title: SizedBox(
         height: 40,
         child: TextFormField(
