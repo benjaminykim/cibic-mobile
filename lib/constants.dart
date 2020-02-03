@@ -8,6 +8,10 @@ const CARD_DIVIDER = Color(0xff2D9CDB);
 const LABEL_PROPOSAL_COLOR = Color(0xff2d9cdb);
 const LABEL_DISCUSS_COLOR = Color(0xff6cf256);
 const LABEL_POLL_COLOR = Color(0xff000000);
+const CARD_DEFAULT = 0;
+const CARD_COMMENT = 1;
+const CARD_LAST = 2;
+const CARD_POLL = 3;
 
 ThemeData get cibicTheme {
   return ThemeData(

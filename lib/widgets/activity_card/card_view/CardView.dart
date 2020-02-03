@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
+import './CardSideLeft.dart';
+import './CardSideRight.dart';
+import './CardContents.dart';
 
 class CardView extends StatelessWidget {
   final String title;
   final String label;
   final String text;
-  final Map<String, Color> labelColorPicker = {
-    'Proposal': LABEL_PROPOSAL_COLOR,
-    'Discuss': LABEL_DISCUSS_COLOR,
-    'Poll': LABEL_POLL_COLOR,
-  };
+  final int mode;
 
-  CardView(this.title, this.label, this.text);
+
+  CardView(this.title, this.label, this.text, this.mode);
 
   @override
   Widget build(BuildContext context) {
@@ -29,74 +29,11 @@ class CardView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             //left
-            Icon(Icons.keyboard_arrow_left, size: 28),
+            CardSideLeft(mode),
             //center
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 20 - 56,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    // title
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 17, 0, 5),
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                    // Label
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                      child: Container(
-                        width: 80,
-                        child: Center(
-                          child: Text(
-                            label,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                            border:
-                                Border.all(color: labelColorPicker[label]),
-                            borderRadius: BorderRadius.circular(20)),
-                      ),
-                    ),
-                    // Content
-                    ((label == "Poll")
-                        ? (Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20),
-                                child: Icon(Icons.thumb_down, size: 50),
-                              ),
-                              Icon(Icons.thumb_up, size: 50)
-                            ],
-                          ))
-                        : Text(
-                            text,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ))
-                  ],
-                ),
-              ),
-            ),
+            CardContents(title, label, text, mode),
             // right
-            Icon(Icons.keyboard_arrow_right, size: 28),
+            CardSideRight(mode),
           ],
         ),
       ),
