@@ -8,7 +8,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: APP_BAR_BG,
-      leading: Icon(Icons.menu),
+      leading: Icon(Icons.menu, size: 50),
       bottom: BaseTabBar(),
       title: SizedBox(
         height: 40,
