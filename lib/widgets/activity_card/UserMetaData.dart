@@ -3,14 +3,20 @@ import 'package:flutter/material.dart';
 import '../IconTag.dart';
 
 class UserMetaData extends StatelessWidget {
+  final String userName;
+  final String cp;
+  final String cabildoName;
+
+  UserMetaData(this.userName, this.cp, this.cabildoName);
+
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        IconTag(Icon(Icons.person, size: 20), 'user-name'),
-        IconTag(Icon(Icons.offline_bolt, size: 20), '1.1k'),
-        IconTag(Icon(Icons.looks, size: 20), 'cabildo-name'),
+        IconTag(Icon(Icons.person, size: 20), userName),
+        IconTag(Icon(Icons.offline_bolt, size: 20), '${cp}k'),
+        IconTag(Icon(Icons.looks, size: 20), cabildoName),
       ],
     );
   }

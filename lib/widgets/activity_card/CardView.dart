@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 import '../../constants.dart';
 
 class CardView extends StatelessWidget {
+  final String title;
+  final String label;
+  final String text;
+
+  CardView(this.title, this.label, this.text);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -28,7 +34,7 @@ class CardView extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 17, 0, 5),
                       child: Text(
-                        "Legalize Cannabis",
+                        title,
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 20,
@@ -42,7 +48,7 @@ class CardView extends StatelessWidget {
                         width: 60,
                         child: Center(
                           child: Text(
-                            "Proposal",
+                            label,
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 12,
@@ -56,7 +62,7 @@ class CardView extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "Cannabis should be legalized because it offers very few negative effects to society, and it is an essential medicine for a lot of people (140). ",
+                      text,
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,

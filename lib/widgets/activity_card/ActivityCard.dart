@@ -6,6 +6,10 @@ import './CardMetaData.dart';
 import './CardView.dart';
 
 class ActivityCard extends StatelessWidget {
+  final Map<String, String> data;
+
+  ActivityCard(this.data);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -13,9 +17,9 @@ class ActivityCard extends StatelessWidget {
       height: 240,
       child: Column(
         children: <Widget>[
-          UserMetaData(),
-          CardView(),
-          CardMetaData(),
+          UserMetaData(data['userName'], data['cp'], data['cabildoName']),
+          CardView(data['title'], data['label'], data['text']),
+          CardMetaData(data['pingNum'], data['commentNum'], data['dateTime']),
           Divider(
             color: CARD_DIVIDER,
             thickness: 3,
