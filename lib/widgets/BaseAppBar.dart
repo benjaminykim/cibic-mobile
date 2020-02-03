@@ -9,13 +9,11 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: APP_BAR_BG,
-      leading: Icon(Icons.menu, size: 50),
       bottom: BaseTabBar(),
       title: Search(),
     );
   }
 
   @override
-  // TODO: implement preferredSize
   Size get preferredSize => Size.fromHeight(105);
 }

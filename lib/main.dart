@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './constants.dart';
 import './widgets/BaseAppBar.dart';
+import './widgets/BaseMenuOverlay.dart';
 
 void main() => runApp(MyApp());
 
@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
               Icon(Icons.poll),
             ],
           ),
+          drawer: MenuOverlay(),
         ),
       ),
     );
