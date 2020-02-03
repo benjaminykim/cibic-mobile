@@ -27,6 +27,18 @@ class ActivityFeed extends StatelessWidget {
     'dateTime': '1 day',
   };
 
+  final data_2 = {
+    'userName': 'Julia Maria',
+    'cp': '208',
+    'cabildoName': 'santiago-macul',
+    'title': 'Should people have guns?',
+    'label': 'Poll',
+    'text': '',
+    'pingNum': '590',
+    'commentNum': '49',
+    'dateTime': '5 days',
+  };
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -35,6 +47,7 @@ class ActivityFeed extends StatelessWidget {
           children: <Widget>[
             ActivityCard(data_0),
             ActivityCard(data_1),
+            ActivityCard(data_2)
           ],
       ),
     );
