@@ -15,6 +15,7 @@ class Search extends StatelessWidget {
           ),
           filled: true,
           hintText: 'buscar...',
+          suffixIcon: Icon(Icons.search),
         ),
       ),
     ));
