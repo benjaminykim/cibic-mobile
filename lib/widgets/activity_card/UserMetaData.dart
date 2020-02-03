@@ -15,7 +15,7 @@ class UserMetaData extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
         IconTag(Icon(Icons.person, size: 20), userName),
-        IconTag(Icon(Icons.offline_bolt, size: 20), '${cp}k'),
+        IconTag(Icon(Icons.offline_bolt, size: 20), cp),
         IconTag(Icon(Icons.looks, size: 20), cabildoName),
       ],
     );

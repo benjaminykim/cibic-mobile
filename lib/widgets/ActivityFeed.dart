@@ -3,16 +3,28 @@ import 'package:flutter/material.dart';
 import './activity_card/ActivityCard.dart';
 
 class ActivityFeed extends StatelessWidget {
-  final data = {
+  final data_0 = {
     'userName': 'Sharon Gomez',
-    'cp': '1.1',
+    'cp': '1.1k',
     'cabildoName': 'chile-cannabis',
     'title': 'Legalize Cannabis',
     'label': 'Proposal',
     'text': 'Cannabis should be legalized because it offers very few negative effects to society, and it is an essential medicine for a lot of people',
-    'pingNum': '22.1',
-    'commentNumm': '1.1',
-    'dateTime': '5 hours ago',
+    'pingNum': '22.1k',
+    'commentNum': '1.1k',
+    'dateTime': '5 hours',
+  };
+
+  final data_1 = {
+    'userName': 'Alonso Escalante',
+    'cp': '5.2k',
+    'cabildoName': 'Freedom Chile',
+    'title': 'Remove the President',
+    'label': 'Discuss',
+    'text': 'The president should be removed from office as he is unfit to lead the country. He does not represent the ideas of Chile',
+    'pingNum': '15.2k',
+    'commentNum': '800',
+    'dateTime': '1 day',
   };
 
   @override
@@ -21,12 +33,8 @@ class ActivityFeed extends StatelessWidget {
       color: Color(0xfff2f2f2),
         child: ListView(
           children: <Widget>[
-            ActivityCard(data),
-            ActivityCard(data),
-            ActivityCard(data),
-            ActivityCard(data),
-            ActivityCard(data),
-            ActivityCard(data),
+            ActivityCard(data_0),
+            ActivityCard(data_1),
           ],
       ),
     );

@@ -6,6 +6,11 @@ class CardView extends StatelessWidget {
   final String title;
   final String label;
   final String text;
+  final Map<String, Color> labelColorPicker = {
+    'Proposal': LABEL_PROPOSAL_COLOR,
+    'Discuss': LABEL_DISCUSS_COLOR,
+    'Poll': LABEL_POLL_COLOR,
+  };
 
   CardView(this.title, this.label, this.text);
 
@@ -31,6 +36,7 @@ class CardView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    // title
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 17, 0, 5),
                       child: Text(
@@ -42,10 +48,11 @@ class CardView extends StatelessWidget {
                         ),
                       ),
                     ),
+                    // Label
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                       child: Container(
-                        width: 60,
+                        width: 80,
                         child: Center(
                           child: Text(
                             label,
@@ -57,10 +64,11 @@ class CardView extends StatelessWidget {
                           ),
                         ),
                         decoration: BoxDecoration(
-                            border: Border.all(color: LABEL_PROPOSAL_COLOR),
+                            border: Border.all(color: labelColorPicker[label]),
                             borderRadius: BorderRadius.circular(20)),
                       ),
                     ),
+                    // Content
                     Text(
                       text,
                       style: TextStyle(
