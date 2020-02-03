@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../IconTag.dart';
+
 class UserMetaData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        Text('user-name', style: Theme.of(context).textTheme.body2),
-        Text('czp #', style: Theme.of(context).textTheme.body2),
-        Text('cabildo-name', style: Theme.of(context).textTheme.body2),
+        IconTag(Icon(Icons.person), 'user-name'),
+        IconTag(Icon(Icons.offline_bolt, size: 15), '1.1k'),
+        IconTag(Icon(Icons.looks), 'cabildo-name'),
       ],
     );
   }

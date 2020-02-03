@@ -32,6 +32,7 @@ ThemeData get cibicTheme {
         fontSize: 14.0,
         fontFamily: "Montserrat",
         color: Color(0xff828282),
+        fontWeight: FontWeight.w300,
       ),
     ),
   );

@@ -7,9 +7,6 @@ class ActivityFeed extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Color(0xfff2f2f2),
-      child: MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
         child: ListView(
           children: <Widget>[
             ActivityCard(),
@@ -18,7 +15,6 @@ class ActivityFeed extends StatelessWidget {
             ActivityCard(),
             ActivityCard(),
           ],
-        ),
       ),
     );
   }

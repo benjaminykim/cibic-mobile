@@ -6,9 +6,9 @@ class CardMetaData extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        Text('# pings', style: Theme.of(context).textTheme.body2),
-        Text('# comments', style: Theme.of(context).textTheme.body2),
-        Text('date-time', style: Theme.of(context).textTheme.body2),
+        Text('22.1k pings', style: Theme.of(context).textTheme.body2),
+        Text('1.1k comments', style: Theme.of(context).textTheme.body2),
+        Text('5 hours ago', style: Theme.of(context).textTheme.body2),
       ],
     );
   }
