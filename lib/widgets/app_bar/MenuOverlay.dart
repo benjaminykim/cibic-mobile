@@ -11,39 +11,59 @@ class MenuOverlay extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
-              child: Text(
-                'cibic',
-                style: Theme.of(context).textTheme.title,
+            ClipRect(
+              child: DrawerHeader(
+                child: Text(
+                  'cibic',
+                  style: Theme.of(context).textTheme.title,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(topRight:Radius.circular(50)),
+                ),
               ),
-              decoration: BoxDecoration(),
             ),
             ListTile(
-              title: Text('Profile'),
+              title: Text(
+                'Profile',
+                style: Theme.of(context).textTheme.body1,
+              ),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              title: Text('Cabildos'),
+              title: Text(
+                'Cabildos',
+                style: Theme.of(context).textTheme.body1,
+              ),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              title: Text('Saved'),
+              title: Text(
+                'Saved',
+                style: Theme.of(context).textTheme.body1,
+              ),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              title: Text('Settings'),
+              title: Text(
+                'Settings',
+                style: Theme.of(context).textTheme.body1,
+              ),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              title: Text('About'),
+              title: Text(
+                'About',
+                style: Theme.of(context).textTheme.body1,
+              ),
               onTap: () {
                 Navigator.pop(context);
               },
