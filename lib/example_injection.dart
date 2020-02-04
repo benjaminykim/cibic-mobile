@@ -31,11 +31,11 @@ const data_2 = const {
   'cp': '208',
   'cabildoName': 'santiago-macul',
   'title': 'Should people have guns?',
-  'type:': ACTIVITY_POLL,
+  'type': ACTIVITY_POLL,
   'text': '',
-  'pingNum': '590',
-  'commentNum': '49',
-  'dateTime': '5 days',
+  'pingNum': '200',
+  'commentNum': '55',
+  'dateTime': '1 week',
 };
 
 const data_3 = const {
@@ -76,4 +76,4 @@ const data_5 = const {
   'dateTime': '2 days',
 };
 
-const FEED_DATA = const [data_3, data_1, data_2, data_4, data_0, data_5];
+const FEED_DATA = const [data_3, data_1, data_2, data_4, data_0, data_2, data_5];
