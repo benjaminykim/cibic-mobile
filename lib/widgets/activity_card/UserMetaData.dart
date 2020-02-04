@@ -11,13 +11,22 @@ class UserMetaData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        IconTag(Icon(Icons.person, size: 20), userName),
-        IconTag(Icon(Icons.offline_bolt, size: 20), cp),
-        IconTag(Icon(Icons.looks, size: 20), cabildoName),
-      ],
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(left:20),
+            width: MediaQuery.of(context).size.width / 2 - 30,
+            child: IconTag(Icon(Icons.person, size: 20), userName),
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width / 3 - 40,
+            child: IconTag(Icon(Icons.offline_bolt, size: 20), cp),
+          ),
+          IconTag(Icon(Icons.looks, size: 20), cabildoName),
+        ],
+      ),
     );
   }
 }

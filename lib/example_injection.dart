@@ -71,7 +71,7 @@ const activity_3 = const {
   'userName': 'Julio Aregano',
   'cp': '60k',
   'cabildoName': 'all',
-  'title': 'What do you think about free healthcare?',
+  'title': 'The status of healthcare',
   'type': ACTIVITY_DISCUSS,
   'text':
       'What do you think about free healthcare in Chile? It should be paid for by taxes',
