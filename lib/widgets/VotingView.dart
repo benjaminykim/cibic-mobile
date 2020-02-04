@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class VotingView extends StatelessWidget {
+  final String score;
+
+  VotingView(this.score);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -10,7 +14,7 @@ class VotingView extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Icon(Icons.arrow_upward),
-            Text("12.2k",
+            Text(score,
                 style: TextStyle(
                   fontSize: 10,
                   color: Colors.black,
