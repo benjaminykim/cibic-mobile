@@ -28,7 +28,7 @@ class CardView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             //left
-            CardSideLeft(mode),
+            CardSideLeft(type, mode),
             //center
             CardContents(title, type, text, mode),
             // right
