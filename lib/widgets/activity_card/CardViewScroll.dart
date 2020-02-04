@@ -16,10 +16,10 @@ class CardViewScroll extends StatelessWidget {
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: <Widget>[
-          CardView(data['title'], data['type'], data['text'], CARD_DEFAULT),
-          CardView(data['title'], data['type'], data['text'], CARD_COMMENT),
-          CardView(data['title'], data['type'], data['text'], CARD_COMMENT),
-          CardView(data['title'], data['type'], data['text'], CARD_LAST),
+          CardView(data['title'], data['type'], data['text'], CARD_DEFAULT, data['score']),
+          CardView(data['title'], data['type'], data['text'], CARD_COMMENT, data['score']),
+          CardView(data['title'], data['type'], data['text'], CARD_COMMENT, data['score']),
+          CardView(data['title'], data['type'], data['text'], CARD_LAST, data['score']),
         ],
       ),
     );

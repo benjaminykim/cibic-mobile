@@ -35,6 +35,7 @@ const activity_0 = const {
   'commentNum': '1.1k',
   'dateTime': '5 hours',
   'comments': comments,
+  'score': '12.2k',
 };
 
 const activity_1 = const {
@@ -49,6 +50,7 @@ const activity_1 = const {
   'commentNum': '800',
   'dateTime': '1 day',
   'comments': comments,
+  'score': '45.1k',
 };
 
 const activity_2 = const {
@@ -62,6 +64,7 @@ const activity_2 = const {
   'commentNum': '55',
   'dateTime': '1 week',
   'comments': comments,
+  'score': '2.2k',
 };
 
 const activity_3 = const {
@@ -76,6 +79,7 @@ const activity_3 = const {
   'commentNum': '9.1k',
   'dateTime': '6 days',
   'comments': comments,
+  'score': '800',
 };
 
 const activity_4 = const {
@@ -90,6 +94,7 @@ const activity_4 = const {
   'commentNum': '42',
   'dateTime': '6 hours',
   'comments': comments,
+  'score': '9.9k',
 };
 
 const activity_5 = const {
@@ -103,6 +108,7 @@ const activity_5 = const {
   'commentNum': '271',
   'dateTime': '2 days',
   'comments': comments,
+  'score': '599',
 };
 
 const FEED_DATA = const [activity_3, activity_1, activity_2, activity_4, activity_0, activity_2, activity_5];
