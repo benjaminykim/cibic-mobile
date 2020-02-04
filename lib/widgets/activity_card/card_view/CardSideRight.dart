@@ -5,8 +5,10 @@ import '../../../constants.dart';
 class CardSideRight extends StatelessWidget {
   final int mode;
   final int type;
+  final Function moveRight;
 
-  CardSideRight(this.type, this.mode);
+  CardSideRight(this.type, this.mode, this.moveRight);
+
   @override
   Widget build(BuildContext context) {
     if (mode == CARD_LAST || (mode == CARD_DEFAULT && type == ACTIVITY_POLL)) {
@@ -14,7 +16,7 @@ class CardSideRight extends StatelessWidget {
     } else {
       return GestureDetector(
         onTap: () {
-          print(">");
+          moveRight();
         },
         child: Icon(
           Icons.keyboard_arrow_right,
