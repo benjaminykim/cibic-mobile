@@ -27,13 +27,13 @@ class _CardViewScrollState extends State<CardViewScroll> {
 
   _moveCardLeft() {
     _controller.animateTo(_controller.offset - (width),
-        curve: Curves.linear, duration: Duration(milliseconds: 500));
+        curve: Curves.linear, duration: Duration(milliseconds: 250));
   }
 
   _moveCardRight() {
     double cutoff = (_controller.offset % width);
     _controller.animateTo(_controller.offset + (width - cutoff),
-        curve: Curves.linear, duration: Duration(milliseconds: 500));
+        curve: Curves.linear, duration: Duration(milliseconds: 250));
   }
 
   @override
@@ -56,28 +56,18 @@ class _CardViewScrollState extends State<CardViewScroll> {
         _moveCardLeft,
         _moveCardRight));
     if (widget.data['comments'] != null) {
+      int cardMode;
       for (int i = 0; i < comments.length; i++) {
-        if (i == comments.length - 1) {
-          widgets.add(CardView(
-              widget.data['title'],
-              widget.data['type'],
-              widget.data['text'],
-              CARD_LAST,
-              widget.data['score'],
-              comments[i],
-              _moveCardLeft,
-              _moveCardRight));
-        } else {
-          widgets.add(CardView(
-              widget.data['title'],
-              widget.data['type'],
-              widget.data['text'],
-              CARD_COMMENT,
-              widget.data['score'],
-              comments[i],
-              _moveCardLeft,
-              _moveCardRight));
-        }
+        cardMode = (i == comments.length - 1) ? CARD_LAST : CARD_COMMENT;
+        widgets.add(CardView(
+            widget.data['title'],
+            widget.data['type'],
+            widget.data['text'],
+            cardMode,
+            widget.data['score'],
+            comments[i],
+            _moveCardLeft,
+            _moveCardRight));
       }
     } else {
       // empty card input comment view
