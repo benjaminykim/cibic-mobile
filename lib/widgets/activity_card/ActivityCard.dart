@@ -21,7 +21,7 @@ class ActivityCard extends StatelessWidget {
           CardMetaData(data['pingNum'], data['commentNum'], data['dateTime']),
           Divider(
             color: CARD_DIVIDER,
-            thickness: 3,
+            thickness: 1,
           ),
         ],
       ),

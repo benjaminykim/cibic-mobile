@@ -12,8 +12,10 @@ class CardView extends StatelessWidget {
   final int mode;
   final String score;
   final Map<String, String> comment;
+  final Function moveLeft;
+  final Function moveRight;
 
-  CardView(this.title, this.type, this.text, this.mode, this.score, this.comment);
+  CardView(this.title, this.type, this.text, this.mode, this.score, this.comment, this.moveLeft, this.moveRight);
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +32,11 @@ class CardView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             //left
-            CardSideLeft(type, mode, score),
+            CardSideLeft(type, mode, score, moveLeft),
             //center
             CardContents(title, type, text, mode, comment),
             // right
-            CardSideRight(type, mode),
+            CardSideRight(type, mode, moveRight),
           ],
         ),
       ),

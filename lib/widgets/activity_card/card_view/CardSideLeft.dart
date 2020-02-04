@@ -7,8 +7,10 @@ class CardSideLeft extends StatelessWidget {
   final int type;
   final int mode;
   final String score;
+  final Function moveLeft;
 
-  CardSideLeft(this.type, this.mode, this.score);
+  CardSideLeft(this.type, this.mode, this.score, this.moveLeft);
+
   @override
   Widget build(BuildContext context) {
     if (mode == CARD_DEFAULT) {
@@ -19,7 +21,7 @@ class CardSideLeft extends StatelessWidget {
     } else {
       return GestureDetector(
         onTap: () {
-          print("<");
+          moveLeft();
         },
         child: Icon(
           Icons.keyboard_arrow_left,
