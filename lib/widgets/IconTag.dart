@@ -11,7 +11,7 @@ class IconTag extends StatelessWidget {
     return Row(
       children: <Widget>[
         icon,
-        SizedBox(width:5),
+        SizedBox(width: 5),
         Text(
           text,
           style: Theme.of(context).textTheme.body2,
