@@ -17,7 +17,15 @@ class CardSideLeft extends StatelessWidget {
       }
       return VotingView(score);
     } else {
-      return Icon(Icons.keyboard_arrow_left, size: 28);
+      return GestureDetector(
+        onTap: () {
+          print("<");
+        },
+        child: Icon(
+          Icons.keyboard_arrow_left,
+          size: 28,
+        ),
+      );
     }
   }
 }

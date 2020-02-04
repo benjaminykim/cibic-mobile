@@ -10,8 +10,17 @@ class CardSideRight extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (mode == CARD_LAST || (mode == CARD_DEFAULT && type == ACTIVITY_POLL)) {
-      return SizedBox(width:28);
-    } else
-    return Icon(Icons.keyboard_arrow_right, size: 28);
+      return SizedBox(width: 28);
+    } else {
+      return GestureDetector(
+        onTap: () {
+          print(">");
+        },
+        child: Icon(
+          Icons.keyboard_arrow_right,
+          size: 28,
+        ),
+      );
+    }
   }
 }
