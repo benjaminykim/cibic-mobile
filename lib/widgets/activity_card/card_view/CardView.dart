@@ -32,7 +32,7 @@ class CardView extends StatelessWidget {
             //center
             CardContents(title, type, text, mode),
             // right
-            CardSideRight(mode),
+            CardSideRight(type, mode),
           ],
         ),
       ),
