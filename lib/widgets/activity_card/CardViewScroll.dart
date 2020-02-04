@@ -18,6 +18,7 @@ class CardViewScroll extends StatelessWidget {
         children: <Widget>[
           CardView(data['title'], data['type'], data['text'], CARD_DEFAULT),
           CardView(data['title'], data['type'], data['text'], CARD_COMMENT),
+          CardView(data['title'], data['type'], data['text'], CARD_COMMENT),
           CardView(data['title'], data['type'], data['text'], CARD_LAST),
         ],
       ),

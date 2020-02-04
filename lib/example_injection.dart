@@ -1,6 +1,29 @@
 import './constants.dart';
 
-const data_0 = const {
+const comment_1 = const {
+  'userName': 'Jaime Linda',
+  'cp': '22',
+  'text': 'Cannabis should not be legalized because it is harmful to the brain',
+  'score': '81',
+};
+
+const comment_2 = const {
+  'userName': 'Jesus Marcos',
+  'cp': '9.2k',
+  'text': 'Cannabis will increase tax revenue, which can help fund more oscial programs',
+  'score': '920',
+};
+
+const comment_3 = const {
+  'userName': 'Jaime Linda',
+  'cp': '101k',
+  'text': 'There is no evidence of a cannabis caused death.',
+  'score': '2.2k',
+};
+
+const comments = const [comment_1, comment_2, comment_3];
+
+const activity_0 = const {
   'userName': 'Sharon Gomez',
   'cp': '1.1k',
   'cabildoName': 'chile-cannabis',
@@ -11,9 +34,10 @@ const data_0 = const {
   'pingNum': '22.1k',
   'commentNum': '1.1k',
   'dateTime': '5 hours',
+  'comments': comments,
 };
 
-const data_1 = const {
+const activity_1 = const {
   'userName': 'Alonso Escalante',
   'cp': '5.2k',
   'cabildoName': 'Freedom Chile',
@@ -24,9 +48,10 @@ const data_1 = const {
   'pingNum': '15.2k',
   'commentNum': '800',
   'dateTime': '1 day',
+  'comments': comments,
 };
 
-const data_2 = const {
+const activity_2 = const {
   'userName': 'Julia Maria',
   'cp': '208',
   'cabildoName': 'santiago-macul',
@@ -36,9 +61,10 @@ const data_2 = const {
   'pingNum': '200',
   'commentNum': '55',
   'dateTime': '1 week',
+  'comments': comments,
 };
 
-const data_3 = const {
+const activity_3 = const {
   'userName': 'Julio Aregano',
   'cp': '60k',
   'cabildoName': 'all',
@@ -49,9 +75,10 @@ const data_3 = const {
   'pingNum': '10.2k',
   'commentNum': '9.1k',
   'dateTime': '6 days',
+  'comments': comments,
 };
 
-const data_4 = const {
+const activity_4 = const {
   'userName': 'Matteo Jorge',
   'cp': '20',
   'cabildoName': 'Freedom Chile',
@@ -62,9 +89,10 @@ const data_4 = const {
   'pingNum': '4.9k',
   'commentNum': '42',
   'dateTime': '6 hours',
+  'comments': comments,
 };
 
-const data_5 = const {
+const activity_5 = const {
   'userName': 'Gloria Iglesias',
   'cp': '900',
   'cabildoName': 'santiago-chile',
@@ -74,6 +102,7 @@ const data_5 = const {
   'pingNum': '1.1k',
   'commentNum': '271',
   'dateTime': '2 days',
+  'comments': comments,
 };
 
-const FEED_DATA = const [data_3, data_1, data_2, data_4, data_0, data_2, data_5];
+const FEED_DATA = const [activity_3, activity_1, activity_2, activity_4, activity_0, activity_2, activity_5];
