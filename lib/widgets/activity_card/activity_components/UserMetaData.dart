@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../IconTag.dart';
+import '../../IconTag.dart';
 
 class UserMetaData extends StatelessWidget {
   final String userName;

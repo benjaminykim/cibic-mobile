@@ -1,8 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import './card_view/CardView.dart';
-import '../../constants.dart';
+import '../card_view/CardView.dart';
+import '../../../constants.dart';
 import './CardScrollPhysics.dart';
 
 class CardViewScroll extends StatefulWidget {
