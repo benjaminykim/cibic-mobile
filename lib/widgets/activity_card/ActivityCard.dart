@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../constants.dart';
-import './UserMetaData.dart';
-import './CardMetaData.dart';
-import './CardViewScroll.dart';
+import './activity_components/UserMetaData.dart';
+import './activity_components/CardMetaData.dart';
+import './activity_components/CardViewScroll.dart';
 
 class ActivityCard extends StatelessWidget {
   final Map<String, Object> data;
