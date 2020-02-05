@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import './card_view/CardView.dart';
 import '../../constants.dart';
+import './CardScrollPhysics.dart';
 
 class CardViewScroll extends StatefulWidget {
   final Map<String, Object> data;
@@ -14,15 +15,22 @@ class CardViewScroll extends StatefulWidget {
 }
 
 class _CardViewScrollState extends State<CardViewScroll> {
-  ScrollController _controller;
+  final _controller = ScrollController();
   double width;
+  ScrollPhysics _physics;
 
-  _scrollListener() {
-    double cutoff = (_controller.offset % width);
-    // if (width - cutoff < (width * 0.7)) {
-    //   _controller.animateTo(_controller.offset + (width - cutoff),
-    //       curve: Curves.linear, duration: Duration(milliseconds: 500));
-    // }
+  @override
+  void initState() {
+    super.initState();
+
+    _controller.addListener(() {
+      if (_controller.position.haveDimensions && _physics == null) {
+        setState(() {
+          var dimension = _controller.position.maxScrollExtent / (3);
+          _physics = CardScrollPhysics(itemDimension: dimension);
+        });
+      }
+    });
   }
 
   _moveCardLeft() {
@@ -34,13 +42,6 @@ class _CardViewScrollState extends State<CardViewScroll> {
     double cutoff = (_controller.offset % width);
     _controller.animateTo(_controller.offset + (width - cutoff),
         curve: Curves.linear, duration: Duration(milliseconds: 250));
-  }
-
-  @override
-  void initState() {
-    _controller = ScrollController();
-    _controller.addListener(_scrollListener);
-    super.initState();
   }
 
   List<Widget> generateCards() {
@@ -81,13 +82,12 @@ class _CardViewScrollState extends State<CardViewScroll> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10),
       height: 180,
-      child: GestureDetector(
-        child: ListView(
-          dragStartBehavior: DragStartBehavior.down,
-          scrollDirection: Axis.horizontal,
-          children: generateCards(),
-          controller: _controller,
-        ),
+      child: ListView(
+        dragStartBehavior: DragStartBehavior.down,
+        scrollDirection: Axis.horizontal,
+        children: generateCards(),
+        controller: _controller,
+        physics: _physics,
       ),
     );
   }
