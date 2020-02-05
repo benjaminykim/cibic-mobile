@@ -10,9 +10,13 @@ class ActivityFeed extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Color(0xfff2f2f2),
-        child: ListView(
-          children: FEED_DATA.map((card) {return ActivityCard(card);}).toList(),
-      ),
+      child: ListView.builder(
+        padding: EdgeInsets.zero,
+        itemCount: FEED_DATA.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ActivityCard(FEED_DATA[index]);
+        }
+      )
     );
   }
 }
