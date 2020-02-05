@@ -34,13 +34,12 @@ class _CardViewScrollState extends State<CardViewScroll> {
   }
 
   _moveCardLeft() {
-    _controller.animateTo(_controller.offset - (width),
+    _controller.animateTo(_controller.offset - width,
         curve: Curves.linear, duration: Duration(milliseconds: 250));
   }
 
   _moveCardRight() {
-    double cutoff = (_controller.offset % width);
-    _controller.animateTo(_controller.offset + (width - cutoff),
+    _controller.animateTo(_controller.offset + width,
         curve: Curves.linear, duration: Duration(milliseconds: 250));
   }
 
