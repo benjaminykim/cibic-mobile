@@ -1,6 +1,11 @@
 # cibic_mobile
 
-A new Flutter project.
+To debug the application on your Android device:
+* enter root application directory
+* connect hardware device to computer via usb
+*  enable developer mode and usb debugging
+* run `flutter devices` to ensure your device is detected by flutter
+* run `flutter run -d [device ID]` to build a debug version of the application and sideload to your device
 
 ## Getting Started
 
