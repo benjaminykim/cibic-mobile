@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
-import '../../VotingView.dart';
 
 class CardSideLeft extends StatelessWidget {
   final int type;
@@ -17,7 +16,16 @@ class CardSideLeft extends StatelessWidget {
       if (type == ACTIVITY_POLL) {
         return SizedBox(width: 28);
       }
-      return VotingView(score);
+      return Container(
+      width: 28,
+      child: Text(
+        score,
+        style: TextStyle(
+          fontSize: 10,
+          color: Colors.black,
+        ),
+      ),
+    );
     } else {
       return GestureDetector(
         onTap: () {
