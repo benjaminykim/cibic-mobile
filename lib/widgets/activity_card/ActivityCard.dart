@@ -13,7 +13,6 @@ class ActivityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 240,
       child: Column(
         children: <Widget>[
           UserMetaData(data['userName'], data['cp'], data['cabildoName']),
