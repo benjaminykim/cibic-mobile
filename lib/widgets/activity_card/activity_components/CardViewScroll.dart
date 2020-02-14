@@ -80,7 +80,7 @@ class _CardViewScrollState extends State<CardViewScroll> {
     width = MediaQuery.of(context).size.width;
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10),
-      height: 180,
+      height: MediaQuery.of(context).size.width / 2,
       child: ListView(
         dragStartBehavior: DragStartBehavior.down,
         scrollDirection: Axis.horizontal,
