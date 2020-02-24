@@ -33,7 +33,7 @@ const activity_0 = const {
       'Cannabis should be legalized because it offers very few negative effects to society, and it is an essential medicine for a lot of people',
   'pingNum': '22.1k',
   'commentNum': '1.1k',
-  'dateTime': '5 hours',
+  'dateTime': '5 horas',
   'comments': comments,
   'score': '12.2k',
 };
@@ -48,7 +48,7 @@ const activity_1 = const {
       'The president should be removed from office as he is unfit to lead the country. He does not represent the ideas of Chile',
   'pingNum': '15.2k',
   'commentNum': '800',
-  'dateTime': '1 day',
+  'dateTime': '1 dia',
   'comments': comments,
   'score': '45.1k',
 };
@@ -62,7 +62,7 @@ const activity_2 = const {
   'text': '',
   'pingNum': '200',
   'commentNum': '55',
-  'dateTime': '1 week',
+  'dateTime': '1 semana',
   'comments': comments,
   'score': '2.2k',
 };
@@ -77,7 +77,7 @@ const activity_3 = const {
       'What do you think about free healthcare in Chile? It should be paid for by taxes',
   'pingNum': '10.2k',
   'commentNum': '9.1k',
-  'dateTime': '6 days',
+  'dateTime': '6 dias',
   'comments': comments,
   'score': '800',
 };
@@ -92,7 +92,7 @@ const activity_4 = const {
     'The police illegally detained two teenagers in Santiago at a protest last Sunday. They were peacefully protesting at Civic Square.',
   'pingNum': '4.9k',
   'commentNum': '42',
-  'dateTime': '6 hours',
+  'dateTime': '6 horas',
   'comments': comments,
   'score': '9.9k',
 };
@@ -106,7 +106,7 @@ const activity_5 = const {
   'text': '',
   'pingNum': '1.1k',
   'commentNum': '271',
-  'dateTime': '2 days',
+  'dateTime': '2 dias',
   'comments': comments,
   'score': '599',
 };

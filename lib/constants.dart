@@ -4,9 +4,9 @@ const APP_BAR_BG = Color(0xff2D9CDB);
 const APP_BAR_SELECTED = Color(0xff518CAD);
 const APP_BAR_BOTTOM = Color(0xff6CBAE6);
 const CARD_BACKGROUND = Color(0xffFFFFFF);
-const CARD_DIVIDER = Color(0xff2D9CDB);
+const CARD_DIVIDER = Colors.grey;
 const LABEL_PROPOSAL_COLOR = Color(0xff2d9cdb);
-const LABEL_DISCUSS_COLOR = Color(0xff6cf256);
+const LABEL_DISCUSS_COLOR = Color(0xff009bda);
 const LABEL_POLL_COLOR = Color(0xff000000);
 const CARD_DEFAULT = 0;
 const CARD_COMMENT = 1;
@@ -18,7 +18,7 @@ const ACTIVITY_POLL = 2;
 
 ThemeData get cibicTheme {
   return ThemeData(
-    primaryColor: Color(0xff2D9CDB),
+    primaryColor: Colors.white,
     accentColor: Colors.cyan[600],
     fontFamily: 'Montserrat',
     textTheme: TextTheme(
