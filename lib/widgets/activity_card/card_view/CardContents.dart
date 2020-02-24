@@ -71,7 +71,7 @@ class CardContents extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       width: MediaQuery.of(context).size.width - 20 - 56,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

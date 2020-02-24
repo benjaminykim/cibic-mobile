@@ -18,9 +18,13 @@ class ActivityCard extends StatelessWidget {
           UserMetaData(data['userName'], data['cp'], data['cabildoName']),
           CardViewScroll(data),
           CardMetaData(data['pingNum'], data['commentNum'], data['dateTime']),
-          Divider(
-            color: CARD_DIVIDER,
-            thickness: 1,
+          // divider
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Divider(
+              color: CARD_DIVIDER,
+              thickness: 1,
+            ),
           ),
         ],
       ),
