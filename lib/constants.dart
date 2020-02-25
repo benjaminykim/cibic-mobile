@@ -6,7 +6,7 @@ const APP_BAR_BOTTOM = Color(0xff6CBAE6);
 const CARD_BACKGROUND = Color(0xffFFFFFF);
 const CARD_DIVIDER = Colors.grey;
 const LABEL_PROPOSAL_COLOR = Color(0xff2d9cdb);
-const LABEL_DISCUSS_COLOR = Color(0xff009bda);
+const LABEL_DISCUSS_COLOR = Color(0xff000000);
 const LABEL_POLL_COLOR = Color(0xff000000);
 const CARD_DEFAULT = 0;
 const CARD_COMMENT = 1;
@@ -16,33 +16,44 @@ const ACTIVITY_DISCUSS = 0;
 const ACTIVITY_PROPOSAL = 1;
 const ACTIVITY_POLL = 2;
 
+const Map<int, Color> labelColorPicker = {
+    ACTIVITY_PROPOSAL: LABEL_PROPOSAL_COLOR,
+    ACTIVITY_DISCUSS: LABEL_DISCUSS_COLOR,
+    ACTIVITY_POLL: LABEL_POLL_COLOR,
+};
+const Map<int, String> labelTextPicker = {
+  ACTIVITY_PROPOSAL: 'propuesta',
+  ACTIVITY_DISCUSS: 'discusion',
+  ACTIVITY_POLL: 'encuesta',
+};
+
 ThemeData get cibicTheme {
   return ThemeData(
     primaryColor: Colors.white,
     accentColor: Colors.cyan[600],
-    fontFamily: 'Montserrat',
+    fontFamily: 'OpenSans',
     textTheme: TextTheme(
       headline: TextStyle(
-        fontSize: 72.0,
-        fontWeight: FontWeight.bold,
+        fontSize: 40.0,
+        fontWeight: FontWeight.w200,
       ),
       title: TextStyle(
-        fontSize: 30.0,
-        fontWeight: FontWeight.w400,
-        fontFamily: "Montserrat",
+        fontSize: 24.0,
+        fontWeight: FontWeight.w200,
+        fontFamily: "OpenSans",
         color: Color(0xfff2f2f2),
       ),
       body1: TextStyle(
         fontSize: 24.0,
         fontWeight: FontWeight.w200,
-        fontFamily: "Montserrat",
+        fontFamily: "OpenSans",
         color: Color(0xfff2f2f2),
       ),
       body2: TextStyle(
         fontSize: 12.0,
-        fontFamily: "Montserrat",
+        fontFamily: "OpenSans",
         color: Color(0xff828282),
-        fontWeight: FontWeight.w300,
+        fontWeight: FontWeight.w200,
       ),
     ),
   );

@@ -37,19 +37,15 @@ class _MyAppState extends State<MyApp> {
       home: DefaultTabController(
         length: 4,
         child: Scaffold(
-            appBar: BaseAppBar(),
+            appBar: BaseAppBar("INICIO"),
             body: Center(
               child: _widgetOptions.elementAt(_selectedIndex),
             ),
             drawer: MenuOverlay(),
             bottomNavigationBar: Container(
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 0.5
-                )
-              ),
-              child:BottomNavigationBar(
+                  border: Border.all(color: Colors.grey, width: 0.5)),
+              child: BottomNavigationBar(
                 items: const <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
                       icon: Icon(Icons.home, color: Colors.black, size: 30),
@@ -62,7 +58,8 @@ class _MyAppState extends State<MyApp> {
                           color: Colors.black, size: 30),
                       title: Text("")),
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.show_chart, color: Colors.black, size: 30),
+                      icon:
+                          Icon(Icons.show_chart, color: Colors.black, size: 30),
                       title: Text("")),
                 ],
                 type: BottomNavigationBarType.fixed,

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../card_view/CardView.dart';
 import '../../../constants.dart';
-import './CardScrollPhysics.dart';
+import '../activity_components/CardScrollPhysics.dart';
 
 class CardViewScroll extends StatefulWidget {
   final Map<String, Object> data;
