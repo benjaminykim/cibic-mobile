@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 
 class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String pageName;
+
+  BaseAppBar(this.pageName);
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: const Text('INICIO'),
+      title: Text(this.pageName, style: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w400,
+      )),
       centerTitle: true,
       titleSpacing: 0.0,
       actions: <Widget>[

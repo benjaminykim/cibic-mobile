@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../constants.dart';
 import './activity_components/UserMetaData.dart';
 import './activity_components/CardMetaData.dart';
-import './activity_components/CardViewScroll.dart';
+import './card_view/CardViewScroll.dart';
 
 class ActivityCard extends StatelessWidget {
   final Map<String, Object> data;
@@ -23,7 +23,7 @@ class ActivityCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Divider(
               color: CARD_DIVIDER,
-              thickness: 1,
+              thickness: 0.3,
             ),
           ),
         ],
