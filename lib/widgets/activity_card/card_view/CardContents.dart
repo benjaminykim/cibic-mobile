@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
 import '../../IconTag.dart';
+import './ReactionSlider1.dart';
 
 class CardContents extends StatefulWidget {
   final String title;
@@ -17,25 +18,6 @@ class CardContents extends StatefulWidget {
 }
 
 class _CardContentsState extends State<CardContents> {
-  double reactValue = 2.0;
-
-  Color reactColor()
-  {
-    switch(reactValue)
-    {
-      case 0:
-        return Color(0xffe43535);
-      case 1:
-        return Color(0xffea8414);
-      case 2:
-        return Color(0xfff2e131);
-      case 3:
-        return Color(0xff80d25c);
-      case 4:
-        return Color(0xff22ba8e);
-    }
-
-  }
 
   generateCardBody() {
     if (widget.type == ACTIVITY_POLL && widget.mode == CARD_DEFAULT) {
@@ -83,11 +65,11 @@ class _CardContentsState extends State<CardContents> {
         ],
       ));
     } else {
+      // DISCUSSION OR PROPOSAL CONTENTS
       return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            // default discussion card
             widget.text,
             style: TextStyle(
               color: Colors.black,
@@ -95,31 +77,7 @@ class _CardContentsState extends State<CardContents> {
               fontWeight: FontWeight.w300,
             ),
           ),
-          Container(
-            height: 40,
-            child: SliderTheme(
-              data: SliderTheme.of(context).copyWith(
-                activeTrackColor: Colors.grey,
-                inactiveTrackColor: Colors.grey,
-                activeTickMarkColor: Colors.transparent,
-                inactiveTickMarkColor: Colors.transparent,
-                trackHeight: 5.0,
-                thumbColor: reactColor(),
-                thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10.0),
-                //overlayColor: Colors.purple.withAlpha(32),
-                overlayShape: RoundSliderOverlayShape(overlayRadius: 14.0),
-              ),
-              child: Slider(
-                value: reactValue,
-                onChanged: (value) => setState(() {
-                  reactValue = value;
-                }),
-                max: 4.0,
-                min: 0.0,
-                divisions: 4,
-              ),
-            ),
-          )
+          ReactionSlider(),
         ],
       );
     }
