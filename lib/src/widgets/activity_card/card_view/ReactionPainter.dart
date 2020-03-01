@@ -11,7 +11,7 @@ class ReactionPainter extends CustomPainter {
     Color(0xff93cf6b),
     Color(0xff59b791)
   ];
-  final List<double> anchorRadius = [10.0, 9.0, 8.0, 9.0, 10.0];
+  final List<double> anchorRadius = [10.0, 9.0, 7.0, 9.0, 10.0];
   List<double> anchorPositions;
 
   ReactionPainter({
@@ -68,26 +68,25 @@ class ReactionPainter extends CustomPainter {
 
   _paintLine(Canvas canvas, Size size) {
     Path path = Path();
-    path.moveTo(0.0, size.height / 2);
+    path.moveTo(1.0, size.height / 2);
     path.lineTo(size.width - 10, size.height / 2);
     canvas.drawPath(path, linePainter(size));
   }
 
   _findClosestAnchorIndex(double position) {
-    double minDiff = width / 8;
+    double minDiff = width / 4;
     double diff;
     int minIndex = 0;
     int index = 0;
 
     for (final anchor in anchorPositions) {
-      diff = (anchor - position).abs();
+      diff = (position - anchor - anchorRadius[index]).abs();
       if (diff < minDiff) {
         minDiff = diff;
         minIndex = index;
       }
       index++;
     }
-    print(minIndex);
     return minIndex;
   }
 
@@ -95,7 +94,7 @@ class ReactionPainter extends CustomPainter {
     int anchorIndex = _findClosestAnchorIndex(sliderPosition);
     canvas.drawCircle(
         Offset(anchorPositions[anchorIndex] + 10, size.height / 2),
-        anchorRadius[anchorIndex] + 2,
+        anchorRadius[anchorIndex] + 2.5,
         fillPainter(Color(0xff666456)));
   }
 

@@ -4,20 +4,21 @@ import '../../constants.dart';
 import './activity_components/UserMetaData.dart';
 import './activity_components/CardMetaData.dart';
 import './card_view/CardViewScroll.dart';
+import '../../models/activity_model.dart';
 
 class ActivityCard extends StatelessWidget {
-  final Map<String, Object> data;
+  final ActivityModel activity;
 
-  ActivityCard(this.data);
+  ActivityCard(this.activity);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Column(
         children: <Widget>[
-          UserMetaData(data['userName'], data['cp'], data['cabildoName']),
-          CardViewScroll(data),
-          CardMetaData(data['pingNum'], data['commentNum'], data['dateTime']),
+          UserMetaData(activity.id_user, activity.user_cp, activity.id_cabildo),
+          CardViewScroll(activity.title, activity.type, activity.text, activity.score, activity.comments),
+          CardMetaData(activity.ping_number, activity.comment_number, activity.publish_date),
           // divider
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),

@@ -38,20 +38,6 @@ const activity_0 = const {
   'score': '12.2k',
 };
 
-const activity_1 = const {
-  'userName': 'Alonso Escalante',
-  'cp': '5.2k',
-  'cabildoName': 'Freedom Chile',
-  'title': 'Remove the President',
-  'type': ACTIVITY_DISCUSS,
-  'text':
-      'The president should be removed from office as he is unfit to lead the country. He does not represent the ideas of Chile',
-  'pingNum': '15.2k',
-  'commentNum': '800',
-  'dateTime': '1 dia',
-  'comments': comments,
-  'score': '45.1k',
-};
 
 const activity_2 = const {
   'userName': 'Julia Maria',
@@ -111,4 +97,4 @@ const activity_5 = const {
   'score': '599',
 };
 
-const FEED_DATA = const [activity_3, activity_1, activity_2, activity_4, activity_0, activity_2, activity_5];
+const FEED_DATA = const [activity_3, activity_2, activity_4, activity_0, activity_2, activity_5];

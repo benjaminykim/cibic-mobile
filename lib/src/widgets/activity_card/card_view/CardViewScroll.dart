@@ -2,13 +2,18 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../card_view/CardView.dart';
+import '../../../models/comment_model.dart';
 import '../../../constants.dart';
 import '../activity_components/CardScrollPhysics.dart';
 
 class CardViewScroll extends StatefulWidget {
-  final Map<String, Object> data;
+  final String title;
+  final String type;
+  final String text;
+  final String score;
+  final List<CommentModel> comments;
 
-  CardViewScroll(this.data);
+  CardViewScroll(this.title, this.type, this.text, this.score, this.comments);
 
   @override
   _CardViewScrollState createState() => _CardViewScrollState();
@@ -45,27 +50,27 @@ class _CardViewScrollState extends State<CardViewScroll> {
 
   List<Widget> generateCards() {
     List<Widget> widgets = [];
-    List comments = widget.data['comments'];
+    List<CommentModel> comments = widget.comments;
     widgets.add(CardView(
-        widget.data['title'],
-        widget.data['type'],
-        widget.data['text'],
+        widget.title,
+        int.parse(widget.type),
+        widget.text,
         CARD_DEFAULT,
-        widget.data['score'],
-        comments[0],
+        widget.score,
+        null,
         _moveCardLeft,
         _moveCardRight));
-    if (widget.data['comments'] != null) {
+    if (widget.comments != null) {
       int cardMode;
       for (int i = 0; i < comments.length; i++) {
         cardMode = (i == comments.length - 1) ? CARD_LAST : CARD_COMMENT;
         widgets.add(CardView(
-            widget.data['title'],
-            widget.data['type'],
-            widget.data['text'],
+            widget.title,
+            int.parse(widget.type),
+            widget.text,
             cardMode,
-            widget.data['score'],
-            comments[i],
+            widget.score,
+            widget.comments[i],
             _moveCardLeft,
             _moveCardRight));
       }
