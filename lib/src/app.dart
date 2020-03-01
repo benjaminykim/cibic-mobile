@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 
 import './widgets/app_bar/AppBar.dart';
 import './widgets/app_bar/MenuOverlay.dart';
 import './widgets/ActivityFeed.dart';
 import './constants.dart';
 import 'package:http/http.dart';
-import './models/activity_model.dart';
 
 class App extends StatefulWidget {
   final Client client;
