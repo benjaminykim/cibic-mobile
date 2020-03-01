@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../constants.dart';
 import './CardContents.dart';
 import '../activity_components/Title.dart';
+import '../../../models/comment_model.dart';
 
 class CardView extends StatefulWidget {
   final String title;
@@ -10,7 +11,7 @@ class CardView extends StatefulWidget {
   final String text;
   final int mode;
   final String score;
-  final Map<String, String> comment;
+  final CommentModel comment;
   final Function moveLeft;
   final Function moveRight;
 

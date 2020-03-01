@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
 import '../../IconTag.dart';
-import './ReactionSlider1.dart';
+import './ReactionSlider.dart';
+import '../../../models/comment_model.dart';
 
 class CardContents extends StatefulWidget {
   final String title;
   final int type;
   final String text;
   final int mode;
-  final Map<String, String> comments;
+  final CommentModel comment;
 
-  CardContents(this.title, this.type, this.text, this.mode, this.comments);
+  CardContents(this.title, this.type, this.text, this.mode, this.comment);
 
   @override
   _CardContentsState createState() => _CardContentsState();
 }
 
 class _CardContentsState extends State<CardContents> {
-
   generateCardBody() {
     if (widget.type == ACTIVITY_POLL && widget.mode == CARD_DEFAULT) {
       //default poll card
@@ -41,13 +41,13 @@ class _CardContentsState extends State<CardContents> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               IconTag(
-                  Icon(Icons.person, size: 15), widget.comments['userName']),
+                  Icon(Icons.person, size: 15), widget.comment.id_user),
               IconTag(
-                  Icon(Icons.offline_bolt, size: 15), widget.comments['cp']),
+                  Icon(Icons.offline_bolt, size: 15), widget.comment.user_cp),
             ],
           ),
           Text(
-            widget.comments['text'],
+            widget.comment.text,
             style: TextStyle(
               fontSize: 12,
               color: Colors.black,
@@ -55,7 +55,7 @@ class _CardContentsState extends State<CardContents> {
           ),
           Center(
             child: Text(
-              widget.comments['score'],
+              widget.comment.score,
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.black,
@@ -69,15 +69,22 @@ class _CardContentsState extends State<CardContents> {
       return Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(
-            widget.text,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 14,
-              fontWeight: FontWeight.w300,
+          Container(
+            alignment: Alignment.topCenter,
+            child: Text(
+              widget.text,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+                fontWeight: FontWeight.w300,
+              ),
             ),
           ),
-          ReactionSlider(),
+          Container(
+            padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+            child: ReactionSlider(),
+            alignment: Alignment.bottomCenter,
+          ),
         ],
       );
     }
@@ -87,10 +94,7 @@ class _CardContentsState extends State<CardContents> {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width - 20 - 56,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[generateCardBody()],
-      ),
+      child: generateCardBody(),
     );
   }
 }

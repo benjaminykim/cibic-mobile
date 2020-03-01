@@ -19,7 +19,7 @@ class ReactionSlider extends StatefulWidget {
 
 class _ReactionSliderState extends State<ReactionSlider> {
   double reactValue = 2.0;
-  double _dragPosition = 0;
+  double _dragPosition = 130;
   double _dragPercentage = 0;
 
   void _updateDragPosition(Offset val) {
@@ -42,14 +42,12 @@ class _ReactionSliderState extends State<ReactionSlider> {
   void _onDragUpdate(BuildContext context, DragUpdateDetails update) {
     RenderBox box = context.findRenderObject();
     Offset offset = box.globalToLocal(update.globalPosition);
-    print(offset);
     _updateDragPosition(offset);
   }
 
   void _onDragStart(BuildContext context, DragStartDetails start) {
     RenderBox box = context.findRenderObject();
     Offset offset = box.globalToLocal(start.globalPosition);
-    print(offset);
     _updateDragPosition(offset);
   }
 
@@ -65,26 +63,24 @@ class _ReactionSliderState extends State<ReactionSlider> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: GestureDetector(
-        child: SizedBox(
-          width: widget.width + 20,
-          height: widget.height,
-          child: CustomPaint(
-            painter: ReactionPainter(
-              dragPercentage: _dragPercentage,
-              sliderPosition: _dragPosition,
-              width: widget.width,
-            ),
+    return GestureDetector(
+      child: SizedBox(
+        width: widget.width + 20,
+        height: widget.height,
+        child: CustomPaint(
+          painter: ReactionPainter(
+            dragPercentage: _dragPercentage,
+            sliderPosition: _dragPosition,
+            width: widget.width,
           ),
         ),
-        onHorizontalDragUpdate: (DragUpdateDetails update) =>
-            _onDragUpdate(context, update),
-        onHorizontalDragStart: (DragStartDetails start) =>
-            _onDragStart(context, start),
-        onHorizontalDragEnd: (DragEndDetails end) => _onDragEnd(context, end),
-        onTapUp: (TapUpDetails tap) => _onTap(context, tap),
       ),
+      onHorizontalDragUpdate: (DragUpdateDetails update) =>
+          _onDragUpdate(context, update),
+      onHorizontalDragStart: (DragStartDetails start) =>
+          _onDragStart(context, start),
+      onHorizontalDragEnd: (DragEndDetails end) => _onDragEnd(context, end),
+      onTapUp: (TapUpDetails tap) => _onTap(context, tap),
     );
   }
 }
