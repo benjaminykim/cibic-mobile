@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:async';
-import 'package:http/http.dart';
 
 import './activity_card/ActivityCard.dart';
 import '../models/feed_model.dart';

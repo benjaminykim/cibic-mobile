@@ -9,7 +9,7 @@ const activity_1 = '{"id_activity":"0",' +
                     '"id_cabildo":"chile.saludSCL",' +
                     '"type":"0",' +
                     '"score":"45",' +
-                    '"ping_number":"15",' +
+                    '"ping_number":"15k",' +
                     '"comment_number":"800",' +
                     '"publish_date":"1 dia",' +
                     '"title":"Confirman coronavirus en Mexico",' +
@@ -19,33 +19,33 @@ const activity_1 = '{"id_activity":"0",' +
                     '"comments":$comments' +
                     '}';
 
-const activity_2 = '{"id_activity":"0",' +
-                    '"id_user":"0",' +
-                    '"user_cp":"2.2k",'
-                    '"id_cabildo":"0",' +
-                    '"type":"0",' +
-                    '"score":"45.1k",' +
-                    '"ping_number":"15.2k",' +
-                    '"comment_number":"800",' +
-                    '"publish_date":"1 dia",' +
-                    '"title":"Remove the president",' +
-                    '"text":"asdf",' +
+const activity_2 = '{"id_activity":"1",' +
+                    '"id_user":"Elena Risso",' +
+                    '"user_cp":"21.5k",'
+                    '"id_cabildo":"noticias-mundo",' +
+                    '"type":"1",' +
+                    '"score":"2.8k",' +
+                    '"ping_number":"6.1k",' +
+                    '"comment_number":"9.1k",' +
+                    '"publish_date":"3 dias",' +
+                    '"title":"Mi opinion de Luis Lacalle",' +
+                    '"text":"Luis Lacalle Pou asume este domingo el cargo de presidente de Uruguay, poniendo fin a 15 anos de govierno de uno coalicion de izquierda que",' +
                     '"reactions":"",' +
                     '"votes":"",' +
                     '"comments":$comments' +
                     '}';
 
-const activity_3 = '{"id_activity":"0",' +
-                    '"id_user":"0",' +
-                    '"user_cp":"2.2k",'
-                    '"id_cabildo":"0",' +
+const activity_3 = '{"id_activity":"3",' +
+                    '"id_user":"Marcos Diaz",' +
+                    '"user_cp":"191k",'
+                    '"id_cabildo":"redaccion",' +
                     '"type":"0",' +
-                    '"score":"45.1k",' +
-                    '"ping_number":"15.2k",' +
-                    '"comment_number":"800",' +
-                    '"publish_date":"1 dia",' +
-                    '"title":"Remove the president",' +
-                    '"text":"asdf",' +
+                    '"score":"85.1k",' +
+                    '"ping_number":"225k",' +
+                    '"comment_number":"12.2k",' +
+                    '"publish_date":"1 semana",' +
+                    '"title":"Elecciones de Estados Unidos",' +
+                    '"text":"Los estadounidenses acudiran a las urnas en noviembre para elegir a su nuevo predisente. En BBC Mundo, queremos saber que dudas, preguntas.",' +
                     '"reactions":"",' +
                     '"votes":"",' +
                     '"comments":$comments' +

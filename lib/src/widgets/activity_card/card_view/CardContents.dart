@@ -34,36 +34,42 @@ class _CardContentsState extends State<CardContents> {
       ));
     } else if (widget.mode == CARD_COMMENT || widget.mode == CARD_LAST) {
       // default comment card
-      return (Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconTag(
-                  Icon(Icons.person, size: 15), widget.comment.id_user),
-              IconTag(
-                  Icon(Icons.offline_bolt, size: 15), widget.comment.user_cp),
-            ],
-          ),
-          Text(
-            widget.comment.text,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.black,
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+        child: (Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                IconTag(
+                    Icon(Icons.person, size: 17), widget.comment.id_user),
+                IconTag(
+                    Icon(Icons.offline_bolt, size: 17), widget.comment.user_cp),
+              ],
             ),
-          ),
-          Center(
-            child: Text(
-              widget.comment.score,
+            Text(
+              widget.comment.text,
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.black,
               ),
             ),
-          )
-        ],
-      ));
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Center(
+                child: Text(
+                  widget.comment.score,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            )
+          ],
+        )),
+      );
     } else {
       // DISCUSSION OR PROPOSAL CONTENTS
       return Column(
@@ -71,6 +77,7 @@ class _CardContentsState extends State<CardContents> {
         children: <Widget>[
           Container(
             alignment: Alignment.topCenter,
+            padding: EdgeInsets.only(top:10),
             child: Text(
               widget.text,
               style: TextStyle(
@@ -81,7 +88,7 @@ class _CardContentsState extends State<CardContents> {
             ),
           ),
           Container(
-            padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+            padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
             child: ReactionSlider(),
             alignment: Alignment.bottomCenter,
           ),
