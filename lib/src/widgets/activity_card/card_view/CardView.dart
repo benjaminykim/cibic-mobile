@@ -7,10 +7,10 @@ import '../../../models/comment_model.dart';
 
 class CardView extends StatefulWidget {
   final String title;
-  final int type;
+  final String type;
   final String text;
   final int mode;
-  final String score;
+  final int score;
   final CommentModel comment;
   final Function moveLeft;
   final Function moveRight;

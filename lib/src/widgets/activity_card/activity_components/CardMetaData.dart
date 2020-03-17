@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CardMetaData extends StatelessWidget {
-  final String pingNum;
-  final String commentNum;
+  final int pingNum;
+  final int commentNum;
   final String dateTime;
 
   CardMetaData(this.pingNum, this.commentNum, this.dateTime);

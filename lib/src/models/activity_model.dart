@@ -24,31 +24,31 @@ class ActivityModel {
   ActivityModel(this.id_activity, this.id_user, this.user_cp, this.id_cabildo, this.type, this.score, this.ping_number, this.comment_number, this.publish_date, this.title, this.text, this.reactions, this.votes, this.comments);
   */
 
-  String createdBy;
-  String cabildo;
+  String idUser;
+  String idCabildo;
   String activityType;
-  int number;
+  int score;
   int pingNumber;
   int commentNumber;
-  String createdAt;
+  String publishDate;
   String title;
   String text;
-  List<String> comments;
-  List<String> reaction;
+  List<CommentModel> comments;
+  List<String> reactions;
   List<String> votes;
 
   ActivityModel(
-    this.createdBy,
-    this.cabildo,
+    this.idUser,
+    this.idCabildo,
     this.activityType,
-    this.number,
+    this.score,
     this.pingNumber,
     this.commentNumber,
-    this.createdAt,
+    this.publishDate,
     this.title,
     this.text,
     this.comments,
-    this.reaction,
+    this.reactions,
     this.votes);
 
   factory ActivityModel.fromJson(Map<String, dynamic> json) => _$ActivityModelFromJson(json);
