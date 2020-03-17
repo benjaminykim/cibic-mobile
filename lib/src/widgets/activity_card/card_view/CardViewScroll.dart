@@ -10,7 +10,7 @@ class CardViewScroll extends StatefulWidget {
   final String title;
   final String type;
   final String text;
-  final String score;
+  final int score;
   final List<CommentModel> comments;
 
   CardViewScroll(this.title, this.type, this.text, this.score, this.comments);
@@ -53,7 +53,7 @@ class _CardViewScrollState extends State<CardViewScroll> {
     List<CommentModel> comments = widget.comments;
     widgets.add(CardView(
         widget.title,
-        int.parse(widget.type),
+        widget.type,
         widget.text,
         CARD_DEFAULT,
         widget.score,
@@ -66,7 +66,7 @@ class _CardViewScrollState extends State<CardViewScroll> {
         cardMode = (i == comments.length - 1) ? CARD_LAST : CARD_COMMENT;
         widgets.add(CardView(
             widget.title,
-            int.parse(widget.type),
+            widget.type,
             widget.text,
             cardMode,
             widget.score,

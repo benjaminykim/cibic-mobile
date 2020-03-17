@@ -4,7 +4,7 @@ import './Label.dart';
 
 class CardTitle extends StatelessWidget {
   final String title;
-  final int type;
+  final String type;
 
   CardTitle(this.title, this.type);
 

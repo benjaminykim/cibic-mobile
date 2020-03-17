@@ -7,7 +7,7 @@ import '../../../models/comment_model.dart';
 
 class CardContents extends StatefulWidget {
   final String title;
-  final int type;
+  final String type;
   final String text;
   final int mode;
   final CommentModel comment;

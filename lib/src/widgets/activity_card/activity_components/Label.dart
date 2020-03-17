@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../constants.dart';
 
 class Label extends StatelessWidget {
-  final int type;
+  final String type;
 
   Label(this.type);
 
