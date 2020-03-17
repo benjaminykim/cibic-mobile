@@ -12,4 +12,9 @@ class FeedModel {
   factory FeedModel.fromJson(Map<String, dynamic> json) => _$FeedModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$FeedModelToJson(this);
+/*
+  factory FeedModel.fromJson(Map<String, dynamic> json) => _$FeedModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FeedModelToJson(this);
+  */
 }
