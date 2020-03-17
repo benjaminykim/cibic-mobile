@@ -16,8 +16,8 @@ class ActivityCard extends StatelessWidget {
     return Container(
       child: Column(
         children: <Widget>[
-          UserMetaData(activity.id_user, activity.user_cp, activity.id_cabildo),
-          CardViewScroll(activity.title, activity.type, activity.text, activity.score, activity.comments),
+          UserMetaData(activity.createdBy, activity.number, activity.cabildo),
+          CardViewScroll(activity.title, activity.type, activity.text, activity.number, activity.comments),
           CardMetaData(activity.ping_number, activity.comment_number, activity.publish_date),
           // divider
           Padding(
