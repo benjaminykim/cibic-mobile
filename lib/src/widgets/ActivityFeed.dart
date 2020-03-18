@@ -10,7 +10,8 @@ import '../resources/api_provider.dart';
 
 Future<FeedModel> fetchHomeFeed() async {
   //final response = await testClient.get('https://cibic.io/api/user_id/feed_home');
-  final response = await http.get('http://10.0.2.2:3000/activity');
+  // final response = await http.get('http://10.0.2.2:3000/activity');
+  final response = await http.get('http://54.153.34.2:3000/activity');
 
   if (response.statusCode == 200) {
     return FeedModel.fromJson(json.decode('{"feed":' + response.body +'}'));
