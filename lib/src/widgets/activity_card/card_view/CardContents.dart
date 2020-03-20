@@ -76,7 +76,7 @@ class _CardContentsState extends State<CardContents> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Container(
-            alignment: Alignment.topCenter,
+            alignment: Alignment.topLeft,
             padding: EdgeInsets.only(top:10),
             child: Text(
               widget.text,

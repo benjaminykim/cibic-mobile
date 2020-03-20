@@ -10,7 +10,8 @@ import '../models/activity_model.dart';
 import '../resources/api_provider.dart';
 
 Future<FeedModel> fetchHomeFeed() async {
-  final response = await http.get(URL_AWS_BASE + ENDPOINT_ACTIVITY);
+  //final response = await http.get(URL_AWS_BASE + ENDPOINT_ACTIVITY);
+  final response = await http.get(URL_LOCALHOST_BASE + ENDPOINT_ACTIVITY);
 
   if (response.statusCode == 200) {
     return FeedModel.fromJson(json.decode('{"feed":' + response.body + '}'));
@@ -79,10 +80,10 @@ class _ActivityFeedState extends State<ActivityFeed> {
                       return ActivityCard(activity);
                     });
               } else if (feedSnap.hasError) {
-                return Text("cibic servers are down",
+                return Text("error: cibic servers are down",
                     style: TextStyle(color: Colors.black));
               } else {
-                return Text("cibic servers are down",
+                return Text("error 404: cibic servers are down",
                     style: TextStyle(color: Colors.black));
               }
             },

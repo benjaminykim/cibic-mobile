@@ -17,7 +17,8 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   List<dynamic> feed;
   List<Widget> _widgetOptions;
 
@@ -31,14 +32,12 @@ class _AppState extends State<App> {
   void initState() {
     super.initState();
 
-
     _widgetOptions = [
       ActivityFeed("home"),
       ActivityFeed("home"),
       ActivityFeed("home"),
       ActivityFeed("home"),
     ];
-
   }
 
   @override
@@ -49,39 +48,39 @@ class _AppState extends State<App> {
       home: DefaultTabController(
         length: 4,
         child: Scaffold(
-            appBar: BaseAppBar("INICIO"),
-            body: Center(
-              child: _widgetOptions.elementAt(_selectedIndex),
+          appBar: BaseAppBar("INICIO"),
+          body: Center(
+            child: _widgetOptions.elementAt(_selectedIndex),
+          ),
+          drawer: MenuOverlay(),
+          bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey, width: 0.5)),
+            child: BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.home, color: Colors.black, size: 30),
+                    title: Text("")),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.public, color: Colors.black, size: 30),
+                    title: Text("")),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.person_outline,
+                        color: Colors.black, size: 30),
+                    title: Text("")),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.show_chart, color: Colors.black, size: 30),
+                    title: Text("")),
+              ],
+              type: BottomNavigationBarType.fixed,
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
+              backgroundColor: Colors.white,
             ),
-            drawer: MenuOverlay(),
-            bottomNavigationBar: Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey, width: 0.5)),
-              child: BottomNavigationBar(
-                items: const <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.home, color: Colors.black, size: 30),
-                      title: Text("")),
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.public, color: Colors.black, size: 30),
-                      title: Text("")),
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.person_outline,
-                          color: Colors.black, size: 30),
-                      title: Text("")),
-                  BottomNavigationBarItem(
-                      icon:
-                          Icon(Icons.show_chart, color: Colors.black, size: 30),
-                      title: Text("")),
-                ],
-                type: BottomNavigationBarType.fixed,
-                currentIndex: _selectedIndex,
-                onTap: _onItemTapped,
-                showSelectedLabels: false,
-                showUnselectedLabels: false,
-                backgroundColor: Colors.white,
-              ),
-            )),
+          ),
+        ),
       ),
     );
   }
