@@ -19,14 +19,6 @@ class ActivityCard extends StatelessWidget {
           UserMetaData(activity.idUser, "10.1 k", activity.idCabildo),
           CardViewScroll(activity.title, activity.activityType, activity.text, activity.score, activity.comments),
           CardMetaData(activity.pingNumber, activity.commentNumber, activity.publishDate),
-          // divider
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Divider(
-              color: CARD_DIVIDER,
-              thickness: 0.3,
-            ),
-          ),
         ],
       ),
     );

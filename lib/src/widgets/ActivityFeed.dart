@@ -69,7 +69,10 @@ class _ActivityFeedState extends State<ActivityFeed> {
             future: fetchHomeFeed(),
             builder: (context, feedSnap) {
               if (feedSnap.hasData) {
-                return ListView.builder(
+                return ListView.separated(
+                    separatorBuilder: (context, index) => Divider(
+                          color: Colors.black,
+                        ),
                     itemCount: feedSnap.data.feed.length,
                     itemBuilder: (BuildContext context, int index) {
                       ActivityModel activity = feedSnap.data.feed[index];
@@ -86,35 +89,4 @@ class _ActivityFeedState extends State<ActivityFeed> {
           ),
         ));
   }
-
-/*
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        color: Color(0xfff2f2f2),
-        child: RefreshIndicator(
-          key: refreshKey,
-          onRefresh: refreshList,
-          child: FutureBuilder<FeedModel>(
-            future: fetchHomeFeed(),
-            builder: (context, feedSnap) {
-              if (feedSnap.hasData) {
-                return ListView.builder(
-                    itemCount: feedSnap.data.feed.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      ActivityModel activity = feedSnap.data.feed[index];
-                      return ActivityCard(activity);
-                    });
-              } else if (feedSnap.hasError) {
-                return Text("cibic servers are down",
-                    style: TextStyle(color: Colors.black));
-              } else {
-                return Text("cibic servers are down",
-                    style: TextStyle(color: Colors.black));
-              }
-            },
-          ),
-        ));
-  }
-  */
 }

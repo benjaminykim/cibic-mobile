@@ -15,7 +15,7 @@ class IconTag extends StatelessWidget {
         Text(
           text,
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 13,
             color: Color(0xff828282),
           ),
         )
