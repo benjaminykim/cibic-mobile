@@ -61,5 +61,5 @@ ThemeData get cibicTheme {
 
 const URL_PROD_BASE = "http://cibic.io/api/user_id/feed_home";
 const URL_LOCALHOST_BASE = "http://10.0.2.2:3000/";
-const URL_AWS_BASE = "http://54.153.34.2:3000/";
+const URL_AWS_BASE = "http://52.9.99.38:3000/";
 const ENDPOINT_ACTIVITY = "activity";

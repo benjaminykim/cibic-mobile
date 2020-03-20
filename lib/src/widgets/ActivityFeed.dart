@@ -13,14 +13,15 @@ Future<FeedModel> fetchHomeFeed() async {
   final response = await http.get(URL_AWS_BASE + ENDPOINT_ACTIVITY);
 
   if (response.statusCode == 200) {
-    return FeedModel.fromJson(json.decode('{"feed":' + response.body +'}'));
+    return FeedModel.fromJson(json.decode('{"feed":' + response.body + '}'));
   } else {
     throw Exception('Failed to load home feed');
   }
 }
 
 Future<FeedModel> fetchPublicFeed() async {
-  final response = await testClient.get('https://cibic.io/api/user_id/feed_home');
+  final response =
+      await testClient.get('https://cibic.io/api/user_id/feed_home');
 
   if (response.statusCode == 200) {
     return FeedModel.fromJson(json.decode(response.body));
@@ -40,35 +41,80 @@ class ActivityFeed extends StatefulWidget {
 
 class _ActivityFeedState extends State<ActivityFeed> {
   Future<FeedModel> feed;
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
     super.initState();
-    //feed = fetchHomeFeed();
+    refreshList();
+  }
+
+  Future<Null> refreshList() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      feed = fetchHomeFeed();
+    });
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xfff2f2f2),
-      child: FutureBuilder<FeedModel>(
-        future: fetchHomeFeed(),
-        builder: (context, feedSnap) {
-          if (feedSnap.hasData) {
-          return ListView.builder(
-            itemCount: feedSnap.data.feed.length,
-            itemBuilder: (BuildContext context, int index) {
-              ActivityModel activity = feedSnap.data.feed[index];
-              return ActivityCard(activity);
-            }
-          );
-          } else if (feedSnap.hasError) {
-            return Text("an error has occurred");
-          } else {
-            return CircularProgressIndicator();
-          }
-        },
-      )
-    );
+        color: Color(0xfff2f2f2),
+        child: RefreshIndicator(
+          key: refreshKey,
+          onRefresh: refreshList,
+          child: FutureBuilder<FeedModel>(
+            future: fetchHomeFeed(),
+            builder: (context, feedSnap) {
+              if (feedSnap.hasData) {
+                return ListView.builder(
+                    itemCount: feedSnap.data.feed.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      ActivityModel activity = feedSnap.data.feed[index];
+                      return ActivityCard(activity);
+                    });
+              } else if (feedSnap.hasError) {
+                return Text("cibic servers are down",
+                    style: TextStyle(color: Colors.black));
+              } else {
+                return Text("cibic servers are down",
+                    style: TextStyle(color: Colors.black));
+              }
+            },
+          ),
+        ));
   }
+
+/*
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        color: Color(0xfff2f2f2),
+        child: RefreshIndicator(
+          key: refreshKey,
+          onRefresh: refreshList,
+          child: FutureBuilder<FeedModel>(
+            future: fetchHomeFeed(),
+            builder: (context, feedSnap) {
+              if (feedSnap.hasData) {
+                return ListView.builder(
+                    itemCount: feedSnap.data.feed.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      ActivityModel activity = feedSnap.data.feed[index];
+                      return ActivityCard(activity);
+                    });
+              } else if (feedSnap.hasError) {
+                return Text("cibic servers are down",
+                    style: TextStyle(color: Colors.black));
+              } else {
+                return Text("cibic servers are down",
+                    style: TextStyle(color: Colors.black));
+              }
+            },
+          ),
+        ));
+  }
+  */
 }
