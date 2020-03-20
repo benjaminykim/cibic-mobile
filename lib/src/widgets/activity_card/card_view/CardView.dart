@@ -1,3 +1,4 @@
+import 'package:cibic_mobile/src/widgets/activity_card/activity_components/Label.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
@@ -23,7 +24,6 @@ class CardView extends StatefulWidget {
 }
 
 class _CardViewState extends State<CardView> {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,15 +40,29 @@ class _CardViewState extends State<CardView> {
                 offset: Offset(3.0, 3.0))
           ]),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          // Title and Label
-          CardTitle(this.widget.title, this.widget.type),
-          // Contents
+          // LABEL
+          Label(this.widget.type),
+          // TITLE
           Container(
-            child: CardContents(widget.title, widget.type, widget.text, widget.mode, widget.comment),
+            alignment: Alignment.topLeft,
+            margin: const EdgeInsets.fromLTRB(30, 0, 85, 0),
+            child: Text(
+              this.widget.title,
+              maxLines: 2,
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w400),
+            ),
+          ),
+          // CONTENTS
+          Container(
+            child: CardContents(widget.title, widget.type, widget.text,
+                widget.mode, widget.comment),
           ),
         ],
-        mainAxisAlignment: MainAxisAlignment.start,
       ),
     );
   }

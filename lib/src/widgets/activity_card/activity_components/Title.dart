@@ -11,11 +11,11 @@ class CardTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 60,
-      child: Stack(
+      height: 80,
+      child: Column(
         children: <Widget>[
+          Label(this.type),
           Container(
-            alignment: Alignment.topLeft,
             margin: const EdgeInsets.fromLTRB(30, 12, 85, 0),
             child: Text(
               title,
@@ -27,7 +27,6 @@ class CardTitle extends StatelessWidget {
               ),
             ),
           ),
-          Label(this.type),
         ],
       ),
     );
