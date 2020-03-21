@@ -18,11 +18,8 @@ ActivityModel _$ActivityModelFromJson(Map<String, dynamic> json) {
     json['title'] as String,
     json['text'] as String,
     (json['comments'] as List)
-        ?.map((e) => e == null
-            ? null
-            : CommentModel.fromJson((e as Map<String, dynamic>)?.map(
-                (k, e) => MapEntry(k, e as String),
-              )))
+        ?.map((e) =>
+            e == null ? null : CommentModel.fromJson(e as Map<String, dynamic>))
         ?.toList(),
     (json['reactions'] as List)?.map((e) => e as String)?.toList(),
     (json['votes'] as List)?.map((e) => e as String)?.toList(),
