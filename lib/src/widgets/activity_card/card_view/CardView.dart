@@ -39,15 +39,15 @@ class _CardViewState extends State<CardView> {
                 spreadRadius: 0,
                 offset: Offset(3.0, 3.0))
           ]),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+      child: Stack(
+        //mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           // LABEL
           Label(this.widget.type),
           // TITLE
           Container(
             alignment: Alignment.topLeft,
-            margin: const EdgeInsets.fromLTRB(30, 0, 85, 0),
+            margin: const EdgeInsets.fromLTRB(30, 10, 85, 0),
             child: Text(
               this.widget.title,
               maxLines: 2,
@@ -59,6 +59,7 @@ class _CardViewState extends State<CardView> {
           ),
           // CONTENTS
           Container(
+            alignment: Alignment.bottomCenter,
             child: CardContents(widget.title, widget.type, widget.text,
                 widget.mode, widget.comment),
           ),

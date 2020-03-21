@@ -39,12 +39,12 @@ class _CardViewScrollState extends State<CardViewScroll> {
   }
 
   _moveCardLeft() {
-    _controller.animateTo(_controller.offset - width,
+    _controller.animateTo(_controller.offset - width - 30,
         curve: Curves.linear, duration: Duration(milliseconds: 250));
   }
 
   _moveCardRight() {
-    _controller.animateTo(_controller.offset + width,
+    _controller.animateTo(_controller.offset + width + 30,
         curve: Curves.linear, duration: Duration(milliseconds: 250));
   }
 
@@ -85,7 +85,7 @@ class _CardViewScrollState extends State<CardViewScroll> {
     width = MediaQuery.of(context).size.width;
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10),
-      height: MediaQuery.of(context).size.height - 50,
+      height: 470,
       child: ListView(
         dragStartBehavior: DragStartBehavior.down,
         scrollDirection: Axis.horizontal,

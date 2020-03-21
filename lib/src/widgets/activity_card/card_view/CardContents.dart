@@ -43,13 +43,14 @@ class _CardContentsState extends State<CardContents> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 IconTag(
-                    Icon(Icons.person, size: 17), widget.comment.id_user),
+                    Icon(Icons.person, size: 17), widget.comment.idUser),
                 IconTag(
-                    Icon(Icons.offline_bolt, size: 17), widget.comment.user_cp),
+                    Icon(Icons.offline_bolt, size: 17), "102"),
               ],
             ),
             Text(
-              widget.comment.text,
+              widget.comment.content,
+              maxLines: 15,
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.black,
@@ -59,7 +60,7 @@ class _CardContentsState extends State<CardContents> {
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: Center(
                 child: Text(
-                  widget.comment.score,
+                  widget.comment.score.toString(),
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.black,
@@ -80,6 +81,8 @@ class _CardContentsState extends State<CardContents> {
             padding: EdgeInsets.only(top:10),
             child: Text(
               widget.text,
+              maxLines: 15,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 14,
@@ -88,7 +91,7 @@ class _CardContentsState extends State<CardContents> {
             ),
           ),
           Container(
-            padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+            padding: EdgeInsets.fromLTRB(0, 5, 0, 10),
             child: ReactionSlider(),
             alignment: Alignment.bottomCenter,
           ),
@@ -100,6 +103,7 @@ class _CardContentsState extends State<CardContents> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.fromLTRB(0, 60, 0, 0),
       width: MediaQuery.of(context).size.width - 20 - 56,
       child: generateCardBody(),
     );
