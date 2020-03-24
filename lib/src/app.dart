@@ -83,7 +83,7 @@ class _AppState extends State<App> {
               type: BottomNavigationBarType.fixed,
               currentIndex: _selectedIndex,
               onTap: _onItemTapped,
-              showSelectedLabels: false,
+              showSelectedLabels: true,
               showUnselectedLabels: false,
               backgroundColor: Colors.white,
             ),
