@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../Compose.dart';
+
 class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String pageName;
 
@@ -18,17 +20,20 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: Icon(Icons.search),
           onPressed: () {},
-          padding: EdgeInsets.all(0),
         ),
         IconButton(
           icon: Icon(Icons.create),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Compose()),
+            );
+          },
           padding: EdgeInsets.zero,
         ),
         IconButton(
           icon: Icon(Icons.notifications_none),
           onPressed: () {},
-          padding: EdgeInsets.zero,
         ),
       ],
     );
