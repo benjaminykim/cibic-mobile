@@ -13,7 +13,7 @@ class UserMetaData extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 20,
-      margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
+      margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
       child: Row(
         children: <Widget>[
           IconTag(Icon(Icons.person, size: 20), userName),

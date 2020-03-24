@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../constants.dart';
 import './activity_components/UserMetaData.dart';
 import './activity_components/CardMetaData.dart';
 import './card_view/CardViewScroll.dart';
