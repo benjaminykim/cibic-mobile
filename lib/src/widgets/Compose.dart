@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 
 import '../constants.dart';
 import 'app_bar/AppBar.dart';

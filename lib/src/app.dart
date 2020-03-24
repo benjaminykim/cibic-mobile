@@ -21,10 +21,18 @@ class _AppState extends State<App> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   List<dynamic> feed;
   List<Widget> _widgetOptions;
+  String _appBarTitle = "INICIO";
+  List<String> _feedNames = [
+    "INICIO",
+    "PUBLICO",
+    "USER",
+    "ESTADISTICAS"
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      _appBarTitle = _feedNames[_selectedIndex];
     });
   }
 
@@ -34,9 +42,9 @@ class _AppState extends State<App> {
 
     _widgetOptions = [
       ActivityFeed("home"),
-      ActivityFeed("home"),
-      ActivityFeed("home"),
-      ActivityFeed("home"),
+      ActivityFeed("public"),
+      ActivityFeed("user"),
+      ActivityFeed("statistics"),
     ];
   }
 
@@ -48,7 +56,7 @@ class _AppState extends State<App> {
       home: DefaultTabController(
         length: 4,
         child: Scaffold(
-          appBar: BaseAppBar("INICIO"),
+          appBar: BaseAppBar(this._appBarTitle),
           body: Center(
             child: _widgetOptions.elementAt(_selectedIndex),
           ),
