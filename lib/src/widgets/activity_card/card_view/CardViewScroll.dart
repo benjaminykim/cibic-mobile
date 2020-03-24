@@ -51,28 +51,14 @@ class _CardViewScrollState extends State<CardViewScroll> {
   List<Widget> generateCards() {
     List<Widget> widgets = [];
     List<CommentModel> comments = widget.comments;
-    widgets.add(CardView(
-        widget.title,
-        widget.type,
-        widget.text,
-        CARD_DEFAULT,
-        widget.score,
-        null,
-        _moveCardLeft,
-        _moveCardRight));
+    widgets.add(CardView(widget.title, widget.type, widget.text, CARD_DEFAULT,
+        widget.score, null, _moveCardLeft, _moveCardRight));
     if (widget.comments != null) {
       int cardMode;
       for (int i = 0; i < comments.length; i++) {
         cardMode = (i == comments.length - 1) ? CARD_LAST : CARD_COMMENT;
-        widgets.add(CardView(
-            widget.title,
-            widget.type,
-            widget.text,
-            cardMode,
-            widget.score,
-            widget.comments[i],
-            _moveCardLeft,
-            _moveCardRight));
+        widgets.add(CardView(widget.title, widget.type, widget.text, cardMode,
+            widget.score, widget.comments[i], _moveCardLeft, _moveCardRight));
       }
     } else {
       // empty card input comment view
@@ -83,16 +69,19 @@ class _CardViewScrollState extends State<CardViewScroll> {
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10),
-      height: 470,
-      child: ListView(
-        dragStartBehavior: DragStartBehavior.down,
-        scrollDirection: Axis.horizontal,
-        children: generateCards(),
-        controller: _controller,
-        physics: _physics,
+    return ConstrainedBox(
+      constraints: new BoxConstraints(
+        minHeight: 250,
+        maxHeight: 415,
       ),
+        child: ListView(
+          shrinkWrap: true,
+          dragStartBehavior: DragStartBehavior.down,
+          scrollDirection: Axis.horizontal,
+          children: generateCards(),
+          controller: _controller,
+          physics: _physics,
+        ),
     );
   }
 }
