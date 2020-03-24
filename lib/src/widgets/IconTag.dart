@@ -14,6 +14,7 @@ class IconTag extends StatelessWidget {
         SizedBox(width: 5),
         Text(
           text,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             fontSize: 13,
             color: Color(0xff828282),
