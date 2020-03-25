@@ -15,6 +15,7 @@ const CARD_POLL = 3;
 const ACTIVITY_DISCUSS = "discussion";
 const ACTIVITY_PROPOSAL = "proposal";
 const ACTIVITY_POLL = "poll";
+const ACTIVITY_TYPES = [ACTIVITY_DISCUSS, ACTIVITY_POLL, ACTIVITY_PROPOSAL];
 
 const Map<String, Color> labelColorPicker = {
     ACTIVITY_PROPOSAL: LABEL_PROPOSAL_COLOR,
