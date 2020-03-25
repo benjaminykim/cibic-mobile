@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../constants.dart';
 
 class CardSideLeft extends StatelessWidget {
-  final int type;
+  final String type;
   final int mode;
   final String score;
   final Function moveLeft;

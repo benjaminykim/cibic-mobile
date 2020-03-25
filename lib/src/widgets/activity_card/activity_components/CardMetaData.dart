@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 String generateTimeString(DateTime publishDate) {
   DateTime now = DateTime.now();
   int diff = now.difference(publishDate).inDays;
-  String timeUnit;
 
   if (diff >= 365) {
     return "hace " + (diff / 365).toString() + " anos";

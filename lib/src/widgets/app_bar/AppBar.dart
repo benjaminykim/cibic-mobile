@@ -7,13 +7,27 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   BaseAppBar(this.pageName);
 
+  void _startAddNewActivity(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (bContext) {
+        return GestureDetector(
+          onTap: () {},
+          child: Compose(),
+          behavior: HitTestBehavior.opaque,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(this.pageName, style: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w400,
-      )),
+      title: Text(this.pageName,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w400,
+          )),
       centerTitle: true,
       titleSpacing: 0.0,
       actions: <Widget>[
@@ -24,10 +38,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: Icon(Icons.create),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Compose()),
-            );
+            _startAddNewActivity(context);
           },
           padding: EdgeInsets.zero,
         ),

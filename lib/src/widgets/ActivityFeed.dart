@@ -83,8 +83,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
                 return Text("error: cibic servers are down",
                     style: TextStyle(color: Colors.black));
               } else {
-                return Text("error 404: cibic servers are down",
-                    style: TextStyle(color: Colors.black));
+                return CircularProgressIndicator();
               }
             },
           ),
