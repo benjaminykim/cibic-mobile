@@ -4,7 +4,7 @@ import '../../../constants.dart';
 
 class CardSideRight extends StatelessWidget {
   final int mode;
-  final int type;
+  final String type;
   final Function moveRight;
 
   CardSideRight(this.type, this.mode, this.moveRight);

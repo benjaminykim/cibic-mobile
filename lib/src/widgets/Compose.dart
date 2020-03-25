@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import '../constants.dart';
-import 'app_bar/AppBar.dart';
-import 'app_bar/MenuOverlay.dart';
 
 class Compose extends StatefulWidget {
   @override
@@ -10,51 +9,57 @@ class Compose extends StatefulWidget {
 }
 
 class _ComposeState extends State<Compose> {
-  @override
-  void initState() {
-    super.initState();
+  final inputController = TextEditingController();
+
+  Future<void> addActivity(String title, String amount) async {
+
+    final response = await http.post(URL_LOCALHOST_BASE + ENDPOINT_POST_ACTIVITY);
+
+    if (response.statusCode == 200) {
+      print("success");
+    } else {
+      throw Exception('Failed to load home feed');
+    }
   }
 
-  void _onItemTapped(int index) {
-    Navigator.pop(context);
+  void submitData() {
+    final enteredTitle = inputController.text;
+    final enteredAmount = inputController.text;
+
+    if (enteredTitle.isEmpty || enteredAmount.isEmpty) {
+      return;
+    }
+
+    addActivity(enteredTitle, enteredAmount);
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: cibicTheme,
-      debugShowCheckedModeBanner: false,
-      home: DefaultTabController(
-        length: 4,
-        child: Scaffold(
-          appBar: BaseAppBar("COMPOSE"),
-          body: Container(
-          ),
-          drawer: MenuOverlay(),
-          bottomNavigationBar: Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey, width: 0.5)),
-            child: BottomNavigationBar(
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.home, color: Colors.black, size: 30),
-                    title: Text("")),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.public, color: Colors.black, size: 30),
-                    title: Text("")),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.person_outline,
-                        color: Colors.black, size: 30),
-                    title: Text("")),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.show_chart, color: Colors.black, size: 30),
-                    title: Text("")),
-              ],
-              type: BottomNavigationBarType.fixed,
-              onTap: _onItemTapped,
-              backgroundColor: Colors.white,
+    return Card(
+      elevation: 100,
+      child: Container(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            TextField(
+              decoration: InputDecoration(labelText: 'Title'),
+              controller: inputController,
+              onSubmitted: (_) => submitData(),
             ),
-          ),
+            TextField(
+              decoration: InputDecoration(labelText: 'Amount'),
+              controller: inputController,
+              keyboardType: TextInputType.number,
+              onSubmitted: (_) => submitData(),
+            ),
+            FlatButton(
+              child: Text('crear actividad'),
+              textColor: Theme.of(context).primaryColor,
+              onPressed: submitData,
+            )
+          ],
         ),
       ),
     );
