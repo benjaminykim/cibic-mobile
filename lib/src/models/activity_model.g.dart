@@ -14,7 +14,9 @@ ActivityModel _$ActivityModelFromJson(Map<String, dynamic> json) {
     json['score'] as int,
     json['pingNumber'] as int,
     json['commentNumber'] as int,
-    json['publishDate'] as String,
+    json['publishDate'] == null
+        ? null
+        : DateTime.parse(json['publishDate'] as String),
     json['title'] as String,
     json['text'] as String,
     (json['comments'] as List)
@@ -34,7 +36,7 @@ Map<String, dynamic> _$ActivityModelToJson(ActivityModel instance) =>
       'score': instance.score,
       'pingNumber': instance.pingNumber,
       'commentNumber': instance.commentNumber,
-      'publishDate': instance.publishDate,
+      'publishDate': instance.publishDate?.toIso8601String(),
       'title': instance.title,
       'text': instance.text,
       'comments': instance.comments,
