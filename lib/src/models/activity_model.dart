@@ -11,7 +11,7 @@ class ActivityModel {
   int score;
   int pingNumber;
   int commentNumber;
-  String publishDate;
+  DateTime publishDate;
   String title;
   String text;
   List<CommentModel> comments;
