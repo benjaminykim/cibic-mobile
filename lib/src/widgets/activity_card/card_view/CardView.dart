@@ -12,11 +12,8 @@ class CardView extends StatefulWidget {
   final int mode;
   final int score;
   final CommentModel comment;
-  final Function moveLeft;
-  final Function moveRight;
 
-  CardView(this.title, this.type, this.text, this.mode, this.score,
-      this.comment, this.moveLeft, this.moveRight);
+  CardView(this.title, this.type, this.text, this.mode, this.score, this.comment);
 
   @override
   _CardViewState createState() => _CardViewState();

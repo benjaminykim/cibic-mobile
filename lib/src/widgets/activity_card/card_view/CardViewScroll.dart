@@ -38,27 +38,17 @@ class _CardViewScrollState extends State<CardViewScroll> {
     });
   }
 
-  _moveCardLeft() {
-    _controller.animateTo(_controller.offset - width - 30,
-        curve: Curves.linear, duration: Duration(milliseconds: 250));
-  }
-
-  _moveCardRight() {
-    _controller.animateTo(_controller.offset + width + 30,
-        curve: Curves.linear, duration: Duration(milliseconds: 250));
-  }
-
   List<Widget> generateCards() {
     List<Widget> widgets = [];
     List<CommentModel> comments = widget.comments;
     widgets.add(CardView(widget.title, widget.type, widget.text, CARD_DEFAULT,
-        widget.score, null, _moveCardLeft, _moveCardRight));
+        widget.score, null));
     if (widget.comments != null) {
       int cardMode;
       for (int i = 0; i < comments.length; i++) {
         cardMode = (i == comments.length - 1) ? CARD_LAST : CARD_COMMENT;
         widgets.add(CardView(widget.title, widget.type, widget.text, cardMode,
-            widget.score, widget.comments[i], _moveCardLeft, _moveCardRight));
+            widget.score, widget.comments[i]));
       }
     } else {
       // empty card input comment view
