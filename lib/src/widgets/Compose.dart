@@ -143,6 +143,7 @@ class _ComposeState extends State<Compose> {
             child: TextField(
               controller: inputController,
               decoration: InputDecoration(
+
                 hintText: "introduccion",
                 hintStyle:
                     TextStyle(fontWeight: FontWeight.w200, color: Colors.white70),
