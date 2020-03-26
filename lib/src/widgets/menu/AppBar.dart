@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../Compose.dart';
+import '../ComposeScreen.dart';
 
 class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String pageName;
