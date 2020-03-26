@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './ReactionPainter.dart';
+import 'package:cibic_mobile/src/widgets/activity/components/reaction_slider/ReactionPainter.dart';
 
 class ReactionSlider extends StatefulWidget {
   final double width;

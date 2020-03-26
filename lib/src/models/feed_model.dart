@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import './activity_model.dart';
+import 'package:cibic_mobile/src/models/activity_model.dart';
 
 part 'feed_model.g.dart';
 

@@ -1,9 +1,9 @@
-import 'package:cibic_mobile/src/widgets/activity/ActivityCard.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/widgets/activity/components/CommentListView.dart';
+import 'package:cibic_mobile/src/widgets/activity/ActivityCard.dart';
 
 class ActivityScreen extends StatelessWidget {
   final ActivityModel activity;
