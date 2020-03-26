@@ -10,9 +10,9 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   void _startAddNewActivity(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      elevation: 50,
+      isScrollControlled: true,
+      elevation: 5,
       backgroundColor: Colors.transparent,
-      //isScrollControlled: true,
       builder: (bContext) {
         return GestureDetector(
           onTap: () {},
