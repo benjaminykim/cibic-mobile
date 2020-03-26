@@ -79,7 +79,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
                   itemCount: feedSnap.data.feed.length,
                   itemBuilder: (BuildContext context, int index) {
                     ActivityModel activity = feedSnap.data.feed[index];
-                    return ActivityCard(activity, widget.onActivityTapped);
+                    return ActivityCard(activity, widget.onActivityTapped, true);
                   });
             } else if (feedSnap.hasError) {
               return Text("error: cibic servers are down",
