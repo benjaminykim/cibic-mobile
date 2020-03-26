@@ -64,7 +64,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Color(0xfff2f2f2),
+        color: APP_BACKGROUND,
         child: RefreshIndicator(
           key: refreshKey,
           onRefresh: refreshList,

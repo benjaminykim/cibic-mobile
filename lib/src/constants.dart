@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 const APP_BAR_BG = Color(0xff2D9CDB);
 const APP_BAR_SELECTED = Color(0xff518CAD);
 const APP_BAR_BOTTOM = Color(0xff6CBAE6);
+const APP_BACKGROUND = Color(0xffF2F2F2);
 const CARD_BACKGROUND = Color(0xffFFFFFF);
 const CARD_DIVIDER = Colors.grey;
 const LABEL_PROPOSAL_COLOR = Color(0xff2d9cdb);
@@ -42,13 +43,13 @@ ThemeData get cibicTheme {
         fontSize: 24.0,
         fontWeight: FontWeight.w200,
         fontFamily: "OpenSans",
-        color: Color(0xfff2f2f2),
+        color: APP_BACKGROUND,
       ),
       body1: TextStyle(
         fontSize: 24.0,
         fontWeight: FontWeight.w200,
         fontFamily: "OpenSans",
-        color: Color(0xfff2f2f2),
+        color: APP_BACKGROUND,
       ),
       body2: TextStyle(
         fontSize: 12.0,
