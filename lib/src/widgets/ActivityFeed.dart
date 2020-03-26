@@ -33,8 +33,9 @@ Future<FeedModel> fetchPublicFeed() async {
 
 class ActivityFeed extends StatefulWidget {
   final String mode;
+  final VoidCallback onActivityTapped;
 
-  ActivityFeed(this.mode);
+  ActivityFeed(this.mode, this.onActivityTapped);
 
   @override
   _ActivityFeedState createState() => _ActivityFeedState();
@@ -77,7 +78,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
                     itemCount: feedSnap.data.feed.length,
                     itemBuilder: (BuildContext context, int index) {
                       ActivityModel activity = feedSnap.data.feed[index];
-                      return ActivityCard(activity);
+                      return ActivityCard(activity, widget.onActivityTapped);
                     });
               } else if (feedSnap.hasError) {
                 return Text("error: cibic servers are down",
