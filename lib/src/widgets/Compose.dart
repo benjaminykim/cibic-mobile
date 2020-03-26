@@ -41,46 +41,6 @@ class _ComposeState extends State<Compose> {
   List<Widget> actionButtons;
   int selectedActivity = 0;
 
-  void dispose() {
-    super.dispose();
-    inputTitleController.dispose();
-    inputIntroController.dispose();
-    inputBodyController.dispose();
-    inputCabildoController.dispose();
-    inputTagController.dispose();
-  }
-
-  void deleteActivity() {
-    Navigator.of(context).pop();
-  }
-
-  void submitActivity() {
-    final enteredTitle = inputTitleController.text;
-    final enteredIntro = inputIntroController.text;
-    final enteredBody = inputBodyController.text;
-    final enteredCabildo = inputCabildoController.text;
-    final enteredTag = inputTagController.text;
-
-    if (selectedActivity == 0 || selectedActivity == 2) {
-      if (enteredTitle.isEmpty ||
-          enteredIntro.isEmpty ||
-          enteredBody.isEmpty ||
-          enteredCabildo.isEmpty) {
-        return;
-      } else {
-        addActivity(enteredTitle, enteredIntro, enteredBody, enteredCabildo,
-            enteredTag);
-      }
-    } else if (selectedActivity == 1) {
-      if (enteredTitle.isEmpty || enteredCabildo.isEmpty) {
-        return;
-      } else {
-        addPollActivity(enteredTitle, enteredCabildo, enteredTag);
-      }
-    }
-    Navigator.of(context).pop();
-  }
-
   Container createActivityButton(String type, int selected) {
     return Container(
       width: 68,
@@ -93,7 +53,7 @@ class _ComposeState extends State<Compose> {
       ),
       child: GestureDetector(
         onTap: () {
-          handleButtonClick(context, type);
+          handleActivityButtonClick(context, type);
         },
         child: Center(
           child: Text(
@@ -329,7 +289,7 @@ class _ComposeState extends State<Compose> {
     }
   }
 
-  void handleButtonClick(BuildContext context, String type) {
+  void handleActivityButtonClick(BuildContext context, String type) {
     setState(() {
       activityButtons[selectedActivity] =
           createActivityButton(ACTIVITY_TYPES[selectedActivity], 0);
@@ -337,6 +297,37 @@ class _ComposeState extends State<Compose> {
           createActivityButton(type, 1);
       selectedActivity = ACTIVITY_TYPES.indexOf(type);
     });
+  }
+
+  void deleteActivity() {
+    Navigator.of(context).pop();
+  }
+
+  void submitActivity() {
+    final enteredTitle = inputTitleController.text;
+    final enteredIntro = inputIntroController.text;
+    final enteredBody = inputBodyController.text;
+    final enteredCabildo = inputCabildoController.text;
+    final enteredTag = inputTagController.text;
+
+    if (selectedActivity == 0 || selectedActivity == 2) {
+      if (enteredTitle.isEmpty ||
+          enteredIntro.isEmpty ||
+          enteredBody.isEmpty ||
+          enteredCabildo.isEmpty) {
+        return;
+      } else {
+        addActivity(enteredTitle, enteredIntro, enteredBody, enteredCabildo,
+            enteredTag);
+      }
+    } else if (selectedActivity == 1) {
+      if (enteredTitle.isEmpty || enteredCabildo.isEmpty) {
+        return;
+      } else {
+        addPollActivity(enteredTitle, enteredCabildo, enteredTag);
+      }
+    }
+    Navigator.of(context).pop();
   }
 
   initState() {
@@ -362,6 +353,15 @@ class _ComposeState extends State<Compose> {
         ],
       )
     ];
+  }
+
+  void dispose() {
+    super.dispose();
+    inputTitleController.dispose();
+    inputIntroController.dispose();
+    inputBodyController.dispose();
+    inputCabildoController.dispose();
+    inputTagController.dispose();
   }
 
   @override
