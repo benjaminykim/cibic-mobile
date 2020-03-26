@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../constants.dart';
+import 'package:cibic_mobile/src/resources/constants.dart';
 
 Future<void> addActivity(String title, String intro, String body,
     String cabildos, String tags) async {

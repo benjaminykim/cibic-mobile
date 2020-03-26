@@ -1,4 +1,4 @@
-import 'package:cibic_mobile/src/constants.dart';
+import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/models/comment_model.dart';
 import 'package:cibic_mobile/src/widgets/IconTag.dart';
 import 'package:flutter/material.dart';

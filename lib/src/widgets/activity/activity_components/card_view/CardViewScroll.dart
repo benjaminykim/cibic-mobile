@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../card_view/CardView.dart';
 import '../../../../models/comment_model.dart';
-import '../../../../constants.dart';
+import 'package:cibic_mobile/src/resources/constants.dart';
 import '../CardScrollPhysics.dart';
 
 class CardViewScroll extends StatefulWidget {

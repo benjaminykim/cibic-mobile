@@ -1,14 +1,14 @@
-import 'package:cibic_mobile/src/constants.dart';
-import 'package:cibic_mobile/src/widgets/ActivityScreen.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 
-import './activity/ActivityCard.dart';
-import '../models/feed_model.dart';
-import '../models/activity_model.dart';
-import '../resources/api_provider.dart';
+import 'package:cibic_mobile/src/models/activity_model.dart';
+import 'package:cibic_mobile/src/models/feed_model.dart';
+import 'package:cibic_mobile/src/resources/api_provider.dart';
+import 'package:cibic_mobile/src/widgets/ActivityScreen.dart';
+import 'package:cibic_mobile/src/widgets/activity/ActivityCard.dart';
+import 'package:cibic_mobile/src/resources/constants.dart';
 
 Future<FeedModel> fetchHomeFeed() async {
   //final response = await http.get(URL_AWS_BASE + ENDPOINT_ACTIVITY);
@@ -64,31 +64,32 @@ class _ActivityFeedState extends State<ActivityFeed> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: APP_BACKGROUND,
-        child: RefreshIndicator(
-          key: refreshKey,
-          onRefresh: refreshList,
-          child: FutureBuilder<FeedModel>(
-            future: fetchHomeFeed(),
-            builder: (context, feedSnap) {
-              if (feedSnap.hasData) {
-                return ListView.separated(
-                    separatorBuilder: (context, index) => Divider(
-                          color: Colors.black,
-                        ),
-                    itemCount: feedSnap.data.feed.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      ActivityModel activity = feedSnap.data.feed[index];
-                      return ActivityCard(activity, widget.onActivityTapped);
-                    });
-              } else if (feedSnap.hasError) {
-                return Text("error: cibic servers are down",
-                    style: TextStyle(color: Colors.black));
-              } else {
-                return CircularProgressIndicator();
-              }
-            },
-          ),
-        ));
+      color: APP_BACKGROUND,
+      child: RefreshIndicator(
+        key: refreshKey,
+        onRefresh: refreshList,
+        child: FutureBuilder<FeedModel>(
+          future: fetchHomeFeed(),
+          builder: (context, feedSnap) {
+            if (feedSnap.hasData) {
+              return ListView.separated(
+                  separatorBuilder: (context, index) => Divider(
+                        color: Colors.black,
+                      ),
+                  itemCount: feedSnap.data.feed.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    ActivityModel activity = feedSnap.data.feed[index];
+                    return ActivityCard(activity, widget.onActivityTapped);
+                  });
+            } else if (feedSnap.hasError) {
+              return Text("error: cibic servers are down",
+                  style: TextStyle(color: Colors.black));
+            } else {
+              return CircularProgressIndicator();
+            }
+          },
+        ),
+      ),
+    );
   }
 }
