@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
 import '../../../IconTag.dart';
-import './ReactionSlider.dart';
+import 'package:cibic_mobile/src/widgets/activity/components/reaction_slider/ReactionSlider.dart';
 import '../../../../models/comment_model.dart';
 
-class CardContents extends StatefulWidget {
+class Contents extends StatefulWidget {
   final String title;
   final String type;
   final String text;
   final int mode;
   final CommentModel comment;
 
-  CardContents(this.title, this.type, this.text, this.mode, this.comment);
+  Contents(this.title, this.type, this.text, this.mode, this.comment);
 
   @override
-  _CardContentsState createState() => _CardContentsState();
+  _ContentsState createState() => _ContentsState();
 }
 
-class _CardContentsState extends State<CardContents> {
+class _ContentsState extends State<Contents> {
   generateCardBody() {
     if (widget.type == ACTIVITY_POLL && widget.mode == CARD_DEFAULT) {
       //default poll card
