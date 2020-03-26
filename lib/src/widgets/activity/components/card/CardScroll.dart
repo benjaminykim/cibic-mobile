@@ -1,25 +1,25 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import '../card_view/CardView.dart';
+import '../card/CardView.dart';
 import '../../../../models/comment_model.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
-import '../CardScrollPhysics.dart';
+import './CardScrollPhysics.dart';
 
-class CardViewScroll extends StatefulWidget {
+class CardScroll extends StatefulWidget {
   final String title;
   final String type;
   final String text;
   final int score;
   final List<CommentModel> comments;
 
-  CardViewScroll(this.title, this.type, this.text, this.score, this.comments);
+  CardScroll(this.title, this.type, this.text, this.score, this.comments);
 
   @override
-  _CardViewScrollState createState() => _CardViewScrollState();
+  _CardScrollState createState() => _CardScrollState();
 }
 
-class _CardViewScrollState extends State<CardViewScroll> {
+class _CardScrollState extends State<CardScroll> {
   final _controller = ScrollController();
   double width;
   ScrollPhysics _physics;

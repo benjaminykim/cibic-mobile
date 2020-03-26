@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
 
-class CardSideLeft extends StatelessWidget {
+class Left extends StatelessWidget {
   final String type;
   final int mode;
   final String score;
   final Function moveLeft;
 
-  CardSideLeft(this.type, this.mode, this.score, this.moveLeft);
+  Left(this.type, this.mode, this.score, this.moveLeft);
 
   @override
   Widget build(BuildContext context) {

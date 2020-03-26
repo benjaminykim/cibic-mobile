@@ -1,8 +1,8 @@
-import 'package:cibic_mobile/src/widgets/activity/activity_components/Label.dart';
+import 'package:cibic_mobile/src/widgets/activity/components/Label.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
-import './CardContents.dart';
+import './Contents.dart';
 import '../../../../models/comment_model.dart';
 
 class CardView extends StatefulWidget {
@@ -16,10 +16,10 @@ class CardView extends StatefulWidget {
   CardView(this.title, this.type, this.text, this.mode, this.score, this.comment);
 
   @override
-  _CardViewState createState() => _CardViewState();
+  _CardState createState() => _CardState();
 }
 
-class _CardViewState extends State<CardView> {
+class _CardState extends State<CardView> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -56,7 +56,7 @@ class _CardViewState extends State<CardView> {
           // CONTENTS
           Container(
             alignment: Alignment.bottomCenter,
-            child: CardContents(widget.title, widget.type, widget.text,
+            child: Contents(widget.title, widget.type, widget.text,
                 widget.mode, widget.comment),
           ),
         ],

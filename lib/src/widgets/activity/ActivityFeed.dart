@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/resources/api_provider.dart';
-import 'package:cibic_mobile/src/widgets/ActivityScreen.dart';
+import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityCard.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 
