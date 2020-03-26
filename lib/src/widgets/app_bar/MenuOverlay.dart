@@ -8,7 +8,8 @@ class MenuOverlay extends StatelessWidget {
     return Container(
       width: 250,
       child: ClipRRect(
-        borderRadius: BorderRadius.only(bottomRight: Radius.circular(50), topRight: Radius.circular(50)),
+        borderRadius: BorderRadius.only(
+            bottomRight: Radius.circular(70), topRight: Radius.circular(70)),
         child: (Drawer(
           child: Container(
             decoration: BoxDecoration(color: APP_BAR_BG),
@@ -21,19 +22,21 @@ class MenuOverlay extends StatelessWidget {
                     SizedBox(
                       height: 130,
                       child: DrawerHeader(
-                        child: Text(
-                          'cibic',
-                          style: Theme.of(context).textTheme.title,
-                        ),
+                        child: Image(
+                            image: AssetImage('assets/icons/cibic_logo.png')),
                       ),
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                      child: Divider(thickness: 3, color: Color(0xff828282),),
+                      child: Divider(
+                        thickness: 0.7,
+                        color: Color(0xffFFFFFF),
+                      ),
                     ),
                   ],
                 ),
                 ListTile(
+                  contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
                     'Perfil',
                     style: Theme.of(context).textTheme.body1,
@@ -43,15 +46,22 @@ class MenuOverlay extends StatelessWidget {
                   },
                 ),
                 ListTile(
+                  contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
                     'Crear cabildo',
-                    style: Theme.of(context).textTheme.body1,
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: "OpenSans",
+                      color: APP_BACKGROUND,
+                    ),
                   ),
                   onTap: () {
                     Navigator.pop(context);
                   },
                 ),
                 ListTile(
+                  contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
                     'Guardados',
                     style: Theme.of(context).textTheme.body1,
@@ -61,6 +71,7 @@ class MenuOverlay extends StatelessWidget {
                   },
                 ),
                 ListTile(
+                  contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
                     'Configuracion',
                     style: Theme.of(context).textTheme.body1,
@@ -70,6 +81,7 @@ class MenuOverlay extends StatelessWidget {
                   },
                 ),
                 ListTile(
+                  contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
                     'About @cibic',
                     style: Theme.of(context).textTheme.body1,
