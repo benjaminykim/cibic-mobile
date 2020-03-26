@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../IconTag.dart';
+import 'package:cibic_mobile/src/widgets/utils/IconTag.dart';
 
 class UserMetaData extends StatelessWidget {
   final String userName;

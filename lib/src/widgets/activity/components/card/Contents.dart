@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
-import '../../../IconTag.dart';
 import 'package:cibic_mobile/src/widgets/activity/components/reaction_slider/ReactionSlider.dart';
-import '../../../../models/comment_model.dart';
+import 'package:cibic_mobile/src/widgets/utils/IconTag.dart';
+import 'package:cibic_mobile/src/models/comment_model.dart';
 
 class Contents extends StatefulWidget {
   final String title;
