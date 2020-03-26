@@ -18,6 +18,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   int selectedIndex = 0;
+  int selectedBarIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   List<dynamic> feed;
@@ -26,15 +27,27 @@ class _AppState extends State<App> {
   List<String> _feedNames = [
     "INICIO",
     "PUBLICO",
-    "USERIO",
+    "USARIO",
     "ESTADISTICAS"
   ];
 
-  void onItemTapped(int index) {
+  void onBarButtonTapped(int index) {
     setState(() {
+      if (selectedIndex == 4)
+      {
+        _widgetOptions = _widgetOptions.sublist(0, 4);
+      }
+      selectedBarIndex = index;
       selectedIndex = index;
-      appBarTitle = _feedNames[selectedIndex];
+      appBarTitle = _feedNames[selectedBarIndex];
     });
+  }
+
+  void onActivityTapped() {
+    setState(() {
+      _widgetOptions = [..._widgetOptions, Container()];
+    });
+    selectedIndex = 4;
   }
 
   @override
@@ -42,10 +55,10 @@ class _AppState extends State<App> {
     super.initState();
 
     _widgetOptions = [
-      ActivityFeed("home"),
-      ActivityFeed("public"),
-      ActivityFeed("user"),
-      ActivityFeed("statistics"),
+      ActivityFeed("home", onActivityTapped),
+      Container(),
+      ActivityFeed("home", onActivityTapped),
+      ActivityFeed("home", onActivityTapped),
     ];
   }
 
@@ -62,7 +75,7 @@ class _AppState extends State<App> {
             child: _widgetOptions.elementAt(selectedIndex),
           ),
           drawer: MenuOverlay(),
-          bottomNavigationBar: BaseBar(this.selectedIndex, this.onItemTapped),
+          bottomNavigationBar: BaseBar(this.selectedBarIndex, this.onBarButtonTapped),
         ),
       ),
     );
