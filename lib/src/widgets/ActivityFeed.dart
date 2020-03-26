@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 
-import './activity_card/ActivityCard.dart';
+import './activity/ActivityCard.dart';
 import '../models/feed_model.dart';
 import '../models/activity_model.dart';
 import '../resources/api_provider.dart';
