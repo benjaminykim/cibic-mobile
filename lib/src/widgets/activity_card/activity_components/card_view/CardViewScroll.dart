@@ -2,9 +2,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../card_view/CardView.dart';
-import '../../../models/comment_model.dart';
-import '../../../constants.dart';
-import '../activity_components/CardScrollPhysics.dart';
+import '../../../../models/comment_model.dart';
+import '../../../../constants.dart';
+import '../CardScrollPhysics.dart';
 
 class CardViewScroll extends StatefulWidget {
   final String title;

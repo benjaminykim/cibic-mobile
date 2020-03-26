@@ -1,9 +1,9 @@
 import 'package:cibic_mobile/src/widgets/activity_card/activity_components/Label.dart';
 import 'package:flutter/material.dart';
 
-import '../../../constants.dart';
+import '../../../../constants.dart';
 import './CardContents.dart';
-import '../../../models/comment_model.dart';
+import '../../../../models/comment_model.dart';
 
 class CardView extends StatefulWidget {
   final String title;

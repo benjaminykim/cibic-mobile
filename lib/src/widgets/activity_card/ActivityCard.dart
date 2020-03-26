@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import './activity_components/UserMetaData.dart';
 import './activity_components/CardMetaData.dart';
-import './card_view/CardViewScroll.dart';
+import './activity_components/card_view/CardViewScroll.dart';
 import '../../models/activity_model.dart';
 
 class ActivityCard extends StatelessWidget {
