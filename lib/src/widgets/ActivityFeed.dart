@@ -1,4 +1,5 @@
 import 'package:cibic_mobile/src/constants.dart';
+import 'package:cibic_mobile/src/widgets/ActivityScreen.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:async';
@@ -33,7 +34,7 @@ Future<FeedModel> fetchPublicFeed() async {
 
 class ActivityFeed extends StatefulWidget {
   final String mode;
-  final VoidCallback onActivityTapped;
+  final Function(ActivityScreen, BuildContext) onActivityTapped;
 
   ActivityFeed(this.mode, this.onActivityTapped);
 

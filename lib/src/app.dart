@@ -1,3 +1,4 @@
+import 'package:cibic_mobile/src/widgets/ActivityScreen.dart';
 import 'package:cibic_mobile/src/widgets/app_bar/BaseBar.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,6 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  int selectedIndex = 0;
   int selectedBarIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -33,21 +33,16 @@ class _AppState extends State<App> {
 
   void onBarButtonTapped(int index) {
     setState(() {
-      if (selectedIndex == 4)
-      {
-        _widgetOptions = _widgetOptions.sublist(0, 4);
-      }
       selectedBarIndex = index;
-      selectedIndex = index;
       appBarTitle = _feedNames[selectedBarIndex];
     });
   }
 
-  void onActivityTapped() {
-    setState(() {
-      _widgetOptions = [..._widgetOptions, Container()];
-    });
-    selectedIndex = 4;
+  void onActivityTapped(ActivityScreen activityScreen, BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => activityScreen)
+    );
   }
 
   @override
@@ -72,7 +67,7 @@ class _AppState extends State<App> {
         child: Scaffold(
           appBar: BaseAppBar(this.appBarTitle),
           body: Center(
-            child: _widgetOptions.elementAt(selectedIndex),
+            child: _widgetOptions.elementAt(selectedBarIndex),
           ),
           drawer: MenuOverlay(),
           bottomNavigationBar: BaseBar(this.selectedBarIndex, this.onBarButtonTapped),
