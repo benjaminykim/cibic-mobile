@@ -205,7 +205,7 @@ class _ComposeState extends State<Compose> {
                   ),
                 ),
               ],
-            )
+            ),
           ],
         )
       ];
@@ -371,7 +371,7 @@ class _ComposeState extends State<Compose> {
     return Container(
       padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
       width: MediaQuery.of(context).size.width - 20,
-      height: MediaQuery.of(context).size.height / 2 + 100,
+      height: MediaQuery.of(context).size.height - 100,
       margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
       decoration: BoxDecoration(
           color: CARD_BACKGROUND,
@@ -385,10 +385,14 @@ class _ComposeState extends State<Compose> {
           ]),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           ...this.header,
           ...this.body,
           ...this.actionButtons,
+          SizedBox(
+            height: MediaQuery.of(context).viewInsets.bottom,
+          )
         ],
       ),
     );
