@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../constants.dart';
+import 'package:cibic_mobile/src/resources/constants.dart';
 import '../../../IconTag.dart';
 import './ReactionSlider.dart';
 import '../../../../models/comment_model.dart';

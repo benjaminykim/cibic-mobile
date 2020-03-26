@@ -1,12 +1,12 @@
-import 'package:cibic_mobile/src/widgets/ActivityScreen.dart';
-import 'package:cibic_mobile/src/widgets/app_bar/BaseBar.dart';
 import 'package:flutter/material.dart';
-
-import './widgets/app_bar/AppBar.dart';
-import './widgets/app_bar/MenuOverlay.dart';
-import './widgets/ActivityFeed.dart';
-import './constants.dart';
 import 'package:http/http.dart';
+
+import 'package:cibic_mobile/src/resources/constants.dart';
+import 'package:cibic_mobile/src/widgets/ActivityScreen.dart';
+import 'package:cibic_mobile/src/widgets/ActivityFeed.dart';
+import 'package:cibic_mobile/src/widgets/app_bar/AppBar.dart';
+import 'package:cibic_mobile/src/widgets/app_bar/BaseBar.dart';
+import 'package:cibic_mobile/src/widgets/app_bar/MenuOverlay.dart';
 
 class App extends StatefulWidget {
   final Client client;

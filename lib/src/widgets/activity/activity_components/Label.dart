@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../constants.dart';
+import 'package:cibic_mobile/src/resources/constants.dart';
 
 class Label extends StatelessWidget {
   final String type;

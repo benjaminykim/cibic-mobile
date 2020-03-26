@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../constants.dart';
-
+import 'package:cibic_mobile/src/resources/constants.dart';
 class CardSideRight extends StatelessWidget {
   final int mode;
   final String type;

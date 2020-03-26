@@ -1,10 +1,11 @@
-import 'package:cibic_mobile/src/constants.dart';
+import 'package:flutter/material.dart';
+
+import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/widgets/activity/activity_components/CardMetaData.dart';
 import 'package:cibic_mobile/src/widgets/activity/activity_components/CommentListView.dart';
 import 'package:cibic_mobile/src/widgets/activity/activity_components/UserMetaData.dart';
 import 'package:cibic_mobile/src/widgets/activity/activity_components/card_view/CardViewScroll.dart';
-import 'package:flutter/material.dart';
 
 class ActivityScreen extends StatelessWidget {
   final ActivityModel activity;
