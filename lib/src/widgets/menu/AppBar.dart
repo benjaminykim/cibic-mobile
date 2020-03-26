@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../ComposeScreen.dart';
+import 'package:cibic_mobile/src/widgets/utils/ComposeScreen.dart';
 
 class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String pageName;
