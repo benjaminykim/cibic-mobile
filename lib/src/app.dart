@@ -1,3 +1,4 @@
+import 'package:cibic_mobile/src/widgets/app_bar/BaseBar.dart';
 import 'package:flutter/material.dart';
 
 import './widgets/app_bar/AppBar.dart';
@@ -16,23 +17,23 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  int _selectedIndex = 0;
+  int selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   List<dynamic> feed;
   List<Widget> _widgetOptions;
-  String _appBarTitle = "INICIO";
+  String appBarTitle = "INICIO";
   List<String> _feedNames = [
     "INICIO",
     "PUBLICO",
-    "USER",
+    "USERIO",
     "ESTADISTICAS"
   ];
 
-  void _onItemTapped(int index) {
+  void onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
-      _appBarTitle = _feedNames[_selectedIndex];
+      selectedIndex = index;
+      appBarTitle = _feedNames[selectedIndex];
     });
   }
 
@@ -56,38 +57,12 @@ class _AppState extends State<App> {
       home: DefaultTabController(
         length: 4,
         child: Scaffold(
-          appBar: BaseAppBar(this._appBarTitle),
+          appBar: BaseAppBar(this.appBarTitle),
           body: Center(
-            child: _widgetOptions.elementAt(_selectedIndex),
+            child: _widgetOptions.elementAt(selectedIndex),
           ),
           drawer: MenuOverlay(),
-          bottomNavigationBar: Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey, width: 0.5)),
-            child: BottomNavigationBar(
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.home, color: Colors.black, size: 30),
-                    title: Text("")),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.public, color: Colors.black, size: 30),
-                    title: Text("")),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.person_outline,
-                        color: Colors.black, size: 30),
-                    title: Text("")),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.show_chart, color: Colors.black, size: 30),
-                    title: Text("")),
-              ],
-              type: BottomNavigationBarType.fixed,
-              currentIndex: _selectedIndex,
-              onTap: _onItemTapped,
-              showSelectedLabels: true,
-              showUnselectedLabels: false,
-              backgroundColor: Colors.white,
-            ),
-          ),
+          bottomNavigationBar: BaseBar(this.selectedIndex, this.onItemTapped),
         ),
       ),
     );
