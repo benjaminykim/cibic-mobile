@@ -1,3 +1,4 @@
+import 'package:cibic_mobile/src/constants.dart';
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/widgets/activity/activity_components/CardMetaData.dart';
 import 'package:cibic_mobile/src/widgets/activity/activity_components/CommentListView.dart';
@@ -16,6 +17,7 @@ class ActivityScreen extends StatelessWidget {
       appBar: AppBar(
       ),
       body: Container(
+        color: APP_BACKGROUND,
         child: ListView(
           children: <Widget>[
             UserMetaData(activity.idUser, "10.1k", activity.idCabildo),

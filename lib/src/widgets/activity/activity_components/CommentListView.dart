@@ -15,15 +15,17 @@ class CommentListView extends StatelessWidget {
       width: MediaQuery.of(context).size.width - 20,
       margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
       decoration: BoxDecoration(
-          color: CARD_BACKGROUND,
-          borderRadius: BorderRadius.all(Radius.circular(30)),
-          boxShadow: [
-            BoxShadow(
-                color: Color(0xff000000),
-                blurRadius: 3.0,
-                spreadRadius: 0,
-                offset: Offset(3.0, 3.0))
-          ]),
+        color: CARD_BACKGROUND,
+        borderRadius: BorderRadius.all(Radius.circular(30)),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xff000000),
+            blurRadius: 0,
+            spreadRadius: 0,
+            offset: Offset(1, 0.1),
+          )
+        ],
+      ),
       child: ConstrainedBox(
         constraints: BoxConstraints(minHeight: 100),
         child: Column(
@@ -103,15 +105,16 @@ class CommentListView extends StatelessWidget {
           height: 75,
           margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
           decoration: BoxDecoration(
-              color: CARD_BACKGROUND,
-              borderRadius: BorderRadius.all(Radius.circular(30)),
-              boxShadow: [
-                BoxShadow(
-                    color: Color(0xff000000),
-                    blurRadius: 3.0,
-                    spreadRadius: 0,
-                    offset: Offset(3.0, 3.0))
-              ]),
+            color: CARD_BACKGROUND,
+            borderRadius: BorderRadius.all(Radius.circular(30)),
+            boxShadow: [
+              BoxShadow(
+                  color: Color(0xff000000),
+                  blurRadius: 0,
+                  spreadRadius: 0,
+                  offset: Offset(1, 0.1))
+            ],
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[

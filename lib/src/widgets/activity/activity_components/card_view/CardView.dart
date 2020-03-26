@@ -1,4 +1,4 @@
-import 'package:cibic_mobile/src/widgets/activity_card/activity_components/Label.dart';
+import 'package:cibic_mobile/src/widgets/activity/activity_components/Label.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../constants.dart';
