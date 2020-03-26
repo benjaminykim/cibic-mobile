@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import './ActivityScreen.dart';
-import './components/card/UserMetaData.dart';
-import './components/card/CardMetaData.dart';
-import './components/card/CardScroll.dart';
-import '../../models/activity_model.dart';
+import 'package:cibic_mobile/src/models/activity_model.dart';
+import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
+import 'package:cibic_mobile/src/widgets/activity/components/card/CardMetaData.dart';
+import 'package:cibic_mobile/src/widgets/activity/components/card/CardScroll.dart';
+import 'package:cibic_mobile/src/widgets/activity/components/card/UserMetaData.dart';
 
 class ActivityCard extends StatelessWidget {
   final ActivityModel activity;
