@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
-import 'package:cibic_mobile/src/widgets/activity/components/Label.dart';
+import 'package:cibic_mobile/src//widgets/utils/Label.dart';
 import 'package:cibic_mobile/src/models/comment_model.dart';
 import 'package:cibic_mobile/src/widgets/activity/components/card/Contents.dart';
 

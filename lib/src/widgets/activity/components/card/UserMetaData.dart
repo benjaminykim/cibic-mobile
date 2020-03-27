@@ -14,7 +14,6 @@ class UserMetaData extends StatelessWidget {
     if (this.cabildoName == null) {
       return Container(
         height: 20,
-        margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
         child: Row(
           children: <Widget>[
             IconTag(Icon(Icons.person, size: 20), userName),

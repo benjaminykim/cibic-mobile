@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/models/activity_model.dart';
-import 'package:cibic_mobile/src/widgets/activity/components/CommentListView.dart';
+import 'package:cibic_mobile/src/widgets/activity/components/CommentFeed.dart';
 
 class ActivityScreen extends StatelessWidget {
   final ActivityModel activity;
@@ -25,7 +25,7 @@ class ActivityScreen extends StatelessWidget {
                 CARD_SCREEN, activity.score, null),
             CardMetaData(activity.pingNumber, activity.commentNumber,
                 activity.publishDate),
-            CommentListView(activity.comments),
+            CommentFeed(activity.comments),
           ],
         ),
       ),
