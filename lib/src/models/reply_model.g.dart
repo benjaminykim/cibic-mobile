@@ -1,27 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'comment_model.dart';
+part of 'reply_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-CommentModel _$CommentModelFromJson(Map<String, dynamic> json) {
-  return CommentModel(
+ReplyModel _$ReplyModelFromJson(Map<String, dynamic> json) {
+  return ReplyModel(
     json['idUser'] as String,
     json['content'] as String,
     json['score'] as int,
-    (json['reply'] as List)
-        ?.map((e) =>
-            e == null ? null : ReplyModel.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
   );
 }
 
-Map<String, dynamic> _$CommentModelToJson(CommentModel instance) =>
+Map<String, dynamic> _$ReplyModelToJson(ReplyModel instance) =>
     <String, dynamic>{
       'idUser': instance.idUser,
       'score': instance.score,
       'content': instance.content,
-      'reply': instance.reply,
     };

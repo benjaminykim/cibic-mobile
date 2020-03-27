@@ -1,10 +1,11 @@
-import 'package:cibic_mobile/src/widgets/activity/components/card/UserMetaData.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/models/comment_model.dart';
+import 'package:cibic_mobile/src/models/reply_model.dart';
+import 'package:cibic_mobile/src/widgets/activity/components/card/UserMetaData.dart';
 
-class CommentListView extends StatelessWidget {
+class CommentFeed extends StatelessWidget {
   final List<CommentModel> comments;
   final inputCommentController = TextEditingController();
   final BoxShadow commentShadow = BoxShadow(
@@ -14,7 +15,7 @@ class CommentListView extends StatelessWidget {
     offset: Offset(1, 0.1),
   );
 
-  CommentListView(this.comments);
+  CommentFeed(this.comments);
 
   Container comment(CommentModel c, BuildContext context) {
     return Container(
@@ -24,16 +25,20 @@ class CommentListView extends StatelessWidget {
       decoration: BoxDecoration(
         color: CARD_BACKGROUND,
         borderRadius: BorderRadius.all(Radius.circular(30)),
-        boxShadow: [ commentShadow ],
+        boxShadow: [commentShadow],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          UserMetaData(c.idUser, "1.1k", null),
-          // comment data and reaction system
+          // USER META DATA
+          Container(
+            margin: const EdgeInsets.fromLTRB(30, 0, 0, 5),
+            child: UserMetaData(c.idUser, "1.1k", null),
+          ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              // REACTION SYSTEM
               Padding(
                 padding: const EdgeInsets.only(left: 5),
                 child: Column(children: <Widget>[
@@ -48,6 +53,7 @@ class CommentListView extends StatelessWidget {
                   Icon(Icons.keyboard_arrow_down, size: 20),
                 ]),
               ),
+              // COMMENT CONTENTS
               Container(
                 margin: EdgeInsets.fromLTRB(5, 0, 30, 10),
                 width: MediaQuery.of(context).size.width - 80,
@@ -64,7 +70,7 @@ class CommentListView extends StatelessWidget {
               )
             ],
           ),
-          // input response
+          // INPUT RESPONSE
           Container(
             margin: EdgeInsets.fromLTRB(30, 2, 30, 10),
             padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
@@ -86,8 +92,8 @@ class CommentListView extends StatelessWidget {
               ),
             ),
           ),
-          // responses
-          Container()
+          // RESPONSES
+          ...generateResponse(c.reply, context),
         ],
       ),
     );
@@ -99,6 +105,80 @@ class CommentListView extends StatelessWidget {
       commentCards.add(comment(comments[i], context));
     }
     return commentCards;
+  }
+
+  List<Container> generateResponse(
+      List<ReplyModel> responses, BuildContext context) {
+    if (responses != null) {
+      List<Container> responseCards = [];
+      for (int i = 0; i < responses.length; i++) {
+        responseCards.add(
+          Container(
+            margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
+            decoration: BoxDecoration(
+              color: Color(0xffcccccc),
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                // REACT SYSTEM
+                Container(
+                  padding: const EdgeInsets.fromLTRB(5, 15, 0, 10),
+                  width: 25,
+                  height: 80,
+                  child: Column(
+                    children: <Widget>[
+                      Icon(Icons.keyboard_arrow_up, size: 20),
+                      Text(
+                        responses[i].score.toString(),
+                        style: TextStyle(
+                          fontSize: 8,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Icon(Icons.keyboard_arrow_down, size: 20),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width - 105,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // RESPONSE USER METADATA
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0, 10, 30, 5),
+                        child: UserMetaData(responses[i].idUser, "1.1k", null),
+                      ),
+                      // RESPONSE TEXT CONTENT
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        child: Text(
+                          responses[i].content,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                      // RESPONSE ICON
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0, 0, 10, 5),
+                        alignment: Alignment.bottomRight,
+                        child: Icon(Icons.reply, size: 20),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+      return responseCards;
+    }
+    return [Container()];
   }
 
   @override
@@ -113,7 +193,7 @@ class CommentListView extends StatelessWidget {
           decoration: BoxDecoration(
             color: CARD_BACKGROUND,
             borderRadius: BorderRadius.all(Radius.circular(30)),
-            boxShadow: [ commentShadow ],
+            boxShadow: [commentShadow],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
