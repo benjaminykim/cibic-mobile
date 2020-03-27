@@ -71,6 +71,29 @@ class _ContentsState extends State<Contents> {
           ],
         )),
       );
+    } else if (widget.mode == CARD_SCREEN) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Container(
+            alignment: Alignment.topLeft,
+            padding: EdgeInsets.only(top:10),
+            child: Text(
+              widget.text,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(0, 5, 0, 10),
+            child: ReactionSlider(),
+            alignment: Alignment.bottomCenter,
+          ),
+        ],
+      );
     } else {
       // DISCUSSION OR PROPOSAL CONTENTS
       return Column(

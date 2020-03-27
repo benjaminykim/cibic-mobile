@@ -11,18 +11,32 @@ class UserMetaData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 20,
-      margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
-      child: Row(
-        children: <Widget>[
-          IconTag(Icon(Icons.person, size: 20), userName),
-          Spacer(),
-          IconTag(Icon(Icons.offline_bolt, size: 20), cp),
-          Spacer(),
-          IconTag(Icon(Icons.looks, size: 20), cabildoName),
-        ],
-      ),
-    );
+    if (this.cabildoName == null) {
+      return Container(
+        height: 20,
+        margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
+        child: Row(
+          children: <Widget>[
+            IconTag(Icon(Icons.person, size: 20), userName),
+            Spacer(),
+            IconTag(Icon(Icons.offline_bolt, size: 20), cp),
+          ],
+        ),
+      );
+    } else {
+      return Container(
+        height: 20,
+        margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
+        child: Row(
+          children: <Widget>[
+            IconTag(Icon(Icons.person, size: 20), userName),
+            Spacer(),
+            IconTag(Icon(Icons.offline_bolt, size: 20), cp),
+            Spacer(),
+            IconTag(Icon(Icons.looks, size: 20), cabildoName),
+          ],
+        ),
+      );
+    }
   }
 }

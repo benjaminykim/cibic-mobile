@@ -36,7 +36,6 @@ class _CardState extends State<CardView> {
                 offset: Offset(3.0, 3.0))
           ]),
       child: Stack(
-        //mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           // LABEL
           Label(this.widget.type),

@@ -5,14 +5,19 @@ const APP_BAR_SELECTED = Color(0xff518CAD);
 const APP_BAR_BOTTOM = Color(0xff6CBAE6);
 const APP_BACKGROUND = Color(0xffF2F2F2);
 const CARD_BACKGROUND = Color(0xffFFFFFF);
+
 const CARD_DIVIDER = Colors.grey;
+
 const LABEL_PROPOSAL_COLOR = Color(0xff2d9cdb);
 const LABEL_DISCUSS_COLOR = Color(0xff000000);
 const LABEL_POLL_COLOR = Color(0xff000000);
+
 const CARD_DEFAULT = 0;
 const CARD_COMMENT = 1;
 const CARD_LAST = 2;
 const CARD_POLL = 3;
+const CARD_SCREEN = 4;
+
 const ACTIVITY_DISCUSS = "discussion";
 const ACTIVITY_PROPOSAL = "proposal";
 const ACTIVITY_POLL = "poll";

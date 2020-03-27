@@ -9,15 +9,11 @@ import 'package:cibic_mobile/src/widgets/activity/components/card/UserMetaData.d
 class ActivityCard extends StatelessWidget {
   final ActivityModel activity;
   final Function(ActivityScreen, BuildContext) onActivityTapped;
-  final bool scrollEnabled;
 
-  ActivityCard(this.activity, this.onActivityTapped, this.scrollEnabled);
+  ActivityCard(this.activity, this.onActivityTapped);
 
   @override
   Widget build(BuildContext context) {
-    if (!this.scrollEnabled)
-      this.activity.comments = null;
-
     return GestureDetector(
       onTap: () => this.onActivityTapped(ActivityScreen(activity), context),
       child: Container(
