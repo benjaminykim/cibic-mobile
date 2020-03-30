@@ -1,17 +1,45 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:cibic_mobile/src/models/cabildo_model.dart';
+import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:cibic_mobile/src/resources/constants.dart';
+import 'package:redux/redux.dart';
 
 Future<void> addActivity(String title, String intro, String body,
-    String cabildos, String tags) async {
-  final response = await http.post(URL_LOCALHOST_BASE + ENDPOINT_POST_ACTIVITY);
+    String cabildos, String tags, String idUser) async {
+  String url = 'http://10.0.2.2:3000/activity';
+  Map map = {
+    'activity': {
+      'idUser': idUser,
+      'idCabildo': 'null',
+      'activityType': 'discussion',
+      'title': title,
+      'text': body
+    }
+  };
 
-  if (response.statusCode == 200) {
-    print("success");
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request = await httpClient.postUrl(Uri.parse(url));
+  request.headers.set('content-type', 'application/json');
+  request.add(utf8.encode(json.encode(map)));
+  HttpClientResponse response = await request.close();
+  String reply;
+  if (response.statusCode == 201) {
+    final responseBody = await response.transform(utf8.decoder).join();
+    Map<String, dynamic> activity = jsonDecode(responseBody);
+    reply = activity['id'];
   } else {
-    throw Exception('Failed to load home feed');
+    throw Exception(
+        "HTTP Response error code: " + response.statusCode.toString());
   }
+  print(reply);
+  httpClient.close();
+  return reply;
 }
 
 Future<void> addPollActivity(String title, String cabildos, String tags) async {
@@ -37,7 +65,6 @@ class _ComposeState extends State<Compose> {
   final inputTagController = TextEditingController();
   List<Container> activityButtons;
   List<Widget> header;
-  List<Widget> body;
   List<Widget> actionButtons;
   int selectedActivity = 0;
 
@@ -87,30 +114,33 @@ class _ComposeState extends State<Compose> {
     ];
   }
 
-  void createBody(BuildContext context) {
-    if (selectedActivity == 0 || selectedActivity == 2) {
-      this.body = [
-        // title
-        Container(
-          margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
-          padding: EdgeInsets.fromLTRB(10, 14, 0, 0),
-          height: 33,
-          decoration: BoxDecoration(
-            color: Color(0xffcccccc),
-            borderRadius: BorderRadius.all(Radius.circular(13)),
-          ),
-          child: TextField(
-            controller: inputTitleController,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: "De que se trata?",
-              hintStyle: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                  fontSize: 15),
-            ),
-          ),
+  Container createTitle(String title) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
+      padding: EdgeInsets.fromLTRB(10, 14, 0, 0),
+      height: 33,
+      decoration: BoxDecoration(
+        color: Color(0xffcccccc),
+        borderRadius: BorderRadius.all(Radius.circular(13)),
+      ),
+      child: TextField(
+        controller: inputTitleController,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: "De que se trata?",
+          hintStyle: TextStyle(
+              fontWeight: FontWeight.w600, color: Colors.black, fontSize: 15),
         ),
+      ),
+    );
+  }
+
+  List<Widget> createBody(BuildContext context, List<dynamic> cabildos) {
+    List<Widget> body = [];
+    if (selectedActivity == 0 || selectedActivity == 2) {
+      body = [
+        // title
+        createTitle("De que se trata?"),
         // introduction
         Container(
           margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
@@ -155,138 +185,68 @@ class _ComposeState extends State<Compose> {
             ),
           ),
         ),
-        // cabildo and tags
-        Row(
-          children: <Widget>[
-            Icon(Icons.people, size: 40),
-            SizedBox(width: 8),
-            Column(
-              children: <Widget>[
-                // cabildo
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
-                  padding: EdgeInsets.fromLTRB(10, 12, 0, 0),
-                  height: 30,
-                  width: MediaQuery.of(context).size.width - 108,
-                  decoration: BoxDecoration(
-                    color: Color(0xffcccccc),
-                    borderRadius: BorderRadius.all(Radius.circular(7)),
-                  ),
-                  child: TextField(
-                    controller: inputCabildoController,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "comparte en un cabildo",
-                      hintStyle: TextStyle(
-                          fontWeight: FontWeight.w200,
-                          color: Color(0xffa1a1a1)),
-                    ),
-                  ),
-                ),
-                // tags
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
-                  padding: EdgeInsets.fromLTRB(10, 12, 0, 0),
-                  height: 30,
-                  width: MediaQuery.of(context).size.width - 108,
-                  decoration: BoxDecoration(
-                    color: Color(0xffcccccc),
-                    borderRadius: BorderRadius.all(Radius.circular(7)),
-                  ),
-                  child: TextFormField(
-                    controller: inputTagController,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "#tags",
-                      hintStyle: TextStyle(
-                          fontWeight: FontWeight.w200,
-                          color: Color(0xffa1a1a1)),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        )
       ];
     } else if (selectedActivity == 1) {
-      this.body = [
+      body = [
         // title
-        Container(
-          margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
-          padding: EdgeInsets.fromLTRB(10, 14, 0, 0),
-          height: 33,
-          decoration: BoxDecoration(
-            color: Color(0xffcccccc),
-            borderRadius: BorderRadius.all(Radius.circular(13)),
-          ),
-          child: TextField(
-            controller: inputTitleController,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: "Que quieres preguntar?",
-              hintStyle: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                  fontSize: 15),
-            ),
-          ),
-        ),
-        // cabildo and tags
-        Row(
-          children: <Widget>[
-            Icon(Icons.people, size: 40),
-            SizedBox(width: 8),
-            Column(
-              children: <Widget>[
-                // cabildo
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
-                  padding: EdgeInsets.fromLTRB(10, 12, 0, 0),
-                  height: 30,
-                  width: MediaQuery.of(context).size.width - 108,
-                  decoration: BoxDecoration(
-                    color: Color(0xffcccccc),
-                    borderRadius: BorderRadius.all(Radius.circular(7)),
-                  ),
-                  child: TextField(
-                    controller: inputCabildoController,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "comparte en un cabildo",
-                      hintStyle: TextStyle(
-                          fontWeight: FontWeight.w200,
-                          color: Color(0xffa1a1a1)),
-                    ),
-                  ),
-                ),
-                // tags
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
-                  padding: EdgeInsets.fromLTRB(10, 12, 0, 0),
-                  height: 30,
-                  width: MediaQuery.of(context).size.width - 108,
-                  decoration: BoxDecoration(
-                    color: Color(0xffcccccc),
-                    borderRadius: BorderRadius.all(Radius.circular(7)),
-                  ),
-                  child: TextFormField(
-                    controller: inputTagController,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "#tags",
-                      hintStyle: TextStyle(
-                          fontWeight: FontWeight.w200,
-                          color: Color(0xffa1a1a1)),
-                    ),
-                  ),
-                ),
-              ],
-            )
-          ],
-        )
+        createTitle("Que quieres preguntar?"),
       ];
     }
+    // cabildos and tags
+    for (int i = 0; i < cabildos.length; i++) {
+      print(cabildos[i]['name']);
+    }
+    body.add(Row(
+      children: <Widget>[
+        Icon(Icons.people, size: 40),
+        SizedBox(width: 8),
+        Column(
+          children: <Widget>[
+            // cabildo
+            Container(
+              margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
+              padding: EdgeInsets.fromLTRB(10, 12, 0, 0),
+              height: 30,
+              width: MediaQuery.of(context).size.width - 108,
+              decoration: BoxDecoration(
+                color: Color(0xffcccccc),
+                borderRadius: BorderRadius.all(Radius.circular(7)),
+              ),
+              child: TextField(
+                controller: inputCabildoController,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: "comparte en un cabildo",
+                  hintStyle: TextStyle(
+                      fontWeight: FontWeight.w200, color: Color(0xffa1a1a1)),
+                ),
+              ),
+            ),
+            // tags
+            Container(
+              margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
+              padding: EdgeInsets.fromLTRB(10, 12, 0, 0),
+              height: 30,
+              width: MediaQuery.of(context).size.width - 108,
+              decoration: BoxDecoration(
+                color: Color(0xffcccccc),
+                borderRadius: BorderRadius.all(Radius.circular(7)),
+              ),
+              child: TextFormField(
+                controller: inputTagController,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: "#tags",
+                  hintStyle: TextStyle(
+                      fontWeight: FontWeight.w200, color: Color(0xffa1a1a1)),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ));
+    return body;
   }
 
   void handleActivityButtonClick(BuildContext context, String type) {
@@ -303,7 +263,7 @@ class _ComposeState extends State<Compose> {
     Navigator.of(context).pop();
   }
 
-  void submitActivity() {
+  void submitActivity(String idUser) {
     final enteredTitle = inputTitleController.text;
     final enteredIntro = inputIntroController.text;
     final enteredBody = inputBodyController.text;
@@ -318,7 +278,7 @@ class _ComposeState extends State<Compose> {
         return;
       } else {
         addActivity(enteredTitle, enteredIntro, enteredBody, enteredCabildo,
-            enteredTag);
+            enteredTag, idUser);
       }
     } else if (selectedActivity == 1) {
       if (enteredTitle.isEmpty || enteredCabildo.isEmpty) {
@@ -330,14 +290,8 @@ class _ComposeState extends State<Compose> {
     Navigator.of(context).pop();
   }
 
-  initState() {
-    super.initState();
-    this.activityButtons = [
-      createActivityButton(ACTIVITY_DISCUSS, 1),
-      createActivityButton(ACTIVITY_POLL, 0),
-      createActivityButton(ACTIVITY_PROPOSAL, 0)
-    ];
-    this.actionButtons = [
+  List<Widget> createActionButtons(String idUser) {
+    return [
       Spacer(),
       Row(
         children: <Widget>[
@@ -348,10 +302,19 @@ class _ComposeState extends State<Compose> {
           ),
           IconButton(
             icon: Icon(Icons.send),
-            onPressed: submitActivity,
+            onPressed: () => submitActivity(idUser),
           ),
         ],
       )
+    ];
+  }
+
+  initState() {
+    super.initState();
+    this.activityButtons = [
+      createActivityButton(ACTIVITY_DISCUSS, 1),
+      createActivityButton(ACTIVITY_POLL, 0),
+      createActivityButton(ACTIVITY_PROPOSAL, 0)
     ];
   }
 
@@ -367,34 +330,49 @@ class _ComposeState extends State<Compose> {
   @override
   Widget build(BuildContext context) {
     createHeader();
-    createBody(context);
-    return Container(
-      padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
-      width: MediaQuery.of(context).size.width - 20,
-      height: MediaQuery.of(context).size.height - 100,
-      margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-      decoration: BoxDecoration(
-          color: CARD_BACKGROUND,
-          borderRadius: BorderRadius.all(Radius.circular(30)),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.blue,
-                blurRadius: 3.0,
-                spreadRadius: 0,
-                offset: Offset(3.0, 3.0))
-          ]),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          ...this.header,
-          ...this.body,
-          ...this.actionButtons,
-          SizedBox(
-            height: MediaQuery.of(context).viewInsets.bottom,
-          )
-        ],
-      ),
-    );
+    return StoreConnector<AppState, UserID>(
+        converter: (Store<AppState> store) => UserID.create(store),
+        builder: (BuildContext context, UserID idUser) {
+          return Container(
+            padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+            width: MediaQuery.of(context).size.width - 20,
+            height: MediaQuery.of(context).size.height - 100,
+            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+            decoration: BoxDecoration(
+                color: CARD_BACKGROUND,
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.blue,
+                      blurRadius: 3.0,
+                      spreadRadius: 0,
+                      offset: Offset(3.0, 3.0))
+                ]),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                ...this.header,
+                ...createBody(context, idUser.cabildos),
+                ...createActionButtons(idUser.idUser),
+                SizedBox(
+                  height: MediaQuery.of(context).viewInsets.bottom,
+                )
+              ],
+            ),
+          );
+        });
+  }
+}
+
+class UserID {
+  final String idUser;
+  final int selectedComposeButton;
+  final List<dynamic> cabildos;
+
+  UserID(this.idUser, this.selectedComposeButton, this.cabildos);
+
+  factory UserID.create(Store<AppState> store) {
+    return UserID(store.state.idUser, store.state.selectedComposeButton, store.state.cabildos);
   }
 }
