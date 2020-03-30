@@ -1,10 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
+import 'package:cibic_mobile/src/models/cabildo_model.dart';
+import 'package:http/http.dart' as http;
 
-import 'package:cibic_mobile/src/models/user_model.dart';
+import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/redux/actions/actions.dart';
+import 'package:cibic_mobile/src/redux/reducers/reducers.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+
 
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
@@ -12,6 +18,7 @@ import 'package:cibic_mobile/src/widgets/activity/ActivityFeed.dart';
 import 'package:cibic_mobile/src/widgets/menu/AppBar.dart';
 import 'package:cibic_mobile/src/widgets/menu/BaseBar.dart';
 import 'package:cibic_mobile/src/widgets/menu/MenuOverlay.dart';
+import 'package:redux_thunk/redux_thunk.dart';
 
 Future<String> createFakeUser() async {
   String url = 'http://10.0.2.2:3000/users';
@@ -52,10 +59,24 @@ Future<String> createFakeUser() async {
   return reply;
 }
 
-class App extends StatefulWidget {
-  final Client client;
+Future<List<dynamic>> getCabildos() async {
+  final response = await http.get(URL_LOCALHOST_BASE + ENDPOINT_CABILDOS);
 
-  App(this.client);
+  if (response.statusCode == 200) {
+    return json.decode(response.body);
+  } else {
+    throw Exception('Failed to load home feed');
+  }
+}
+
+class App extends StatefulWidget {
+  final Store<AppState> store = Store<AppState>(
+    appReducer,
+    initialState: AppState.initial(),
+    middleware: [thunkMiddleware],
+  );
+
+  App();
 
   @override
   _AppState createState() => _AppState();
@@ -85,9 +106,24 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
+
+    // TEST: these lines are messy, just for testing
     createFakeUser().then((value) {
-      print(value);
+      print("create fake user: " + value);
+      widget.store.dispatch(AppUser(value));
+      return value;
+    }).then((value) {
+      getCabildos().then((value) {
+        print("follow cabildos: ");
+        print(value[0]);
+        widget.store.dispatch(GET_CABILDOS(value));
+        /*List<CabildoModel> cabildos = List.castFrom<dynamic, CabildoModel>(value);
+        print(cabildos[0]);
+        widget.store.dispatch(GET_CABILDOS(cabildos));
+        */
+      });
     });
+
     _widgetOptions = [
       ActivityFeed("home", onActivityTapped),
       Container(),
@@ -98,19 +134,22 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: cibicTheme,
-      debugShowCheckedModeBanner: false,
-      home: DefaultTabController(
-        length: 4,
-        child: Scaffold(
-          appBar: BaseAppBar(this.appBarTitle),
-          body: Center(
-            child: _widgetOptions.elementAt(selectedBarIndex),
+    return StoreProvider(
+      store: widget.store,
+          child: MaterialApp(
+        theme: cibicTheme,
+        debugShowCheckedModeBanner: false,
+        home: DefaultTabController(
+          length: 4,
+          child: Scaffold(
+            appBar: BaseAppBar(this.appBarTitle),
+            body: Center(
+              child: _widgetOptions.elementAt(selectedBarIndex),
+            ),
+            drawer: MenuOverlay(),
+            bottomNavigationBar:
+                BaseBar(this.selectedBarIndex, this.onBarButtonTapped),
           ),
-          drawer: MenuOverlay(),
-          bottomNavigationBar:
-              BaseBar(this.selectedBarIndex, this.onBarButtonTapped),
         ),
       ),
     );

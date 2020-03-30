@@ -8,11 +8,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/app.dart';
-import 'package:cibic_mobile/src/resources/api_provider.dart';
 
 void main() async {
-  final app = App(
-    testClient,
-  );
+  final app = App();
   runApp(app);
 }

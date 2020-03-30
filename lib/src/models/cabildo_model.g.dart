@@ -8,6 +8,7 @@ part of 'cabildo_model.dart';
 
 CabildoModel _$CabildoModelFromJson(Map<String, dynamic> json) {
   return CabildoModel(
+    json['id'] as String,
     json['name'] as String,
     (json['members'] as List)?.map((e) => e as String)?.toList(),
     (json['moderators'] as List)?.map((e) => e as String)?.toList(),
@@ -26,6 +27,7 @@ CabildoModel _$CabildoModelFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$CabildoModelToJson(CabildoModel instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'name': instance.name,
       'members': instance.members,
       'moderators': instance.moderators,
