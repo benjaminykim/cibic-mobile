@@ -221,14 +221,14 @@ class _ComposeState extends State<Compose> {
             // cabildo
             Container(
               margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
-              padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+              padding: EdgeInsets.fromLTRB(10, 5, 0, 0),
               height: 30,
               width: MediaQuery.of(context).size.width - 108,
               decoration: BoxDecoration(
                 color: Color(0xffcccccc),
                 borderRadius: BorderRadius.all(Radius.circular(7)),
               ),
-              child: DropdownButtonFormField<String>(
+              child: DropdownButton<String>(
                 value: dropdownValue,
                 icon: Icon(Icons.arrow_downward),
                 iconSize: 24,
