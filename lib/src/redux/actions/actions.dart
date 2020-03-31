@@ -1,4 +1,3 @@
-import 'package:cibic_mobile/src/models/cabildo_model.dart';
 
 class AppUser {
   final String payload;
@@ -10,7 +9,7 @@ class ChangeComposeOption {
   ChangeComposeOption(this.payload);
 }
 
-class GET_CABILDOS {
+class GetCabildos {
   final List<dynamic> payload;
-  GET_CABILDOS(this.payload);
+  GetCabildos(this.payload);
 }

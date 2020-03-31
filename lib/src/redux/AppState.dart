@@ -1,4 +1,3 @@
-import 'package:cibic_mobile/src/models/cabildo_model.dart';
 
 class AppState {
   String idUser;

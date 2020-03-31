@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
-import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:cibic_mobile/src/redux/AppState.dart';
@@ -107,7 +106,7 @@ class _AppState extends State<App> {
   void initState() {
     super.initState();
 
-    // TEST: these lines are messy, just for testing
+    // TESTING
     createFakeUser().then((value) {
       print("create fake user: " + value);
       widget.store.dispatch(AppUser(value));
@@ -116,11 +115,7 @@ class _AppState extends State<App> {
       getCabildos().then((value) {
         print("follow cabildos: ");
         print(value[0]);
-        widget.store.dispatch(GET_CABILDOS(value));
-        /*List<CabildoModel> cabildos = List.castFrom<dynamic, CabildoModel>(value);
-        print(cabildos[0]);
-        widget.store.dispatch(GET_CABILDOS(cabildos));
-        */
+        widget.store.dispatch(GetCabildos(value));
       });
     });
 

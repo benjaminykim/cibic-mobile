@@ -10,7 +10,7 @@ AppState appReducer(AppState prevState, dynamic action) {
     newState.idUser = action.payload;
   } else if (action is ChangeComposeOption) {
     newState.selectedComposeButton = action.payload;
-  } else if (action is GET_CABILDOS) {
+  } else if (action is GetCabildos) {
     newState.cabildos = action.payload;
   }
 
