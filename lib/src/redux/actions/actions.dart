@@ -1,6 +1,6 @@
 
 class AppUser {
-  final String payload;
+  final Map<String, dynamic> payload;
   AppUser(this.payload);
 }
 

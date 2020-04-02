@@ -4,7 +4,7 @@ import 'package:cibic_mobile/src/widgets/utils/IconTag.dart';
 
 class UserMetaData extends StatelessWidget {
   final String userName;
-  final String cp;
+  final int cp;
   final String cabildoName;
 
   UserMetaData(this.userName, this.cp, this.cabildoName);
@@ -18,7 +18,7 @@ class UserMetaData extends StatelessWidget {
           children: <Widget>[
             IconTag(Icon(Icons.person, size: 20), userName),
             Spacer(),
-            IconTag(Icon(Icons.offline_bolt, size: 20), cp),
+            IconTag(Icon(Icons.offline_bolt, size: 20), cp.toString()),
           ],
         ),
       );
@@ -30,7 +30,7 @@ class UserMetaData extends StatelessWidget {
           children: <Widget>[
             IconTag(Icon(Icons.person, size: 20), userName),
             Spacer(),
-            IconTag(Icon(Icons.offline_bolt, size: 20), cp),
+            IconTag(Icon(Icons.offline_bolt, size: 20), cp.toString()),
             Spacer(),
             IconTag(Icon(Icons.looks, size: 20), cabildoName),
           ],

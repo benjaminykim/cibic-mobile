@@ -5,7 +5,7 @@ part 'comment_model.g.dart';
 
 @JsonSerializable()
 class CommentModel {
-  String idUser;
+  Map<String, dynamic> idUser;
   int score;
   String content;
   List<ReplyModel> reply;

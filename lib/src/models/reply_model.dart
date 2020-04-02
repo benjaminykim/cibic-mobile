@@ -4,7 +4,7 @@ part 'reply_model.g.dart';
 
 @JsonSerializable()
 class ReplyModel {
-  String idUser;
+  Map<String, dynamic> idUser;
   int score;
   String content;
 
