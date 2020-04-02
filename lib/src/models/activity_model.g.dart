@@ -8,8 +8,8 @@ part of 'activity_model.dart';
 
 ActivityModel _$ActivityModelFromJson(Map<String, dynamic> json) {
   return ActivityModel(
-    json['idUser'] as String,
-    json['idCabildo'] as String,
+    json['idUser'] as Map<String, dynamic>,
+    json['idCabildo'] as Map<String, dynamic>,
     json['activityType'] as String,
     json['score'] as int,
     json['pingNumber'] as int,

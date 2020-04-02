@@ -8,7 +8,7 @@ part of 'reply_model.dart';
 
 ReplyModel _$ReplyModelFromJson(Map<String, dynamic> json) {
   return ReplyModel(
-    json['idUser'] as String,
+    json['idUser'] as Map<String, dynamic>,
     json['content'] as String,
     json['score'] as int,
   );
