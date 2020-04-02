@@ -5,8 +5,8 @@ part 'activity_model.g.dart';
 
 @JsonSerializable()
 class ActivityModel {
-  String idUser;
-  String idCabildo;
+  Map<String, dynamic> idUser;
+  Map<String, dynamic> idCabildo;
   String activityType;
   int score;
   int pingNumber;
