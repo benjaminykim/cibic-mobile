@@ -19,7 +19,7 @@ class ActivityCard extends StatelessWidget {
       child: Container(
         child: Column(
           children: <Widget>[
-            UserMetaData(activity.idUser, "10.1k", activity.idCabildo),
+            UserMetaData(activity.idUser['username'], activity.idUser['citizenPoints'], activity.idCabildo['name']),
             CardScroll(activity.title, activity.activityType, activity.text, activity.score, activity.comments),
             CardMetaData(activity.pingNumber, activity.commentNumber,
                 activity.publishDate),

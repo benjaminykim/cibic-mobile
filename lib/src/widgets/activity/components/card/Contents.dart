@@ -43,7 +43,7 @@ class _ContentsState extends State<Contents> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 IconTag(
-                    Icon(Icons.person, size: 17), widget.comment.idUser),
+                    Icon(Icons.person, size: 17), widget.comment.idUser['username']),
                 IconTag(
                     Icon(Icons.offline_bolt, size: 17), "102"),
               ],

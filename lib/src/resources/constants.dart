@@ -72,3 +72,6 @@ const URL_AWS_BASE = "http://52.9.99.38:3000/";
 const ENDPOINT_ACTIVITY = "activity";
 const ENDPOINT_POST_ACTIVITY = "activity";
 const ENDPOINT_CABILDOS = "cabildos";
+const ENDPOINT_USER = "users/";
+
+const API_BASE = URL_LOCALHOST_BASE;

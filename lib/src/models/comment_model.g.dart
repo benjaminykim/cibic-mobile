@@ -8,7 +8,7 @@ part of 'comment_model.dart';
 
 CommentModel _$CommentModelFromJson(Map<String, dynamic> json) {
   return CommentModel(
-    json['idUser'] as String,
+    json['idUser'] as Map<String, dynamic>,
     json['content'] as String,
     json['score'] as int,
     (json['reply'] as List)

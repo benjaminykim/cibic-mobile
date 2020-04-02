@@ -11,7 +11,6 @@ import 'package:cibic_mobile/src/widgets/activity/ActivityCard.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 
 Future<FeedModel> fetchHomeFeed() async {
-  //final response = await http.get(URL_AWS_BASE + ENDPOINT_ACTIVITY);
   final response = await http.get(URL_LOCALHOST_BASE + ENDPOINT_ACTIVITY);
 
   if (response.statusCode == 200) {

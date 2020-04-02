@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
+import 'package:cibic_mobile/src/widgets/profile/UserProfile.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:cibic_mobile/src/redux/AppState.dart';
@@ -10,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
-
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityFeed.dart';
@@ -19,26 +19,28 @@ import 'package:cibic_mobile/src/widgets/menu/BaseBar.dart';
 import 'package:cibic_mobile/src/widgets/menu/MenuOverlay.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
-Future<String> createFakeUser() async {
+Future<String> createFakeUser(Store<AppState> store) async {
   String url = 'http://10.0.2.2:3000/users';
-  Map map = {
-    'user': {
-      'username': 'ben',
+  Map<String, dynamic> userProfile = {
+      'username': 'benkim9611',
       'password': 'fakepassword',
-      'email': 'fakeEmail@gmail.com',
-      'firstName': 'ben',
-      'middleName': 'yo',
-      'lastName': 'kim',
-      'maidenName': 'hong',
-      'phone': 6266924012,
-      'rut': "123456790",
+      'email': 'fakeEmai111l@gmail.com',
+      'firstName': 'Benjamin',
+      'middleName': 'Young-min',
+      'lastName': 'Kim',
+      'maidenName': 'none',
+      'phone': 626692401232,
+      'rut': "1234567900",
       'cabildos': [],
       'files': "none",
       'followers': [],
       'following': [],
       'activityFeed': []
-    }
+    };
+  Map map = {
+    'user': userProfile
   };
+
 
   HttpClient httpClient = new HttpClient();
   HttpClientRequest request = await httpClient.postUrl(Uri.parse(url));
@@ -50,6 +52,9 @@ Future<String> createFakeUser() async {
     final responseBody = await response.transform(utf8.decoder).join();
     Map<String, dynamic> user = jsonDecode(responseBody);
     reply = user['id'];
+    userProfile['id'] = user['id'];
+    print(userProfile);
+    store.dispatch(AppUser(userProfile));
   } else {
     throw Exception(
         "HTTP Response error code: " + response.statusCode.toString());
@@ -107,9 +112,9 @@ class _AppState extends State<App> {
     super.initState();
 
     // TESTING
-    createFakeUser().then((value) {
+    createFakeUser(widget.store).then((value) {
       print("create fake user: " + value);
-      widget.store.dispatch(AppUser(value));
+      //widget.store.dispatch(AppUser(value));
       return value;
     }).then((value) {
       getCabildos().then((value) {
@@ -122,7 +127,7 @@ class _AppState extends State<App> {
     _widgetOptions = [
       ActivityFeed("home", onActivityTapped),
       Container(),
-      ActivityFeed("home", onActivityTapped),
+      UserProfile("home", onActivityTapped),
       ActivityFeed("home", onActivityTapped),
     ];
   }
@@ -131,7 +136,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return StoreProvider(
       store: widget.store,
-          child: MaterialApp(
+      child: MaterialApp(
         theme: cibicTheme,
         debugShowCheckedModeBanner: false,
         home: DefaultTabController(
