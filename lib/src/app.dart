@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
-import 'package:cibic_mobile/src/widgets/profile/UserProfile.dart';
+import 'package:cibic_mobile/src/widgets/profile/SelfProfileScreen.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:cibic_mobile/src/redux/AppState.dart';
@@ -12,7 +12,6 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
-import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityFeed.dart';
 import 'package:cibic_mobile/src/widgets/menu/AppBar.dart';
 import 'package:cibic_mobile/src/widgets/menu/BaseBar.dart';
@@ -102,10 +101,6 @@ class _AppState extends State<App> {
     });
   }
 
-  void onActivityTapped(ActivityScreen activityScreen, BuildContext context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => activityScreen));
-  }
 
   @override
   void initState() {
@@ -114,21 +109,18 @@ class _AppState extends State<App> {
     // TESTING
     createFakeUser(widget.store).then((value) {
       print("create fake user: " + value);
-      //widget.store.dispatch(AppUser(value));
       return value;
     }).then((value) {
       getCabildos().then((value) {
-        print("follow cabildos: ");
-        print(value[0]);
         widget.store.dispatch(GetCabildos(value));
       });
     });
 
     _widgetOptions = [
-      ActivityFeed("home", onActivityTapped),
+      ActivityFeed("home"),
       Container(),
-      UserProfile("home", onActivityTapped),
-      ActivityFeed("home", onActivityTapped),
+      SelfProfileScreen("5e8626112f7269001928c95e"),
+      ActivityFeed("home"),
     ];
   }
 

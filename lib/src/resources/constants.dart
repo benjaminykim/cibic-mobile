@@ -73,5 +73,6 @@ const ENDPOINT_ACTIVITY = "activity";
 const ENDPOINT_POST_ACTIVITY = "activity";
 const ENDPOINT_CABILDOS = "cabildos";
 const ENDPOINT_USER = "users/";
+const ENDPOINT_USER_FEED = "users/feed/";
 
 const API_BASE = URL_LOCALHOST_BASE;
