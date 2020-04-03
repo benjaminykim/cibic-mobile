@@ -8,6 +8,7 @@ part of 'user_model.dart';
 
 UserModel _$UserModelFromJson(Map<String, dynamic> json) {
   return UserModel(
+    json['id'] as String,
     json['username'] as String,
     json['email'] as String,
     json['password'] as String,
@@ -16,11 +17,9 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
     json['lastName'] as String,
     json['maidenName'] as String,
     json['phone'] as int,
+    json['citizenPoints'] as int,
     json['rut'] as String,
-    (json['cabildos'] as List)
-        ?.map((e) =>
-            e == null ? null : CabildoModel.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
+    (json['cabildos'] as List)?.map((e) => e as String)?.toList(),
     (json['activityVotes'] as List)?.map((e) => e as String)?.toList(),
     (json['commentVotes'] as List)?.map((e) => e as String)?.toList(),
     (json['files'] as List)?.map((e) => e as String)?.toList(),
@@ -35,6 +34,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
+      'id': instance.id,
       'username': instance.username,
       'email': instance.email,
       'password': instance.password,
@@ -43,6 +43,7 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'lastName': instance.lastName,
       'maidenName': instance.maidenName,
       'phone': instance.phone,
+      'citizenPoints': instance.citizenPoints,
       'rut': instance.rut,
       'cabildos': instance.cabildos,
       'activityVotes': instance.activityVotes,

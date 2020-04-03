@@ -8,23 +8,38 @@ import 'package:cibic_mobile/src/widgets/activity/components/card/UserMetaData.d
 
 class ActivityCard extends StatelessWidget {
   final ActivityModel activity;
-  final Function(ActivityScreen, BuildContext) onActivityTapped;
 
-  ActivityCard(this.activity, this.onActivityTapped);
+  ActivityCard(this.activity);
+
+  void onActivityTapped(ActivityScreen activityScreen, BuildContext context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => activityScreen));
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => this.onActivityTapped(ActivityScreen(activity), context),
-      child: Container(
-        child: Column(
-          children: <Widget>[
-            UserMetaData(activity.idUser['username'], activity.idUser['citizenPoints'], activity.idCabildo['name']),
-            CardScroll(activity.title, activity.activityType, activity.text, activity.score, activity.comments),
-            CardMetaData(activity.pingNumber, activity.commentNumber,
+    print("ActivityCard-> build -> idUser: " + activity.idUser['_id']);
+    return Container(
+      child: Column(
+        children: <Widget>[
+          UserMetaData(
+            activity.idUser['username'],
+            activity.idUser['citizenPoints'],
+            activity.idCabildo['name'],
+            activity.idUser['_id'],
+          ),
+          GestureDetector(
+              onTap: () =>
+                  this.onActivityTapped(ActivityScreen(activity), context),
+              child: CardScroll(activity.title, activity.activityType,
+                  activity.text, activity.score, activity.comments)),
+          GestureDetector(
+            onTap: () =>
+                this.onActivityTapped(ActivityScreen(activity), context),
+            child: CardMetaData(activity.pingNumber, activity.commentNumber,
                 activity.publishDate),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
