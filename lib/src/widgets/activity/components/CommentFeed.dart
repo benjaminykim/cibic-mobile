@@ -42,7 +42,7 @@ class _CommentFeedState extends State<CommentFeed> {
           // USER META DATA
           Container(
             margin: const EdgeInsets.fromLTRB(30, 0, 0, 5),
-            child: UserMetaData(c.idUser['username'], 1, null, c.idUser['id']),
+            child: UserMetaData(c.idUser['username'], 1, null, c.idUser['id'], null),
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,7 +145,7 @@ class _CommentFeedState extends State<CommentFeed> {
                 // RESPONSE USER METADATA
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
-                  child: UserMetaData(r.idUser['username'], 1, null, r.idUser['id']),
+                  child: UserMetaData(r.idUser['username'], 1, null, r.idUser['id'], null),
                 ),
                 // RESPONSE TEXT CONTENT
                 Container(

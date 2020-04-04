@@ -1,37 +1,48 @@
-import 'package:cibic_mobile/src/models/user_model.dart';
-import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 
 import 'package:cibic_mobile/src/models/activity_model.dart';
+import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityCard.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
-import 'package:redux/redux.dart';
 
-Future<UserModel> fetchUserFeed(String idUser) async {
-  final response = await http.get(API_BASE + ENDPOINT_USER_FEED + idUser);
+Future<CabildoModel> fetchUserFeed(String idCabildo) async {
+  final response = await http.get(API_BASE + ENDPOINT_CABILDOS + idCabildo);
 
   if (response.statusCode == 200) {
-    return UserModel.fromJson(json.decode(response.body));
+    return CabildoModel.fromJson(json.decode(response.body));
   } else {
     throw Exception(
         'Failed to load home feed: ' + response.statusCode.toString());
   }
 }
 
-class SelfProfileScreen extends StatefulWidget {
-  final String idUser;
+Future<ActivityModel> getActivity(String idActivity) async {
+  final response = await http.get(API_BASE + ENDPOINT_ACTIVITY + idActivity);
 
-  SelfProfileScreen(this.idUser);
-
-  @override
-  _UserProfileState createState() => _UserProfileState();
+  print(API_BASE + ENDPOINT_ACTIVITY + idActivity);
+  if (response.statusCode == 200) {
+    return ActivityModel.fromJson(json.decode(response.body));
+  } else {
+    throw Exception(
+        'Failed to load home feed: ' + response.statusCode.toString());
+  }
 }
 
-class _UserProfileState extends State<SelfProfileScreen> {
-  Future<UserModel> user;
+class CabildoProfileScreen extends StatefulWidget {
+  final String idCabildo;
+
+  CabildoProfileScreen(this.idCabildo);
+
+  @override
+  _CabildoProfileState createState() => _CabildoProfileState();
+}
+
+class _CabildoProfileState extends State<CabildoProfileScreen> {
+  Future<CabildoModel> cabildo;
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   int maxLines = 4;
   String followButtonText = "seguir";
@@ -40,28 +51,62 @@ class _UserProfileState extends State<SelfProfileScreen> {
   @override
   void initState() {
     super.initState();
-    user = fetchUserFeed(widget.idUser);
+    cabildo = fetchUserFeed(widget.idCabildo);
+  }
+
+  void onActivityTapped(ActivityScreen activityScreen, BuildContext context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => activityScreen));
   }
 
   Future<Null> refreshList() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     setState(() {
-      user = fetchUserFeed(widget.idUser);
+      cabildo = fetchUserFeed(widget.idCabildo);
     });
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
-    return  Center(
+    return MaterialApp(
+      theme: cibicTheme,
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: FutureBuilder<CabildoModel>(
+              future: this.cabildo,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(snapshot.data.name,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w400,
+                      ));
+                } else if (snapshot.hasError) {
+                  return Text("error");
+                }
+                return Text("name not found");
+              }),
+          centerTitle: true,
+          titleSpacing: 0.0,
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: Icon(Icons.arrow_back_ios),
+          ),
+        ),
+        body: Center(
           child: Container(
             color: APP_BACKGROUND,
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  FutureBuilder<UserModel>(
-                      future: this.user,
+                  // PROFILE INFO WIDGET
+                  FutureBuilder<CabildoModel>(
+                      future: this.cabildo,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return Container(
@@ -73,13 +118,14 @@ class _UserProfileState extends State<SelfProfileScreen> {
                             ),
                             child: Column(
                               children: [
+                                // IMAGE, NAME, FOLLOW BUTTON, CABILDO METADATA
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    // user profile picture, name
+                                    // IMAGE, NAME, FOLLOW BUTTON
                                     Column(
                                       children: [
-                                        // image
+                                        // IMAGE
                                         Container(
                                           width: 85.0,
                                           height: 85.0,
@@ -90,13 +136,13 @@ class _UserProfileState extends State<SelfProfileScreen> {
                                             shape: BoxShape.circle,
                                           ),
                                         ),
-                                        // name
+                                        // NAME
                                         Container(
                                           margin:
                                               EdgeInsets.fromLTRB(5, 4, 5, 0),
                                           width: 120,
                                           child: Text(
-                                            snapshot.data.username,
+                                            snapshot.data.name,
                                             textAlign: TextAlign.center,
                                             maxLines: 1,
                                             style: TextStyle(
@@ -106,9 +152,38 @@ class _UserProfileState extends State<SelfProfileScreen> {
                                             ),
                                           ),
                                         ),
+                                        // FOLLOW BUTTON
+                                        Container(
+                                            height: 17,
+                                            child: FlatButton(
+                                              color: this.followButtonColor,
+                                              onPressed: () {
+                                                if (this.followButtonText ==
+                                                    "seguir") {
+                                                  setState(() {
+                                                    this.followButtonText =
+                                                        "siguiendo";
+                                                    this.followButtonColor =
+                                                        Colors.blue;
+                                                  });
+                                                } else {
+                                                  setState(() {
+                                                    this.followButtonText =
+                                                        "seguir";
+                                                    this.followButtonColor =
+                                                        Colors.green;
+                                                  });
+                                                }
+                                              },
+                                              child: Text(this.followButtonText,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                  )),
+                                            )),
                                       ],
                                     ),
-                                    // user meta data
+                                    // CABILDO METADATA
                                     Container(
                                       width: MediaQuery.of(context).size.width -
                                           160,
@@ -116,18 +191,47 @@ class _UserProfileState extends State<SelfProfileScreen> {
                                           EdgeInsets.fromLTRB(10, 15, 15, 0),
                                       child: Column(
                                         children: [
-                                          // citizen points, followers, cabildos following
+                                          // FOLLOWERS AND LOCATION
                                           Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                                MainAxisAlignment.start,
                                             children: [
-                                              // citizen points
+                                              // FOLLOWERS
+                                              Column(
+                                                children: <Widget>[
+                                                  Text(
+                                                      snapshot
+                                                          .data.members.length
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      )),
+                                                  Text(
+                                                      (snapshot.data.members
+                                                                  .length >
+                                                              1)
+                                                          ? "seguidores"
+                                                          : "seguidor",
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.black,
+                                                      ))
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                width: 30,
+                                              ),
+                                              // LOCATION
                                               Row(children: [
-                                                Icon(Icons.offline_bolt),
+                                                Icon(Icons.location_on),
                                                 SizedBox(
                                                   width: 5,
                                                 ),
-                                                Text(snapshot.data.citizenPoints.toString(),
+                                                Text(
+                                                    snapshot.data.location,
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                       fontWeight:
@@ -135,43 +239,9 @@ class _UserProfileState extends State<SelfProfileScreen> {
                                                       color: Colors.black,
                                                     )),
                                               ]),
-                                              // followers
-                                              Column(
-                                                children: <Widget>[
-                                                  Text(snapshot.data.followers.length.toString(),
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      )),
-                                                  Text((snapshot.data.cabildos.length > 1) ? "seguidores" : "seguidor",
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.black,
-                                                      ))
-                                                ],
-                                              ),
-                                              // cabildos
-                                              Column(
-                                                children: <Widget>[
-                                                  Text(snapshot.data.cabildos.length.toString(),
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Colors.black,
-                                                      )),
-                                                  Text((snapshot.data.cabildos.length > 1) ? "cabildos" : "cabildo",
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.black,
-                                                      ))
-                                                ],
-                                              ),
                                             ],
                                           ),
-                                          // user introduction
+                                          // CABILDO INTRODUCTION
                                           Container(
                                             margin: EdgeInsets.only(top: 10),
                                             alignment: Alignment.topLeft,
@@ -205,7 +275,7 @@ class _UserProfileState extends State<SelfProfileScreen> {
                                     ),
                                   ],
                                 ),
-                                // feed button bar
+                                // FEED BUTTON BAR
                                 Container(
                                     margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
                                     padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
@@ -255,24 +325,40 @@ class _UserProfileState extends State<SelfProfileScreen> {
                   // feed
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height - 200 - 70 - 14 - 59,
+                    height: MediaQuery.of(context).size.height - 200 - 70 - 14,
                     child: RefreshIndicator(
                       key: refreshKey,
                       onRefresh: () => refreshList(),
-                      child: FutureBuilder<UserModel>(
-                        future: user,
+                      child: FutureBuilder<CabildoModel>(
+                        future: this.cabildo,
                         builder: (context, feedSnap) {
                           if (feedSnap.hasData) {
-                            print("FeedSnap data: " + feedSnap.data.activityFeed.toString());
+                            print("FeedSnap data: " +
+                                feedSnap.data.activities.toString());
                             return ListView.separated(
                                 separatorBuilder: (context, index) => Divider(
                                       color: Colors.black,
                                     ),
-                                itemCount: feedSnap.data.activityFeed.length,
+                                itemCount: feedSnap.data.activities.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  ActivityModel activity =
-                                      feedSnap.data.activityFeed[index];
-                                  return ActivityCard(activity);
+                                  return FutureBuilder<ActivityModel>(
+                                    future: getActivity(feedSnap.data.activities[index]),
+                                    builder: (context, feedSnap) {
+                                      if (feedSnap.hasData) {
+                                        return (ActivityCard(feedSnap.data));
+                                      } else {
+                                        return Center(
+                                          child: Text(
+                                            "Activity could not load",
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  );
                                 });
                           } else if (feedSnap.hasError) {
                             return ListView(children: [
@@ -290,46 +376,8 @@ class _UserProfileState extends State<SelfProfileScreen> {
                   )
                 ]),
           ),
-    );
-  }
-}
-
-class User {
-  final String idUser;
-  final String username;
-  final String email;
-  final String firstName;
-  final String middleName;
-  final String lastName;
-  final List<dynamic> followers;
-  final List<dynamic> following;
-  final List<dynamic> activityFeed;
-  final List<dynamic> cabildos;
-
-  User(
-      this.idUser,
-      this.username,
-      this.email,
-      this.firstName,
-      this.middleName,
-      this.lastName,
-      this.followers,
-      this.following,
-      this.activityFeed,
-      this.cabildos);
-
-  factory User.create(Store<AppState> store) {
-    return User(
-      store.state.idUser,
-      store.state.username,
-      store.state.email,
-      store.state.firstName,
-      store.state.middleName,
-      store.state.lastName,
-      store.state.followers,
-      store.state.following,
-      store.state.activityFeed,
-      store.state.cabildos,
+        ),
+      ),
     );
   }
 }

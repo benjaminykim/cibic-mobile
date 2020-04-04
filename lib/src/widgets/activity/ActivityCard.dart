@@ -19,6 +19,7 @@ class ActivityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print("ActivityCard-> build -> idUser: " + activity.idUser['_id']);
+    print("ActivityCard-> build -> idCabildo: " + activity.idCabildo['_id']);
     return Container(
       child: Column(
         children: <Widget>[
@@ -27,6 +28,7 @@ class ActivityCard extends StatelessWidget {
             activity.idUser['citizenPoints'],
             activity.idCabildo['name'],
             activity.idUser['_id'],
+            activity.idCabildo['_id']
           ),
           GestureDetector(
               onTap: () =>
