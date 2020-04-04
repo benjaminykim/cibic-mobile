@@ -6,6 +6,9 @@ const APP_BAR_BOTTOM = Color(0xff6CBAE6);
 const APP_BACKGROUND = Color(0xffF2F2F2);
 const CARD_BACKGROUND = Color(0xffFFFFFF);
 
+const COLOR_SOFT_BLUE = Color(0xff12668f);
+const COLOR_DEEP_BLUE = Color(0xff43a1bf);
+
 const CARD_DIVIDER = Colors.grey;
 
 const LABEL_PROPOSAL_COLOR = Color(0xff2d9cdb);
