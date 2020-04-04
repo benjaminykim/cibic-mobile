@@ -119,7 +119,7 @@ class _AppState extends State<App> {
     _widgetOptions = [
       ActivityFeed("home"),
       Container(),
-      SelfProfileScreen("5e8626112f7269001928c95e"),
+      SelfProfileScreen("5e87da07ce5ed1002a2df152"),
       ActivityFeed("home"),
     ];
   }
