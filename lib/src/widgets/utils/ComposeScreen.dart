@@ -33,7 +33,6 @@ Future<void> addActivity(String title, String intro, String body,
     throw Exception(
         "HTTP Response error code: " + response.statusCode.toString());
   }
-  print(reply);
   httpClient.close();
   return reply;
 }
@@ -301,8 +300,6 @@ class _ComposeState extends State<Compose> {
           enteredBody.isEmpty ) {
         return;
       } else {
-        print(idUser);
-        print(idCabildo);
         addActivity(enteredTitle, enteredIntro, enteredBody, idCabildo,
             enteredTag, idUser, idCabildo);
       }

@@ -20,7 +20,12 @@ class ActivityScreen extends StatelessWidget {
         color: APP_BACKGROUND,
         child: ListView(
           children: <Widget>[
-            UserMetaData(activity.idUser, "10.1k", activity.idCabildo),
+            UserMetaData(activity.idUser['username'],
+                activity.idUser['citizenPoints'],
+                activity.idCabildo['name'],
+                activity.idUser['_id'],
+                activity.idCabildo['_id'],
+                ),
             CardView(activity.title, activity.activityType, activity.text,
                 CARD_SCREEN, activity.score, null),
             CardMetaData(activity.pingNumber, activity.commentNumber,

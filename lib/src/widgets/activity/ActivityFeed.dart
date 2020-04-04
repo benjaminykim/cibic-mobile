@@ -6,12 +6,10 @@ import 'package:http/http.dart' as http;
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/resources/api_provider.dart';
-import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityCard.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 
 Future<FeedModel> fetchHomeFeed() async {
-  //final response = await http.get(URL_AWS_BASE + ENDPOINT_ACTIVITY);
   final response = await http.get(URL_LOCALHOST_BASE + ENDPOINT_ACTIVITY);
 
   if (response.statusCode == 200) {
@@ -34,9 +32,8 @@ Future<FeedModel> fetchPublicFeed() async {
 
 class ActivityFeed extends StatefulWidget {
   final String mode;
-  final Function(ActivityScreen, BuildContext) onActivityTapped;
 
-  ActivityFeed(this.mode, this.onActivityTapped);
+  ActivityFeed(this.mode);
 
   @override
   _ActivityFeedState createState() => _ActivityFeedState();
@@ -79,7 +76,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
                   itemCount: feedSnap.data.feed.length,
                   itemBuilder: (BuildContext context, int index) {
                     ActivityModel activity = feedSnap.data.feed[index];
-                    return ActivityCard(activity, widget.onActivityTapped);
+                    return ActivityCard(activity);
                   });
             } else if (feedSnap.hasError) {
               return Text("error: cibic servers are down",
