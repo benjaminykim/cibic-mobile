@@ -24,6 +24,7 @@ class ActivityScreen extends StatelessWidget {
                 activity.idUser['citizenPoints'],
                 activity.idCabildo['name'],
                 activity.idUser['_id'],
+                activity.idCabildo['_id'],
                 ),
             CardView(activity.title, activity.activityType, activity.text,
                 CARD_SCREEN, activity.score, null),
