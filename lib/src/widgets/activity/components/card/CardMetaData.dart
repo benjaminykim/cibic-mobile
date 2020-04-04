@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 
 String generateTimeString(DateTime publishDate) {
   DateTime now = DateTime.now();
-  int diff = now.difference(publishDate).inDays;
+  int diff = now.difference(publishDate).inDays.toInt();
 
   if (diff >= 365) {
-    return "hace " + (diff / 365).toString() + " anos";
+    return "hace " + (diff ~/ 365).toString() + " anos";
   } else if (diff >= 60) {
-    return "hace " + (diff / 30).toString() + " meses";
+    return "hace " + (diff ~/ 30).toString() + " meses";
   } else if (diff >= 30) {
     return "hace un mes";
   } else if (diff >= 14) {
-    return "hace " + (diff / 7).toString() + " semanas";
+    return "hace " + (diff ~/ 7).toString() + " semanas";
   } else if (diff >= 7) {
     return "hace una semana";
   } else if (diff >= 2) {
@@ -20,9 +20,9 @@ String generateTimeString(DateTime publishDate) {
     return "hace una dia";
   }
 
-  diff = now.difference(publishDate).inMinutes;
+  diff = now.difference(publishDate).inMinutes.toInt();
   if (diff >= 120) {
-    return "hace " + (diff / 60).toString() + " horas";
+    return "hace " + (diff ~/ 60).toString() + " horas";
   } else if (diff >= 60) {
     return "hace una hora";
   } else if (diff >= 2) {
