@@ -72,34 +72,20 @@ Future<List<dynamic>> getCabildos() async {
   }
 }
 
-class Home extends StatefulWidget {
+class App extends StatefulWidget {
   final Store<AppState> store = Store<AppState>(
     appReducer,
     initialState: AppState.initial(),
     middleware: [thunkMiddleware],
   );
-  final storage;
-  final String jwt;
-  final Map<String, dynamic> payload;
 
-   factory Home.fromBase64(storage, String jwt) =>
-    Home(
-      storage,
-      jwt,
-      json.decode(
-        ascii.decode(
-          base64.decode(base64.normalize(jwt.split(".")[1]))
-        )
-      )
-    );
-
-  Home(this.storage, this.jwt, this.payload);
+  App();
 
   @override
   _AppState createState() => _AppState();
 }
 
-class _AppState extends State<Home> {
+class _AppState extends State<App> {
   int selectedBarIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -141,7 +127,10 @@ class _AppState extends State<Home> {
   Widget build(BuildContext context) {
     return StoreProvider(
       store: widget.store,
-        child: DefaultTabController(
+      child: MaterialApp(
+        theme: cibicTheme,
+        debugShowCheckedModeBanner: false,
+        home: DefaultTabController(
           length: 4,
           child: Scaffold(
             appBar: BaseAppBar(this.appBarTitle),
@@ -153,6 +142,7 @@ class _AppState extends State<Home> {
                 BaseBar(this.selectedBarIndex, this.onBarButtonTapped),
           ),
         ),
+      ),
     );
   }
 }

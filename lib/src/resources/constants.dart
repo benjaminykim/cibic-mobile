@@ -27,9 +27,9 @@ const ACTIVITY_POLL = "poll";
 const ACTIVITY_TYPES = [ACTIVITY_DISCUSS, ACTIVITY_POLL, ACTIVITY_PROPOSAL];
 
 const Map<String, Color> labelColorPicker = {
-    ACTIVITY_PROPOSAL: LABEL_PROPOSAL_COLOR,
-    ACTIVITY_DISCUSS: LABEL_DISCUSS_COLOR,
-    ACTIVITY_POLL: LABEL_POLL_COLOR,
+  ACTIVITY_PROPOSAL: LABEL_PROPOSAL_COLOR,
+  ACTIVITY_DISCUSS: LABEL_DISCUSS_COLOR,
+  ACTIVITY_POLL: LABEL_POLL_COLOR,
 };
 const Map<String, String> labelTextPicker = {
   ACTIVITY_PROPOSAL: 'propuesta',
@@ -69,13 +69,32 @@ ThemeData get cibicTheme {
   );
 }
 
+
+const REGISTER_INPUT_DEC = const BoxDecoration(
+  color: Colors.white,
+  borderRadius: const BorderRadius.all(const Radius.circular(10)),
+);
+
+const REGISTER_INPUT_TXT = TextStyle(
+  fontSize: 15,
+  color: Colors.grey,
+  fontWeight: FontWeight.w300,
+);
+
+const REGISTER_TXT = TextStyle(
+  fontSize: 15,
+  color: Colors.white,
+  fontWeight: FontWeight.w300,
+);
+
 const URL_PROD_BASE = "http://cibic.io/api/user_id/feed_home";
 const URL_LOCALHOST_BASE = "http://10.0.2.2:3000/";
 const URL_AWS_BASE = "http://52.9.99.38:3000/";
+
 const ENDPOINT_ACTIVITY = "activity/";
-const ENDPOINT_POST_ACTIVITY = "activity";
-const ENDPOINT_CABILDOS = "cabildos/";
-const ENDPOINT_USER = "users/";
-const ENDPOINT_USER_FEED = "users/feed/";
+const ENDPOINT_PUBLIC_FEED = "activity/feed/public";
+const ENDPOINT_CABILDOS = "cabildo/";
+const ENDPOINT_USER = "user/";
+const ENDPOINT_USER_FEED = "user/feed/";
 
 const API_BASE = URL_LOCALHOST_BASE;

@@ -38,7 +38,7 @@ Future<void> addActivity(String title, String intro, String body,
 }
 
 Future<void> addPollActivity(String title, String cabildos, String tags) async {
-  final response = await http.post(URL_LOCALHOST_BASE + ENDPOINT_POST_ACTIVITY);
+  final response = await http.post(URL_LOCALHOST_BASE + ENDPOINT_ACTIVITY);
 
   if (response.statusCode == 200) {
     print("success");
