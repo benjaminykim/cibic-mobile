@@ -23,7 +23,7 @@ class MenuOverlay extends StatelessWidget {
                       height: 130,
                       child: DrawerHeader(
                         child: Image(
-                            image: AssetImage('assets/icons/cibic_logo.png')),
+                            image: AssetImage('assets/images/cibic_logo.png')),
                       ),
                     ),
                     Padding(

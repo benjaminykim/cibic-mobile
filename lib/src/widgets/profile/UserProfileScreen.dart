@@ -1,3 +1,4 @@
+import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:flutter/material.dart';
@@ -11,11 +12,23 @@ import 'package:cibic_mobile/src/widgets/activity/ActivityCard.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:redux/redux.dart';
 
-Future<UserModel> fetchUserFeed(String idUser) async {
+Future<UserModel> fetchUserProfile(String idUser) async {
+  final response = await http.get(API_BASE + ENDPOINT_USER + idUser);
+
+  if (response.statusCode == 200) {
+    print(response.body);
+    return UserModel.fromJson(json.decode(response.body));
+  } else {
+    throw Exception(
+        'Failed to load home feed: ' + response.statusCode.toString());
+  }
+}
+
+Future<FeedModel> fetchUserFeed(String idUser) async {
   final response = await http.get(API_BASE + ENDPOINT_USER_FEED + idUser);
 
   if (response.statusCode == 200) {
-    return UserModel.fromJson(json.decode(response.body));
+    return FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
   } else {
     throw Exception(
         'Failed to load home feed: ' + response.statusCode.toString());
@@ -33,6 +46,7 @@ class UserProfileScreen extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfileScreen> {
   Future<UserModel> user;
+  Future<FeedModel> feed;
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   int maxLines = 4;
   String followButtonText = "seguir";
@@ -41,7 +55,8 @@ class _UserProfileState extends State<UserProfileScreen> {
   @override
   void initState() {
     super.initState();
-    user = fetchUserFeed(widget.idUser);
+    this.user = fetchUserProfile(widget.idUser);
+    this.feed = fetchUserFeed(widget.idUser);
   }
 
   void onActivityTapped(ActivityScreen activityScreen, BuildContext context) {
@@ -53,7 +68,8 @@ class _UserProfileState extends State<UserProfileScreen> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     setState(() {
-      user = fetchUserFeed(widget.idUser);
+      this.user = fetchUserProfile(widget.idUser);
+      this.feed = fetchUserFeed(widget.idUser);
     });
     return null;
   }
@@ -68,6 +84,7 @@ class _UserProfileState extends State<UserProfileScreen> {
           title: FutureBuilder<UserModel>(
               future: this.user,
               builder: (context, snapshot) {
+                print(snapshot.data);
                 if (snapshot.hasData) {
                   return Text(snapshot.data.username,
                       style: TextStyle(
@@ -322,19 +339,18 @@ class _UserProfileState extends State<UserProfileScreen> {
                     child: RefreshIndicator(
                       key: refreshKey,
                       onRefresh: () => refreshList(),
-                      child: FutureBuilder<UserModel>(
-                        future: user,
+                      child: FutureBuilder<FeedModel>(
+                        future: this.feed,
                         builder: (context, feedSnap) {
                           if (feedSnap.hasData) {
-                            print("FeedSnap data: " + feedSnap.data.activityFeed.toString());
                             return ListView.separated(
                                 separatorBuilder: (context, index) => Divider(
                                       color: Colors.black,
                                     ),
-                                itemCount: feedSnap.data.activityFeed.length,
+                                itemCount: feedSnap.data.feed.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   ActivityModel activity =
-                                      feedSnap.data.activityFeed[index];
+                                      feedSnap.data.feed[index];
                                   return ActivityCard(activity);
                                 });
                           } else if (feedSnap.hasError) {

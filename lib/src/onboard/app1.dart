@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:cibic_mobile/src/home.dart';
-import 'package:cibic_mobile/src/welcome.dart';
+import 'package:cibic_mobile/src/onboard/home.dart';
+import 'package:cibic_mobile/src/onboard/welcome.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/reducers/reducers.dart';
 import 'package:flutter/material.dart';

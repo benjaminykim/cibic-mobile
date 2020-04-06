@@ -21,25 +21,22 @@ import 'package:redux_thunk/redux_thunk.dart';
 Future<String> createFakeUser(Store<AppState> store) async {
   String url = 'http://10.0.2.2:3000/users';
   Map<String, dynamic> userProfile = {
-      'username': 'benkim9611',
-      'password': 'fakepassword',
-      'email': 'fakeEmai111l@gmail.com',
-      'firstName': 'Benjamin',
-      'middleName': 'Young-min',
-      'lastName': 'Kim',
-      'maidenName': 'none',
-      'phone': 626692401232,
-      'rut': "1234567900",
-      'cabildos': [],
-      'files': "none",
-      'followers': [],
-      'following': [],
-      'activityFeed': []
-    };
-  Map map = {
-    'user': userProfile
+    'username': 'benkim9611',
+    'password': 'fakepassword',
+    'email': 'fakeEmai111l@gmail.com',
+    'firstName': 'Benjamin',
+    'middleName': 'Young-min',
+    'lastName': 'Kim',
+    'maidenName': 'none',
+    'phone': 626692401232,
+    'rut': "1234567900",
+    'cabildos': [],
+    'files': "none",
+    'followers': [],
+    'following': [],
+    'activityFeed': []
   };
-
+  Map map = {'user': userProfile};
 
   HttpClient httpClient = new HttpClient();
   HttpClientRequest request = await httpClient.postUrl(Uri.parse(url));
@@ -72,20 +69,29 @@ Future<List<dynamic>> getCabildos() async {
   }
 }
 
-class App extends StatefulWidget {
+class Home extends StatefulWidget {
   final Store<AppState> store = Store<AppState>(
     appReducer,
     initialState: AppState.initial(),
     middleware: [thunkMiddleware],
   );
+  final storage;
+  final String jwt;
+  final Map<String, dynamic> payload;
 
-  App();
+  factory Home.fromBase64(storage, String jwt) => Home(
+      storage,
+      jwt,
+      json.decode(
+          ascii.decode(base64.decode(base64.normalize(jwt.split(".")[1])))));
+
+  Home(this.storage, this.jwt, this.payload);
 
   @override
   _AppState createState() => _AppState();
 }
 
-class _AppState extends State<App> {
+class _AppState extends State<Home> {
   int selectedBarIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -100,7 +106,6 @@ class _AppState extends State<App> {
       appBarTitle = _feedNames[selectedBarIndex];
     });
   }
-
 
   @override
   void initState() {
@@ -119,7 +124,7 @@ class _AppState extends State<App> {
     _widgetOptions = [
       ActivityFeed("home"),
       Container(),
-      SelfProfileScreen("5e87da07ce5ed1002a2df152"),
+      SelfProfileScreen("5e8a53595481a7001943e9a1"),
       ActivityFeed("home"),
     ];
   }
@@ -128,20 +133,16 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return StoreProvider(
       store: widget.store,
-      child: MaterialApp(
-        theme: cibicTheme,
-        debugShowCheckedModeBanner: false,
-        home: DefaultTabController(
-          length: 4,
-          child: Scaffold(
-            appBar: BaseAppBar(this.appBarTitle),
-            body: Center(
-              child: _widgetOptions.elementAt(selectedBarIndex),
-            ),
-            drawer: MenuOverlay(),
-            bottomNavigationBar:
-                BaseBar(this.selectedBarIndex, this.onBarButtonTapped),
+      child: DefaultTabController(
+        length: 4,
+        child: Scaffold(
+          appBar: BaseAppBar(this.appBarTitle),
+          body: Center(
+            child: _widgetOptions.elementAt(selectedBarIndex),
           ),
+          drawer: MenuOverlay(),
+          bottomNavigationBar:
+              BaseBar(this.selectedBarIndex, this.onBarButtonTapped),
         ),
       ),
     );
