@@ -52,7 +52,6 @@ Future<String> createFakeUser(Store<AppState> store) async {
     Map<String, dynamic> user = jsonDecode(responseBody);
     reply = user['id'];
     userProfile['id'] = user['id'];
-    print(userProfile);
     store.dispatch(AppUser(userProfile));
   } else {
     throw Exception(
@@ -105,21 +104,11 @@ class _AppState extends State<App> {
   void initState() {
     super.initState();
 
-    // TESTING
-    createFakeUser(widget.store).then((value) {
-      print("create fake user: " + value);
-      return value;
-    }).then((value) {
-      getCabildos().then((value) {
-        widget.store.dispatch(GetCabildos(value));
-      });
-    });
-
     _widgetOptions = [
-      ActivityFeed("home"),
+      ActivityFeed("home", ""),
       Container(),
-      SelfProfileScreen("5e87da07ce5ed1002a2df152"),
-      ActivityFeed("home"),
+      SelfProfileScreen("5e87da07ce5ed1002a2df152", ""),
+      ActivityFeed("home", ""),
     ];
   }
 

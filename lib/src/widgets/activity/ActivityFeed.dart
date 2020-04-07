@@ -5,12 +5,16 @@ import 'package:http/http.dart' as http;
 
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
-import 'package:cibic_mobile/src/resources/api_provider.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityCard.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 
-Future<FeedModel> fetchHomeFeed() async {
-  final response = await http.get(URL_LOCALHOST_BASE + ENDPOINT_PUBLIC_FEED);
+Future<FeedModel> fetchPublicFeed(String jwt) async {
+  final response =
+      await http.get(API_BASE + ENDPOINT_PUBLIC_FEED, headers: {
+    'content-type': 'application/json',
+    'accept': 'application/json',
+    'authorization': "Bearer $jwt"
+  });
 
   if (response.statusCode == 200) {
     return FeedModel.fromJson(json.decode('{"feed":' + response.body + '}'));
@@ -19,21 +23,11 @@ Future<FeedModel> fetchHomeFeed() async {
   }
 }
 
-Future<FeedModel> fetchPublicFeed() async {
-  final response =
-      await testClient.get('https://cibic.io/api/user_id/feed_home');
-
-  if (response.statusCode == 200) {
-    return FeedModel.fromJson(json.decode(response.body));
-  } else {
-    throw Exception('Failed to load public feed');
-  }
-}
-
 class ActivityFeed extends StatefulWidget {
-  final String mode;
+  final String idUser;
+  final String jwt;
 
-  ActivityFeed(this.mode);
+  ActivityFeed(this.idUser, this.jwt);
 
   @override
   _ActivityFeedState createState() => _ActivityFeedState();
@@ -53,7 +47,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     setState(() {
-      feed = fetchHomeFeed();
+      feed = fetchPublicFeed(widget.jwt);
     });
     return null;
   }
@@ -66,7 +60,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
         key: refreshKey,
         onRefresh: refreshList,
         child: FutureBuilder<FeedModel>(
-          future: fetchHomeFeed(),
+          future: fetchPublicFeed(widget.jwt),
           builder: (context, feedSnap) {
             if (feedSnap.hasData) {
               return ListView.separated(
@@ -76,7 +70,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
                   itemCount: feedSnap.data.feed.length,
                   itemBuilder: (BuildContext context, int index) {
                     ActivityModel activity = feedSnap.data.feed[index];
-                    return ActivityCard(activity);
+                    return ActivityCard(activity, widget.jwt);
                   });
             } else if (feedSnap.hasError) {
               return Text("error: cibic servers are down",

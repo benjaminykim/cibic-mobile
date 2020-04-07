@@ -9,9 +9,12 @@ import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityCard.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 
-Future<CabildoModel> fetchUserFeed(String idCabildo) async {
-  final response = await http.get(API_BASE + ENDPOINT_CABILDOS + idCabildo);
-
+Future<CabildoModel> fetchCabildoProfile(String idCabildo, String jwt) async {
+  final response = await http.get(API_BASE + ENDPOINT_CABILDOS + idCabildo, headers: {
+    'content-type': 'application/json',
+    'accept': 'application/json',
+    'authorization': "Bearer $jwt"
+  });
   if (response.statusCode == 200) {
     return CabildoModel.fromJson(json.decode(response.body));
   } else {
@@ -20,10 +23,12 @@ Future<CabildoModel> fetchUserFeed(String idCabildo) async {
   }
 }
 
-Future<ActivityModel> getActivity(String idActivity) async {
-  final response = await http.get(API_BASE + ENDPOINT_ACTIVITY + idActivity);
-
-  print(API_BASE + ENDPOINT_ACTIVITY + idActivity);
+Future<ActivityModel> getActivity(String idActivity, String jwt) async {
+  final response = await http.get(API_BASE + ENDPOINT_ACTIVITY + idActivity, headers: {
+    'content-type': 'application/json',
+    'accept': 'application/json',
+    'authorization': "Bearer $jwt"
+  });
   if (response.statusCode == 200) {
     return ActivityModel.fromJson(json.decode(response.body));
   } else {
@@ -34,8 +39,9 @@ Future<ActivityModel> getActivity(String idActivity) async {
 
 class CabildoProfileScreen extends StatefulWidget {
   final String idCabildo;
+  final String jwt;
 
-  CabildoProfileScreen(this.idCabildo);
+  CabildoProfileScreen(this.idCabildo, this.jwt);
 
   @override
   _CabildoProfileState createState() => _CabildoProfileState();
@@ -51,7 +57,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
   @override
   void initState() {
     super.initState();
-    cabildo = fetchUserFeed(widget.idCabildo);
+    cabildo = fetchCabildoProfile(widget.idCabildo, widget.jwt);
   }
 
   void onActivityTapped(ActivityScreen activityScreen, BuildContext context) {
@@ -63,7 +69,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     setState(() {
-      cabildo = fetchUserFeed(widget.idCabildo);
+      cabildo = fetchCabildoProfile(widget.idCabildo, widget.jwt);
     });
     return null;
   }
@@ -333,8 +339,6 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                         future: this.cabildo,
                         builder: (context, feedSnap) {
                           if (feedSnap.hasData) {
-                            print("FeedSnap data: " +
-                                feedSnap.data.activities.toString());
                             return ListView.separated(
                                 separatorBuilder: (context, index) => Divider(
                                       color: Colors.black,
@@ -342,10 +346,10 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                                 itemCount: feedSnap.data.activities.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return FutureBuilder<ActivityModel>(
-                                    future: getActivity(feedSnap.data.activities[index]),
+                                    future: getActivity(feedSnap.data.activities[index], widget.jwt),
                                     builder: (context, feedSnap) {
                                       if (feedSnap.hasData) {
-                                        return (ActivityCard(feedSnap.data));
+                                        return (ActivityCard(feedSnap.data, widget.jwt));
                                       } else {
                                         return Center(
                                           child: Text(

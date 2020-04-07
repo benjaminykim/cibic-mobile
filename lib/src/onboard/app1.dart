@@ -23,6 +23,7 @@ class App extends StatelessWidget {
   App();
 
   Future<String> get jwtOrEmpty async {
+    storage.delete(key: "jwt");
     var jwt = await storage.read(key: "jwt");
     if (jwt == null) return "";
     return jwt;
@@ -45,7 +46,6 @@ class App extends StatelessWidget {
               var str = snapshot.data;
               var jwt = str.split(".");
 
-              print(jwt);
               if (jwt.length != 3) {
                   return Welcome(storage);
               } else {
@@ -53,7 +53,7 @@ class App extends StatelessWidget {
                     ascii.decode(base64.decode(base64.normalize(jwt[1]))));
                 if (DateTime.fromMillisecondsSinceEpoch(payload["exp"] * 1000)
                     .isAfter(DateTime.now())) {
-                  return Home(storage, jwt, payload);
+                  return Home(storage, str, payload, "");
                 } else {
                   return Welcome(storage);
                 }

@@ -10,17 +10,18 @@ class UserMetaData extends StatelessWidget {
   final String idUser;
   final String idCabildo;
   final int cp;
+  final String jwt;
 
-  UserMetaData(this.userName, this.cp, this.cabildoName, this.idUser, this.idCabildo);
+  UserMetaData(this.userName, this.cp, this.cabildoName, this.idUser, this.idCabildo, this.jwt);
 
   void onUserTapped(BuildContext context) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => UserProfileScreen(this.idUser)));
+        context, MaterialPageRoute(builder: (context) => UserProfileScreen(this.idUser, this.jwt)));
   }
 
   void onCabildoTapped(BuildContext context) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => CabildoProfileScreen(this.idCabildo)));
+        context, MaterialPageRoute(builder: (context) => CabildoProfileScreen(this.idCabildo, this.jwt)));
   }
 
   @override

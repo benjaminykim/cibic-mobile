@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 class Onboard extends StatefulWidget {
   final storage;
   final jwt;
+  final String idUser;
 
-  Onboard(this.storage, this.jwt);
+  Onboard(this.storage, this.jwt, this.idUser);
 
   @override
   _OnboardState createState() => _OnboardState();
@@ -42,7 +43,7 @@ class _OnboardState extends State<Onboard> {
         else if (this.imageIndex == 2) {
           Navigator.pop(context);
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => Home.fromBase64(widget.storage, widget.jwt)));
+              MaterialPageRoute(builder: (context) => Home.fromBase64(widget.storage, widget.jwt, widget.idUser)));
         }
       },
     );
