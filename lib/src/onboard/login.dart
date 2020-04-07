@@ -53,7 +53,7 @@ class Login extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  Home.fromBase64(storage, jwt)));
+                                  Home.fromBase64(storage, jwt, "")));
                     } else {
                       displayDialog(context, "An Error Occurred",
                           "No account was found matching that username and password");

@@ -11,34 +11,47 @@ import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityCard.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:redux/redux.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-Future<UserModel> fetchUserProfile(String idUser) async {
-  final response = await http.get(API_BASE + ENDPOINT_USER + idUser);
+final storage = new FlutterSecureStorage();
+
+Future<UserModel> fetchUserProfile(String idUser, String jwt) async {
+  final response = await http.get(API_BASE + ENDPOINT_USER + idUser, headers: {
+    'content-type': 'application/json',
+    'accept': 'application/json',
+    'authorization': "Bearer $jwt"
+  });
 
   if (response.statusCode == 200) {
-    print(response.body);
     return UserModel.fromJson(json.decode(response.body));
   } else {
     throw Exception(
-        'Failed to load home feed: ' + response.statusCode.toString());
+        'Failed to load user profile: ' + response.statusCode.toString());
   }
 }
 
-Future<FeedModel> fetchUserFeed(String idUser) async {
-  final response = await http.get(API_BASE + ENDPOINT_USER_FEED + idUser);
+Future<FeedModel> fetchUserFeed(String idUser, String jwt) async {
+  String jwt = await storage.read(key: "jwt");
+  final response =
+      await http.get(API_BASE + ENDPOINT_USER_FEED + idUser, headers: {
+    'content-type': 'application/json',
+    'accept': 'application/json',
+    'authorization': "Bearer $jwt"
+  });
 
   if (response.statusCode == 200) {
     return FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
   } else {
     throw Exception(
-        'Failed to load home feed: ' + response.statusCode.toString());
+        'Failed to load user feed: ' + response.statusCode.toString());
   }
 }
 
 class UserProfileScreen extends StatefulWidget {
   final String idUser;
+  final String jwt;
 
-  UserProfileScreen(this.idUser);
+  UserProfileScreen(this.idUser, this.jwt);
 
   @override
   _UserProfileState createState() => _UserProfileState();
@@ -55,8 +68,8 @@ class _UserProfileState extends State<UserProfileScreen> {
   @override
   void initState() {
     super.initState();
-    this.user = fetchUserProfile(widget.idUser);
-    this.feed = fetchUserFeed(widget.idUser);
+    this.user = fetchUserProfile(widget.idUser, widget.jwt);
+    this.feed = fetchUserFeed(widget.idUser, widget.jwt);
   }
 
   void onActivityTapped(ActivityScreen activityScreen, BuildContext context) {
@@ -68,8 +81,8 @@ class _UserProfileState extends State<UserProfileScreen> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     setState(() {
-      this.user = fetchUserProfile(widget.idUser);
-      this.feed = fetchUserFeed(widget.idUser);
+      this.user = fetchUserProfile(widget.idUser, widget.jwt);
+      this.feed = fetchUserFeed(widget.idUser, widget.jwt);
     });
     return null;
   }
@@ -84,7 +97,6 @@ class _UserProfileState extends State<UserProfileScreen> {
           title: FutureBuilder<UserModel>(
               future: this.user,
               builder: (context, snapshot) {
-                print(snapshot.data);
                 if (snapshot.hasData) {
                   return Text(snapshot.data.username,
                       style: TextStyle(
@@ -207,7 +219,9 @@ class _UserProfileState extends State<UserProfileScreen> {
                                                 SizedBox(
                                                   width: 5,
                                                 ),
-                                                Text(snapshot.data.citizenPoints.toString(),
+                                                Text(
+                                                    snapshot.data.citizenPoints
+                                                        .toString(),
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                       fontWeight:
@@ -218,14 +232,22 @@ class _UserProfileState extends State<UserProfileScreen> {
                                               // followers
                                               Column(
                                                 children: <Widget>[
-                                                  Text(snapshot.data.followers.length.toString(),
+                                                  Text(
+                                                      snapshot
+                                                          .data.followers.length
+                                                          .toString(),
                                                       style: TextStyle(
                                                         fontSize: 14,
                                                         color: Colors.black,
                                                         fontWeight:
                                                             FontWeight.w600,
                                                       )),
-                                                  Text((snapshot.data.cabildos.length > 1) ? "seguidores" : "seguidor",
+                                                  Text(
+                                                      (snapshot.data.cabildos
+                                                                  .length >
+                                                              1)
+                                                          ? "seguidores"
+                                                          : "seguidor",
                                                       style: TextStyle(
                                                         fontSize: 14,
                                                         color: Colors.black,
@@ -235,14 +257,22 @@ class _UserProfileState extends State<UserProfileScreen> {
                                               // cabildos
                                               Column(
                                                 children: <Widget>[
-                                                  Text(snapshot.data.cabildos.length.toString(),
+                                                  Text(
+                                                      snapshot
+                                                          .data.cabildos.length
+                                                          .toString(),
                                                       style: TextStyle(
                                                         fontSize: 14,
                                                         fontWeight:
                                                             FontWeight.w600,
                                                         color: Colors.black,
                                                       )),
-                                                  Text((snapshot.data.cabildos.length > 1) ? "cabildos" : "cabildo",
+                                                  Text(
+                                                      (snapshot.data.cabildos
+                                                                  .length >
+                                                              1)
+                                                          ? "cabildos"
+                                                          : "cabildo",
                                                       style: TextStyle(
                                                         fontSize: 14,
                                                         color: Colors.black,
@@ -351,7 +381,7 @@ class _UserProfileState extends State<UserProfileScreen> {
                                 itemBuilder: (BuildContext context, int index) {
                                   ActivityModel activity =
                                       feedSnap.data.feed[index];
-                                  return ActivityCard(activity);
+                                  return ActivityCard(activity, widget.jwt);
                                 });
                           } else if (feedSnap.hasError) {
                             return ListView(children: [

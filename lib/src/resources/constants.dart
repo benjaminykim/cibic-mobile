@@ -96,5 +96,6 @@ const ENDPOINT_PUBLIC_FEED = "activity/feed/public";
 const ENDPOINT_CABILDOS = "cabildo/";
 const ENDPOINT_USER = "user/";
 const ENDPOINT_USER_FEED = "user/feed/";
+const ENDPOINT_LOGIN = "auth/login/";
 
 const API_BASE = URL_LOCALHOST_BASE;

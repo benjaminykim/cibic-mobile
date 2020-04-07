@@ -8,8 +8,9 @@ import 'package:cibic_mobile/src/widgets/activity/components/card/UserMetaData.d
 
 class ActivityCard extends StatelessWidget {
   final ActivityModel activity;
+  final String jwt;
 
-  ActivityCard(this.activity);
+  ActivityCard(this.activity, this.jwt);
 
   void onActivityTapped(ActivityScreen activityScreen, BuildContext context) {
     Navigator.push(
@@ -28,16 +29,17 @@ class ActivityCard extends StatelessWidget {
             activity.idUser['citizenPoints'],
             activity.idCabildo['name'],
             activity.idUser['_id'],
-            activity.idCabildo['_id']
+            activity.idCabildo['_id'],
+            jwt
           ),
           GestureDetector(
               onTap: () =>
-                  this.onActivityTapped(ActivityScreen(activity), context),
+                  this.onActivityTapped(ActivityScreen(activity, jwt), context),
               child: CardScroll(activity.title, activity.activityType,
                   activity.text, activity.score, activity.comments)),
           GestureDetector(
             onTap: () =>
-                this.onActivityTapped(ActivityScreen(activity), context),
+                this.onActivityTapped(ActivityScreen(activity, jwt), context),
             child: CardMetaData(activity.pingNumber, activity.commentNumber,
                 activity.publishDate),
           ),

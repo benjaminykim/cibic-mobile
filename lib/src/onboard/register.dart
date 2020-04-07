@@ -35,45 +35,80 @@ class _RegisterState extends State<Register> {
     "contrasena"
   ];
   List<TextEditingController> inputCtlrs;
+  String idUser;
 
   @override
   initState() {
     super.initState();
-    this.inputCtlrs = [_emailController, _usernameController, _firstNameController, _lastNameController, _sexController, _phoneController, _passwordController];
+    this.inputCtlrs = [
+      _emailController,
+      _usernameController,
+      _firstNameController,
+      _lastNameController,
+      _sexController,
+      _phoneController,
+      _passwordController
+    ];
+  }
+
+  Map<String, dynamic> createUserRequestBody() {
+    Map<String, Map<String, dynamic>> userRequest = {
+      'user': {
+        'username': '${_usernameController.text}',
+        'password': '${_passwordController.text}',
+        'email': '${_emailController.text}',
+        'firstName': '${_firstNameController.text}',
+        'lastName': '${_lastNameController.text}',
+        'phone': _phoneController.text,
+        'cabildos': [],
+        'files': "none",
+        'followers': [],
+        'following': [],
+        'activityFeed': []
+      }
+    };
+    return userRequest;
   }
 
   Future<String> attemptSubmit() async {
-    Map<String, dynamic> userProfile = {
-      'username': '${_usernameController.text}',
-      'password': '${_passwordController.text}',
-      'email': '${_emailController.text}',
-      'firstName': '${_firstNameController.text}',
-      'lastName': '${_lastNameController.text}',
-      'phone': _phoneController.text,
-      'rut': "1234567900",
-      'cabildos': [],
-      'files': "none",
-      'followers': [],
-      'following': [],
-      'activityFeed': []
-    };
-    Map map = {'user': userProfile};
-
+    Map requestBody = createUserRequestBody();
     HttpClient httpClient = new HttpClient();
-    HttpClientRequest request = await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_USER));
+    HttpClientRequest request =
+        await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_USER));
     request.headers.set('content-type', 'application/json');
-    request.add(utf8.encode(json.encode(map)));
+    request.add(utf8.encode(json.encode(requestBody)));
     HttpClientResponse response = await request.close();
     httpClient.close();
 
     if (response.statusCode == 201) {
       final responseBody = await response.transform(utf8.decoder).join();
-      print(responseBody.toString());
-      Map<String, dynamic> user = jsonDecode(responseBody);
-      user['jwt'] = "fakejwtToken";
-      print(userProfile);
-      print(user);
-      return user['jwt'];
+      Map<String, dynamic> idResponse = jsonDecode(responseBody);
+      return idResponse['id'];
+    } else {
+      setState(() {
+        this.isSubmitable = false;
+      });
+      return null;
+    }
+  }
+
+  Future<String> attemptLogin() async {
+    Map requestBody = {
+      'email': '${_emailController.text}',
+      'password': '${_passwordController.text}'
+    };
+    HttpClient httpClient = new HttpClient();
+    HttpClientRequest request =
+        await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_LOGIN));
+    request.headers.set('content-type', 'application/json');
+    request.add(utf8.encode(json.encode(requestBody)));
+    HttpClientResponse response = await request.close();
+    httpClient.close();
+
+    if (response.statusCode == 201) {
+      final responseBody = await response.transform(utf8.decoder).join();
+      Map<String, dynamic> jwtResponse = jsonDecode(responseBody);
+      return jwtResponse['access_token'];
     } else {
       setState(() {
         this.isSubmitable = false;
@@ -183,15 +218,29 @@ class _RegisterState extends State<Register> {
     return GestureDetector(
       onTap: () {
         if (this.isSubmitable) {
-          Future<String> stat = attemptSubmit();
-          stat.then((jwt) {
-            if (jwt != null) {
-              print("User creation successful");
-              widget.storage.write(key: "jwt", value: jwt);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Onboard(widget.storage, jwt)));
+          Future<String> userCreation = attemptSubmit();
+          userCreation.then((idUser) {
+            if (idUser != null) {
+              print("user creation successful");
+              widget.storage.write(key: "cibicIdUser", value: idUser);
+              this.idUser = idUser;
+
+              Future<String> userLogin = attemptLogin();
+              userLogin.then((jwt) {
+                if (jwt != null) {
+                  print("user login successful");
+                  widget.storage.write(key: "jwt", value: jwt);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              Onboard(widget.storage, jwt, idUser)));
+                } else {
+                  setState(() {
+                    this.isSubmitable = false;
+                  });
+                }
+              });
             } else {
               setState(() {
                 this.isSubmitable = false;

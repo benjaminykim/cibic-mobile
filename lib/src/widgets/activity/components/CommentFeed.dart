@@ -7,8 +7,9 @@ import 'package:cibic_mobile/src/widgets/activity/components/card/UserMetaData.d
 
 class CommentFeed extends StatefulWidget {
   final List<CommentModel> comments;
+  final String jwt;
 
-  CommentFeed(this.comments);
+  CommentFeed(this.comments, this.jwt);
 
   @override
   _CommentFeedState createState() => _CommentFeedState();
@@ -42,7 +43,7 @@ class _CommentFeedState extends State<CommentFeed> {
           // USER META DATA
           Container(
             margin: const EdgeInsets.fromLTRB(30, 0, 0, 5),
-            child: UserMetaData(c.idUser['username'], 1, null, c.idUser['id'], null),
+            child: UserMetaData(c.idUser['username'], 1, null, c.idUser['id'], null, widget.jwt),
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,7 +146,7 @@ class _CommentFeedState extends State<CommentFeed> {
                 // RESPONSE USER METADATA
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
-                  child: UserMetaData(r.idUser['username'], 1, null, r.idUser['id'], null),
+                  child: UserMetaData(r.idUser['username'], 1, null, r.idUser['id'], null, widget.jwt),
                 ),
                 // RESPONSE TEXT CONTENT
                 Container(
