@@ -1,46 +1,14 @@
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/resources/api_provider.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'dart:async';
-import 'package:http/http.dart' as http;
 
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityCard.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:redux/redux.dart';
-
-Future<UserModel> fetchUserProfile(String idUser, String jwt) async {
-  final response = await http.get(API_BASE + ENDPOINT_USER + idUser, headers: {
-    'content-type': 'application/json',
-    'accept': 'application/json',
-    'authorization': "Bearer $jwt"
-  });
-
-  if (response.statusCode == 200) {
-    return UserModel.fromJson(json.decode(response.body));
-  } else {
-    throw Exception(
-        'Failed to load user profile: ' + response.statusCode.toString());
-  }
-}
-
-Future<FeedModel> fetchUserFeed(String idUser, String jwt) async {
-  final response =
-      await http.get(API_BASE + ENDPOINT_USER_FEED + idUser, headers: {
-    'content-type': 'application/json',
-    'accept': 'application/json',
-    'authorization': "Bearer $jwt"
-  });
-
-  if (response.statusCode == 200) {
-    return FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
-  } else {
-    throw Exception(
-        'Failed to load user feed: ' + response.statusCode.toString());
-  }
-}
 
 class SelfProfileScreen extends StatefulWidget {
   final String idUser;
@@ -216,7 +184,7 @@ class _UserProfileState extends State<SelfProfileScreen> {
                                         child: ListView(
                                           children: [
                                             Text(
-                                              'lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsusectetelit. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dollore.',
+                                              snapshot.data.desc ?? "",
                                               maxLines: this.maxLines,
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
@@ -275,9 +243,12 @@ class _UserProfileState extends State<SelfProfileScreen> {
                     ),
                   );
                 } else if (snapshot.hasError) {
-                  return Text("error");
+                  return Text(
+                      "Profile could not be reached, cibic server is down",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black));
                 }
-                return Text("username not found");
+                return CircularProgressIndicator();
               }),
           // feed
           Container(
@@ -300,12 +271,11 @@ class _UserProfileState extends State<SelfProfileScreen> {
                           return ActivityCard(activity, widget.jwt);
                         });
                   } else if (feedSnap.hasError) {
-                    return ListView(children: [
-                      Center(
-                        child: Text("error: cibic servers are down",
-                            style: TextStyle(color: Colors.black)),
-                      )
-                    ]);
+                    return ListView(
+                      children: [Text("error: cibic servers are down",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.black))],
+                    );
                   } else {
                     return CircularProgressIndicator();
                   }

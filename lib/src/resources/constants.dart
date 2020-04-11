@@ -16,10 +16,12 @@ const LABEL_DISCUSS_COLOR = Color(0xff000000);
 const LABEL_POLL_COLOR = Color(0xff000000);
 
 const CARD_DEFAULT = 0;
-const CARD_COMMENT = 1;
-const CARD_LAST = 2;
-const CARD_POLL = 3;
-const CARD_SCREEN = 4;
+const CARD_COMMENT_0 = 1;
+const CARD_COMMENT_1 = 2;
+const CARD_COMMENT_2 = 3;
+const CARD_LAST = 4;
+const CARD_POLL = 5;
+const CARD_SCREEN = 6;
 
 const ACTIVITY_DISCUSS = "discussion";
 const ACTIVITY_PROPOSAL = "proposal";
@@ -87,15 +89,33 @@ const REGISTER_TXT = TextStyle(
   fontWeight: FontWeight.w300,
 );
 
+
+Map<String, String> getAuthHeader(String jwt) {
+  return {
+      'content-type': 'application/json',
+      'accept': 'application/json',
+      'authorization': "Bearer $jwt"
+    };
+}
+
 const URL_PROD_BASE = "http://cibic.io/api/user_id/feed_home";
 const URL_LOCALHOST_BASE = "http://10.0.2.2:3000/";
 const URL_AWS_BASE = "http://52.9.99.38:3000/";
 
+const ENDPOINT_LOGIN = "auth/login/";
+
 const ENDPOINT_ACTIVITY = "activity/";
-const ENDPOINT_PUBLIC_FEED = "activity/feed/public";
+const ENDPOINT_PUBLIC_FEED = "activity/public";
+const ENDPOINT_ACTIVITY_REACT = "activity/react";
+
 const ENDPOINT_CABILDOS = "cabildo/";
+const ENDPOINT_CABILDO_PROFILE = "cabildo/profile/";
+const ENDPOINT_CABILDO_FEED = "cabildo/feed/";
+
 const ENDPOINT_USER = "user/";
 const ENDPOINT_USER_FEED = "user/feed/";
-const ENDPOINT_LOGIN = "auth/login/";
+const ENDPOINT_DEFAULT_FEED = "user/home/";
+const ENDPOINT_FOLLOW_USER = "user/followuser";
+const ENDPOINT_FOLLOW_CABILDO = "user/followcabildo";
 
 const API_BASE = URL_LOCALHOST_BASE;

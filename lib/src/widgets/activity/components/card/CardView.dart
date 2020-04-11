@@ -1,19 +1,16 @@
+import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src//widgets/utils/Label.dart';
-import 'package:cibic_mobile/src/models/comment_model.dart';
 import 'package:cibic_mobile/src/widgets/activity/components/card/Contents.dart';
 
 class CardView extends StatefulWidget {
-  final String title;
-  final String type;
-  final String text;
+  final ActivityModel activity;
+  final String jwt;
   final int mode;
-  final int score;
-  final CommentModel comment;
 
-  CardView(this.title, this.type, this.text, this.mode, this.score, this.comment);
+  CardView(this.activity, this.jwt, this.mode);
 
   @override
   _CardState createState() => _CardState();
@@ -30,7 +27,7 @@ class _CardState extends State<CardView> {
           borderRadius: BorderRadius.all(Radius.circular(30)),
           boxShadow: [
             BoxShadow(
-                color: labelColorPicker[this.widget.type],
+                color: labelColorPicker[this.widget.activity.activityType],
                 blurRadius: 3.0,
                 spreadRadius: 0,
                 offset: Offset(3.0, 3.0))
@@ -38,13 +35,13 @@ class _CardState extends State<CardView> {
       child: Stack(
         children: <Widget>[
           // LABEL
-          Label(this.widget.type),
+          Label(this.widget.activity.activityType),
           // TITLE
           Container(
             alignment: Alignment.topLeft,
             margin: const EdgeInsets.fromLTRB(30, 10, 85, 0),
             child: Text(
-              this.widget.title,
+              this.widget.activity.title,
               maxLines: 2,
               style: TextStyle(
                   color: Colors.black,
@@ -54,10 +51,8 @@ class _CardState extends State<CardView> {
           ),
           // CONTENTS
           Container(
-            alignment: Alignment.bottomCenter,
-            child: Contents(widget.title, widget.type, widget.text,
-                widget.mode, widget.comment),
-          ),
+              alignment: Alignment.bottomCenter,
+              child: Contents(widget.activity, widget.jwt, widget.mode)),
         ],
       ),
     );

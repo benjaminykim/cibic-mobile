@@ -339,8 +339,6 @@ class _ComposeState extends State<Compose> {
       createActivityButton(ACTIVITY_POLL, 0),
       createActivityButton(ACTIVITY_PROPOSAL, 0)
     ];
-
-
   }
 
   void dispose() {

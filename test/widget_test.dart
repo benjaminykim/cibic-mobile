@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:cibic_mobile/src/onboard/app1.dart';
+import 'package:cibic_mobile/src/onboard/app.dart';
 
 void main() async {
   final app = App();
