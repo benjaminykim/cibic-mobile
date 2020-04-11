@@ -1,26 +1,35 @@
+import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/widgets/activity/components/reaction_slider/ReactionSlider.dart';
 import 'package:cibic_mobile/src/widgets/utils/IconTag.dart';
-import 'package:cibic_mobile/src/models/comment_model.dart';
 
 class Contents extends StatefulWidget {
-  final String title;
-  final String type;
-  final String text;
+  final ActivityModel activity;
+  final String jwt;
   final int mode;
-  final CommentModel comment;
 
-  Contents(this.title, this.type, this.text, this.mode, this.comment);
+  Contents(this.activity, this.jwt, this.mode);
 
   @override
   _ContentsState createState() => _ContentsState();
 }
 
 class _ContentsState extends State<Contents> {
+  int commentIndex = -1;
+
+  @override
+  initState() {
+    super.initState();
+    if (widget.mode >= CARD_COMMENT_0 && widget.mode <= CARD_COMMENT_2) {
+      this.commentIndex = widget.mode - CARD_COMMENT_0;
+    }
+
+  }
+
   generateCardBody() {
-    if (widget.type == ACTIVITY_POLL && widget.mode == CARD_DEFAULT) {
+    if (widget.activity.activityType == ACTIVITY_POLL && widget.mode == CARD_DEFAULT) {
       //default poll card
       return (Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -32,7 +41,7 @@ class _ContentsState extends State<Contents> {
           Icon(Icons.thumb_up, size: 50)
         ],
       ));
-    } else if (widget.mode == CARD_COMMENT || widget.mode == CARD_LAST) {
+    } else if (widget.mode == CARD_COMMENT_0 || widget.mode == CARD_COMMENT_1 || widget.mode == CARD_COMMENT_2 || widget.mode == CARD_LAST) {
       // default comment card
       return Padding(
         padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
@@ -43,13 +52,13 @@ class _ContentsState extends State<Contents> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 IconTag(
-                    Icon(Icons.person, size: 17), widget.comment.idUser['username']),
+                    Icon(Icons.person, size: 17), widget.activity.comments[this.commentIndex].idUser['username']),
                 IconTag(
                     Icon(Icons.offline_bolt, size: 17), "102"),
               ],
             ),
             Text(
-              widget.comment.content,
+              widget.activity.comments[this.commentIndex].content,
               maxLines: 15,
               style: TextStyle(
                 fontSize: 14,
@@ -60,7 +69,7 @@ class _ContentsState extends State<Contents> {
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: Center(
                 child: Text(
-                  widget.comment.score.toString(),
+                  widget.activity.comments[this.commentIndex].score.toString(),
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.black,
@@ -79,7 +88,7 @@ class _ContentsState extends State<Contents> {
             alignment: Alignment.topLeft,
             padding: EdgeInsets.only(top:10),
             child: Text(
-              widget.text,
+              widget.activity.text,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 14,
@@ -89,7 +98,7 @@ class _ContentsState extends State<Contents> {
           ),
           Container(
             padding: EdgeInsets.fromLTRB(0, 5, 0, 10),
-            child: ReactionSlider(),
+            child: ReactionSlider(widget.activity, widget.jwt),
             alignment: Alignment.bottomCenter,
           ),
         ],
@@ -103,7 +112,7 @@ class _ContentsState extends State<Contents> {
             alignment: Alignment.topLeft,
             padding: EdgeInsets.only(top:10),
             child: Text(
-              widget.text,
+              widget.activity.text,
               maxLines: 15,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -115,7 +124,7 @@ class _ContentsState extends State<Contents> {
           ),
           Container(
             padding: EdgeInsets.fromLTRB(0, 5, 0, 10),
-            child: ReactionSlider(),
+            child: ReactionSlider(widget.activity, widget.jwt),
             alignment: Alignment.bottomCenter,
           ),
         ],
@@ -126,6 +135,7 @@ class _ContentsState extends State<Contents> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: Alignment.bottomCenter,
       padding: EdgeInsets.fromLTRB(0, 60, 0, 0),
       width: MediaQuery.of(context).size.width - 20 - 56,
       child: generateCardBody(),

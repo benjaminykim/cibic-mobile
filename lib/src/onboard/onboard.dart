@@ -43,7 +43,7 @@ class _OnboardState extends State<Onboard> {
         else if (this.imageIndex == 2) {
           Navigator.pop(context);
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => Home.fromBase64(widget.storage, widget.jwt, widget.idUser)));
+              MaterialPageRoute(builder: (context) => Home.fromBase64(widget.jwt)));
         }
       },
     );
@@ -54,6 +54,7 @@ class _OnboardState extends State<Onboard> {
         color: COLOR_DEEP_BLUE,
         child: Container(
           width: 300,
+          alignment: Alignment.center,
           child: images[this.imageIndex],
         ),
       ),

@@ -222,7 +222,6 @@ class _RegisterState extends State<Register> {
           userCreation.then((idUser) {
             if (idUser != null) {
               print("user creation successful");
-              widget.storage.write(key: "cibicIdUser", value: idUser);
               this.idUser = idUser;
 
               Future<String> userLogin = attemptLogin();
@@ -269,7 +268,6 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       resizeToAvoidBottomInset: false,
       body: Container(
         color: COLOR_DEEP_BLUE,

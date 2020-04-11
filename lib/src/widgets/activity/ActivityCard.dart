@@ -10,7 +10,14 @@ class ActivityCard extends StatelessWidget {
   final ActivityModel activity;
   final String jwt;
 
-  ActivityCard(this.activity, this.jwt);
+  ActivityCard(this.activity, this.jwt) {
+    if (this.activity.idCabildo == null) {
+      this.activity.idCabildo = {
+        'name': 'todo',
+        '_id': 'todo',
+      };
+    }
+  }
 
   void onActivityTapped(ActivityScreen activityScreen, BuildContext context) {
     Navigator.push(
@@ -24,24 +31,16 @@ class ActivityCard extends StatelessWidget {
     return Container(
       child: Column(
         children: <Widget>[
-          UserMetaData(
-            activity.idUser['username'],
-            activity.idUser['citizenPoints'],
-            activity.idCabildo['name'],
-            activity.idUser['_id'],
-            activity.idCabildo['_id'],
-            jwt
-          ),
+          UserMetaData.fromActivity(activity, jwt),
           GestureDetector(
               onTap: () =>
                   this.onActivityTapped(ActivityScreen(activity, jwt), context),
-              child: CardScroll(activity.title, activity.activityType,
-                  activity.text, activity.score, activity.comments)),
+              child: CardScroll(activity, jwt)),
           GestureDetector(
             onTap: () =>
                 this.onActivityTapped(ActivityScreen(activity, jwt), context),
-            child: CardMetaData(activity.pingNumber, activity.commentNumber,
-                activity.publishDate),
+            child: CardMetaData(
+                activity.ping, activity.commentNumber, activity.publishDate),
           ),
         ],
       ),

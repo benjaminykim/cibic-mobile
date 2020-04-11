@@ -1,6 +1,10 @@
+import 'package:cibic_mobile/src/onboard/app.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+final storage = FlutterSecureStorage();
 
 class MenuOverlay extends StatelessWidget {
   @override
@@ -88,6 +92,47 @@ class MenuOverlay extends StatelessWidget {
                   ),
                   onTap: () {
                     Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.only(left: 20),
+                  title: Text(
+                    'Cerrar Sesion',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                  onTap: () {
+                    return showDialog(
+                      context: context,
+                      builder: (context) {
+                        // return object of type Dialog
+                        return AlertDialog(
+                          title: new Text("Cerrar Sesion"),
+                          content: new Text("Quierers cerrar tu sesion?"),
+                          actions: <Widget>[
+                            // usually buttons at the bottom of the dialog
+                            new FlatButton(
+                              child: new Text("Si"),
+                              onPressed: () {
+                                storage.delete(key: "jwt");
+                                Navigator.of(context)
+                                    .popUntil((route) => route.isFirst);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            App()));
+                              },
+                            ),
+                            new FlatButton(
+                              child: new Text("No"),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                 ),
               ],

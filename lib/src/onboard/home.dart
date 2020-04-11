@@ -19,20 +19,19 @@ class Home extends StatefulWidget {
     initialState: AppState.initial(),
     middleware: [thunkMiddleware],
   );
-  final storage;
   final String jwt;
-  final Map<String, dynamic> payload;
   final String idUser;
 
-  factory Home.fromBase64(storage, String jwt, String idUser) => Home(
-      storage,
+  factory Home.fromBase64(String jwt) => Home(
       jwt,
       json.decode(
-          ascii.decode(base64.decode(base64.normalize(jwt.split(".")[1])))),
-      idUser
+          ascii.decode(base64.decode(base64.normalize(jwt.split(".")[1]))))['id'],
           );
 
-  Home(this.storage, this.jwt, this.payload, this.idUser);
+  Home(this.jwt, this.idUser) {
+    print("HOME CONSTRUCTOR ${this.idUser}");
+    print("JWT CONSTRUCTOR ${this.jwt}");
+  }
 
   @override
   _AppState createState() => _AppState();
@@ -45,7 +44,7 @@ class _AppState extends State<Home> {
   List<dynamic> feed;
   List<Widget> _widgetOptions;
   String appBarTitle = "INICIO";
-  List<String> _feedNames = ["INICIO", "PUBLICO", "USARIO", "ESTADISTICAS"];
+  List<String> _feedNames = ["INICIO", "PUBLICO", "USUARIO", "ESTADISTICAS"];
 
   void onBarButtonTapped(int index) {
     setState(() {
@@ -59,10 +58,10 @@ class _AppState extends State<Home> {
     super.initState();
 
     _widgetOptions = [
-      ActivityFeed(widget.idUser, widget.jwt),
-      Container(),
+      ActivityFeed(widget.idUser, widget.jwt, "default"),
+      ActivityFeed(widget.idUser, widget.jwt, "public"),
       SelfProfileScreen(widget.idUser, widget.jwt),
-      ActivityFeed(widget.idUser, widget.jwt),
+      Container(),
     ];
   }
 

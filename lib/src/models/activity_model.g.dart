@@ -8,11 +8,12 @@ part of 'activity_model.dart';
 
 ActivityModel _$ActivityModelFromJson(Map<String, dynamic> json) {
   return ActivityModel(
+    json['_id'] as String,
     json['idUser'] as Map<String, dynamic>,
     json['idCabildo'] as Map<String, dynamic>,
     json['activityType'] as String,
     json['score'] as int,
-    json['pingNumber'] as int,
+    json['ping'] as int,
     json['commentNumber'] as int,
     json['publishDate'] == null
         ? null
@@ -23,18 +24,23 @@ ActivityModel _$ActivityModelFromJson(Map<String, dynamic> json) {
         ?.map((e) =>
             e == null ? null : CommentModel.fromJson(e as Map<String, dynamic>))
         ?.toList(),
-    (json['reactions'] as List)?.map((e) => e as String)?.toList(),
-    (json['votes'] as List)?.map((e) => e as String)?.toList(),
+    (json['reactions'] as List)
+        ?.map((e) => e == null
+            ? null
+            : ReactionModel.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+    (json['votes'] as List)?.map((e) => e as Map<String, dynamic>)?.toList(),
   );
 }
 
 Map<String, dynamic> _$ActivityModelToJson(ActivityModel instance) =>
     <String, dynamic>{
+      '_id': instance.id,
       'idUser': instance.idUser,
       'idCabildo': instance.idCabildo,
       'activityType': instance.activityType,
       'score': instance.score,
-      'pingNumber': instance.pingNumber,
+      'ping': instance.ping,
       'commentNumber': instance.commentNumber,
       'publishDate': instance.publishDate?.toIso8601String(),
       'title': instance.title,
