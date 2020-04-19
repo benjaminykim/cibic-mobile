@@ -2,7 +2,7 @@ import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import 'package:cibic_mobile/src/widgets/activity/components/card/CardView.dart';
+import 'package:cibic_mobile/src/widgets/activity/card/CardView.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 
 class CardScroll extends StatefulWidget {

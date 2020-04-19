@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/models/comment_model.dart';
 import 'package:cibic_mobile/src/models/reply_model.dart';
-import 'package:cibic_mobile/src/widgets/activity/components/card/UserMetaData.dart';
+import 'package:cibic_mobile/src/widgets/activity/card/UserMetaData.dart';
 
 class CommentFeed extends StatefulWidget {
   final List<CommentModel> comments;
