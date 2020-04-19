@@ -1,4 +1,4 @@
-package com.example.cibic_mobile
+package com.cibic_mobile
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

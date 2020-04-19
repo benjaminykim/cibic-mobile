@@ -43,7 +43,7 @@ class _CommentFeedState extends State<CommentFeed> {
           // USER META DATA
           Container(
             margin: const EdgeInsets.fromLTRB(30, 0, 0, 5),
-            child: UserMetaData(c.idUser['username'], 1, null, c.idUser['id'], null, widget.jwt, null),
+            child: UserMetaData(c.idUser['username'], c.idUser['citizenPoints'], null, c.idUser['id'], null, widget.jwt, null),
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
