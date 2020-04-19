@@ -149,7 +149,6 @@ Future<String> reactToActivity(
       newReaction = false;
       idReaction = activity.reactions[i].id;
       activity.reactions[i].value = reactValue;
-      print("FOUND OLD REACTION: $idReaction");
       break;
     }
   }
@@ -157,7 +156,7 @@ Future<String> reactToActivity(
   if (newReaction) {
     var reaction = {
       "idActivity": activity.id,
-      "reaction": {"idUser": idUser, "value": reactValue.toString()}
+      "reaction": {"idUser": idUser, "value": reactValue}
     };
 
     HttpClient httpClient = new HttpClient();
@@ -170,24 +169,22 @@ Future<String> reactToActivity(
     HttpClientResponse response = await request.close();
     httpClient.close();
 
-    print("DEBUG: post reaction");
     printFetchRequest(activity.id, jwt);
     print(response.statusCode);
     if (response.statusCode == 201) {
       final responseBody = await response.transform(utf8.decoder).join();
-      print(responseBody);
       String id = json.decode(responseBody)['id'];
-      activity.reactions.add(ReactionModel.fromJson({"idUser": idUser, "id": id}));
-      //activity.reactions.add(jkk);
+      ReactionModel newReaction = ReactionModel.fromJson({"_id": id, "idUser": idUser, "value": reactValue});
+      activity.reactions.add(newReaction);
       return responseBody;
     } else {
       return "error";
     }
   } else {
     var reaction = {
-      "idReaction": idReaction,
       "idActivity": activity.id,
-      "value": reactValue.toString()
+      "idReaction": idReaction,
+      "value": reactValue
     };
 
     HttpClient httpClient = new HttpClient();
@@ -200,7 +197,6 @@ Future<String> reactToActivity(
     HttpClientResponse response = await request.close();
     httpClient.close();
 
-    print("DEBUG: put reaction");
     printFetchRequest(activity.id, jwt);
     print(response.statusCode);
     if (response.statusCode == 200) {

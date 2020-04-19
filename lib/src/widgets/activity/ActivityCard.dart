@@ -19,8 +19,8 @@ class ActivityCard extends StatelessWidget {
     }
   }
 
-  void onActivityTapped(ActivityScreen activityScreen, BuildContext context) {
-    Navigator.push(
+  void onActivityTapped(ActivityScreen activityScreen, BuildContext context) async {
+    await Navigator.push(
         context, MaterialPageRoute(builder: (context) => activityScreen));
   }
 
@@ -32,10 +32,13 @@ class ActivityCard extends StatelessWidget {
       child: Column(
         children: <Widget>[
           UserMetaData.fromActivity(activity, jwt),
+          CardScroll(activity, jwt),
+          /*
           GestureDetector(
               onTap: () =>
                   this.onActivityTapped(ActivityScreen(activity, jwt), context),
               child: CardScroll(activity, jwt)),
+              */
           GestureDetector(
             onTap: () =>
                 this.onActivityTapped(ActivityScreen(activity, jwt), context),

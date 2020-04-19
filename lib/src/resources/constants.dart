@@ -118,4 +118,4 @@ const ENDPOINT_DEFAULT_FEED = "user/home/";
 const ENDPOINT_FOLLOW_USER = "user/followuser";
 const ENDPOINT_FOLLOW_CABILDO = "user/followcabildo";
 
-const API_BASE = URL_LOCALHOST_BASE;
+const API_BASE = URL_AWS_BASE;
