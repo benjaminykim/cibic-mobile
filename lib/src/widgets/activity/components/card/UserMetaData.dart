@@ -18,7 +18,6 @@ class UserMetaData extends StatelessWidget {
       this.idCabildo, this.jwt, this.followers);
 
   factory UserMetaData.fromActivity(ActivityModel activity, String jwt) {
-    print(activity.idUser.toString());
     return UserMetaData(
         activity.idUser['username'],
         activity.idUser['citizenPoints'],

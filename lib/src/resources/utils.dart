@@ -32,7 +32,5 @@ String extractID(String token) {
   }
 
   String id = parseJwt(token)['id'];
-  print("ID: $id");
-  print("JWT ${parseJwt(token).toString()}");
   return id;
 }

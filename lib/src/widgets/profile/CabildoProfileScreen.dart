@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
-import 'package:cibic_mobile/src/widgets/activity/ActivityCard.dart';
+import 'package:cibic_mobile/src/widgets/activity/ActivityView.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 
 class CabildoProfileScreen extends StatefulWidget {
@@ -334,7 +334,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                                     ),
                                 itemCount: feedSnap.data.feed.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  return (ActivityCard(
+                                  return (ActivityView(
                                       feedSnap.data.feed[index], widget.jwt));
                                 });
                           } else if (feedSnap.hasError) {

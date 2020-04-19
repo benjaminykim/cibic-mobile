@@ -221,13 +221,11 @@ class _RegisterState extends State<Register> {
           Future<String> userCreation = attemptSubmit();
           userCreation.then((idUser) {
             if (idUser != null) {
-              print("user creation successful");
               this.idUser = idUser;
 
               Future<String> userLogin = attemptLogin();
               userLogin.then((jwt) {
                 if (jwt != null) {
-                  print("user login successful");
                   widget.storage.write(key: "jwt", value: jwt);
                   Navigator.push(
                       context,

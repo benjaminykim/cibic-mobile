@@ -2,15 +2,16 @@ import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import 'package:cibic_mobile/src/widgets/activity/components/card/CardScrollPhysics.dart';
 import 'package:cibic_mobile/src/widgets/activity/components/card/CardView.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 
 class CardScroll extends StatefulWidget {
   final ActivityModel activity;
   final String jwt;
+  final int userReaction;
+  final Function onReact;
 
-  CardScroll(this.activity, this.jwt);
+  CardScroll(this.activity, this.jwt, this.userReaction, this.onReact);
 
   @override
   _CardScrollState createState() => _CardScrollState();
@@ -37,10 +38,10 @@ class _CardScrollState extends State<CardScroll> {
 
   List<Widget> generateCards() {
     List<Widget> widgets = [];
-    widgets.add(CardView(widget.activity, widget.jwt, CARD_DEFAULT));
+    widgets.add(CardView(widget.activity, widget.jwt, CARD_DEFAULT, widget.userReaction, widget.onReact));
     if (widget.activity.comments != null) {
       for (int i = 0; i < 3; i++) {
-        widgets.add(CardView(widget.activity, widget.jwt, CARD_COMMENT_0 + i));
+        widgets.add(CardView(widget.activity, widget.jwt, CARD_COMMENT_0 + i, widget.userReaction, widget.onReact));
       }
     } else {
       // empty card input comment view
@@ -51,19 +52,72 @@ class _CardScrollState extends State<CardScroll> {
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
-    return ConstrainedBox(
-      constraints: new BoxConstraints(
-        minHeight: 250,
-        maxHeight: 415,
-      ),
-      child: ListView(
-        shrinkWrap: true,
-        dragStartBehavior: DragStartBehavior.down,
-        scrollDirection: Axis.horizontal,
-        children: generateCards(),
-        controller: _controller,
-        physics: _physics,
-      ),
+    return Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          new SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            controller: _controller,
+            physics: _physics,
+            dragStartBehavior: DragStartBehavior.down,
+            child: new Row(
+              children: generateCards(),
+            ),
+          ),
+        ],
+      )
     );
   }
+}
+
+class CardScrollPhysics extends ScrollPhysics {
+  final double itemDimension;
+
+  CardScrollPhysics({this.itemDimension, ScrollPhysics parent})
+      : super(parent: parent);
+
+  @override
+  CardScrollPhysics applyTo(ScrollPhysics ancestor) {
+    return CardScrollPhysics(
+        itemDimension: itemDimension, parent: buildParent(ancestor));
+  }
+
+  double _getPage(ScrollPosition position) {
+    return position.pixels / itemDimension;
+  }
+
+  double _getPixels(double page) {
+    return page * itemDimension;
+  }
+
+  double _getTargetPixels(
+      ScrollPosition position, Tolerance tolerance, double velocity) {
+    double page = _getPage(position);
+    if (velocity < -tolerance.velocity) {
+      page -= 0.5;
+    } else if (velocity > tolerance.velocity) {
+      page += 0.5;
+    }
+    return _getPixels(page.roundToDouble());
+  }
+
+  @override
+  Simulation createBallisticSimulation(
+      ScrollMetrics position, double velocity) {
+    // If we're out of range and not headed back in range, defer to the parent
+    // ballistics, which should put us back in range at a page boundary.
+    if ((velocity <= 0.0 && position.pixels <= position.minScrollExtent) ||
+        (velocity >= 0.0 && position.pixels >= position.maxScrollExtent))
+      return super.createBallisticSimulation(position, velocity);
+    final Tolerance tolerance = this.tolerance;
+    final double target = _getTargetPixels(position, tolerance, velocity);
+    if (target != position.pixels)
+      return ScrollSpringSimulation(spring, position.pixels, target, velocity,
+          tolerance: tolerance);
+    return null;
+  }
+
+  @override
+  bool get allowImplicitScrolling => false;
 }

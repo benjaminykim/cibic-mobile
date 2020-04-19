@@ -1,4 +1,4 @@
-import 'package:cibic_mobile/src/widgets/activity/ActivityCard.dart';
+import 'package:cibic_mobile/src/widgets/activity/ActivityView.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:async';
@@ -14,15 +14,11 @@ Future<FeedModel> fetchFeed(String jwt, String mode) async {
   if (mode == "public") {
     response = await http.get(API_BASE + ENDPOINT_PUBLIC_FEED, headers: header);
   } else {
-    // changes to user feed
-    // API_BASE + 'home/'
-    //response = await http.get(API_BASE + ENDPOINT_DEFAULT_FEED, headers: header);
     response =
         await http.get(API_BASE + ENDPOINT_DEFAULT_FEED, headers: header);
   }
 
   if (response != null && response.statusCode == 200) {
-    print(response.body);
     return FeedModel.fromJson(json.decode('{"feed":' + response.body + '}'));
   } else {
     throw Exception(
@@ -79,7 +75,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
                     itemCount: feedSnap.data.feed.length,
                     itemBuilder: (BuildContext context, int index) {
                       ActivityModel activity = feedSnap.data.feed[index];
-                      return ActivityCard(activity, widget.jwt);
+                      return ActivityView(activity, widget.jwt);
                     });
               } else {
                 return ListView(
