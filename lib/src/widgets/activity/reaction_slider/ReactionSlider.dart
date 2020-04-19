@@ -2,7 +2,7 @@ import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/resources/api_provider.dart';
 import 'package:flutter/material.dart';
 
-import 'package:cibic_mobile/src/widgets/activity/components/reaction_slider/ReactionPainter.dart';
+import 'package:cibic_mobile/src/widgets/activity/reaction_slider/ReactionPainter.dart';
 
 class ReactionSlider extends StatefulWidget {
   final ActivityModel activity;

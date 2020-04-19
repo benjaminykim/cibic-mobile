@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
-import 'package:cibic_mobile/src/widgets/activity/components/card/CardMetaData.dart';
-import 'package:cibic_mobile/src/widgets/activity/components/card/CardScroll.dart';
-import 'package:cibic_mobile/src/widgets/activity/components/card/UserMetaData.dart';
+import 'package:cibic_mobile/src/widgets/activity/card/CardMetaData.dart';
+import 'package:cibic_mobile/src/widgets/activity/card/CardScroll.dart';
+import 'package:cibic_mobile/src/widgets/activity/card/UserMetaData.dart';
 
 class ActivityView extends StatefulWidget {
   final ActivityModel activity;
