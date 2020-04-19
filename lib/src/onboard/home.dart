@@ -28,10 +28,7 @@ class Home extends StatefulWidget {
           ascii.decode(base64.decode(base64.normalize(jwt.split(".")[1]))))['id'],
           );
 
-  Home(this.jwt, this.idUser) {
-    print("HOME CONSTRUCTOR ${this.idUser}");
-    print("JWT CONSTRUCTOR ${this.jwt}");
-  }
+  Home(this.jwt, this.idUser);
 
   @override
   _AppState createState() => _AppState();

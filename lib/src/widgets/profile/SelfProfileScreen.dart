@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:cibic_mobile/src/models/activity_model.dart';
-import 'package:cibic_mobile/src/widgets/activity/ActivityCard.dart';
+import 'package:cibic_mobile/src/widgets/activity/ActivityView.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:redux/redux.dart';
 
@@ -268,7 +268,7 @@ class _UserProfileState extends State<SelfProfileScreen> {
                         itemCount: feedSnap.data.feed.length,
                         itemBuilder: (BuildContext context, int index) {
                           ActivityModel activity = feedSnap.data.feed[index];
-                          return ActivityCard(activity, widget.jwt);
+                          return ActivityView(activity, widget.jwt);
                         });
                   } else if (feedSnap.hasError) {
                     return ListView(
