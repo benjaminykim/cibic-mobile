@@ -1,3 +1,4 @@
+import 'package:cibic_mobile/src/resources/api_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
@@ -8,16 +9,15 @@ import 'package:cibic_mobile/src/widgets/activity/card/UserMetaData.dart';
 class CommentFeed extends StatefulWidget {
   final List<CommentModel> comments;
   final String jwt;
+  final String idActivity;
 
-  CommentFeed(this.comments, this.jwt);
+  CommentFeed(this.comments, this.jwt, this.idActivity);
 
   @override
   _CommentFeedState createState() => _CommentFeedState();
 }
 
 class _CommentFeedState extends State<CommentFeed> {
-  final inputCommentController = TextEditingController();
-
   final BoxShadow commentShadow = BoxShadow(
     color: Color(0xff000000),
     blurRadius: 0,
@@ -28,6 +28,7 @@ class _CommentFeedState extends State<CommentFeed> {
   int maxCommentView = 3;
 
   Container comment(CommentModel c, BuildContext context) {
+    final inputCommentController = TextEditingController();
     return Container(
       padding: EdgeInsets.fromLTRB(0, 10, 0, 2),
       width: MediaQuery.of(context).size.width - 20,
@@ -43,7 +44,8 @@ class _CommentFeedState extends State<CommentFeed> {
           // USER META DATA
           Container(
             margin: const EdgeInsets.fromLTRB(30, 0, 0, 5),
-            child: UserMetaData(c.idUser['username'], c.idUser['citizenPoints'], null, c.idUser['id'], null, widget.jwt, null),
+            child: UserMetaData(c.idUser['username'], c.idUser['citizenPoints'],
+                null, c.idUser['id'], null, widget.jwt, null),
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +54,11 @@ class _CommentFeedState extends State<CommentFeed> {
               Padding(
                 padding: const EdgeInsets.only(left: 5),
                 child: Column(children: <Widget>[
-                  Icon(Icons.keyboard_arrow_up, size: 20),
+                  GestureDetector(
+                      child: Icon(Icons.keyboard_arrow_up, size: 20),
+                      onTap: () {
+                        voteToComment(widget.jwt, 1, widget.idActivity, c.id);
+                      }),
                   Text(
                     c.score.toString(),
                     style: TextStyle(
@@ -60,7 +66,11 @@ class _CommentFeedState extends State<CommentFeed> {
                       color: Colors.black,
                     ),
                   ),
-                  Icon(Icons.keyboard_arrow_down, size: 20),
+                  GestureDetector(
+                      child: Icon(Icons.keyboard_arrow_down, size: 20),
+                      onTap: () {
+                        voteToComment(widget.jwt, -1, widget.idActivity, c.id);
+                      }),
                 ]),
               ),
               // COMMENT CONTENTS
@@ -92,7 +102,13 @@ class _CommentFeedState extends State<CommentFeed> {
             child: TextField(
               controller: inputCommentController,
               decoration: InputDecoration(
-                suffixIcon: Icon(Icons.send, color: Colors.black),
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.send, color: Colors.black),
+                  onPressed: () {
+                    replyToComment(widget.jwt, inputCommentController.text,
+                        widget.idActivity, c.id);
+                  },
+                ),
                 border: InputBorder.none,
                 hintText: "comenta...",
                 hintStyle: TextStyle(
@@ -126,7 +142,10 @@ class _CommentFeedState extends State<CommentFeed> {
             height: 80,
             child: Column(
               children: <Widget>[
-                Icon(Icons.keyboard_arrow_up, size: 20),
+                GestureDetector(child: Icon(Icons.keyboard_arrow_up, size: 20),
+                onTap: () {
+                  voteToReply(widget.jwt, 1, widget.idActivity, r.id);
+                }),
                 Text(
                   r.score.toString(),
                   style: TextStyle(
@@ -134,7 +153,10 @@ class _CommentFeedState extends State<CommentFeed> {
                     color: Colors.black,
                   ),
                 ),
-                Icon(Icons.keyboard_arrow_down, size: 20),
+                GestureDetector(child: Icon(Icons.keyboard_arrow_down, size: 20),
+                onTap: () {
+                  voteToReply(widget.jwt, -1, widget.idActivity, r.id);
+                }),
               ],
             ),
           ),
@@ -146,7 +168,8 @@ class _CommentFeedState extends State<CommentFeed> {
                 // RESPONSE USER METADATA
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
-                  child: UserMetaData(r.idUser['username'], 1, null, r.idUser['id'], null, widget.jwt, null),
+                  child: UserMetaData(r.idUser['username'], 1, null,
+                      r.idUser['id'], null, widget.jwt, null),
                 ),
                 // RESPONSE TEXT CONTENT
                 Container(
@@ -161,11 +184,31 @@ class _CommentFeedState extends State<CommentFeed> {
                   ),
                 ),
                 // RESPONSE ICON
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 0, 10, 5),
-                  alignment: Alignment.bottomRight,
-                  child: Icon(Icons.reply, size: 20),
-                ),
+                GestureDetector(
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(0, 0, 10, 5),
+                      alignment: Alignment.bottomRight,
+                      child: Icon(Icons.reply, size: 20),
+                    ),
+                    onTap: () {
+                      print("attempt to reply to reply");
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        elevation: 5,
+                        backgroundColor: Colors.transparent,
+                        builder: (bContext) {
+                          return GestureDetector(
+                            onTap: () {},
+                            child: Container(
+                              height: 10,
+                              color: Colors.black,
+                            ),
+                            behavior: HitTestBehavior.opaque,
+                          );
+                        },
+                      );
+                    }),
               ],
             ),
           ),
@@ -183,8 +226,9 @@ class _CommentFeedState extends State<CommentFeed> {
   }
 
   Container generateNewCommentInput(BuildContext context) {
+    final inputCommentController = TextEditingController();
     return Container(
-      padding: EdgeInsets.fromLTRB(20, 10, 20, 2),
+      padding: EdgeInsets.fromLTRB(30, 10, 30, 2),
       width: MediaQuery.of(context).size.width - 20,
       height: 75,
       margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
@@ -212,7 +256,15 @@ class _CommentFeedState extends State<CommentFeed> {
             child: TextField(
               controller: inputCommentController,
               decoration: InputDecoration(
-                suffixIcon: Icon(Icons.send, color: Colors.black),
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.send),
+                  color: Colors.black,
+                  onPressed: () {
+                    String commentText = inputCommentController.text;
+                    commentToActivity(
+                        widget.jwt, commentText, widget.idActivity);
+                  },
+                ),
                 border: InputBorder.none,
                 hintText: "comenta...",
                 hintStyle: TextStyle(
@@ -240,26 +292,22 @@ class _CommentFeedState extends State<CommentFeed> {
       }
       if (responses.length > this.maxCommentView) {
         responseCards.add(
-          // SEE MORE COMMENTS BUTTON
-          Container(
-            margin: EdgeInsets.fromLTRB(0, 0, 30, 5),
-            alignment: Alignment.bottomRight,
-            child: GestureDetector(
+            // SEE MORE COMMENTS BUTTON
+            Container(
+          margin: EdgeInsets.fromLTRB(0, 0, 30, 5),
+          alignment: Alignment.bottomRight,
+          child: GestureDetector(
               onTap: () => {
-                setState(() {
-                   this.maxCommentView += 2;
-                })
-              },
-              child: Text(
-                "ver mas...",
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                )
-              )
-            ),
-          )
-        );
+                    setState(() {
+                      this.maxCommentView += 2;
+                    })
+                  },
+              child: Text("ver mas...",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                  ))),
+        ));
       }
       return responseCards;
     }

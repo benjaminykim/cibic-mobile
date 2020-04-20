@@ -107,6 +107,10 @@ const ENDPOINT_LOGIN = "auth/login/";
 const ENDPOINT_ACTIVITY = "activity/";
 const ENDPOINT_PUBLIC_FEED = "activity/public";
 const ENDPOINT_ACTIVITY_REACT = "activity/react";
+const ENDPOINT_ACTIVITY_COMMENT = "activity/comment";
+const ENDPOINT_ACTIVITY_COMMENT_VOTE = "activity/comment/vote";
+const ENDPOINT_ACTIVITY_REPLY = "activity/reply";
+const ENDPOINT_ACTIVITY_REPLY_VOTE = "activity/reply/vote";
 
 const ENDPOINT_CABILDOS = "cabildo/";
 const ENDPOINT_CABILDO_PROFILE = "cabildo/profile/";

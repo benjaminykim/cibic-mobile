@@ -1,9 +1,9 @@
 import 'package:cibic_mobile/src/models/activity_model.dart';
+import 'package:cibic_mobile/src/widgets/activity/card/IconTag.dart';
 import 'package:cibic_mobile/src/widgets/profile/CabildoProfileScreen.dart';
 import 'package:cibic_mobile/src/widgets/profile/UserProfileScreen.dart';
 import 'package:flutter/material.dart';
 
-import 'package:cibic_mobile/src/widgets/utils/IconTag.dart';
 
 class UserMetaData extends StatelessWidget {
   final String jwt;
