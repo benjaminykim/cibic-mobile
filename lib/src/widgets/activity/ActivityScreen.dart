@@ -27,7 +27,7 @@ class ActivityScreen extends StatelessWidget {
             CardView(activity, jwt, CARD_SCREEN, userReaction, onReact),
             CardMetaData(activity.ping, activity.commentNumber,
                 activity.publishDate),
-            CommentFeed(activity.comments, jwt),
+            CommentFeed(activity.comments, jwt, activity.id),
           ],
         ),
       ),
