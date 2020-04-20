@@ -1,41 +1,19 @@
 import 'package:cibic_mobile/src/models/cabildo_model.dart';
+import 'package:cibic_mobile/src/models/feed_model.dart';
+import 'package:cibic_mobile/src/resources/api_provider.dart';
+import 'package:cibic_mobile/src/resources/utils.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'dart:async';
-import 'package:http/http.dart' as http;
 
-import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
-import 'package:cibic_mobile/src/widgets/activity/ActivityCard.dart';
+import 'package:cibic_mobile/src/widgets/activity/ActivityView.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
-
-Future<CabildoModel> fetchUserFeed(String idCabildo) async {
-  final response = await http.get(API_BASE + ENDPOINT_CABILDOS + idCabildo);
-
-  if (response.statusCode == 200) {
-    return CabildoModel.fromJson(json.decode(response.body));
-  } else {
-    throw Exception(
-        'Failed to load home feed: ' + response.statusCode.toString());
-  }
-}
-
-Future<ActivityModel> getActivity(String idActivity) async {
-  final response = await http.get(API_BASE + ENDPOINT_ACTIVITY + idActivity);
-
-  print(API_BASE + ENDPOINT_ACTIVITY + idActivity);
-  if (response.statusCode == 200) {
-    return ActivityModel.fromJson(json.decode(response.body));
-  } else {
-    throw Exception(
-        'Failed to load home feed: ' + response.statusCode.toString());
-  }
-}
 
 class CabildoProfileScreen extends StatefulWidget {
   final String idCabildo;
+  final String jwt;
 
-  CabildoProfileScreen(this.idCabildo);
+  CabildoProfileScreen(this.idCabildo, this.jwt);
 
   @override
   _CabildoProfileState createState() => _CabildoProfileState();
@@ -43,15 +21,20 @@ class CabildoProfileScreen extends StatefulWidget {
 
 class _CabildoProfileState extends State<CabildoProfileScreen> {
   Future<CabildoModel> cabildo;
+  Future<FeedModel> feed;
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   int maxLines = 4;
   String followButtonText = "seguir";
   Color followButtonColor = Colors.green;
+  bool isFollowing = false;
+  String idRootUser;
 
   @override
   void initState() {
     super.initState();
-    cabildo = fetchUserFeed(widget.idCabildo);
+    cabildo = fetchCabildoProfile(widget.idCabildo, widget.jwt);
+    feed = fetchCabildoFeed(widget.idCabildo, widget.jwt);
+    this.idRootUser = extractID(widget.jwt);
   }
 
   void onActivityTapped(ActivityScreen activityScreen, BuildContext context) {
@@ -63,7 +46,8 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     setState(() {
-      cabildo = fetchUserFeed(widget.idCabildo);
+      cabildo = fetchCabildoProfile(widget.idCabildo, widget.jwt);
+      feed = fetchCabildoFeed(widget.idCabildo, widget.jwt);
     });
     return null;
   }
@@ -156,26 +140,38 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                                         Container(
                                             height: 17,
                                             child: FlatButton(
-                                              color: this.followButtonColor,
-                                              onPressed: () {
+                                              color: (this.isFollowing ||
+                                                      snapshot.data.members.any(
+                                                          (k) =>
+                                                              k['_id'] ==
+                                                              idRootUser))
+                                                  ? Colors.blue
+                                                  : Colors.green,
+                                              onPressed: () async {
                                                 if (this.followButtonText ==
                                                     "seguir") {
-                                                  setState(() {
-                                                    this.followButtonText =
-                                                        "siguiendo";
-                                                    this.followButtonColor =
-                                                        Colors.blue;
-                                                  });
+                                                  String ret = await followCabildo(
+                                                      widget.idCabildo,
+                                                      widget.jwt);
+                                                  if (ret != "error") {
+                                                    setState(() {
+                                                      this.isFollowing = true;
+                                                    });
+                                                  }
                                                 } else {
                                                   setState(() {
-                                                    this.followButtonText =
-                                                        "seguir";
-                                                    this.followButtonColor =
-                                                        Colors.green;
+                                                    this.isFollowing = false;
                                                   });
                                                 }
                                               },
-                                              child: Text(this.followButtonText,
+                                              child: Text(
+                                                  (this.isFollowing ||
+                                                          snapshot.data.members
+                                                              .any((k) =>
+                                                                  k['_id'] ==
+                                                                  idRootUser))
+                                                      ? "siguiendo"
+                                                      : "seguir",
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 12,
@@ -230,8 +226,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                                                 SizedBox(
                                                   width: 5,
                                                 ),
-                                                Text(
-                                                    snapshot.data.location,
+                                                Text(snapshot.data.location,
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                       fontWeight:
@@ -256,7 +251,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                                                 child: ListView(
                                                   children: [
                                                     Text(
-                                                      'lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsusectetelit. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dollore.',
+                                                      snapshot.data.desc,
                                                       maxLines: this.maxLines,
                                                       overflow:
                                                           TextOverflow.ellipsis,
@@ -329,36 +324,18 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                     child: RefreshIndicator(
                       key: refreshKey,
                       onRefresh: () => refreshList(),
-                      child: FutureBuilder<CabildoModel>(
-                        future: this.cabildo,
+                      child: FutureBuilder<FeedModel>(
+                        future: this.feed,
                         builder: (context, feedSnap) {
                           if (feedSnap.hasData) {
-                            print("FeedSnap data: " +
-                                feedSnap.data.activities.toString());
                             return ListView.separated(
                                 separatorBuilder: (context, index) => Divider(
                                       color: Colors.black,
                                     ),
-                                itemCount: feedSnap.data.activities.length,
+                                itemCount: feedSnap.data.feed.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  return FutureBuilder<ActivityModel>(
-                                    future: getActivity(feedSnap.data.activities[index]),
-                                    builder: (context, feedSnap) {
-                                      if (feedSnap.hasData) {
-                                        return (ActivityCard(feedSnap.data));
-                                      } else {
-                                        return Center(
-                                          child: Text(
-                                            "Activity could not load",
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    }
-                                  );
+                                  return (ActivityView(
+                                      feedSnap.data.feed[index], widget.jwt));
                                 });
                           } else if (feedSnap.hasError) {
                             return ListView(children: [
