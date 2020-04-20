@@ -1,31 +1,22 @@
+import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/resources/api_provider.dart';
+import 'package:cibic_mobile/src/resources/utils.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'dart:async';
-import 'package:http/http.dart' as http;
 
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
-import 'package:cibic_mobile/src/widgets/activity/ActivityCard.dart';
+import 'package:cibic_mobile/src/widgets/activity/ActivityView.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:redux/redux.dart';
 
-Future<UserModel> fetchUserFeed(String idUser) async {
-  final response = await http.get(API_BASE + ENDPOINT_USER_FEED + idUser);
-
-  if (response.statusCode == 200) {
-    return UserModel.fromJson(json.decode(response.body));
-  } else {
-    throw Exception(
-        'Failed to load home feed: ' + response.statusCode.toString());
-  }
-}
-
 class UserProfileScreen extends StatefulWidget {
   final String idUser;
+  final String jwt;
 
-  UserProfileScreen(this.idUser);
+  UserProfileScreen(this.idUser, this.jwt);
 
   @override
   _UserProfileState createState() => _UserProfileState();
@@ -33,15 +24,21 @@ class UserProfileScreen extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfileScreen> {
   Future<UserModel> user;
+  Future<FeedModel> feed;
+  String idRootUser;
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   int maxLines = 4;
   String followButtonText = "seguir";
   Color followButtonColor = Colors.green;
+  bool isFollowing;
 
   @override
   void initState() {
     super.initState();
-    user = fetchUserFeed(widget.idUser);
+    this.user = fetchUserProfile(widget.idUser, widget.jwt);
+    this.feed = fetchUserFeed(widget.idUser, widget.jwt);
+    this.idRootUser = extractID(widget.jwt);
+    this.isFollowing = false;
   }
 
   void onActivityTapped(ActivityScreen activityScreen, BuildContext context) {
@@ -53,7 +50,8 @@ class _UserProfileState extends State<UserProfileScreen> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     setState(() {
-      user = fetchUserFeed(widget.idUser);
+      this.user = fetchUserProfile(widget.idUser, widget.jwt);
+      this.feed = fetchUserFeed(widget.idUser, widget.jwt);
     });
     return null;
   }
@@ -110,7 +108,7 @@ class _UserProfileState extends State<UserProfileScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    // user profile picture, name
+                                    // user profile picture, name, follow button
                                     Column(
                                       children: [
                                         // image
@@ -141,34 +139,53 @@ class _UserProfileState extends State<UserProfileScreen> {
                                           ),
                                         ),
                                         // follow button
-                                        Container(
-                                            height: 17,
-                                            child: FlatButton(
-                                              color: this.followButtonColor,
-                                              onPressed: () {
-                                                if (this.followButtonText ==
-                                                    "seguir") {
-                                                  setState(() {
-                                                    this.followButtonText =
-                                                        "siguiendo";
-                                                    this.followButtonColor =
-                                                        Colors.blue;
-                                                  });
-                                                } else {
-                                                  setState(() {
-                                                    this.followButtonText =
-                                                        "seguir";
-                                                    this.followButtonColor =
-                                                        Colors.green;
-                                                  });
-                                                }
-                                              },
-                                              child: Text(this.followButtonText,
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 12,
-                                                  )),
-                                            )),
+                                        (this.idRootUser != widget.idUser)
+                                            ? Container(
+                                                height: 17,
+                                                child: FlatButton(
+                                                  color: (this.isFollowing ||
+                                                          snapshot
+                                                              .data.followers
+                                                              .any((k) =>
+                                                                  k ==
+                                                                  idRootUser))
+                                                      ? Colors.blue
+                                                      : Colors.green,
+                                                  onPressed: () async {
+                                                    if (this.followButtonText ==
+                                                        "seguir") {
+                                                      String ret =
+                                                          await followUser(
+                                                              snapshot.data.id,
+                                                              widget.jwt);
+                                                      if (ret != "error") {
+                                                        setState(() {
+                                                          this.isFollowing =
+                                                              true;
+                                                        });
+                                                      }
+                                                    } else {
+                                                      setState(() {
+                                                        this.isFollowing =
+                                                            false;
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Text(
+                                                      (this.isFollowing ||
+                                                              snapshot.data
+                                                                  .followers
+                                                                  .any((k) =>
+                                                                      k ==
+                                                                      idRootUser))
+                                                          ? "siguiendo"
+                                                          : "seguir",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 12,
+                                                      )),
+                                                ))
+                                            : Container(),
                                       ],
                                     ),
                                     // user meta data
@@ -190,7 +207,9 @@ class _UserProfileState extends State<UserProfileScreen> {
                                                 SizedBox(
                                                   width: 5,
                                                 ),
-                                                Text(snapshot.data.citizenPoints.toString(),
+                                                Text(
+                                                    snapshot.data.citizenPoints
+                                                        .toString(),
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                       fontWeight:
@@ -201,14 +220,22 @@ class _UserProfileState extends State<UserProfileScreen> {
                                               // followers
                                               Column(
                                                 children: <Widget>[
-                                                  Text(snapshot.data.followers.length.toString(),
+                                                  Text(
+                                                      snapshot
+                                                          .data.followers.length
+                                                          .toString(),
                                                       style: TextStyle(
                                                         fontSize: 14,
                                                         color: Colors.black,
                                                         fontWeight:
                                                             FontWeight.w600,
                                                       )),
-                                                  Text((snapshot.data.cabildos.length > 1) ? "seguidores" : "seguidor",
+                                                  Text(
+                                                      (snapshot.data.cabildos
+                                                                  .length >
+                                                              1)
+                                                          ? "seguidores"
+                                                          : "seguidor",
                                                       style: TextStyle(
                                                         fontSize: 14,
                                                         color: Colors.black,
@@ -218,14 +245,22 @@ class _UserProfileState extends State<UserProfileScreen> {
                                               // cabildos
                                               Column(
                                                 children: <Widget>[
-                                                  Text(snapshot.data.cabildos.length.toString(),
+                                                  Text(
+                                                      snapshot
+                                                          .data.cabildos.length
+                                                          .toString(),
                                                       style: TextStyle(
                                                         fontSize: 14,
                                                         fontWeight:
                                                             FontWeight.w600,
                                                         color: Colors.black,
                                                       )),
-                                                  Text((snapshot.data.cabildos.length > 1) ? "cabildos" : "cabildo",
+                                                  Text(
+                                                      (snapshot.data.cabildos
+                                                                  .length >
+                                                              1)
+                                                          ? "cabildos"
+                                                          : "cabildo",
                                                       style: TextStyle(
                                                         fontSize: 14,
                                                         color: Colors.black,
@@ -249,7 +284,7 @@ class _UserProfileState extends State<UserProfileScreen> {
                                                 child: ListView(
                                                   children: [
                                                     Text(
-                                                      'lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsusectetelit. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dollore.',
+                                                      snapshot.data.desc ?? "",
                                                       maxLines: this.maxLines,
                                                       overflow:
                                                           TextOverflow.ellipsis,
@@ -322,20 +357,19 @@ class _UserProfileState extends State<UserProfileScreen> {
                     child: RefreshIndicator(
                       key: refreshKey,
                       onRefresh: () => refreshList(),
-                      child: FutureBuilder<UserModel>(
-                        future: user,
+                      child: FutureBuilder<FeedModel>(
+                        future: this.feed,
                         builder: (context, feedSnap) {
                           if (feedSnap.hasData) {
-                            print("FeedSnap data: " + feedSnap.data.activityFeed.toString());
                             return ListView.separated(
                                 separatorBuilder: (context, index) => Divider(
                                       color: Colors.black,
                                     ),
-                                itemCount: feedSnap.data.activityFeed.length,
+                                itemCount: feedSnap.data.feed.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   ActivityModel activity =
-                                      feedSnap.data.activityFeed[index];
-                                  return ActivityCard(activity);
+                                      feedSnap.data.feed[index];
+                                  return ActivityView(activity, widget.jwt);
                                 });
                           } else if (feedSnap.hasError) {
                             return ListView(children: [

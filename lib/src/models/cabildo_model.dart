@@ -5,18 +5,19 @@ part 'cabildo_model.g.dart';
 @JsonSerializable()
 class CabildoModel {
   String id;
-  List<String> members;
+  List<Map<String, String>> members;
   List<String> moderators;
   List<String> issues;
   List<String> meetings;
   List<String> files;
-  List<String> activities;
+  List<String> activityFeed;
   String name;
-  String admin;
+  String desc;
+  Map<String, dynamic> admin;
   String location;
 
   CabildoModel(this.id, this.name, this.members, this.moderators, this.admin, this.location, this.issues,
-  this.meetings, this.files, this.activities);
+  this.meetings, this.files, this.activityFeed, this.desc);
 
   factory CabildoModel.fromJson(Map<String, dynamic> json) => _$CabildoModelFromJson(json);
 
