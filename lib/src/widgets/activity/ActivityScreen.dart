@@ -1,16 +1,19 @@
-import 'package:cibic_mobile/src/widgets/activity/components/card/CardMetaData.dart';
-import 'package:cibic_mobile/src/widgets/activity/components/card/CardView.dart';
-import 'package:cibic_mobile/src/widgets/activity/components/card/UserMetaData.dart';
+import 'package:cibic_mobile/src/widgets/activity/card/CardMetaData.dart';
+import 'package:cibic_mobile/src/widgets/activity/card/CardView.dart';
+import 'package:cibic_mobile/src/widgets/activity/card/UserMetaData.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/models/activity_model.dart';
-import 'package:cibic_mobile/src/widgets/activity/components/CommentFeed.dart';
+import 'package:cibic_mobile/src/widgets/activity/CommentFeed.dart';
 
 class ActivityScreen extends StatelessWidget {
   final ActivityModel activity;
+  final String jwt;
+  final int userReaction;
+  final Function onReact;
 
-  ActivityScreen(this.activity);
+  ActivityScreen(this.activity, this.jwt, this.userReaction, this.onReact);
 
   @override
   Widget build(BuildContext context) {
@@ -20,17 +23,11 @@ class ActivityScreen extends StatelessWidget {
         color: APP_BACKGROUND,
         child: ListView(
           children: <Widget>[
-            UserMetaData(activity.idUser['username'],
-                activity.idUser['citizenPoints'],
-                activity.idCabildo['name'],
-                activity.idUser['_id'],
-                activity.idCabildo['_id'],
-                ),
-            CardView(activity.title, activity.activityType, activity.text,
-                CARD_SCREEN, activity.score, null),
-            CardMetaData(activity.pingNumber, activity.commentNumber,
+            UserMetaData.fromActivity(activity, jwt),
+            CardView(activity, jwt, CARD_SCREEN, userReaction, onReact),
+            CardMetaData(activity.ping, activity.commentNumber,
                 activity.publishDate),
-            CommentFeed(activity.comments),
+            CommentFeed(activity.comments, jwt, activity.id),
           ],
         ),
       ),
