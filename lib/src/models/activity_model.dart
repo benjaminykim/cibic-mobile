@@ -1,3 +1,4 @@
+import 'package:cibic_mobile/src/models/reaction_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:cibic_mobile/src/models/comment_model.dart';
 
@@ -5,25 +6,27 @@ part 'activity_model.g.dart';
 
 @JsonSerializable()
 class ActivityModel {
+  String id;
   Map<String, dynamic> idUser;
   Map<String, dynamic> idCabildo;
   String activityType;
   int score;
-  int pingNumber;
+  int ping;
   int commentNumber;
   DateTime publishDate;
   String title;
   String text;
   List<CommentModel> comments;
-  List<String> reactions;
-  List<String> votes;
+  List<ReactionModel> reactions;
+  List<Map<String, dynamic>> votes;
 
   ActivityModel(
+    this.id,
     this.idUser,
     this.idCabildo,
     this.activityType,
     this.score,
-    this.pingNumber,
+    this.ping,
     this.commentNumber,
     this.publishDate,
     this.title,
