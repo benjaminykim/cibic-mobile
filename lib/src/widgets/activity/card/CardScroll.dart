@@ -19,7 +19,6 @@ class CardScroll extends StatefulWidget {
 
 class _CardScrollState extends State<CardScroll> {
   final _controller = ScrollController();
-  double width;
   ScrollPhysics _physics;
 
   @override
@@ -51,7 +50,6 @@ class _CardScrollState extends State<CardScroll> {
 
   @override
   Widget build(BuildContext context) {
-    width = MediaQuery.of(context).size.width;
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.min,

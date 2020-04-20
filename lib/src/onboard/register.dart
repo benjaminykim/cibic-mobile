@@ -227,11 +227,11 @@ class _RegisterState extends State<Register> {
               userLogin.then((jwt) {
                 if (jwt != null) {
                   widget.storage.write(key: "jwt", value: jwt);
-                  Navigator.push(
+                  Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              Onboard(widget.storage, jwt, idUser)));
+                              Onboard(jwt)));
                 } else {
                   setState(() {
                     this.isSubmitable = false;
