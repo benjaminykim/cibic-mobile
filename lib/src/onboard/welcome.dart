@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:cibic_mobile/src/onboard/home.dart';
 import 'package:cibic_mobile/src/onboard/register.dart';
+import 'package:cibic_mobile/src/onboard/userEducation.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -97,13 +98,16 @@ class _WelcomeState extends State<Welcome> {
     Timer(Duration(milliseconds: 100),
         () => this._controller.jumpTo(_controller.position.maxScrollExtent));
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: false,
         body: Container(
           color: COLOR_DEEP_BLUE,
           padding: const EdgeInsets.fromLTRB(50, 100, 50, 20),
           child: Column(
             children: [
-              Container(height: 100, child: Image(image: AssetImage('assets/images/cibic_logo.png'))),
+              Container(
+                  height: 100,
+                  child:
+                      Image(image: AssetImage('assets/images/cibic_logo.png'))),
               Container(
                 height: MediaQuery.of(context).size.height - 230,
                 child: ListView(
@@ -111,16 +115,18 @@ class _WelcomeState extends State<Welcome> {
                   children: <Widget>[
                     SizedBox(height: 190),
                     // WELCOME
-                    (this.showLogin ? Container() : Container(
-                      decoration: this.welcomeDecoration,
-                      height: 45,
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Bienvenido a cibic",
-                        textAlign: TextAlign.center,
-                        style: this.welcomeTextStyle,
-                      ),
-                    )),
+                    (this.showLogin
+                        ? Container()
+                        : Container(
+                            decoration: this.welcomeDecoration,
+                            height: 45,
+                            alignment: Alignment.center,
+                            child: Text(
+                              "Bienvenido a cibic",
+                              textAlign: TextAlign.center,
+                              style: this.welcomeTextStyle,
+                            ),
+                          )),
                     SizedBox(height: 50),
                     GestureDetector(
                       onTap: () {
@@ -149,7 +155,7 @@ class _WelcomeState extends State<Welcome> {
                               if (jwt != null) {
                                 widget.storage.write(key: "jwt", value: jwt);
                                 Navigator.pop(context);
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
@@ -163,15 +169,18 @@ class _WelcomeState extends State<Welcome> {
                           )
                         : Container(),
                     SizedBox(height: 15),
-                    (!this.showLogin) ? GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Register(widget.storage)));
-                      },
-                      child: createButtonView("Registrate"),
-                    ) : Container(),
+                    (!this.showLogin)
+                        ? GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          Register(widget.storage)));
+                            },
+                            child: createButtonView("Registrate"),
+                          )
+                        : Container(),
                     Text(
                       '\u00a9 cibic 2020',
                       textAlign: TextAlign.center,
