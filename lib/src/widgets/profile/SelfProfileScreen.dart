@@ -244,7 +244,7 @@ class _UserProfileState extends State<SelfProfileScreen> {
                   );
                 } else if (snapshot.hasError) {
                   return Text(
-                      "Profile could not be reached, cibic server is down",
+                      "Profile could not be reached, Cibic server is down",
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.black));
                 }
@@ -272,7 +272,7 @@ class _UserProfileState extends State<SelfProfileScreen> {
                         });
                   } else if (feedSnap.hasError) {
                     return ListView(
-                      children: [Text("error: cibic servers are down",
+                      children: [Text("error: Cibic servers are down",
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.black))],
                     );

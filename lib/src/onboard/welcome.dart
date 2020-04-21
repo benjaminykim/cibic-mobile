@@ -121,7 +121,7 @@ class _WelcomeState extends State<Welcome> {
                             height: 45,
                             alignment: Alignment.center,
                             child: Text(
-                              "Bienvenido a cibic",
+                              "Bienvenido",
                               textAlign: TextAlign.center,
                               style: this.welcomeTextStyle,
                             ),
