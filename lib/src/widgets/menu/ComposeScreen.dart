@@ -1,80 +1,13 @@
-import 'dart:convert';
-import 'dart:io';
-
+import 'package:cibic_mobile/src/models/user_model.dart';
+import 'package:cibic_mobile/src/resources/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
 import 'package:cibic_mobile/src/resources/constants.dart';
-
-Future<void> addActivity(String title, String intro, String body,
-    String cabildos, String tags, String idUser, String idCabildo) async {
-  String url = 'http://10.0.2.2:3000/activity';
-  Map map = {
-    'activity': {
-      'idUser': idUser,
-      'idCabildo': idCabildo,
-      'activityType': 'discussion',
-      'title': title,
-      'text': body
-    }
-  };
-
-  HttpClient httpClient = new HttpClient();
-  HttpClientRequest request = await httpClient.postUrl(Uri.parse(url));
-  request.headers.set('content-type', 'application/json');
-  request.add(utf8.encode(json.encode(map)));
-  HttpClientResponse response = await request.close();
-  String reply;
-  if (response.statusCode == 201) {
-    final responseBody = await response.transform(utf8.decoder).join();
-    Map<String, dynamic> activity = jsonDecode(responseBody);
-    reply = activity['id'];
-  } else {
-    throw Exception(
-        "HTTP Response error code: " + response.statusCode.toString());
-  }
-  httpClient.close();
-  return reply;
-}
-
-Future<void> addPollActivity(String title, String cabildos, String tags) async {
-  final response = await http.post(URL_LOCALHOST_BASE + ENDPOINT_ACTIVITY);
-
-  if (response.statusCode == 200) {
-    print("success");
-  } else {
-    throw Exception('Failed to load home feed');
-  }
-}
+import 'package:cibic_mobile/src/resources/api_provider.dart';
 
 class Compose extends StatefulWidget {
-  final String idUser;
-  final List<dynamic> cabildos;
-  final List<String> cabildoNames = [];
-  final List<DropdownMenuItem<String>> cabildoMenu = [];
+  final String jwt;
 
-  DropdownMenuItem<String> createMenuItem(String value) {
-    return DropdownMenuItem<String> (
-      value: value,
-      child: Container(
-        child: Text(
-          value,
-          style: TextStyle(
-            fontWeight: FontWeight.w200,
-                          color: Color(0xffa1a1a1),
-          )
-        ),
-      )
-    );
-  }
-
-  Compose(this.idUser, this.cabildos) {
-    this.cabildoMenu.add(createMenuItem("comparte en un cabildo"));
-    this.cabildoMenu.add(createMenuItem("todo"));
-    for (int i = 0; i < this.cabildos.length; i++) {
-      this.cabildoMenu.add(createMenuItem(this.cabildos[i]['name']));
-    }
-  }
+  Compose(this.jwt);
 
   @override
   _ComposeState createState() => _ComposeState();
@@ -91,6 +24,32 @@ class _ComposeState extends State<Compose> {
   List<Widget> actionButtons;
   int selectedActivity = 0;
   String dropdownValue = "comparte en un cabildo";
+  Future<UserModel> _user;
+
+  @override
+  initState() {
+    super.initState();
+    this.activityButtons = [
+      createActivityButton(ACTIVITY_DISCUSS, 1),
+      createActivityButton(ACTIVITY_POLL, 0),
+      createActivityButton(ACTIVITY_PROPOSAL, 0)
+    ];
+
+    _user = fetchUserProfile(extractID(widget.jwt), widget.jwt);
+
+  }
+
+  DropdownMenuItem<String> createMenuItem(String value) {
+    return DropdownMenuItem<String>(
+        value: value,
+        child: Container(
+          child: Text(value,
+              style: TextStyle(
+                fontWeight: FontWeight.w200,
+                color: Color(0xffa1a1a1),
+              )),
+        ));
+  }
 
   Container createActivityButton(String type, int selected) {
     return Container(
@@ -159,7 +118,7 @@ class _ComposeState extends State<Compose> {
     );
   }
 
-  List<Widget> createBody(BuildContext context) {
+  List<Widget> createBody(BuildContext context, UserModel user) {
     List<Widget> body = [];
     if (selectedActivity == 0 || selectedActivity == 2) {
       body = [
@@ -211,6 +170,14 @@ class _ComposeState extends State<Compose> {
       ];
     }
     // cabildos and tags
+    List<DropdownMenuItem<String>> cabildoMenu = [];
+
+    cabildoMenu.add(createMenuItem("comparte en un cabildo"));
+    cabildoMenu.add(createMenuItem("todo"));
+    for (int i = 0; i < user.cabildos.length; i++) {
+      cabildoMenu.add(createMenuItem(user.cabildos[i].name));
+    }
+
     body.add(Row(
       children: <Widget>[
         Icon(Icons.people, size: 40),
@@ -237,7 +204,7 @@ class _ComposeState extends State<Compose> {
                     dropdownValue = newValue;
                   });
                 },
-                items: widget.cabildoMenu,
+                items: cabildoMenu,
               ),
             ),
             // tags
@@ -281,39 +248,37 @@ class _ComposeState extends State<Compose> {
     Navigator.of(context).pop();
   }
 
-  void submitActivity(String idUser, String idCabildo) {
+  void submitActivity(String idCabildo, UserModel user) {
     final enteredTitle = inputTitleController.text;
     final enteredIntro = inputIntroController.text;
     final enteredBody = inputBodyController.text;
     final enteredTag = inputTagController.text;
 
-    for (int i=0; i < widget.cabildos.length; i++) {
-      if (widget.cabildos[i]['name'] == idCabildo) {
-        idCabildo = widget.cabildos[i]['id'];
+    for (int i = 0; i < user.cabildos.length; i++) {
+      if (user.cabildos[i].name == idCabildo) {
+        idCabildo = user.cabildos[i].id;
         break;
       }
     }
 
     if (selectedActivity == 0 || selectedActivity == 2) {
-      if (enteredTitle.isEmpty ||
-          enteredIntro.isEmpty ||
-          enteredBody.isEmpty ) {
+      if (enteredTitle.isEmpty || enteredIntro.isEmpty || enteredBody.isEmpty) {
         return;
       } else {
-        addActivity(enteredTitle, enteredIntro, enteredBody, idCabildo,
-            enteredTag, idUser, idCabildo);
+        composeActivity(enteredTitle, enteredIntro, enteredBody, idCabildo,
+            enteredTag, widget.jwt);
       }
     } else if (selectedActivity == 1) {
-      if (enteredTitle.isEmpty || idCabildo.isEmpty ) {
+      if (enteredTitle.isEmpty || idCabildo.isEmpty) {
         return;
       } else {
-        addPollActivity(enteredTitle, idCabildo, enteredTag);
+        composePoll(enteredTitle, idCabildo, enteredTag, widget.jwt);
       }
     }
     Navigator.of(context).pop();
   }
 
-  List<Widget> createActionButtons(String idUser, String cabildoName) {
+  List<Widget> createActionButtons(String cabildoName, UserModel user) {
     return [
       Spacer(),
       Row(
@@ -325,19 +290,10 @@ class _ComposeState extends State<Compose> {
           ),
           IconButton(
             icon: Icon(Icons.send),
-            onPressed: () => submitActivity(idUser, cabildoName),
+            onPressed: () => submitActivity(cabildoName, user),
           ),
         ],
       )
-    ];
-  }
-
-  initState() {
-    super.initState();
-    this.activityButtons = [
-      createActivityButton(ACTIVITY_DISCUSS, 1),
-      createActivityButton(ACTIVITY_POLL, 0),
-      createActivityButton(ACTIVITY_PROPOSAL, 0)
     ];
   }
 
@@ -353,6 +309,10 @@ class _ComposeState extends State<Compose> {
   @override
   Widget build(BuildContext context) {
     createHeader();
+    return FutureBuilder(
+      future: _user,
+      builder: (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
+        if (snapshot.hasData) {
           return Container(
             padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
             width: MediaQuery.of(context).size.width - 20,
@@ -373,13 +333,20 @@ class _ComposeState extends State<Compose> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 ...this.header,
-                ...createBody(context),
-                ...createActionButtons(widget.idUser, dropdownValue),
+                ...createBody(context, snapshot.data),
+                ...createActionButtons(dropdownValue, snapshot.data),
                 SizedBox(
                   height: MediaQuery.of(context).viewInsets.bottom,
                 )
               ],
             ),
           );
+        } else if (snapshot.hasError) {
+          return Container();
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 }

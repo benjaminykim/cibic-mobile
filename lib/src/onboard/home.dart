@@ -69,7 +69,7 @@ class _AppState extends State<Home> {
       child: DefaultTabController(
         length: 4,
         child: Scaffold(
-          appBar: BaseAppBar(this.appBarTitle),
+          appBar: BaseAppBar(this.appBarTitle, widget.jwt),
           body: Center(
             child: _widgetOptions.elementAt(selectedBarIndex),
           ),
