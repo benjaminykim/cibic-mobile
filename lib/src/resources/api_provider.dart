@@ -52,6 +52,7 @@ Future<FeedModel> fetchUserFeed(String idUser, String jwt) async {
   printFetchRequest(idUser, jwt);
   printDebugResponse(response);
   if (response.statusCode == 200) {
+
     return FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
   } else {
     throw Exception(
@@ -324,7 +325,8 @@ Future<int> voteToReply(
   }
 }
 
-Future<void> composeActivity(String title, String intro, String body, String idCabildo, String tags, String jwt) async {
+Future<void> composeActivity(String title, String intro, String body,
+    String idCabildo, String tags, String jwt) async {
   String idUser = extractID(jwt);
   HttpClient httpClient = new HttpClient();
   HttpClientRequest request =
@@ -359,7 +361,8 @@ Future<void> composeActivity(String title, String intro, String body, String idC
   return reply;
 }
 
-Future<void> composePoll(String title, String idCabildo, String tags, String jwt) async {
+Future<void> composePoll(
+    String title, String idCabildo, String tags, String jwt) async {
   String idUser = extractID(jwt);
   HttpClient httpClient = new HttpClient();
   HttpClientRequest request =
