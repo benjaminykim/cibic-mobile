@@ -174,7 +174,8 @@ Future<String> reactToActivity(
     if (response.statusCode == 201) {
       final responseBody = await response.transform(utf8.decoder).join();
       String id = json.decode(responseBody)['id'];
-      ReactionModel newReaction = ReactionModel.fromJson({"_id": id, "idUser": idUser, "value": reactValue});
+      ReactionModel newReaction = ReactionModel.fromJson(
+          {"_id": id, "idUser": idUser, "value": reactValue});
       activity.reactions.add(newReaction);
       return responseBody;
     } else {
@@ -208,8 +209,9 @@ Future<String> reactToActivity(
   }
 }
 
-Future<int> commentToActivity(String jwt, String content, String idActivity) async {
-    HttpClient httpClient = new HttpClient();
+Future<int> commentToActivity(
+    String jwt, String content, String idActivity) async {
+  HttpClient httpClient = new HttpClient();
   HttpClientRequest request =
       await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_COMMENT));
   request.headers.add('content-type', 'application/json');
@@ -218,10 +220,7 @@ Future<int> commentToActivity(String jwt, String content, String idActivity) asy
 
   final requestBody = {
     "idActivity": idActivity,
-    "comment": {
-      "idUser": extractID(jwt),
-      "content": content
-    }
+    "comment": {"idUser": extractID(jwt), "content": content}
   };
   request.add(utf8.encode(json.encode(requestBody)));
   HttpClientResponse response = await request.close();
@@ -238,8 +237,9 @@ Future<int> commentToActivity(String jwt, String content, String idActivity) asy
   }
 }
 
-Future<int> replyToComment(String jwt, String content, String idActivity, String idComment) async {
-    HttpClient httpClient = new HttpClient();
+Future<int> replyToComment(
+    String jwt, String content, String idActivity, String idComment) async {
+  HttpClient httpClient = new HttpClient();
   HttpClientRequest request =
       await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_REPLY));
   request.headers.add('content-type', 'application/json');
@@ -249,10 +249,7 @@ Future<int> replyToComment(String jwt, String content, String idActivity, String
   final requestBody = {
     "idActivity": idActivity,
     "idComment": idComment,
-    "reply": {
-      "idUser": extractID(jwt),
-      "content": content
-    }
+    "reply": {"idUser": extractID(jwt), "content": content}
   };
   request.add(utf8.encode(json.encode(requestBody)));
   HttpClientResponse response = await request.close();
@@ -269,10 +266,11 @@ Future<int> replyToComment(String jwt, String content, String idActivity, String
   }
 }
 
-Future<int> voteToComment(String jwt, int value, String idActivity, String idComment) async {
-    HttpClient httpClient = new HttpClient();
-  HttpClientRequest request =
-      await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_COMMENT_VOTE));
+Future<int> voteToComment(
+    String jwt, int value, String idActivity, String idComment) async {
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request = await httpClient
+      .postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_COMMENT_VOTE));
   request.headers.add('content-type', 'application/json');
   request.headers.add('accept', 'application/json');
   request.headers.add('authorization', 'Bearer $jwt');
@@ -280,10 +278,7 @@ Future<int> voteToComment(String jwt, int value, String idActivity, String idCom
   final requestBody = {
     "idActivity": idActivity,
     "idComment": idComment,
-    "vote": {
-      "idUser": extractID(jwt),
-      "value": value
-    }
+    "vote": {"idUser": extractID(jwt), "value": value}
   };
   request.add(utf8.encode(json.encode(requestBody)));
   HttpClientResponse response = await request.close();
@@ -300,11 +295,11 @@ Future<int> voteToComment(String jwt, int value, String idActivity, String idCom
   }
 }
 
-
-Future<int> voteToReply(String jwt, int value, String idActivity, String idReply) async {
-    HttpClient httpClient = new HttpClient();
-  HttpClientRequest request =
-      await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_REPLY_VOTE));
+Future<int> voteToReply(
+    String jwt, int value, String idActivity, String idReply) async {
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request = await httpClient
+      .postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_REPLY_VOTE));
   request.headers.add('content-type', 'application/json');
   request.headers.add('accept', 'application/json');
   request.headers.add('authorization', 'Bearer $jwt');
@@ -312,10 +307,7 @@ Future<int> voteToReply(String jwt, int value, String idActivity, String idReply
   final requestBody = {
     "idActivity": idActivity,
     "idReply": idReply,
-    "vote": {
-      "idUser": extractID(jwt),
-      "value": value
-    }
+    "vote": {"idUser": extractID(jwt), "value": value}
   };
   request.add(utf8.encode(json.encode(requestBody)));
   HttpClientResponse response = await request.close();
@@ -330,4 +322,74 @@ Future<int> voteToReply(String jwt, int value, String idActivity, String idReply
   } else {
     return response.statusCode;
   }
+}
+
+Future<void> composeActivity(String title, String intro, String body, String idCabildo, String tags, String jwt) async {
+  String idUser = extractID(jwt);
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request =
+      await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY));
+  request.headers.add('content-type', 'application/json');
+  request.headers.add('accept', 'application/json');
+  request.headers.add('authorization', 'Bearer $jwt');
+
+  final requestBody = {
+    'activity': {
+      'idUser': idUser,
+      'idCabildo': idCabildo,
+      'activityType': 'discussion',
+      'title': title,
+      'text': body
+    }
+  };
+  request.add(utf8.encode(json.encode(requestBody)));
+  HttpClientResponse response = await request.close();
+  httpClient.close();
+
+  String reply;
+  if (response.statusCode == 201) {
+    final responseBody = await response.transform(utf8.decoder).join();
+    Map<String, dynamic> activity = jsonDecode(responseBody);
+    reply = activity['id'];
+  } else {
+    throw Exception(
+        "HTTP Response error code: " + response.statusCode.toString());
+  }
+  httpClient.close();
+  return reply;
+}
+
+Future<void> composePoll(String title, String idCabildo, String tags, String jwt) async {
+  String idUser = extractID(jwt);
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request =
+      await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY));
+  request.headers.add('content-type', 'application/json');
+  request.headers.add('accept', 'application/json');
+  request.headers.add('authorization', 'Bearer $jwt');
+
+  final requestBody = {
+    'activity': {
+      'idUser': idUser,
+      'idCabildo': idCabildo,
+      'activityType': 'poll',
+      'title': title,
+      'text': "none"
+    }
+  };
+  request.add(utf8.encode(json.encode(requestBody)));
+  HttpClientResponse response = await request.close();
+  httpClient.close();
+
+  String reply;
+  if (response.statusCode == 201) {
+    final responseBody = await response.transform(utf8.decoder).join();
+    Map<String, dynamic> activity = jsonDecode(responseBody);
+    reply = activity['id'];
+  } else {
+    throw Exception(
+        "HTTP Response error code: " + response.statusCode.toString());
+  }
+  httpClient.close();
+  return reply;
 }

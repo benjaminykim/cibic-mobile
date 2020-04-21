@@ -39,15 +39,26 @@ class CardView extends StatelessWidget {
   }
 
   Widget generatePoll() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(top: 30),
-          child: Icon(Icons.thumb_down, size: 50),
-        ),
-        Icon(Icons.thumb_up, size: 50)
-      ],
+    return Container(
+      margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(right: 30),
+            padding: const EdgeInsets.only(top: 26),
+            child: Icon(Icons.thumb_down, size: 50),
+          ),
+          Container(
+            margin: EdgeInsets.only(right: 30),
+            padding: const EdgeInsets.only(top: 10),
+            child: Icon(Icons.cancel, size: 30),
+          ),
+          Container(
+            child: Icon(Icons.thumb_up, size: 50),
+          )
+        ],
+      ),
     );
   }
 
@@ -116,7 +127,8 @@ class CardView extends StatelessWidget {
             ),
           ),
         ),
-        ReactionSlider(this.activity, this.jwt, this.userReaction, this.onReact),
+        ReactionSlider(
+            this.activity, this.jwt, this.userReaction, this.onReact),
       ],
     );
   }
@@ -138,7 +150,8 @@ class CardView extends StatelessWidget {
             ),
           ),
         ),
-        ReactionSlider(this.activity, this.jwt, this.userReaction, this.onReact),
+        ReactionSlider(
+            this.activity, this.jwt, this.userReaction, this.onReact),
       ],
     );
   }

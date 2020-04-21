@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +30,7 @@ class _CardScrollState extends State<CardScroll> {
     _controller.addListener(() {
       if (_controller.position.haveDimensions && _physics == null) {
         setState(() {
-          var dimension = _controller.position.maxScrollExtent / (3);
+          var dimension = _controller.position.maxScrollExtent / min(widget.activity.comments.length, 3);
           _physics = CardScrollPhysics(itemDimension: dimension);
         });
       }
@@ -39,7 +41,7 @@ class _CardScrollState extends State<CardScroll> {
     List<Widget> widgets = [];
     widgets.add(CardView(widget.activity, widget.jwt, CARD_DEFAULT, widget.userReaction, widget.onReact));
     if (widget.activity.comments != null) {
-      for (int i = 0; i < 3; i++) {
+      for (int i = 0; i < 3 && i < widget.activity.comments.length; i++) {
         widgets.add(CardView(widget.activity, widget.jwt, CARD_COMMENT_0 + i, widget.userReaction, widget.onReact));
       }
     } else {
