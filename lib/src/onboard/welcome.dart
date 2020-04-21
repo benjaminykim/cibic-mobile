@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:cibic_mobile/src/onboard/home.dart';
 import 'package:cibic_mobile/src/onboard/register.dart';
-import 'package:cibic_mobile/src/onboard/userEducation.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
 

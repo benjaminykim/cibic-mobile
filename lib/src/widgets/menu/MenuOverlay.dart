@@ -106,21 +106,23 @@ class MenuOverlay extends StatelessWidget {
                       builder: (context) {
                         // return object of type Dialog
                         return AlertDialog(
-                          title: new Text("Cerrar Sesion"),
-                          content: new Text("Quierers cerrar tu sesion?"),
+                          title: Text(
+                            "Cerrar Sesion",
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                          content: Text("Quieres cerrar tu sesion?"),
                           actions: <Widget>[
                             // usually buttons at the bottom of the dialog
                             new FlatButton(
                               child: new Text("Si"),
                               onPressed: () {
                                 storage.delete(key: "jwt");
-                                Navigator.of(context)
-                                    .popUntil((route) => route.isFirst);
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            App()));
+                                        builder: (context) => App()));
                               },
                             ),
                             new FlatButton(
