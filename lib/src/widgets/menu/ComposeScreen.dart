@@ -30,9 +30,9 @@ class _ComposeState extends State<Compose> {
   initState() {
     super.initState();
     this.activityButtons = [
-      createActivityButton(ACTIVITY_DISCUSS, 1),
-      createActivityButton(ACTIVITY_POLL, 0),
-      createActivityButton(ACTIVITY_PROPOSAL, 0)
+      createActivityButton('discusión', 1),
+      createActivityButton('encuesta', 0),
+      createActivityButton('propuesta', 0)
     ];
 
     _user = fetchUserProfile(extractID(widget.jwt), widget.jwt);
@@ -88,7 +88,7 @@ class _ComposeState extends State<Compose> {
       ),
       SizedBox(height: 5),
       Text(
-        "Que quieres compartir?",
+        "¿Qué quieres compartir?",
         style: TextStyle(
             color: Colors.black, fontSize: 15, fontWeight: FontWeight.w400),
       ),
@@ -110,7 +110,7 @@ class _ComposeState extends State<Compose> {
         controller: inputTitleController,
         decoration: InputDecoration(
           border: InputBorder.none,
-          hintText: "De que se trata?",
+          hintText: "De qué se trata?",
           hintStyle: TextStyle(
               fontWeight: FontWeight.w600, color: Colors.black, fontSize: 15),
         ),
@@ -123,7 +123,7 @@ class _ComposeState extends State<Compose> {
     if (selectedActivity == 0 || selectedActivity == 2) {
       body = [
         // title
-        createTitle("De que se trata?"),
+        createTitle("¿De qué se trata?"),
         // introduction
         Container(
           margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
@@ -137,7 +137,7 @@ class _ComposeState extends State<Compose> {
             controller: inputIntroController,
             decoration: InputDecoration(
               border: InputBorder.none,
-              hintText: "introduccion...",
+              hintText: "introducción...",
               hintStyle: TextStyle(
                   fontWeight: FontWeight.w200, color: Color(0xffa1a1a1)),
             ),
@@ -156,7 +156,7 @@ class _ComposeState extends State<Compose> {
             controller: inputBodyController,
             decoration: InputDecoration(
               border: InputBorder.none,
-              hintText: "cuentanos mas...",
+              hintText: "cuéntanos más...",
               hintStyle: TextStyle(
                   fontWeight: FontWeight.w200, color: Color(0xffa1a1a1)),
             ),
@@ -166,7 +166,7 @@ class _ComposeState extends State<Compose> {
     } else if (selectedActivity == 1) {
       body = [
         // title
-        createTitle("Que quieres preguntar?"),
+        createTitle("¿Qué quieres preguntar?"),
       ];
     }
     // cabildos and tags
