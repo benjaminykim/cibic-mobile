@@ -26,13 +26,13 @@ class _RegisterState extends State<Register> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   List<String> inputLabels = [
-    "correo electronico",
-    "nombre de usario",
+    "correo electrónico*",
+    "nombre de usuario",
     "nombre de pila",
     "apellido",
     "sexo",
-    "numero de telefono",
-    "contrasena"
+    "número de teléfono",
+    "contraseña"
   ];
   List<TextEditingController> inputCtlrs;
   String idUser;
@@ -202,7 +202,7 @@ class _RegisterState extends State<Register> {
             },
           ),
           Text(
-            "Acepto las politicas de privacidad.",
+            "Acepto las políticas de privacidad.",
             style: TextStyle(
               fontSize: 14,
               color: Colors.white,
@@ -320,7 +320,7 @@ class _RegisterState extends State<Register> {
                   // PASSWORD RULES
                   Center(
                     child: Text(
-                      "Minimo 8 caracteres, un numero y una mayuscula",
+                      'Mínimo 8 caractéres, un número y una mayúscula',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w200,

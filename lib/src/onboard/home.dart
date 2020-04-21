@@ -41,7 +41,7 @@ class _AppState extends State<Home> {
   List<dynamic> feed;
   List<Widget> _widgetOptions;
   String appBarTitle = "INICIO";
-  List<String> _feedNames = ["INICIO", "PUBLICO", "USUARIO", "ESTADISTICAS"];
+  List<String> _feedNames = ["INICIO", "PÚBLICO", "USUARIO", "ESTADÍSTICAS"];
 
   void onBarButtonTapped(int index) {
     setState(() {

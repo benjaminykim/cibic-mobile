@@ -164,7 +164,7 @@ class _WelcomeState extends State<Welcome> {
                                     "No account was found matching that username and password");
                               }
                             },
-                            child: createButtonView("Login"),
+                            child: createButtonView("Inicia sesión"),
                           )
                         : Container(),
                     SizedBox(height: 15),
