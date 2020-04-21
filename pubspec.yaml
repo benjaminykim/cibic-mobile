@@ -66,6 +66,7 @@ flutter:
     - assets/images/user_education_4b.png
     - assets/images/user_education_5a.png
     - assets/images/user_education_5b.png
+    - assets/images/cibic.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
