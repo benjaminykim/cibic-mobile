@@ -363,7 +363,7 @@ class _UserEducationState extends State<UserEducation> {
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.fromLTRB(30, 10, 100, 0),
                 child: Text(
-                  "¿De acuerdo o en desacuerdo? Crea cartas de encuestas cerradas y genera interacción con toda la comunidad cibic.",
+                  "¿De acuerdo o en desacuerdo? Crea cartas de encuestas cerradas y genera interacción con toda la comunidad Cibic. Además podrás ver todos los resultados en la pantalla de estadísticas.",
                   style: descStyle,
                 ),
               ),
