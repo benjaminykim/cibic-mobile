@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const APP_BAR_BG = Color(0xff2D9CDB);
+const APP_BAR_BG = Color(0xff43a1bf);
 const APP_BAR_SELECTED = Color(0xff518CAD);
 const APP_BAR_BOTTOM = Color(0xff6CBAE6);
 const APP_BACKGROUND = Color(0xffF2F2F2);
