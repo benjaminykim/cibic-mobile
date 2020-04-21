@@ -73,7 +73,7 @@ class _AppState extends State<Home> {
           body: Center(
             child: _widgetOptions.elementAt(selectedBarIndex),
           ),
-          drawer: MenuOverlay(),
+          drawer: MenuOverlay(this.onBarButtonTapped),
           bottomNavigationBar:
               BaseBar(this.selectedBarIndex, this.onBarButtonTapped),
         ),
