@@ -374,7 +374,7 @@ class _UserProfileState extends State<UserProfileScreen> {
                           } else if (feedSnap.hasError) {
                             return ListView(children: [
                               Center(
-                                child: Text("error: cibic servers are down",
+                                child: Text("error: Cibic servers are down",
                                     style: TextStyle(color: Colors.black)),
                               )
                             ]);

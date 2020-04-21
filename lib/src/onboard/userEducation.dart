@@ -98,7 +98,7 @@ class _UserEducationState extends State<UserEducation> {
             borderRadius: BorderRadius.circular(15),
           ),
           child: Text(
-            "¿Qué es cibic?",
+            "¿Qué es Cibic?",
             textAlign: TextAlign.center,
             style: headerStyle,
           ),
@@ -133,7 +133,7 @@ class _UserEducationState extends State<UserEducation> {
             borderRadius: BorderRadius.circular(15),
           ),
           child: Text(
-            "¿Por qué usar cibic?",
+            "¿Por qué usar Cibic?",
             textAlign: TextAlign.center,
             style: headerStyle,
           ),
@@ -168,7 +168,7 @@ class _UserEducationState extends State<UserEducation> {
             borderRadius: BorderRadius.circular(15),
           ),
           child: Text(
-            "¿Cómo usar cibic?",
+            "¿Cómo usar Cibic?",
             textAlign: TextAlign.center,
             style: headerStyle,
           ),
