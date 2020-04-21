@@ -1,7 +1,7 @@
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:flutter/material.dart';
 
-import 'package:cibic_mobile/src/widgets/utils/ComposeScreen.dart';
+import 'package:cibic_mobile/src/widgets/menu/ComposeScreen.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 

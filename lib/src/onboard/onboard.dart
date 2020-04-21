@@ -12,34 +12,15 @@ class Onboard extends StatefulWidget {
 }
 
 class _OnboardState extends State<Onboard> {
-  Image cibicTilt = Image(image: AssetImage('assets/images/cibic_tilt.png'));
-  Image cibicTilt2 = Image(image: AssetImage('assets/images/cibic_tilt2.png'));
-  Image cibicLogo = Image(image: AssetImage('assets/images/cibic_logo.png'));
-  List<Image> images;
-  int imageIndex = 0;
-
-  @override
-  initState() {
-    super.initState();
-    this.images = [this.cibicTilt, this.cibicTilt2, this.cibicLogo];
-  }
+  Image cibicGIF = Image(image: AssetImage('assets/images/cibic.gif'));
 
   @override
   Widget build(BuildContext context) {
     Future.delayed(
-      const Duration(seconds: 1),
+      const Duration(seconds: 5),
       () {
-        if (this.imageIndex == 0) {
-          setState(() {
-            this.imageIndex++;
-          });
-        } else if (this.imageIndex == 1) {
-          setState(() {
-            this.imageIndex++;
-          });
-        } else if (this.imageIndex == 2) {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UserEducation(widget.jwt)));
-        }
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => UserEducation(widget.jwt)));
       },
     );
 
@@ -50,7 +31,7 @@ class _OnboardState extends State<Onboard> {
         child: Container(
           width: 300,
           alignment: Alignment.center,
-          child: images[this.imageIndex],
+          child: cibicGIF,
         ),
       ),
     );
