@@ -57,8 +57,6 @@ flutter:
   #  - images/a_dot_ham.jpeg
   assets:
     - assets/images/cibic_logo.png
-    - assets/images/cibic_tilt.png
-    - assets/images/cibic_tilt2.png
     - assets/images/user_education_1.png
     - assets/images/user_education_2.png
     - assets/images/user_education_3.png
