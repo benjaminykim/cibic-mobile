@@ -57,8 +57,15 @@ flutter:
   #  - images/a_dot_ham.jpeg
   assets:
     - assets/images/cibic_logo.png
-    - assets/images/cibic_tilt.png
-    - assets/images/cibic_tilt2.png
+    - assets/images/user_education_1.png
+    - assets/images/user_education_2.png
+    - assets/images/user_education_3.png
+    - assets/images/user_education_4a.png
+    - assets/images/user_education_4b.png
+    - assets/images/user_education_5a.png
+    - assets/images/user_education_5b.png
+    - assets/images/cibic.gif
+    - assets/cert/Cibic_Io.pem
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -7,6 +7,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 final storage = FlutterSecureStorage();
 
 class MenuOverlay extends StatelessWidget {
+  final Function onPerfilTap;
+
+  MenuOverlay(this.onPerfilTap);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -14,11 +18,11 @@ class MenuOverlay extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.only(
             bottomRight: Radius.circular(70), topRight: Radius.circular(70)),
-        child: (Drawer(
+        child: Drawer(
           child: Container(
-            decoration: BoxDecoration(color: APP_BAR_BG),
-            child: ListView(
-              padding: EdgeInsets.zero,
+            decoration: BoxDecoration(color: COLOR_DEEP_BLUE),
+            child: Column(
+              //padding: EdgeInsets.zero,
               children: <Widget>[
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,18 +51,14 @@ class MenuOverlay extends StatelessWidget {
                   ),
                   onTap: () {
                     Navigator.pop(context);
+                    this.onPerfilTap(2);
                   },
                 ),
                 ListTile(
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
-                    'Crear cabildo',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: "OpenSans",
-                      color: APP_BACKGROUND,
-                    ),
+                    'Cabildos',
+                    style: Theme.of(context).textTheme.body1,
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -77,7 +77,7 @@ class MenuOverlay extends StatelessWidget {
                 ListTile(
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
-                    'Configuracion',
+                    'Configuración',
                     style: Theme.of(context).textTheme.body1,
                   ),
                   onTap: () {
@@ -104,23 +104,23 @@ class MenuOverlay extends StatelessWidget {
                     return showDialog(
                       context: context,
                       builder: (context) {
-                        // return object of type Dialog
                         return AlertDialog(
-                          title: new Text("Cerrar Sesion"),
-                          content: new Text("Quierers cerrar tu sesion?"),
+                          title: Text(
+                            "Cerrar Sesion",
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                          content: Text("Quieres cerrar tu sesion?"),
                           actions: <Widget>[
-                            // usually buttons at the bottom of the dialog
                             new FlatButton(
                               child: new Text("Si"),
                               onPressed: () {
                                 storage.delete(key: "jwt");
-                                Navigator.of(context)
-                                    .popUntil((route) => route.isFirst);
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            App()));
+                                        builder: (context) => App()));
                               },
                             ),
                             new FlatButton(
@@ -135,10 +135,29 @@ class MenuOverlay extends StatelessWidget {
                     );
                   },
                 ),
+                ListTile(
+                  contentPadding: EdgeInsets.only(left: 20),
+                  title: Text(
+                    'Únete!',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                Spacer(),
+                ListTile(
+                  contentPadding: EdgeInsets.only(left: 20),
+                  title: Text(
+                    '\u00a9 cibic 2020',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(fontSize: 12, color: Colors.white),
+                  ),
+                ),
               ],
             ),
           ),
-        )),
+        ),
       ),
     );
   }

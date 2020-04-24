@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const APP_BAR_BG = Color(0xff2D9CDB);
+const APP_BAR_BG = Color(0xff43a1bf);
 const APP_BAR_SELECTED = Color(0xff518CAD);
 const APP_BAR_BOTTOM = Color(0xff6CBAE6);
 const APP_BACKGROUND = Color(0xffF2F2F2);
@@ -99,8 +99,8 @@ Map<String, String> getAuthHeader(String jwt) {
 }
 
 const URL_PROD_BASE = "http://cibic.io/api/user_id/feed_home";
-const URL_LOCALHOST_BASE = "http://10.0.2.2:3000/";
-const URL_AWS_BASE = "http://52.9.99.38:3000/";
+const URL_LOCALHOST_BASE = "https://10.0.2.2:3000/";
+const URL_AWS_BASE = "https://api.cibic.io:3000/";
 
 const ENDPOINT_LOGIN = "auth/login/";
 
