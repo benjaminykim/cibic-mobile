@@ -104,7 +104,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
                       padding: EdgeInsets.all(50),
                       alignment: Alignment.center,
                       child: Text(
-                        "cibic server error",
+                        "Cibic server error",
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.black,

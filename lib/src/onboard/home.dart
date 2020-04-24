@@ -41,7 +41,7 @@ class _AppState extends State<Home> {
   List<dynamic> feed;
   List<Widget> _widgetOptions;
   String appBarTitle = "INICIO";
-  List<String> _feedNames = ["INICIO", "PUBLICO", "USUARIO", "ESTADISTICAS"];
+  List<String> _feedNames = ["INICIO", "PÚBLICO", "USUARIO", "ESTADÍSTICAS"];
 
   void onBarButtonTapped(int index) {
     setState(() {
@@ -69,11 +69,11 @@ class _AppState extends State<Home> {
       child: DefaultTabController(
         length: 4,
         child: Scaffold(
-          appBar: BaseAppBar(this.appBarTitle),
+          appBar: BaseAppBar(this.appBarTitle, widget.jwt),
           body: Center(
             child: _widgetOptions.elementAt(selectedBarIndex),
           ),
-          drawer: MenuOverlay(),
+          drawer: MenuOverlay(this.onBarButtonTapped),
           bottomNavigationBar:
               BaseBar(this.selectedBarIndex, this.onBarButtonTapped),
         ),
