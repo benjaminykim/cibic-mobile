@@ -1,4 +1,5 @@
 import 'package:cibic_mobile/src/onboard/app.dart';
+import 'package:cibic_mobile/src/widgets/menu/menu-overlay/MyCabildos.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
@@ -8,8 +9,9 @@ final storage = FlutterSecureStorage();
 
 class MenuOverlay extends StatelessWidget {
   final Function onPerfilTap;
+  final String jwt;
 
-  MenuOverlay(this.onPerfilTap);
+  MenuOverlay(this.jwt, this.onPerfilTap);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,6 @@ class MenuOverlay extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(color: COLOR_DEEP_BLUE),
             child: Column(
-              //padding: EdgeInsets.zero,
               children: <Widget>[
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,8 +62,8 @@ class MenuOverlay extends StatelessWidget {
                     style: Theme.of(context).textTheme.body1,
                   ),
                   onTap: () {
-                    Navigator.pop(context);
-                  },
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => MyCabildos(this.jwt)));
+                  }
                 ),
                 ListTile(
                   contentPadding: EdgeInsets.only(left: 20),

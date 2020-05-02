@@ -10,7 +10,7 @@ import 'package:redux/redux.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityFeed.dart';
 import 'package:cibic_mobile/src/widgets/menu/AppBar.dart';
 import 'package:cibic_mobile/src/widgets/menu/BaseBar.dart';
-import 'package:cibic_mobile/src/widgets/menu/MenuOverlay.dart';
+import 'package:cibic_mobile/src/widgets/menu/menu-overlay/MenuOverlay.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
 class Home extends StatefulWidget {
@@ -73,7 +73,7 @@ class _AppState extends State<Home> {
           body: Center(
             child: _widgetOptions.elementAt(selectedBarIndex),
           ),
-          drawer: MenuOverlay(this.onBarButtonTapped),
+          drawer: MenuOverlay(widget.jwt, this.onBarButtonTapped),
           bottomNavigationBar:
               BaseBar(this.selectedBarIndex, this.onBarButtonTapped),
         ),
