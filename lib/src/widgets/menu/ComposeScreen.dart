@@ -30,13 +30,12 @@ class _ComposeState extends State<Compose> {
   initState() {
     super.initState();
     this.activityButtons = [
-      createActivityButton('discusión', 1),
-      createActivityButton('encuesta', 0),
-      createActivityButton('propuesta', 0)
+      createActivityButton('discussion', 1),
+      createActivityButton('poll', 0),
+      createActivityButton('proposal', 0)
     ];
 
     _user = fetchUserProfile(extractID(widget.jwt), widget.jwt);
-
   }
 
   DropdownMenuItem<String> createMenuItem(String value) {
@@ -254,10 +253,12 @@ class _ComposeState extends State<Compose> {
     final enteredBody = inputBodyController.text;
     final enteredTag = inputTagController.text;
 
-    for (int i = 0; i < user.cabildos.length; i++) {
-      if (user.cabildos[i].name == idCabildo) {
-        idCabildo = user.cabildos[i].id;
-        break;
+    if (idCabildo != "todo") {
+      for (int i = 0; i < user.cabildos.length; i++) {
+        if (user.cabildos[i].name == idCabildo) {
+          idCabildo = user.cabildos[i].id;
+          break;
+        }
       }
     }
 

@@ -251,9 +251,7 @@ class _UserProfileState extends State<SelfProfileScreen> {
                 return CircularProgressIndicator();
               }),
           // feed
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height - 200 - 70 - 14 - 59,
+          Expanded(
             child: RefreshIndicator(
               key: refreshKey,
               onRefresh: () => refreshList(),

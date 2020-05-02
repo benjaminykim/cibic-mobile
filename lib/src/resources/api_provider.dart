@@ -52,7 +52,6 @@ Future<FeedModel> fetchUserFeed(String idUser, String jwt) async {
   printFetchRequest(idUser, jwt);
   printDebugResponse(response);
   if (response.statusCode == 200) {
-
     return FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
   } else {
     throw Exception(
@@ -335,15 +334,28 @@ Future<void> composeActivity(String title, String intro, String body,
   request.headers.add('accept', 'application/json');
   request.headers.add('authorization', 'Bearer $jwt');
 
-  final requestBody = {
-    'activity': {
-      'idUser': idUser,
-      'idCabildo': idCabildo,
-      'activityType': 'discussion',
-      'title': title,
-      'text': body
-    }
-  };
+  var requestBody;
+  if (idCabildo == "todo") {
+    requestBody = {
+      'activity': {
+        'idUser': idUser,
+        'activityType': 'discussion',
+        'title': title,
+        'text': body
+      }
+    };
+  } else {
+    requestBody = {
+      'activity': {
+        'idUser': idUser,
+        'idCabildo': idCabildo,
+        'activityType': 'discussion',
+        'title': title,
+        'text': body
+      }
+    };
+  }
+
   request.add(utf8.encode(json.encode(requestBody)));
   HttpClientResponse response = await request.close();
   httpClient.close();
@@ -371,15 +383,28 @@ Future<void> composePoll(
   request.headers.add('accept', 'application/json');
   request.headers.add('authorization', 'Bearer $jwt');
 
-  final requestBody = {
-    'activity': {
-      'idUser': idUser,
-      'idCabildo': idCabildo,
-      'activityType': 'poll',
-      'title': title,
-      'text': "none"
-    }
-  };
+  var requestBody;
+  if (idCabildo == "todo") {
+    requestBody = {
+      'activity': {
+        'idUser': idUser,
+        'activityType': 'poll',
+        'title': title,
+        'text': "none"
+      }
+    };
+  } else {
+    requestBody = {
+      'activity': {
+        'idUser': idUser,
+        'idCabildo': idCabildo,
+        'activityType': 'poll',
+        'title': title,
+        'text': "none"
+      }
+    };
+  }
+
   request.add(utf8.encode(json.encode(requestBody)));
   HttpClientResponse response = await request.close();
   httpClient.close();
