@@ -23,26 +23,20 @@ const CARD_LAST = 4;
 const CARD_POLL = 5;
 const CARD_SCREEN = 6;
 
-const ACTIVITY_DISCUSS = "discusión";
-const ACTIVITY_PROPOSAL = "propuesta";
-const ACTIVITY_POLL = "encuesta";
+const ACTIVITY_DISCUSS = "discussion";
+const ACTIVITY_PROPOSAL = "proposal";
+const ACTIVITY_POLL = "poll";
 const ACTIVITY_TYPES = [ACTIVITY_DISCUSS, ACTIVITY_POLL, ACTIVITY_PROPOSAL];
 
 const Map<String, Color> labelColorPicker = {
   ACTIVITY_PROPOSAL: LABEL_PROPOSAL_COLOR,
   ACTIVITY_DISCUSS: LABEL_DISCUSS_COLOR,
   ACTIVITY_POLL: LABEL_POLL_COLOR,
-  "discussion": LABEL_DISCUSS_COLOR,
-  "proposal": LABEL_PROPOSAL_COLOR,
-  "poll": LABEL_POLL_COLOR,
 };
 const Map<String, String> labelTextPicker = {
   ACTIVITY_PROPOSAL: 'propuesta',
   ACTIVITY_DISCUSS: 'discusión',
   ACTIVITY_POLL: 'encuesta',
-  "discussion": 'discusión',
-  "proposal": 'propuesta',
-  'poll': 'encuesta'
 };
 
 ThemeData get cibicTheme {
