@@ -71,7 +71,6 @@ ThemeData get cibicTheme {
   );
 }
 
-
 const REGISTER_INPUT_DEC = const BoxDecoration(
   color: Colors.white,
   borderRadius: const BorderRadius.all(const Radius.circular(10)),
@@ -89,13 +88,30 @@ const REGISTER_TXT = TextStyle(
   fontWeight: FontWeight.w300,
 );
 
+get serverError => ListView(
+  children: <Widget>[
+    Container(
+      height: 200,
+      padding: EdgeInsets.all(50),
+      alignment: Alignment.center,
+      child: Text(
+        "Cibic server error",
+        style: TextStyle(
+          fontSize: 20,
+          color: Colors.black,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    ),
+  ],
+);
 
 Map<String, String> getAuthHeader(String jwt) {
   return {
-      'content-type': 'application/json',
-      'accept': 'application/json',
-      'authorization': "Bearer $jwt"
-    };
+    'content-type': 'application/json',
+    'accept': 'application/json',
+    'authorization': "Bearer $jwt"
+  };
 }
 
 const URL_LOCALHOST_BASE = "http://10.0.2.2:3000/";
