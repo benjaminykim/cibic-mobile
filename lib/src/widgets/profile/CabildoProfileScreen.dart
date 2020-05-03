@@ -60,7 +60,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
       home: Scaffold(
         appBar: AppBar(
           title: FutureBuilder<CabildoModel>(
-              future: this.cabildo,
+              future: fetchCabildoProfile(widget.idCabildo, widget.jwt),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Text(snapshot.data.name,
@@ -88,234 +88,237 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // PROFILE INFO WIDGET
-                FutureBuilder<CabildoModel>(
-                    future: this.cabildo,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Container(
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border:
-                                Border.all(color: Colors.grey, width: 0.5),
-                          ),
-                          child: Column(
-                            children: [
-                              // IMAGE, NAME, FOLLOW BUTTON, CABILDO METADATA
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  // IMAGE, NAME, FOLLOW BUTTON
-                                  Column(
-                                    children: [
-                                      // IMAGE
-                                      Container(
-                                        width: 85.0,
-                                        height: 85.0,
-                                        margin: EdgeInsets.fromLTRB(
-                                            15, 15, 15, 0),
-                                        decoration: new BoxDecoration(
-                                          color: Colors.blue,
-                                          shape: BoxShape.circle,
-                                        ),
-                                      ),
-                                      // NAME
-                                      Container(
-                                        margin:
-                                            EdgeInsets.fromLTRB(5, 4, 5, 0),
-                                        width: 120,
-                                        child: Text(
-                                          snapshot.data.name,
-                                          textAlign: TextAlign.center,
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w600,
+                Container(
+                  height: 204,
+                  child: FutureBuilder<CabildoModel>(
+                      future: this.cabildo,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border:
+                                  Border.all(color: Colors.grey, width: 0.5),
+                            ),
+                            child: Column(
+                              children: [
+                                // IMAGE, NAME, FOLLOW BUTTON, CABILDO METADATA
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    // IMAGE, NAME, FOLLOW BUTTON
+                                    Column(
+                                      children: [
+                                        // IMAGE
+                                        Container(
+                                          width: 85.0,
+                                          height: 85.0,
+                                          margin: EdgeInsets.fromLTRB(
+                                              15, 15, 15, 0),
+                                          decoration: new BoxDecoration(
+                                            color: Colors.blue,
+                                            shape: BoxShape.circle,
                                           ),
                                         ),
-                                      ),
-                                      // FOLLOW BUTTON
-                                      Container(
-                                          height: 17,
-                                          child: FlatButton(
-                                            color: (this.isFollowing ||
-                                                    snapshot.data.members.any(
-                                                        (k) =>
-                                                            k['_id'] ==
-                                                            idRootUser))
-                                                ? Colors.blue
-                                                : Colors.green,
-                                            onPressed: () async {
-                                              if (this.followButtonText ==
-                                                  "seguir") {
-                                                String ret = await followCabildo(
-                                                    widget.idCabildo,
-                                                    widget.jwt);
-                                                if (ret != "error") {
+                                        // NAME
+                                        Container(
+                                          margin:
+                                              EdgeInsets.fromLTRB(5, 4, 5, 0),
+                                          width: 120,
+                                          child: Text(
+                                            snapshot.data.name,
+                                            textAlign: TextAlign.center,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                        // FOLLOW BUTTON
+                                        Container(
+                                            height: 17,
+                                            child: FlatButton(
+                                              color: (this.isFollowing ||
+                                                      snapshot.data.members.any(
+                                                          (k) =>
+                                                              k['_id'] ==
+                                                              idRootUser))
+                                                  ? Colors.blue
+                                                  : Colors.green,
+                                              onPressed: () async {
+                                                if (this.followButtonText ==
+                                                    "seguir") {
+                                                  String ret = await followCabildo(
+                                                      widget.idCabildo,
+                                                      widget.jwt);
+                                                  if (ret != "error") {
+                                                    setState(() {
+                                                      this.isFollowing = true;
+                                                    });
+                                                  }
+                                                } else {
                                                   setState(() {
-                                                    this.isFollowing = true;
+                                                    this.isFollowing = false;
                                                   });
                                                 }
-                                              } else {
-                                                setState(() {
-                                                  this.isFollowing = false;
-                                                });
-                                              }
-                                            },
-                                            child: Text(
-                                                (this.isFollowing ||
-                                                        snapshot.data.members
-                                                            .any((k) =>
-                                                                k['_id'] ==
-                                                                idRootUser))
-                                                    ? "siguiendo"
-                                                    : "seguir",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12,
-                                                )),
-                                          )),
-                                    ],
-                                  ),
-                                  // CABILDO METADATA
-                                  Container(
-                                    width: MediaQuery.of(context).size.width -
-                                        160,
-                                    margin:
-                                        EdgeInsets.fromLTRB(10, 15, 15, 0),
-                                    child: Column(
-                                      children: [
-                                        // FOLLOWERS AND LOCATION
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            // FOLLOWERS
-                                            Column(
-                                              children: <Widget>[
-                                                Text(
-                                                    snapshot
-                                                        .data.members.length
-                                                        .toString(),
+                                              },
+                                              child: Text(
+                                                  (this.isFollowing ||
+                                                          snapshot.data.members
+                                                              .any((k) =>
+                                                                  k['_id'] ==
+                                                                  idRootUser))
+                                                      ? "siguiendo"
+                                                      : "seguir",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                  )),
+                                            )),
+                                      ],
+                                    ),
+                                    // CABILDO METADATA
+                                    Container(
+                                      width: MediaQuery.of(context).size.width -
+                                          160,
+                                      margin:
+                                          EdgeInsets.fromLTRB(10, 15, 15, 0),
+                                      child: Column(
+                                        children: [
+                                          // FOLLOWERS AND LOCATION
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              // FOLLOWERS
+                                              Column(
+                                                children: <Widget>[
+                                                  Text(
+                                                      snapshot
+                                                          .data.members.length
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      )),
+                                                  Text(
+                                                      (snapshot.data.members
+                                                                  .length >
+                                                              1)
+                                                          ? "seguidores"
+                                                          : "seguidor",
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.black,
+                                                      ))
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                width: 30,
+                                              ),
+                                              // LOCATION
+                                              Row(children: [
+                                                Icon(Icons.location_on),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Text(snapshot.data.location,
                                                     style: TextStyle(
                                                       fontSize: 14,
-                                                      color: Colors.black,
                                                       fontWeight:
                                                           FontWeight.w600,
+                                                      color: Colors.black,
                                                     )),
-                                                Text(
-                                                    (snapshot.data.members
-                                                                .length >
-                                                            1)
-                                                        ? "seguidores"
-                                                        : "seguidor",
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.black,
-                                                    ))
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              width: 30,
-                                            ),
-                                            // LOCATION
-                                            Row(children: [
-                                              Icon(Icons.location_on),
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              Text(snapshot.data.location,
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight:
-                                                        FontWeight.w600,
-                                                    color: Colors.black,
-                                                  )),
-                                            ]),
-                                          ],
-                                        ),
-                                        // CABILDO INTRODUCTION
-                                        Container(
-                                          margin: EdgeInsets.only(top: 10),
-                                          alignment: Alignment.topLeft,
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                this.maxLines = 100;
-                                              });
-                                            },
-                                            child: Container(
-                                              height: 76,
-                                              child: ListView(
-                                                children: [
-                                                  Text(
-                                                    snapshot.data.desc,
-                                                    maxLines: this.maxLines,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                      fontSize: 13,
-                                                      color: Colors.black,
+                                              ]),
+                                            ],
+                                          ),
+                                          // CABILDO INTRODUCTION
+                                          Container(
+                                            margin: EdgeInsets.only(top: 10),
+                                            alignment: Alignment.topLeft,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  this.maxLines = 100;
+                                                });
+                                              },
+                                              child: Container(
+                                                height: 76,
+                                                child: ListView(
+                                                  children: [
+                                                    Text(
+                                                      snapshot.data.desc,
+                                                      maxLines: this.maxLines,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: Colors.black,
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              // FEED BUTTON BAR
-                              Container(
-                                  margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                                  padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(
-                                        color: Colors.grey, width: 0.5),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Actividad",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey,
+                                  ],
+                                ),
+                                // FEED BUTTON BAR
+                                Container(
+                                    margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                    padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          color: Colors.grey, width: 0.5),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Actividad",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        "Encuestas",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey,
+                                        Text(
+                                          "Encuestas",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        "Discusiones",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey,
-                                        ),
-                                      )
-                                    ],
-                                  ))
-                            ],
-                          ),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text("error");
-                      }
-                      return Text("username not found");
-                    }),
+                                        Text(
+                                          "Discusiones",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                          ),
+                                        )
+                                      ],
+                                    ))
+                              ],
+                            ),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text("error");
+                        }
+                        return Text("username not found");
+                      }),
+                ),
                 // feed
                 Expanded(
                   child: RefreshIndicator(
