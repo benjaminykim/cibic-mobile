@@ -243,10 +243,6 @@ class _ComposeState extends State<Compose> {
     });
   }
 
-  void deleteActivity() {
-    Navigator.of(context).pop();
-  }
-
   void submitActivity(String idCabildo, UserModel user) {
     final enteredTitle = inputTitleController.text;
     final enteredIntro = inputIntroController.text;
@@ -287,7 +283,7 @@ class _ComposeState extends State<Compose> {
           Spacer(),
           IconButton(
             icon: Icon(Icons.delete),
-            onPressed: deleteActivity,
+            onPressed: () { Navigator.of(context).pop(); },
           ),
           IconButton(
             icon: Icon(Icons.send),

@@ -3,6 +3,7 @@ import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/resources/api_provider.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/resources/utils.dart';
+import 'package:cibic_mobile/src/widgets/menu/menu-overlay/CreateCabildo.dart';
 import 'package:cibic_mobile/src/widgets/profile/CabildoProfileScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -61,27 +62,44 @@ class _MyCabildosState extends State<MyCabildos> {
   }
 
   Widget cabildoCreate() {
-    return Container(
-      height: 65,
-      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            width: 50.0,
-            height: 50.0,
-            margin: EdgeInsets.fromLTRB(0, 0, 15, 0),
-            child: Icon(Icons.create, size: 50),
-          ),
-          Text(
-            "Crear cabildo",
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 20,
+    return GestureDetector(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          elevation: 5,
+          backgroundColor: Colors.transparent,
+          builder: (bContext) {
+            return GestureDetector(
+              onTap: () {},
+              child: CreateCabildo(widget.jwt),
+              behavior: HitTestBehavior.opaque,
+            );
+          },
+        );
+      },
+      child: Container(
+        height: 65,
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: 50.0,
+              height: 50.0,
+              margin: EdgeInsets.fromLTRB(0, 0, 15, 0),
+              child: Icon(Icons.create, size: 35),
             ),
-          ),
-        ],
+            Text(
+              "Crear un cabildo",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -89,7 +107,11 @@ class _MyCabildosState extends State<MyCabildos> {
   Widget cabildoItem(CabildoModel cabildo) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CabildoProfileScreen(cabildo.id, widget.jwt)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    CabildoProfileScreen(cabildo.id, widget.jwt)));
       },
       child: Container(
         height: 65,
@@ -157,21 +179,21 @@ class _MyCabildosState extends State<MyCabildos> {
                                   indent: 10,
                                   endIndent: 10,
                                 ),
-                            itemCount: cabildos.length + 2,
+                            itemCount: cabildos.length + 1,
                             itemBuilder: (BuildContext context, int index) {
-                              if (index == cabildos.length) {
-                                  return cabildoAdd();
+                              if (index == 0) {
+                                return cabildoCreate();
                               } else if (index == cabildos.length + 1) {
-                                  return cabildoCreate();
+                                return cabildoAdd();
                               } else {
-                                CabildoModel cabildo = cabildos[index];
+                                CabildoModel cabildo = cabildos[index - 1];
                                 return cabildoItem(cabildo);
                               }
                             });
                       } else if (snapshot.hasError) {
                         return serverError();
                       } else {
-                        return CircularProgressIndicator();
+                        return Center(child: CircularProgressIndicator());
                       }
                     })),
           ),

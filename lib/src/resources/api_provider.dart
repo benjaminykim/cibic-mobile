@@ -421,3 +421,38 @@ Future<void> composePoll(
   httpClient.close();
   return reply;
 }
+
+Future<int> createCabildo(String name, String desc, String loc, String tag, String jwt) async {
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request =
+      await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_CABILDOS));
+  request.headers.add('content-type', 'application/json');
+  request.headers.add('accept', 'application/json');
+  request.headers.add('authorization', 'Bearer $jwt');
+
+  final requestBody = {
+    'cabildo': {
+      'name': name,
+      'location': loc,
+      'desc': desc,
+      'issues': [tag],
+    }
+  };
+
+  request.add(utf8.encode(json.encode(requestBody)));
+  HttpClientResponse response = await request.close();
+  httpClient.close();
+
+  String reply = "";
+  if (response.statusCode == 201) {
+    final responseBody = await response.transform(utf8.decoder).join();
+    Map<String, dynamic> cabildo = jsonDecode(responseBody);
+    reply = cabildo['id'];
+    await followCabildo(reply, jwt);
+  } else {
+    throw Exception(
+        "HTTP Response error code: " + response.statusCode.toString());
+  }
+  httpClient.close();
+  return response.statusCode;
+}
