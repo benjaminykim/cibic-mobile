@@ -99,7 +99,7 @@ class MenuOverlay extends StatelessWidget {
                 ListTile(
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
-                    'Cerrar Sesion',
+                    'Cerrar la Sesión',
                     style: Theme.of(context).textTheme.body1,
                   ),
                   onTap: () {
