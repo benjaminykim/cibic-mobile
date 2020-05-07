@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cibic_mobile/src/onboard/onboard.dart';
+import 'package:cibic_mobile/src/onboard/register2.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -26,7 +28,7 @@ class _RegisterState extends State<Register> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   List<String> inputLabels = [
-    "correo electrónico*",
+    "correo electrónico",
     "nombre de usuario",
     "nombre de pila",
     "apellido",
@@ -36,6 +38,9 @@ class _RegisterState extends State<Register> {
   ];
   List<TextEditingController> inputCtlrs;
   String idUser;
+  final _formkey = GlobalKey<FormState>();
+  // FocusNode myFocusNode;
+  final FocusScopeNode _node = FocusScopeNode();
 
   @override
   initState() {
@@ -49,6 +54,8 @@ class _RegisterState extends State<Register> {
       _phoneController,
       _passwordController
     ];
+    // node = FocusScopeNode();
+    // myFocusNode = FocusNode();
   }
 
   Map<String, dynamic> createUserRequestBody() {
@@ -146,6 +153,8 @@ class _RegisterState extends State<Register> {
     // phone number input
     if (index == 5) {
       textField = TextField(
+        onEditingComplete: _node.nextFocus,
+        // focusNode: myFocusNode,
         controller: ctlr,
         textAlign: TextAlign.center,
         decoration: InputDecoration(
@@ -160,6 +169,7 @@ class _RegisterState extends State<Register> {
       );
     } else {
       textField = TextField(
+        // focusNode: myFocusNode,
         controller: ctlr,
         textAlign: TextAlign.center,
         obscureText: (index == 6), // password label obscurity
@@ -186,6 +196,206 @@ class _RegisterState extends State<Register> {
     );
   }
 
+  Container createInputView2(int index) {
+    String str = this.inputLabels[index];
+    TextEditingController ctlr = this.inputCtlrs[index];
+    TextFormField textFormField;
+
+    switch (index) {
+      case 0:
+        textFormField = TextFormField(
+          onEditingComplete: _node.nextFocus,
+          // focusNode: myFocusNode,
+          // validator: ,
+          // controller: ctlr,
+          textAlign: TextAlign.center,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: str + "*",
+            hintStyle: REGISTER_INPUT_TXT,
+          ),
+          // autofocus: true,
+          // enabled: true,
+          textAlignVertical: TextAlignVertical.center,
+          keyboardType: TextInputType.emailAddress,
+          onChanged: (value) {
+            // setState(() {
+            //   email = value;
+            //   this.isSubmitable = computeSubmitable();
+            // });
+          },
+        );
+        break;
+      case 1:
+        textFormField = TextFormField(
+            validator: (value) {
+              if (value.trim().length == 0) {
+                return "Username is empty";
+              } else if (value.trim().length > 16) {
+                return "Username too long";
+              } else if (value.startsWith("',")) //patterns for special case
+              {
+                return "Invalid Username";
+              }
+              // else if (value.) {
+              //   return "Username too long";
+              // }
+              else {
+                return null;
+              }
+            },
+            // maxLengthEnforced: true,
+            // maxLength: 16,
+            controller: ctlr,
+            textAlign: TextAlign.center,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: str + "*",
+              hintStyle: REGISTER_INPUT_TXT,
+            ),
+            autofocus: true,
+            enabled: true,
+            // keyboardType: TextInputType.text,
+            onSaved: (value) {
+              // setState(() {
+              //   username = value;
+              //   this.isSubmitable = computeSubmitable();
+              // });
+            }
+            // onChanged: (value) {
+            //   setState(() {
+            //     username = value;
+            //     this.isSubmitable = computeSubmitable();
+            //   });
+            // },
+            );
+
+        break;
+
+      case 2:
+        textFormField = TextFormField(
+          // validator: () {},
+          controller: ctlr,
+          textAlign: TextAlign.center,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: str + "*",
+            hintStyle: REGISTER_INPUT_TXT,
+          ),
+          autofocus: true,
+          enabled: true,
+          // keyboardType: TextInputType.text,
+          onChanged: (value) {
+            // setState(() {
+            //   firstname = value;
+            //   this.isSubmitable = computeSubmitable();
+            // });
+          },
+        );
+
+        break;
+      case 3:
+        textFormField = TextFormField(
+          // validator: () {},
+          controller: ctlr,
+          textAlign: TextAlign.center,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: str + "*",
+            hintStyle: REGISTER_INPUT_TXT,
+          ),
+          autofocus: true,
+          enabled: true,
+          // keyboardType: TextInputType.text,
+          onChanged: (value) {
+            // setState(() {
+            //   surname = value;
+            //   this.isSubmitable = computeSubmitable();
+            // });
+          },
+        );
+        break;
+      case 4:
+        textFormField = TextFormField(
+          // validator: () {},
+          controller: ctlr,
+          textAlign: TextAlign.center,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: str + "*",
+            hintStyle: REGISTER_INPUT_TXT,
+          ),
+          autofocus: true,
+          enabled: true,
+
+          // keyboardType: TextInputType.text,
+          onChanged: (value) {
+            // setState(() {
+            //   sex = value;
+            //   this.isSubmitable = computeSubmitable();
+            // });
+          },
+        );
+        break;
+
+      case 5:
+        textFormField = TextFormField(
+          // validator: () {},
+          controller: ctlr,
+          textAlign: TextAlign.center,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: str + "*",
+            hintStyle: REGISTER_INPUT_TXT,
+          ),
+          autofocus: true,
+          enabled: true,
+          // keyboardType: TextInputType.text,
+          onChanged: (value) {
+            // setState(() {
+            //   telephone = value;
+            //   this.isSubmitable = computeSubmitable();
+            // });
+          },
+        );
+        break;
+      case 6:
+        textFormField = TextFormField(
+          scrollPadding: EdgeInsets.all(10),
+          // validator: () {},
+          controller: ctlr,
+          textAlign: TextAlign.center,
+          obscureText: true,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: str + "*",
+            hintStyle: REGISTER_INPUT_TXT,
+          ),
+          autofocus: true,
+          enabled: true,
+          // keyboardType: TextInputType.text,
+          onChanged: (value) {
+            // setState(() {
+            //   password = value;
+            //   this.isSubmitable = computeSubmitable();
+            // });
+          },
+        );
+        break;
+
+      default:
+    }
+    return Container(
+      height: 40,
+      decoration: REGISTER_INPUT_DEC,
+      alignment: Alignment.center,
+      margin: EdgeInsets.fromLTRB(35, 0, 35, 7),
+      child: Center(
+        child: textFormField,
+      ),
+    );
+  }
+
   Widget createPrivacyCheck() {
     return Container(
       margin: EdgeInsets.only(left: 35),
@@ -195,10 +405,10 @@ class _RegisterState extends State<Register> {
           Checkbox(
             value: isChecked,
             onChanged: (value) {
-              setState(() {
-                this.isChecked = value;
-                this.isSubmitable = computeSubmitable();
-              });
+              // setState(() {
+              //   this.isChecked = value;
+              //   this.isSubmitable = computeSubmitable();
+              // });
             },
           ),
           Text(
@@ -227,11 +437,8 @@ class _RegisterState extends State<Register> {
               userLogin.then((jwt) {
                 if (jwt != null) {
                   widget.storage.write(key: "jwt", value: jwt);
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              Onboard(jwt)));
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => Onboard(jwt)));
                 } else {
                   setState(() {
                     this.isSubmitable = false;
@@ -266,7 +473,8 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      // resizeToAvoidBottomInset: true,
+      //  resizeToAvoidBottomPadding: false,
       body: Container(
         color: COLOR_DEEP_BLUE,
         child: Column(
@@ -286,61 +494,86 @@ class _RegisterState extends State<Register> {
                 ),
               ),
             ),
-            Container(
-              height: MediaQuery.of(context).size.height - 120,
-              child: ListView(
-                children: <Widget>[
-                  // HEADER
-                  Center(
-                    child: Text(
-                      "DATOS PERSONALES",
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
+            SingleChildScrollView(
+              child: Container(
+                height: MediaQuery.of(context).size.height - 120,
+                child: Form(
+                  key: _formkey,
+                  // usage :
+                  // _formkey.currentState.validate();
+                  autovalidate: true,
+                  child: FocusScope(
+                    autofocus: true,
+                    node: _node,
+                    child: ListView(
+                      children: <Widget>[
+                        // HEADER
+                        Center(
+                          child: Text(
+                            "DATOS PERSONALES",
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: Text(
+                            "Tus datos son privados.",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w200,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 15),
+                        createInputView2(0),
+                        Padding(
+                          padding: const EdgeInsets.all(30.0),
+                          child: createInputView2(1),
+                        ),
+                        createInputView(2),
+                        createInputView(3),
+                        createInputView(4),
+                        createInputView(5),
+                        createInputView(6),
+                        SizedBox(height: 2),
+                        // PASSWORD RULES
+                        Center(
+                          child: Text(
+                            'Mínimo 8 caractéres, un número y una mayúscula',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w200,
+                            ),
+                          ),
+                        ),
+                        createPrivacyCheck(),
+                        createSubmitButton("siguiente"),
+                        // DIVIDER
+                        Divider(
+                          indent: 30,
+                          endIndent: 30,
+                          color: Colors.white,
+                          thickness: 1,
+                        ),
+                        InkWell(
+                            child: Text("Test"),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (context) =>
+                                        EmailPasswordSignInForm(),
+                                  ));
+                            }),
+                        // DYNAMIC SPACING
+                        SizedBox(
+                          height: MediaQuery.of(context).viewInsets.bottom,
+                        ),
+                      ],
                     ),
                   ),
-                  Center(
-                    child: Text(
-                      "Tus datos son privados.",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w200,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  createInputView(0),
-                  createInputView(1),
-                  createInputView(2),
-                  createInputView(3),
-                  createInputView(4),
-                  createInputView(5),
-                  createInputView(6),
-                  SizedBox(height: 2),
-                  // PASSWORD RULES
-                  Center(
-                    child: Text(
-                      'Mínimo 8 caractéres, un número y una mayúscula',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w200,
-                      ),
-                    ),
-                  ),
-                  createPrivacyCheck(),
-                  createSubmitButton("siguiente"),
-                  // DIVIDER
-                  Divider(
-                    indent: 30,
-                    endIndent: 30,
-                    color: Colors.white,
-                    thickness: 1,
-                  ),
-                  // DYNAMIC SPACING
-                  SizedBox(
-                    height: MediaQuery.of(context).viewInsets.bottom,
-                  )
-                ],
+                ),
               ),
             ),
           ],
