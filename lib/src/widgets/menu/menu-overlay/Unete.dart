@@ -1,8 +1,16 @@
+import 'package:cibic_mobile/src/resources/api_provider.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Unete extends StatelessWidget {
+class Unete extends StatefulWidget {
+  @override
+  _UneteState createState() => _UneteState();
+}
+
+class _UneteState extends State<Unete> {
+  final inputCommentController = TextEditingController();
+
   final TextStyle style = TextStyle(
     color: Colors.black,
     fontSize: 17,
@@ -24,6 +32,21 @@ class Unete extends StatelessWidget {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  _launchEmail() async {
+    const url = 'mailto:contacto@cibic.app?subject=Contacto&body=Hola!';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    inputCommentController.dispose();
   }
 
   @override
@@ -67,7 +90,36 @@ class Unete extends StatelessWidget {
                       style: style,
                     ),
                     SizedBox(height: 10),
-                    SizedBox(height: 10),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                      ),
+                      child: TextField(
+                        controller: inputCommentController,
+                        maxLines: 4,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w200, color: Colors.white),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          fillColor: Colors.grey,
+                          hintText: "comenta...",
+                          hintStyle: TextStyle(
+                              fontWeight: FontWeight.w200, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Spacer(),
+                        IconButton(
+                          icon: Icon(Icons.send),
+                          onPressed: () => submitUneteComment(
+                              "fake jwt", inputCommentController.text),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -86,9 +138,14 @@ class Unete extends StatelessWidget {
                       style: style,
                     ),
                     SizedBox(height: 10),
-                    Text(
-                      "contacto@cibic.app",
-                      style: contentStyle,
+                    GestureDetector(
+                      onTap: () {
+                        _launchEmail();
+                      },
+                      child: Text(
+                        "contacto@cibic.app",
+                        style: contentStyle,
+                      ),
                     ),
                     SizedBox(height: 10),
                   ],
@@ -105,13 +162,16 @@ class Unete extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      "Proyeco Abierto",
+                      "Proyecto Abierto",
                       style: style,
                     ),
                     SizedBox(height: 10),
-                    RaisedButton(
-                      onPressed: _launchURL,
-                      child: Text('Show Flutter homepage'),
+                    GestureDetector(
+                      onTap: _launchURL,
+                      child: Text(
+                        'Github',
+                        style: contentStyle,
+                      ),
                     ),
                     SizedBox(height: 10),
                   ],
