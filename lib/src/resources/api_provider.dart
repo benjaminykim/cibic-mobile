@@ -456,3 +456,34 @@ Future<int> createCabildo(String name, String desc, String loc, String tag, Stri
   httpClient.close();
   return response.statusCode;
 }
+
+
+Future<void> submitUneteComment(String jwt, String comment) async {
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request =
+      await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_UNETE_COMMENT));
+  request.headers.add('content-type', 'application/json');
+  request.headers.add('accept', 'application/json');
+  request.headers.add('authorization', 'Bearer $jwt');
+
+  var requestBody;
+  requestBody = {
+    "comment": comment
+  };
+
+  request.add(utf8.encode(json.encode(requestBody)));
+  HttpClientResponse response = await request.close();
+  httpClient.close();
+
+  String reply;
+  if (response.statusCode == 201) {
+    final responseBody = await response.transform(utf8.decoder).join();
+    Map<String, dynamic> activity = jsonDecode(responseBody);
+    reply = activity['status'];
+  } else {
+    throw Exception(
+        "HTTP Response error code: " + response.statusCode.toString());
+  }
+  httpClient.close();
+  return reply;
+}
