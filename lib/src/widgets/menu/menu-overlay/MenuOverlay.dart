@@ -2,6 +2,7 @@ import 'package:cibic_mobile/src/onboard/app.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/About.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/Configuration.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/MyCabildos.dart';
+import 'package:cibic_mobile/src/widgets/menu/menu-overlay/Unete.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
@@ -145,7 +146,7 @@ class MenuOverlay extends StatelessWidget {
                     style: Theme.of(context).textTheme.body1,
                   ),
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Unete()));
                   },
                 ),
                 Spacer(),
