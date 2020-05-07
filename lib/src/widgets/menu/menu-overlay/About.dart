@@ -1,21 +1,29 @@
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class About extends StatelessWidget {
-  TextStyle style = TextStyle(
+  final TextStyle style = TextStyle(
     color: Colors.black,
     fontSize: 17,
     fontWeight: FontWeight.w600,
   );
 
-  TextStyle contentStyle = TextStyle(
+  final TextStyle contentStyle = TextStyle(
     color: Colors.black,
     fontSize: 15,
     fontWeight: FontWeight.w200,
   );
 
-  EdgeInsets aboutPadding =  EdgeInsets.fromLTRB(30, 10, 30, 10);
+  final EdgeInsets aboutPadding = EdgeInsets.fromLTRB(30, 10, 30, 10);
 
+  final YoutubePlayerController _controller = YoutubePlayerController(
+    initialVideoId: '68MEbFIOFQ0',
+    flags: YoutubePlayerFlags(
+      autoPlay: true,
+      mute: false,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +66,11 @@ class About extends StatelessWidget {
                       style: style,
                     ),
                     SizedBox(height: 10),
-                    Text(
-                      "contacto@cibic.app",
-                      style: contentStyle,
+                    Container(
+                      child: YoutubePlayer(
+                        controller: _controller,
+                        showVideoProgressIndicator: true,
+                      ),
                     ),
                     SizedBox(height: 10),
                   ],
