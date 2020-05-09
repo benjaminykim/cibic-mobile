@@ -15,8 +15,8 @@ class EmailPasswordSignInForm extends StatefulWidget {
 class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
   final FocusScopeNode _node = FocusScopeNode();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String username, email, firstname, surname, sex, telephone, password;
-
+  String username, email, firstname, surname, sex, _value, telephone, password;
+  bool privacy;
   @override
   initState() {
     super.initState();
@@ -27,6 +27,7 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
     sex = "";
     telephone = "";
     password = "";
+    privacy = false;
   }
 
   @override
@@ -35,10 +36,39 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
     super.dispose();
   }
 
-  Container textFieldInput({String title, String value}) {
+  Widget createPrivacyCheck() {
+    return Container(
+      margin: EdgeInsets.only(left: 35),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Checkbox(
+            value: privacy,
+            onChanged: (value) {
+              setState(() {
+                this.privacy = value;
+                // this.isSubmitable = computeSubmitable();
+              });
+            },
+          ),
+          Text(
+            "Acepto las políticas de privacidad.",
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.white,
+              fontWeight: FontWeight.w200,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container textFieldInput({String title, String input}) {
     // for validation
     String _validator(String value) {
       // email validation
+
       if (title == "correo electrónico*") {
         if (value.isEmpty) {
           // The form is empty
@@ -108,7 +138,7 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
         return "Error";
       }
       // phone number
-      else if (title == "numerii de telefono") {
+      else if (title == "número de teléfono") {
         String p = "[0-9]{9}";
 
         RegExp regExp = RegExp(p);
@@ -122,7 +152,7 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
         }
       }
       // password
-      else if (title == "contrasena") {
+      else if (title == "contraseña") {
         if (value.trim().isEmpty) {
           return "la contraseña está vacía";
         }
@@ -147,12 +177,21 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
         vertical: 0,
       ),
       child: TextFormField(
-        // autovalidate: true,
+        obscureText: (title == "contraseña"),
+        onEditingComplete: (title != "contraseña") ? _node.nextFocus : null,
+        textInputAction: (title == "contraseña")
+            ? TextInputAction.done
+            : TextInputAction.next,
         textAlign: TextAlign.center,
-        // autovalidate: true,
-        // validator: _validator,
+        autovalidate: true,
+        validator: _validator,
 
-        onChanged: (value) {},
+        onChanged: (value) {
+          (title == "nombre de pila" || title == "apellido")
+              ? value = value.toUpperCase()
+              : value = value;
+          input = value.trim();
+        },
         // onSaved: (val) => username = val,
         decoration: InputDecoration(
           alignLabelWithHint: true,
@@ -244,147 +283,146 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
 
                     textFieldInput(
                       title: "correo electrónico*",
+                      input: email,
                     ),
                     textFieldInput(
                       title: "nombre de usuario*",
+                      input: username,
                     ),
                     textFieldInput(
                       title: "nombre de pila",
+                      input: firstname,
                     ),
                     textFieldInput(
                       title: "apellido",
+                      input: surname,
                     ),
-                    textFieldInput(
-                      title: "sexo",
+
+                    Container(
+                      height: 50,
+                      margin: EdgeInsets.fromLTRB(30, 0, 30, 15),
+
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 0,
+                      ),
+                      // alignment: Alignment.center,
+                      decoration: REGISTER_INPUT_DEC,
+                      // BoxDecoration(color: Colors.white),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          isDense: true,
+                          isExpanded: true,
+
+                          // autofocus: true,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black,
+                          ),
+                          items: [
+                            DropdownMenuItem(
+                              value: "1",
+                              child: Center(
+                                child: Text(
+                                  "Masculina",
+                                ),
+                              ),
+                            ),
+                            DropdownMenuItem(
+                              value: "2",
+                              child: Center(
+                                child: Text(
+                                  "Hembra",
+                                ),
+                              ),
+                            ),
+                            DropdownMenuItem(
+                              value: "3",
+                              child: Center(
+                                child: Text(
+                                  "Otro",
+                                ),
+                              ),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              _value = value;
+                              if (_value == "1") {
+                                sex = "Male";
+                              } else if (_value == "2") {
+                                sex = "Female";
+                              } else {
+                                sex = "Others";
+                              }
+                            });
+                          },
+                          value: _value,
+                          hint: Center(
+                            child: Text(
+                              "sexo",
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
+
                     textFieldInput(
                       title: "número de teléfono",
+                      input: telephone,
                     ),
                     textFieldInput(
                       title: "contraseña",
+                      input: telephone,
                     ),
 
-                    //TODO This is where all the changes ends
-
-                    Container(
-                        height: 40,
-                        decoration: REGISTER_INPUT_DEC,
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.fromLTRB(35, 0, 35, 7),
-                        child: Center(
-                            child: TextFormField(
-                          onEditingComplete: _node.nextFocus,
-                          textInputAction: TextInputAction.next,
-
-                          // focusNode: myFocusNode,
-                          validator: (value) {
-                            if (value.length < 10) {
-                              return "Username is empty";
-                            } else {
-                              return null;
-                            }
-                          },
-                          // controller: ctlr,
-                          textAlign: TextAlign.center,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "*",
-                            hintStyle: REGISTER_INPUT_TXT,
-                          ),
-                          // autofocus: true,
-                          // enabled: true,
-                          textAlignVertical: TextAlignVertical.center,
-                          keyboardType: TextInputType.emailAddress,
-                          onChanged: (value) {
-                            // setState(() {
-                            //   sex = value;
-                            //   _formKey.currentState.validate();
-                            //   print("OMG");
-                            //   //   this.isSubmitable = computeSubmitable();
-                            // });
-                          },
-                        ))),
-                    // email
-                    SizedBox(
-                      height: 500,
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        hintText: 'john@doe.com',
+                    SizedBox(height: 2),
+                    // PASSWORD RULES
+                    Center(
+                      child: Text(
+                        'Mínimo 8 caractéres, un número y una mayúscula',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w200,
+                        ),
                       ),
-                      validator: (value) {
-                        if (value.length < 10) {
-                          return "Username is empty";
-                        } else {
-                          return null;
-                        }
-                      },
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.emailAddress,
-                      // move to the next field
-                      onEditingComplete: _node.nextFocus,
-                    ),
-                    // password
-                    TextFormField(
-                      validator: (value) {
-                        // setState(() {
-                        //   if (value.isEmpty) {
-                        //     return "Password cant be empty";
-                        //   } else
-                        //     return null;
-                        // });
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                      ),
-                      obscureText: true,
-                      textInputAction: TextInputAction.done,
-                      // move to the next field
-                      onEditingComplete: _node.nextFocus,
                     ),
 
-                    // Container(
-                    //     height: 40,
-                    //     decoration: REGISTER_INPUT_DEC,
-                    //     alignment: Alignment.center,
-                    //     margin: EdgeInsets.fromLTRB(35, 0, 35, 7),
-                    //     child: Center(
-                    //         child: TextFormField(
-                    //       onEditingComplete: _node.nextFocus,
-                    //       // textInputAction: TextInputAction.next,
+                    createPrivacyCheck(),
+                    // createSubmitButton("siguiente"),
 
-                    //       // focusNode: myFocusNode,
-                    //       validator: (value) {
-                    //         if (value.length < 10) {
-                    //           return "Username is empty";
-                    //         } else {
-                    //           return null;
-                    //         }
-                    //       },
-                    //       // controller: ctlr,
-                    //       textAlign: TextAlign.center,
-                    //       decoration: InputDecoration(
-                    //         border: InputBorder.none,
-                    //         hintText: "this is an amazoing test *",
-                    //         hintStyle: REGISTER_INPUT_TXT,
-                    //       ),
-                    //       // autofocus: true,
-                    //       // enabled: true,
-                    //       textAlignVertical: TextAlignVertical.center,
-                    //       keyboardType: TextInputType.emailAddress,
-                    //       onSaved: (value) {
-                    //         setState(() {
-                    //           sex = value;
-                    //           print("Saving ");
-                    //           //   this.isSubmitable = computeSubmitable();
-                    //         });
-                    //       },
-                    //     ))),
                     // submit
-                    RaisedButton(
-                      child: Text('Sign In'),
-                      onPressed: () {/* submit code here */},
+                    GestureDetector(
+                      onTap: () {
+                        if (_formKey.currentState.validate() &&
+                            sex != '' &&
+                            privacy) {
+                        } else {}
+                      },
+                      child: Container(
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: COLOR_SOFT_BLUE,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.fromLTRB(35, 10, 35, 7),
+                        child: Text(
+                          "siguiente",
+                          textAlign: TextAlign.center,
+                          style: REGISTER_TXT,
+                        ),
+                      ),
+                    ),
+                    Divider(
+                      indent: 30,
+                      endIndent: 30,
+                      color: Colors.white,
+                      thickness: 1,
                     ),
                   ],
                 ),
@@ -396,89 +434,6 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
     );
   }
 }
-
-// class TextFieldInput extends StatelessWidget {
-//   final String title;
-//   const TextFieldInput({
-//     @required this.title,
-//     Key key,
-//   }) : super(key: key);
-
-//   String _validator(String value) {
-//     if (this.title == "correo electrónico*") {
-//       if (value.isEmpty) {
-//         // The form is empty
-//         return "Introducir la dirección de correo electrónico";
-//       }
-
-//       // This is just a regular expression for email addresses
-//       String p = "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-//           "\\@" +
-//           "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-//           "(" +
-//           "\\." +
-//           "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-//           ")+";
-
-//       RegExp regExp = new RegExp(p);
-//       if (regExp.hasMatch(value)) {
-//         // So, the email is valid
-//         return null;
-//       }
-
-//       // The pattern of the email didn't match the regex above.
-//       return 'Email is not valid';
-//     }
-//     return null;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       height: 60,
-//       margin: EdgeInsets.symmetric(
-//         vertical: 2,
-//       ),
-//       padding: EdgeInsets.symmetric(
-//         horizontal: 30,
-//         vertical: 0,
-//       ),
-//       child: TextFormField(
-//         // autovalidate: true,
-//         textAlign: TextAlign.center,
-//         // autovalidate: true,
-//         validator: _validator,
-
-//         onChanged: (value) {},
-//         // onSaved: (val) => username = val,
-//         decoration: InputDecoration(
-//           alignLabelWithHint: true,
-//           filled: true,
-//           fillColor: Colors.white,
-//           focusColor: COLOR_DEEP_BLUE,
-//           border: OutlineInputBorder(
-//             borderRadius: BorderRadius.circular(15),
-//           ),
-//           hintText: title,
-//           hintStyle: TextStyle(
-//             fontSize: 15,
-//             color: Colors.grey,
-//           ),
-//           contentPadding:
-//               const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
-//           enabledBorder: UnderlineInputBorder(
-//             borderSide: BorderSide(color: Colors.white),
-//             borderRadius: BorderRadius.circular(10),
-//           ),
-//         ),
-
-//         style: TextStyle(
-//           color: Colors.black,
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class Register2 extends StatefulWidget {
   final storage;
