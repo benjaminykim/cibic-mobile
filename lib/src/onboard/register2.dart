@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cibic_mobile/src/onboard/onboard.dart';
+import 'package:cibic_mobile/src/resources/api_provider.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class EmailPasswordSignInForm extends StatefulWidget {
   @override
@@ -23,6 +25,8 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
       telephoneVal,
       passwordVal;
   bool privacy;
+  final storage = FlutterSecureStorage();
+
   @override
   initState() {
     super.initState();
@@ -201,20 +205,20 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
     }
 
     bool getValidator(String title) {
-        if (title == "correo electrónico*") {
-          return emailVal;
-        } else if (title == "nombre de usuario*") {
-          return usernameVal;
-        } else if (title == "apellido") {
-          return firstnameVal;
-        } else if (title == "nombre de pila") {
-          return surnameVal;
-        } else if (title == "número de teléfono") {
-          return telephoneVal;
-        } else if (title == "contraseña") {
-          return passwordVal;
-        }
-        return false;
+      if (title == "correo electrónico*") {
+        return emailVal;
+      } else if (title == "nombre de usuario*") {
+        return usernameVal;
+      } else if (title == "apellido") {
+        return firstnameVal;
+      } else if (title == "nombre de pila") {
+        return surnameVal;
+      } else if (title == "número de teléfono") {
+        return telephoneVal;
+      } else if (title == "contraseña") {
+        return passwordVal;
+      }
+      return false;
     }
 
     return Container(
@@ -269,6 +273,25 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
         ),
       ),
     );
+  }
+
+  Map<String, Map<String, dynamic>> createUserRequestBody() {
+    Map<String, Map<String, dynamic>> userRequest = {
+      'user': {
+        'username': username,
+        'password': password,
+        'email': email,
+        'firstName': firstname,
+        'lastName': surname,
+        'phone': telephone,
+        'cabildos': [],
+        'files': "none",
+        'followers': [],
+        'following': [],
+        'activityFeed': []
+      }
+    };
+    return userRequest;
   }
 
   @override
@@ -451,7 +474,30 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
                         if (_formKey.currentState.validate() &&
                             sex != '' &&
                             privacy) {
-                        } else {}
+                          attemptSubmit(createUserRequestBody())
+                              .then((response) {
+                                print("attempt submit");
+                            if (response == "Err") {
+                              // TODO: show alert dialog
+                            } else {
+                              attemptLogin(username, password).then((jwt) {
+                                print("attempt login");
+                                print("username: $username");
+                                print("password: $password");
+                                print("jwt: $jwt");
+                                if (jwt != null) {
+                                  storage.write(key: "jwt", value: jwt);
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Onboard(jwt)));
+                                } else {
+                                  // TODO: show alert dialog
+                                }
+                              });
+                            }
+                          });
+                        }
                       },
                       child: Container(
                         height: 40,

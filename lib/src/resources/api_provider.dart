@@ -422,7 +422,8 @@ Future<void> composePoll(
   return reply;
 }
 
-Future<int> createCabildo(String name, String desc, String loc, String tag, String jwt) async {
+Future<int> createCabildo(
+    String name, String desc, String loc, String tag, String jwt) async {
   HttpClient httpClient = new HttpClient();
   HttpClientRequest request =
       await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_CABILDOS));
@@ -455,4 +456,45 @@ Future<int> createCabildo(String name, String desc, String loc, String tag, Stri
   }
   httpClient.close();
   return response.statusCode;
+}
+
+Future<String> attemptSubmit(Map requestBody) async {
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request =
+      await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_USER));
+  request.headers.set('content-type', 'application/json');
+  request.add(utf8.encode(json.encode(requestBody)));
+  HttpClientResponse response = await request.close();
+  httpClient.close();
+
+  if (response.statusCode == 201) {
+    final responseBody = await response.transform(utf8.decoder).join();
+    Map<String, dynamic> idResponse = jsonDecode(responseBody);
+    return idResponse['id'];
+  } else {
+    print("error");
+    return "Error: Could Not Register Your Account";
+  }
+}
+
+Future<String> attemptLogin(String email, String password) async {
+  Map requestBody = {
+    'email': email,
+    'password': password,
+  };
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request =
+      await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_LOGIN));
+  request.headers.set('content-type', 'application/json');
+  request.add(utf8.encode(json.encode(requestBody)));
+  HttpClientResponse response = await request.close();
+  httpClient.close();
+
+  if (response.statusCode == 201) {
+    final responseBody = await response.transform(utf8.decoder).join();
+    Map<String, dynamic> jwtResponse = jsonDecode(responseBody);
+    return jwtResponse['access_token'];
+  } else {
+    return null;
+  }
 }
