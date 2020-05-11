@@ -194,6 +194,9 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
               ? value = value.toUpperCase()
               : value = value;
           input = value.trim();
+          // setState(() {
+          //   _validate = true;
+          // });
         },
         // onSaved: (val) => username = val,
         decoration: InputDecoration(
