@@ -65,10 +65,13 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
   }
 
   Container textFieldInput({String title, String input}) {
+    bool _validate = false;
     // for validation
     String _validator(String value) {
       // email validation
-
+      // setState(() {
+      // _validate = true;
+      // });
       if (title == "correo electrónico*") {
         if (value.isEmpty) {
           // The form is empty
@@ -183,7 +186,7 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
             ? TextInputAction.done
             : TextInputAction.next,
         textAlign: TextAlign.center,
-        autovalidate: true,
+        autovalidate: (input.isEmpty) ? false : true,
         validator: _validator,
 
         onChanged: (value) {
