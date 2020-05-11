@@ -16,6 +16,12 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
   final FocusScopeNode _node = FocusScopeNode();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String username, email, firstname, surname, sex, _value, telephone, password;
+  bool usernameVal,
+      emailVal,
+      firstnameVal,
+      surnameVal,
+      telephoneVal,
+      passwordVal;
   bool privacy;
   @override
   initState() {
@@ -27,6 +33,12 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
     sex = "";
     telephone = "";
     password = "";
+    usernameVal = false;
+    emailVal = false;
+    firstnameVal = false;
+    surnameVal = false;
+    telephoneVal = false;
+    passwordVal = false;
     privacy = false;
   }
 
@@ -170,6 +182,41 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
       return null;
     }
 
+    void updateValidator(String title) {
+      setState(() {
+        if (title == "correo electrónico*") {
+          emailVal = true;
+        } else if (title == "nombre de usuario*") {
+          usernameVal = true;
+        } else if (title == "apellido") {
+          firstnameVal = true;
+        } else if (title == "nombre de pila") {
+          surnameVal = true;
+        } else if (title == "número de teléfono") {
+          telephoneVal = true;
+        } else if (title == "contraseña") {
+          passwordVal = true;
+        }
+      });
+    }
+
+    bool getValidator(String title) {
+        if (title == "correo electrónico*") {
+          return emailVal;
+        } else if (title == "nombre de usuario*") {
+          return usernameVal;
+        } else if (title == "apellido") {
+          return firstnameVal;
+        } else if (title == "nombre de pila") {
+          return surnameVal;
+        } else if (title == "número de teléfono") {
+          return telephoneVal;
+        } else if (title == "contraseña") {
+          return passwordVal;
+        }
+        return false;
+    }
+
     return Container(
       height: 60,
       margin: EdgeInsets.symmetric(
@@ -186,17 +233,14 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
             ? TextInputAction.done
             : TextInputAction.next,
         textAlign: TextAlign.center,
-        autovalidate: (input.isEmpty) ? false : true,
+        autovalidate: getValidator(title),
         validator: _validator,
-
         onChanged: (value) {
           (title == "nombre de pila" || title == "apellido")
               ? value = value.toUpperCase()
               : value = value;
           input = value.trim();
-          // setState(() {
-          //   _validate = true;
-          // });
+          updateValidator(title);
         },
         // onSaved: (val) => username = val,
         decoration: InputDecoration(
