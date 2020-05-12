@@ -583,18 +583,3 @@ class _RegisterState extends State<Register> {
     );
   }
 }
-
-class Register2 extends StatefulWidget {
-  final storage;
-
-  Register2(this.storage);
-  @override
-  _Register2State createState() => _Register2State();
-}
-
-class _Register2State extends State<Register2> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
