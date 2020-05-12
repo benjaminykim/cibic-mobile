@@ -137,4 +137,6 @@ const ENDPOINT_DEFAULT_FEED = "user/home/";
 const ENDPOINT_FOLLOW_USER = "user/followuser";
 const ENDPOINT_FOLLOW_CABILDO = "user/followcabildo";
 
+const ENDPOINT_UNETE_COMMENT = "cibic/comment";
+
 const API_BASE = URL_AWS_BASE;
