@@ -45,23 +45,23 @@ ThemeData get cibicTheme {
     accentColor: Colors.cyan[600],
     fontFamily: 'OpenSans',
     textTheme: TextTheme(
-      headline: TextStyle(
+      headline5: TextStyle(
         fontSize: 40.0,
         fontWeight: FontWeight.w200,
       ),
-      title: TextStyle(
+      headline6: TextStyle(
         fontSize: 48.0,
         fontWeight: FontWeight.w700,
         fontFamily: "OpenSans",
         color: Color(0xff000000),
       ),
-      body1: TextStyle(
+      bodyText1: TextStyle(
         fontSize: 20.0,
         fontWeight: FontWeight.w400,
         fontFamily: "OpenSans",
         color: APP_BACKGROUND,
       ),
-      body2: TextStyle(
+      bodyText2: TextStyle(
         fontSize: 12.0,
         fontFamily: "OpenSans",
         color: Color(0xff828282),
