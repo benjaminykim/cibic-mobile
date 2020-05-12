@@ -36,8 +36,6 @@ class Home extends StatefulWidget {
 
 class _AppState extends State<Home> {
   int selectedBarIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   List<dynamic> feed;
   List<Widget> _widgetOptions;
   String appBarTitle = "INICIO";
