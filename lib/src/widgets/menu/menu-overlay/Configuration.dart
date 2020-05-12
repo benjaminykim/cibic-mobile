@@ -13,6 +13,10 @@ class Configuration extends StatefulWidget {
 }
 
 class _ConfigurationState extends State<Configuration> {
+  bool showNotificationSettings = false;
+  bool notificationsOn = false;
+  bool soundsOn = false;
+
   Widget cabildoItem(CabildoModel cabildo) {
     return GestureDetector(
       onTap: () {
@@ -51,108 +55,130 @@ class _ConfigurationState extends State<Configuration> {
     );
   }
 
+  Divider divider = Divider(color: Colors.black, indent: 50, endIndent: 20);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: cibicTheme,
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(
-          title: Text("CONFIGURACIÓN",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w400,
-              )),
-          centerTitle: true,
-          titleSpacing: 0.0,
-          leading: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Icon(Icons.arrow_back_ios),
+          appBar: AppBar(
+            title: Text("CONFIGURACIÓN",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
+                )),
+            centerTitle: true,
+            titleSpacing: 0.0,
+            leading: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: Icon(Icons.arrow_back_ios),
+            ),
           ),
-        ),
-        body: Container(
-          color: APP_BACKGROUND,
-          child: ListView(
-            padding: const EdgeInsets.all(8),
-            children: <Widget>[
-              Container(
-                height: 50,
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                      child: Icon(Icons.clear, size: 30),
-                    ),
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                              bottom:
-                                  BorderSide(color: Colors.grey, width: 0.5)),
-                        ),
-                        child: Text(
-                          'Eliminar usuario',
-                          style: TextStyle(color: Colors.black),
+          body: Container(
+            color: APP_BACKGROUND,
+            child: ListView(
+              padding: const EdgeInsets.all(8),
+              children: <Widget>[
+                Container(
+                  height: 50,
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                        child: Icon(Icons.clear, size: 30),
+                      ),
+                      Expanded(
+                        child: Container(
+                          child: Text(
+                            'Eliminar usuario',
+                            style: TextStyle(color: Colors.black),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                height: 50,
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                      child: Icon(Icons.lock_outline, size: 30),
-                    ),
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                              bottom:
-                                  BorderSide(color: Colors.grey, width: 0.5)),
-                        ),
-                        child: Text(
-                          'Politíca de privacidad',
-                          style: TextStyle(color: Colors.black),
+                divider,
+                Container(
+                  height: 50,
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                        child: Icon(Icons.lock_outline, size: 30),
+                      ),
+                      Expanded(
+                        child: Container(
+                          child: Text(
+                            'Politíca de privacidad',
+                            style: TextStyle(color: Colors.black),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                height: 50,
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                      child: Icon(Icons.notifications_none, size: 30),
-                    ),
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                              bottom:
-                                  BorderSide(color: Colors.grey, width: 0.5)),
+                divider,
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      this.showNotificationSettings =
+                          !this.showNotificationSettings;
+                    });
+                  },
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          child: Icon(Icons.notifications_none, size: 30),
                         ),
-                        child: Text(
-                          'Preferencia de notificaciones',
-                          style: TextStyle(color: Colors.black),
+                        Expanded(
+                          child: Container(
+                            child: Text(
+                              'Preferencia de notificaciones',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
-      ),
+                (this.showNotificationSettings)
+                    ? Padding(
+                          padding: const EdgeInsets.fromLTRB(35, 0, 30, 0),
+                      child: SwitchListTile(
+                          title: const Text('Notificación en pantalla'),
+                          value: this.notificationsOn,
+                          onChanged: (bool value) {
+                            setState(() {
+                              this.notificationsOn = value;
+                            });
+                          }),
+                    )
+                    : Container(),
+                (this.showNotificationSettings)
+                    ? Padding(
+                          padding: const EdgeInsets.fromLTRB(35, 0, 30, 0),
+                      child: SwitchListTile(
+                          title: const Text('Sonidos'),
+                          value: this.soundsOn,
+                          onChanged: (bool value) {
+                            setState(() {
+                              this.soundsOn = value;
+                            });
+                          }),
+                    )
+                    : Container(),
+                divider,
+              ],
+            ),
+          )),
     );
   }
 }
