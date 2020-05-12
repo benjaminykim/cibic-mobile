@@ -51,7 +51,7 @@ class MenuOverlay extends StatelessWidget {
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
                     'Perfil',
-                    style: Theme.of(context).textTheme.body1,
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -62,7 +62,7 @@ class MenuOverlay extends StatelessWidget {
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
                     'Cabildos',
-                    style: Theme.of(context).textTheme.body1,
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => MyCabildos(this.jwt)));
@@ -72,7 +72,7 @@ class MenuOverlay extends StatelessWidget {
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
                     'Guardados',
-                    style: Theme.of(context).textTheme.body1,
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -82,7 +82,7 @@ class MenuOverlay extends StatelessWidget {
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
                     'Configuración',
-                    style: Theme.of(context).textTheme.body1,
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => Configuration(this.jwt)));
@@ -92,7 +92,7 @@ class MenuOverlay extends StatelessWidget {
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
                     'About @cibic',
-                    style: Theme.of(context).textTheme.body1,
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => About()));
@@ -102,7 +102,7 @@ class MenuOverlay extends StatelessWidget {
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
                     'Cerrar la Sesión',
-                    style: Theme.of(context).textTheme.body1,
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
                     return showDialog(
@@ -143,7 +143,7 @@ class MenuOverlay extends StatelessWidget {
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
                     'Únete!',
-                    style: Theme.of(context).textTheme.body1,
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => Unete()));

@@ -49,15 +49,15 @@ class CardMetaData extends StatelessWidget {
         children: <Widget>[
           Container(
             width: MediaQuery.of(context).size.width / 3 - 30,
-            child: Text('$pingNum pings', style: Theme.of(context).textTheme.body2)),
+            child: Text('$pingNum pings', style: Theme.of(context).textTheme.bodyText2)),
           Spacer(),
           Container(
             width: MediaQuery.of(context).size.width / 3 - 30,
-            child: Text('$commentNum commentarios', style: Theme.of(context).textTheme.body2)),
+            child: Text('$commentNum commentarios', style: Theme.of(context).textTheme.bodyText2)),
           Spacer(),
           Container(
             width: MediaQuery.of(context).size.width / 3 - 30,
-            child: Text(generateTimeString(this.publishDate), style: Theme.of(context).textTheme.body2)),
+            child: Text(generateTimeString(this.publishDate), style: Theme.of(context).textTheme.bodyText2)),
         ],
       ),
     );
