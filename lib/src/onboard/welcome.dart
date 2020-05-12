@@ -174,8 +174,7 @@ class _WelcomeState extends State<Welcome> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          Register(widget.storage)));
+                                      builder: (context) => Register()));
                             },
                             child: createButtonView("Registrate"),
                           )
