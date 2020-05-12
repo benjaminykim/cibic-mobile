@@ -234,10 +234,10 @@ class _RegisterState extends State<Register> {
       return false;
     }
 
+    // for inputing the values
     parseValue(value) {
       if (title == "correo electrónico*") {
         email = value;
-        print("really $value");
       } else if (title == "nombre de usuario*") {
         username = value;
       } else if (title == "apellido") {
@@ -249,6 +249,18 @@ class _RegisterState extends State<Register> {
       } else if (title == "contraseña") {
         password = value;
       }
+    }
+
+    // for checking keyboard type
+    TextInputType _keyboardType() {
+      if (title == "número de teléfono") {
+        return TextInputType.phone;
+      } else if (title == "correo electrónico*") {
+        return TextInputType.emailAddress;
+      } else if (title == "contraseña") {
+        return TextInputType.visiblePassword;
+      } else
+        return null;
     }
 
     return Container(
@@ -268,6 +280,7 @@ class _RegisterState extends State<Register> {
             : TextInputAction.next,
         textAlign: TextAlign.center,
         autovalidate: getValidator(title),
+        keyboardType: _keyboardType(),
         validator: _validator,
         onChanged: (value) {
           setState(() {
@@ -385,7 +398,6 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
                     SizedBox(height: 15),
-                    //TODO Everything is fine upwards
 
                     textFieldInput(
                       title: "correo electrónico*",
@@ -511,15 +523,72 @@ class _RegisterState extends State<Register> {
                                   privacy) {
                                 attemptSubmit(createUserRequestBody())
                                     .then((response) {
-                                  print("attempt submit");
-                                  if (response == "Err") {
-                                    // TODO: show alert dialog
+                                  if (response ==
+                                      "Error: Could Not Register Your Account") {
+                                    //show alert dialog
+                                    if (Platform.isIOS) {
+                                      showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (context) {
+                                            return CupertinoAlertDialog(
+                                              title: Text("Error Response"),
+                                              content: SingleChildScrollView(
+                                                child: ListBody(
+                                                  children: <Widget>[
+                                                    Text(
+                                                        "Error attempting to login"),
+                                                  ],
+                                                ),
+                                              ),
+                                              actions: <Widget>[
+                                                FlatButton(
+                                                  child: Text('Okay'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          });
+                                    } else {
+                                      showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                "Error Response",
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                ),
+                                              ),
+                                              content: SingleChildScrollView(
+                                                child: ListBody(
+                                                  children: <Widget>[
+                                                    Text(
+                                                      "Error attempting to login",
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              actions: <Widget>[
+                                                FlatButton(
+                                                  child: Text('Okay'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          });
+                                    }
                                   } else {
                                     attemptLogin(email, password).then((jwt) {
-                                      print("attempt login");
-                                      print("username: $email");
-                                      print("password: $password");
-                                      print("jwt: $jwt");
+                                      // print("jwt: $jwt");
                                       if (jwt != null) {
                                         storage.write(key: "jwt", value: jwt);
                                         Navigator.pushReplacement(
@@ -528,7 +597,71 @@ class _RegisterState extends State<Register> {
                                                 builder: (context) =>
                                                     Onboard(jwt)));
                                       } else {
-                                        // TODO: show alert dialog
+                                        // show alert dialog
+                                        if (Platform.isIOS) {
+                                          showDialog(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              builder: (context) {
+                                                return CupertinoAlertDialog(
+                                                  title: Text("Error Response"),
+                                                  content:
+                                                      SingleChildScrollView(
+                                                    child: ListBody(
+                                                      children: <Widget>[
+                                                        Text(
+                                                            "Error attempting to login"),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  actions: <Widget>[
+                                                    FlatButton(
+                                                      child: Text('Okay'),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              });
+                                        } else {
+                                          showDialog(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  title: Text(
+                                                    "Error Response",
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                    ),
+                                                  ),
+                                                  content:
+                                                      SingleChildScrollView(
+                                                    child: ListBody(
+                                                      children: <Widget>[
+                                                        Text(
+                                                          "Error attempting to login",
+                                                          style: TextStyle(
+                                                            fontSize: 15,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  actions: <Widget>[
+                                                    FlatButton(
+                                                      child: Text('Okay'),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              });
+                                        }
                                       }
                                     });
                                   }
