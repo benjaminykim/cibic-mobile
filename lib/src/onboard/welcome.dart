@@ -153,7 +153,6 @@ class _WelcomeState extends State<Welcome> {
                               var jwt = await attemptLogin();
                               if (jwt != null) {
                                 widget.storage.write(key: "jwt", value: jwt);
-                                Navigator.pop(context);
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
