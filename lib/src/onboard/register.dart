@@ -296,6 +296,7 @@ class _RegisterState extends State<Register> {
                       "DATOS PERSONALES",
                       style: TextStyle(
                         fontSize: 20,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -305,6 +306,7 @@ class _RegisterState extends State<Register> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w200,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -324,6 +326,7 @@ class _RegisterState extends State<Register> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w200,
+                        color: Colors.white,
                       ),
                     ),
                   ),
