@@ -71,6 +71,22 @@ ThemeData get cibicTheme {
   );
 }
 
+final LOGIN_INPUT_DEC = BoxDecoration(
+  color: Colors.transparent,
+  borderRadius: const BorderRadius.all(const Radius.circular(10)),
+  border:  Border.all(
+    color: Colors.white,
+    width: 1.0,
+    style: BorderStyle.solid,
+  ),
+);
+
+const LOGIN_INPUT_TXT = TextStyle(
+  fontSize: 15,
+  color: Colors.black,
+  fontWeight: FontWeight.w300,
+);
+
 const REGISTER_INPUT_DEC = const BoxDecoration(
   color: Colors.white,
   borderRadius: const BorderRadius.all(const Radius.circular(10)),
