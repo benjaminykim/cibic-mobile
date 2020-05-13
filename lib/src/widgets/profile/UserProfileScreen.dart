@@ -104,111 +104,150 @@ class _UserProfileState extends State<UserProfileScreen> {
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             return Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      // user profile picture, name, follow button
-                                      Column(
-                                        children: [
-                                          // image
-                                          Container(
-                                            width: 85.0,
-                                            height: 85.0,
-                                            margin: EdgeInsets.fromLTRB(
-                                                15, 15, 15, 0),
-                                            decoration: new BoxDecoration(
-                                              color: Colors.blue,
-                                              shape: BoxShape.circle,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    // user profile picture, name, follow button
+                                    Column(
+                                      children: [
+                                        // image
+                                        Container(
+                                          width: 85.0,
+                                          height: 85.0,
+                                          margin: EdgeInsets.fromLTRB(
+                                              15, 15, 15, 0),
+                                          decoration: new BoxDecoration(
+                                            color: Colors.blue,
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                        // name
+                                        Container(
+                                          margin:
+                                              EdgeInsets.fromLTRB(5, 4, 5, 0),
+                                          width: 120,
+                                          child: Text(
+                                            snapshot.data.username,
+                                            textAlign: TextAlign.center,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w600,
                                             ),
                                           ),
-                                          // name
-                                          Container(
-                                            margin:
-                                                EdgeInsets.fromLTRB(5, 4, 5, 0),
-                                            width: 120,
-                                            child: Text(
-                                              snapshot.data.username,
-                                              textAlign: TextAlign.center,
-                                              maxLines: 1,
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                          ),
-                                          // follow button
-                                          (this.idRootUser != widget.idUser)
-                                              ? Container(
-                                                  height: 17,
-                                                  child: FlatButton(
-                                                    color: (this.isFollowing ||
-                                                            snapshot
-                                                                .data.followers
-                                                                .any((k) =>
-                                                                    k ==
-                                                                    idRootUser))
-                                                        ? Colors.blue
-                                                        : Colors.green,
-                                                    onPressed: () async {
-                                                      if (this.followButtonText ==
-                                                          "seguir") {
-                                                        String ret =
-                                                            await followUser(
-                                                                snapshot.data.id,
-                                                                widget.jwt);
-                                                        if (ret != "error") {
-                                                          setState(() {
-                                                            this.isFollowing =
-                                                                true;
-                                                          });
-                                                        }
-                                                      } else {
+                                        ),
+                                        // follow button
+                                        (this.idRootUser != widget.idUser)
+                                            ? Container(
+                                                height: 17,
+                                                child: FlatButton(
+                                                  color: (this.isFollowing ||
+                                                          snapshot
+                                                              .data.followers
+                                                              .any((k) =>
+                                                                  k ==
+                                                                  idRootUser))
+                                                      ? Colors.blue
+                                                      : Colors.green,
+                                                  onPressed: () async {
+                                                    if (this.followButtonText ==
+                                                        "seguir") {
+                                                      String ret =
+                                                          await followUser(
+                                                              snapshot.data.id,
+                                                              widget.jwt);
+                                                      if (ret != "error") {
                                                         setState(() {
                                                           this.isFollowing =
-                                                              false;
+                                                              true;
                                                         });
                                                       }
-                                                    },
-                                                    child: Text(
-                                                        (this.isFollowing ||
-                                                                snapshot.data
-                                                                    .followers
-                                                                    .any((k) =>
-                                                                        k ==
-                                                                        idRootUser))
-                                                            ? "siguiendo"
-                                                            : "seguir",
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 12,
-                                                        )),
-                                                  ))
-                                              : Container(),
-                                        ],
-                                      ),
-                                      // user meta data
-                                      Container(
-                                        width: MediaQuery.of(context).size.width -
-                                            160,
-                                        margin:
-                                            EdgeInsets.fromLTRB(10, 15, 15, 0),
-                                        child: Column(
-                                          children: [
-                                            // citizen points, followers, cabildos following
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                // citizen points
-                                                Row(children: [
-                                                  Icon(Icons.offline_bolt),
-                                                  SizedBox(
-                                                    width: 5,
-                                                  ),
+                                                    } else {
+                                                      setState(() {
+                                                        this.isFollowing =
+                                                            false;
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Text(
+                                                      (this.isFollowing ||
+                                                              snapshot.data
+                                                                  .followers
+                                                                  .any((k) =>
+                                                                      k ==
+                                                                      idRootUser))
+                                                          ? "siguiendo"
+                                                          : "seguir",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 12,
+                                                      )),
+                                                ))
+                                            : Container(),
+                                      ],
+                                    ),
+                                    // user meta data
+                                    Container(
+                                      width: MediaQuery.of(context).size.width -
+                                          160,
+                                      margin:
+                                          EdgeInsets.fromLTRB(10, 15, 15, 0),
+                                      child: Column(
+                                        children: [
+                                          // citizen points, followers, cabildos following
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              // citizen points
+                                              Row(children: [
+                                                Icon(Icons.offline_bolt),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Text(
+                                                    snapshot.data.citizenPoints
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.black,
+                                                    )),
+                                              ]),
+                                              // followers
+                                              Column(
+                                                children: <Widget>[
                                                   Text(
-                                                      snapshot.data.citizenPoints
+                                                      snapshot
+                                                          .data.followers.length
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      )),
+                                                  Text(
+                                                      (snapshot.data.cabildos
+                                                                  .length >
+                                                              1)
+                                                          ? "seguidores"
+                                                          : "seguidor",
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.black,
+                                                      ))
+                                                ],
+                                              ),
+                                              // cabildos
+                                              Column(
+                                                children: <Widget>[
+                                                  Text(
+                                                      snapshot
+                                                          .data.cabildos.length
                                                           .toString(),
                                                       style: TextStyle(
                                                         fontSize: 14,
@@ -216,134 +255,95 @@ class _UserProfileState extends State<UserProfileScreen> {
                                                             FontWeight.w600,
                                                         color: Colors.black,
                                                       )),
-                                                ]),
-                                                // followers
-                                                Column(
-                                                  children: <Widget>[
+                                                  Text(
+                                                      (snapshot.data.cabildos
+                                                                  .length >
+                                                              1)
+                                                          ? "cabildos"
+                                                          : "cabildo",
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.black,
+                                                      ))
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          // user introduction
+                                          Container(
+                                            margin: EdgeInsets.only(top: 10),
+                                            alignment: Alignment.topLeft,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  this.maxLines = 100;
+                                                });
+                                              },
+                                              child: Container(
+                                                height: 76,
+                                                child: ListView(
+                                                  children: [
                                                     Text(
-                                                        snapshot
-                                                            .data.followers.length
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                          color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                        )),
-                                                    Text(
-                                                        (snapshot.data.cabildos
-                                                                    .length >
-                                                                1)
-                                                            ? "seguidores"
-                                                            : "seguidor",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                          color: Colors.black,
-                                                        ))
-                                                  ],
-                                                ),
-                                                // cabildos
-                                                Column(
-                                                  children: <Widget>[
-                                                    Text(
-                                                        snapshot
-                                                            .data.cabildos.length
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color: Colors.black,
-                                                        )),
-                                                    Text(
-                                                        (snapshot.data.cabildos
-                                                                    .length >
-                                                                1)
-                                                            ? "cabildos"
-                                                            : "cabildo",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                          color: Colors.black,
-                                                        ))
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                            // user introduction
-                                            Container(
-                                              margin: EdgeInsets.only(top: 10),
-                                              alignment: Alignment.topLeft,
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    this.maxLines = 100;
-                                                  });
-                                                },
-                                                child: Container(
-                                                  height: 76,
-                                                  child: ListView(
-                                                    children: [
-                                                      Text(
-                                                        snapshot.data.desc ?? "",
-                                                        maxLines: this.maxLines,
-                                                        overflow:
-                                                            TextOverflow.ellipsis,
-                                                        style: TextStyle(
-                                                          fontSize: 13,
-                                                          color: Colors.black,
-                                                        ),
+                                                      snapshot.data.desc ?? "",
+                                                      maxLines: this.maxLines,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: Colors.black,
                                                       ),
-                                                    ],
-                                                  ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  // feed button bar
-                                  Container(
-                                      margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                                      padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border.all(
-                                            color: Colors.grey, width: 0.5),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "Actividad",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.grey,
-                                            ),
                                           ),
-                                          Text(
-                                            "Encuestas",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                          Text(
-                                            "Discusiones",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.grey,
-                                            ),
-                                          )
                                         ],
-                                      ))
-                                ],
-                              );
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                // feed button bar
+                                Container(
+                                    margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                    padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          color: Colors.grey, width: 0.5),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Actividad",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Encuestas",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Discusiones",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                          ),
+                                        )
+                                      ],
+                                    ))
+                              ],
+                            );
                           } else if (snapshot.hasError) {
                             return Text("error");
                           }
