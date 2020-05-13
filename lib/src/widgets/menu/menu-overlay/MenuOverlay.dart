@@ -126,7 +126,7 @@ class MenuOverlay extends StatelessWidget {
                               child: new Text("Si"),
                               onPressed: () {
                                 storage.delete(key: "jwt");
-                                Navigator.of(context).popUntil(ModalRoute.withName('/'));
+                                Navigator.of(context).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
                               },
                             ),
                             new FlatButton(
