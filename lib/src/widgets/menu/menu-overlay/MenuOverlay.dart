@@ -1,4 +1,3 @@
-import 'package:cibic_mobile/src/onboard/app.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/About.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/Configuration.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/MyCabildos.dart';
@@ -59,15 +58,17 @@ class MenuOverlay extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  contentPadding: EdgeInsets.only(left: 20),
-                  title: Text(
-                    'Cabildos',
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => MyCabildos(this.jwt)));
-                  }
-                ),
+                    contentPadding: EdgeInsets.only(left: 20),
+                    title: Text(
+                      'Cabildos',
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MyCabildos(this.jwt)));
+                    }),
                 ListTile(
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
@@ -85,7 +86,10 @@ class MenuOverlay extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Configuration(this.jwt)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Configuration(this.jwt)));
                   },
                 ),
                 ListTile(
@@ -95,7 +99,8 @@ class MenuOverlay extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => About()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => About()));
                   },
                 ),
                 ListTile(
@@ -121,10 +126,7 @@ class MenuOverlay extends StatelessWidget {
                               child: new Text("Si"),
                               onPressed: () {
                                 storage.delete(key: "jwt");
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => App()));
+                                Navigator.of(context).popUntil(ModalRoute.withName('/'));
                               },
                             ),
                             new FlatButton(
@@ -146,7 +148,8 @@ class MenuOverlay extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Unete()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Unete()));
                   },
                 ),
                 Spacer(),
