@@ -1,4 +1,3 @@
-import 'package:cibic_mobile/src/resources/api_provider.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -75,54 +74,6 @@ class _UneteState extends State<Unete> {
           padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
           child: ListView(
             children: <Widget>[
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 10),
-                padding: aboutPadding,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      "Déjanos tu comentario",
-                      style: style,
-                    ),
-                    SizedBox(height: 10),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                      ),
-                      child: TextField(
-                        controller: inputCommentController,
-                        maxLines: 4,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w200, color: Colors.white),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          fillColor: Colors.grey,
-                          hintText: "comenta...",
-                          hintStyle: TextStyle(
-                              fontWeight: FontWeight.w200, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Spacer(),
-                        IconButton(
-                          icon: Icon(Icons.send),
-                          onPressed: () => submitUneteComment(
-                              "fake jwt", inputCommentController.text),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 padding: aboutPadding,
