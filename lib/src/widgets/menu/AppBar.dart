@@ -1,3 +1,4 @@
+import 'package:cibic_mobile/src/models/cibic_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:cibic_mobile/src/widgets/menu/ComposeScreen.dart';
 
@@ -34,20 +35,38 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       titleSpacing: 0.0,
       actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.search),
-          onPressed: () {},
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: IconButton(
+            icon: Icon(
+              Cibic.search,
+              size: 38,
+            ),
+            onPressed: () {},
+          ),
         ),
-        IconButton(
-          icon: Icon(Icons.create),
-          onPressed: () {
-            _startAddNewActivity(context, this.jwt);
-          },
-          padding: EdgeInsets.zero,
+        Padding(
+          padding: const EdgeInsets.only(top: 9),
+          child: IconButton(
+            icon: Icon(
+              Cibic.create_post,
+              size: 35,
+            ),
+            onPressed: () {
+              _startAddNewActivity(context, this.jwt);
+            },
+            padding: EdgeInsets.zero,
+          ),
         ),
-        IconButton(
-          icon: Icon(Icons.notifications_none),
-          onPressed: () {},
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: IconButton(
+            icon: Icon(
+              Cibic.notification,
+              size: 30,
+            ),
+            onPressed: () {},
+          ),
         ),
       ],
     );
