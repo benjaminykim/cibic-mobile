@@ -19,20 +19,22 @@ class _RegisterState extends State<Register> {
   bool isChecked = false;
   bool isSubmitable = false;
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _sexController = TextEditingController();
+  // final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _fullNameController = TextEditingController();
+  // final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _passwordConfirmController =
+      TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   List<String> inputLabels = [
-    "correo electrónico*",
-    "nombre de usuario",
-    "nombre de pila",
-    "apellido",
-    "sexo",
-    "número de teléfono",
-    "contraseña"
+    "Nombre y Apellido*",
+    "Correo electronico*",
+    // "nombre de pila",
+    // "apellido",
+    // "sexo",
+    "Número de movil*",
+    "Contraseña*",
+    "Confirmar contraseña*",
   ];
   List<TextEditingController> inputCtlrs;
   String idUser;
@@ -42,23 +44,23 @@ class _RegisterState extends State<Register> {
     super.initState();
     this.inputCtlrs = [
       _emailController,
-      _usernameController,
-      _firstNameController,
-      _lastNameController,
-      _sexController,
+      // _usernameController,
+      _fullNameController,
+      // _lastNameController,
       _phoneController,
-      _passwordController
+      _passwordController,
+      _passwordConfirmController,
     ];
   }
 
   Map<String, dynamic> createUserRequestBody() {
     Map<String, Map<String, dynamic>> userRequest = {
       'user': {
-        'username': '${_usernameController.text}',
+        // 'username': '${_usernameController.text}',
         'password': '${_passwordController.text}',
         'email': '${_emailController.text}',
-        'firstName': '${_firstNameController.text}',
-        'lastName': '${_lastNameController.text}',
+        'fullName': '${_fullNameController.text}',
+        // 'lastName': '${_lastNameController.text}',
         'phone': _phoneController.text,
         'cabildos': [],
         'files': "none",
@@ -119,17 +121,17 @@ class _RegisterState extends State<Register> {
 
   bool computeSubmitable() {
     if ((_emailController.text != null) &&
-        (_usernameController.text != null) &&
-        (_firstNameController.text != null) &&
-        (_lastNameController.text != null) &&
-        (_sexController.text != null) &&
+        // (_usernameController.text != null) &&
+        (_fullNameController.text != null) &&
+        // (_lastNameController.text != null) &&
+        (_passwordConfirmController.text != null) &&
         (_phoneController.text != null) &&
         (_passwordController.text != null) &&
         (_emailController.text != "") &&
-        (_usernameController.text != "") &&
-        (_firstNameController.text != "") &&
-        (_lastNameController.text != "") &&
-        (_sexController.text != "") &&
+        // (_usernameController.text != "") &&
+        (_fullNameController.text != "") &&
+        // (_lastNameController.text != "") &&
+        (_passwordConfirmController.text != "") &&
         (_phoneController.text != "") &&
         (_passwordController.text != "") &&
         (this.isChecked)) {
@@ -144,7 +146,7 @@ class _RegisterState extends State<Register> {
     TextField textField;
 
     // phone number input
-    if (index == 5) {
+    if (index == 2) {
       textField = TextField(
         controller: ctlr,
         textAlign: TextAlign.center,
@@ -153,7 +155,7 @@ class _RegisterState extends State<Register> {
           hintText: str + "*",
           hintStyle: REGISTER_INPUT_TXT,
         ),
-        keyboardType: TextInputType.number,
+        keyboardType: TextInputType.phone,
         inputFormatters: <TextInputFormatter>[
           WhitelistingTextInputFormatter.digitsOnly
         ],
@@ -162,7 +164,7 @@ class _RegisterState extends State<Register> {
       textField = TextField(
         controller: ctlr,
         textAlign: TextAlign.center,
-        obscureText: (index == 6), // password label obscurity
+        obscureText: (index == 3 || index == 4), // password label obscurity
         onChanged: (_) {
           setState(() {
             this.isSubmitable = computeSubmitable();
@@ -227,11 +229,8 @@ class _RegisterState extends State<Register> {
               userLogin.then((jwt) {
                 if (jwt != null) {
                   widget.storage.write(key: "jwt", value: jwt);
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              Onboard(jwt)));
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => Onboard(jwt)));
                 } else {
                   setState(() {
                     this.isSubmitable = false;
@@ -293,16 +292,17 @@ class _RegisterState extends State<Register> {
                   // HEADER
                   Center(
                     child: Text(
-                      "DATOS PERSONALES",
+                      "Regístrate en Cibic",
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ),
                   Center(
                     child: Text(
-                      "Tus datos son privados.",
+                      "y sé un ciudadano o ciudadana inteligente.",
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w200,
@@ -315,10 +315,10 @@ class _RegisterState extends State<Register> {
                   createInputView(1),
                   createInputView(2),
                   createInputView(3),
-                  createInputView(4),
-                  createInputView(5),
-                  createInputView(6),
-                  SizedBox(height: 2),
+                  // createInputView(5),
+                  // createInputView(6),
+                  SizedBox(height: 1),
+
                   // PASSWORD RULES
                   Center(
                     child: Text(
@@ -330,6 +330,8 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
                   ),
+                  SizedBox(height: 6),
+                  createInputView(4),
                   createPrivacyCheck(),
                   createSubmitButton("siguiente"),
                   // DIVIDER
