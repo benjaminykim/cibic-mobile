@@ -155,4 +155,4 @@ const ENDPOINT_FOLLOW_CABILDO = "user/followcabildo";
 
 const ENDPOINT_UNETE_COMMENT = "cibic/comment";
 
-const API_BASE = URL_AWS_BASE;
+const API_BASE = URL_LOCALHOST_BASE;

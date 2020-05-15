@@ -13,13 +13,12 @@ AppState appReducer(AppState prevState, dynamic action) {
     newState.lastName = action.payload['lastName'];
     newState.followers = action.payload['followers'];
     newState.following = action.payload['following'];
-    //newState.userProfileFeed = action.payload['userProfileFeed'];
-    //newState.homeFeed = action.payload['homeFeed'];
-    //newState.publicFeed = action.payload['publicFeed'];
     newState.cabildos = action.payload['cabildos'];
   } else if (action is LogInSuccess) {
     newState.jwt = action.jwt;
-    print("NEW JWT ${newState.jwt}");
+    newState.isLogIn = true;
+  } else if (action is LogInError) {
+    newState.isLogIn = false;
   } else if (action is FetchHomeFeed) {
     newState.homeFeed = action.payload;
   } else if (action is FetchPublicFeed) {

@@ -8,7 +8,7 @@ import 'package:redux/redux.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions.dart';
 
-void loadUserMiddleware(Store<AppState> store, dynamic action, NextDispatcher next) async {
+void apiMiddleware(Store<AppState> store, dynamic action, NextDispatcher next) async {
 	if (action is LogInAttempt) {
     String email = action.email;
     String password = action.password;
@@ -17,7 +17,6 @@ void loadUserMiddleware(Store<AppState> store, dynamic action, NextDispatcher ne
       'email': '$email',
       'password': '$password'
     };
-
     HttpClient httpClient = new HttpClient();
     HttpClientRequest request =
         await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_LOGIN));
@@ -25,7 +24,6 @@ void loadUserMiddleware(Store<AppState> store, dynamic action, NextDispatcher ne
     request.add(utf8.encode(json.encode(requestBody)));
     HttpClientResponse response = await request.close();
     httpClient.close();
-    print("REDUX THUNK WORKS");
 
     if (response.statusCode == 201) {
       final responseBody = await response.transform(utf8.decoder).join();
@@ -33,9 +31,9 @@ void loadUserMiddleware(Store<AppState> store, dynamic action, NextDispatcher ne
       String jwt = jwtResponse['access_token'];
       final storage = FlutterSecureStorage();
       storage.write(key: "jwt", value: jwt);
-      store.dispatch(LogInSuccess(jwt));
+      next(LogInSuccess(jwt));
     } else {
-      store.dispatch(LogInError(response.statusCode));
+      next(LogInError(response.statusCode));
     }
   }
 }

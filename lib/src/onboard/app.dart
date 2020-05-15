@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cibic_mobile/src/onboard/home.dart';
 import 'package:cibic_mobile/src/onboard/welcome.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/redux/middleware/thunk.dart';
 import 'package:cibic_mobile/src/redux/reducers/reducers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -17,7 +18,7 @@ class App extends StatelessWidget {
   final Store<AppState> store = Store<AppState>(
     appReducer,
     initialState: AppState.initial(),
-    middleware: [thunkMiddleware],
+    middleware: [thunkMiddleware, apiMiddleware],
   );
 
   App();

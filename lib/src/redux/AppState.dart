@@ -9,9 +9,10 @@ class AppState {
   List<dynamic> homeFeed;
   List<dynamic> publicFeed;
   List<dynamic> cabildos;
+  bool isLogIn;
 
   AppState(this.idUser, this.jwt, this.firstName, this.lastName, this.followers, this.following, this.userProfileFeed,
-  this.homeFeed, this.publicFeed, this.cabildos);
+  this.homeFeed, this.publicFeed, this.cabildos, this.isLogIn);
 
   AppState.fromAppState(AppState another) {
     idUser = another.idUser;
@@ -24,7 +25,8 @@ class AppState {
     homeFeed = another.homeFeed;
     publicFeed = another.publicFeed;
     cabildos = another.cabildos;
+    isLogIn = another.isLogIn;
   }
 
-  factory AppState.initial() => AppState("", "", "", "", [], [], [], [], [], []);
+  factory AppState.initial() => AppState("", "", "", "", [], [], [], [], [], [], false);
 }
