@@ -16,36 +16,13 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  final FocusScopeNode _node = FocusScopeNode();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String username, email, firstname, surname, sex, _value, telephone, password;
-  bool usernameVal,
-      emailVal,
-      firstnameVal,
-      surnameVal,
-      telephoneVal,
-      passwordVal;
+  bool emailVal, fullNameVal, telephoneVal, passwordVal, passwordConfirmVal;
   bool privacy;
   final storage = FlutterSecureStorage();
 
-  @override
-  initState() {
-    super.initState();
-    username = "";
-    email = "";
-    firstname = "";
-    surname = "";
-    sex = "";
-    telephone = "";
-    password = "";
-    usernameVal = false;
-    emailVal = false;
-    firstnameVal = false;
-    surnameVal = false;
-    telephoneVal = false;
-    passwordVal = false;
-    privacy = false;
-  }
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final FocusScopeNode _node = FocusScopeNode();
+  String email, fullName, telephone, password, passwordConfirm;
 
   @override
   void dispose() {
@@ -53,14 +30,32 @@ class _RegisterState extends State<Register> {
     super.dispose();
   }
 
+  @override
+  initState() {
+    super.initState();
+
+    email = "";
+    fullName = "";
+    telephone = "";
+    password = "";
+    emailVal = false;
+    fullNameVal = false;
+    telephoneVal = false;
+    passwordVal = false;
+    privacy = false;
+    passwordConfirmVal = false;
+  }
+
   submitChecker() {
-    if (usernameVal == true &&
+    if (
+        // usernameVal == true &&
         emailVal == true &&
-        firstnameVal == true &&
-        surnameVal == true &&
-        telephoneVal == true &&
-        passwordVal == true &&
-        privacy == true)
+            fullNameVal == true &&
+            // surnameVal == true &&
+            telephoneVal == true &&
+            passwordVal == true &&
+            privacy == true &&
+            passwordConfirmVal == true)
       return true;
     else
       return false;
@@ -82,11 +77,20 @@ class _RegisterState extends State<Register> {
             },
           ),
           Text(
-            "Acepto las políticas de privacidad.",
+            "Acepto las ",
             style: TextStyle(
               fontSize: 14,
               color: Colors.white,
               fontWeight: FontWeight.w200,
+            ),
+          ),
+          Text(
+            "políticas de privacidad.",
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.white,
+              fontWeight: FontWeight.w200,
+              decoration: TextDecoration.underline,
             ),
           ),
         ],
@@ -98,10 +102,8 @@ class _RegisterState extends State<Register> {
     // for validation
     String _validator(String value) {
       // email validation
-      // setState(() {
-      // _validate = true;
-      // });
-      if (title == "correo electrónico*") {
+
+      if (title == "Correo electroníco*") {
         if (value.isEmpty) {
           // The form is empty
           return "Introducir la dirección de correo electrónico";
@@ -123,59 +125,55 @@ class _RegisterState extends State<Register> {
         }
         // The pattern of the email didn't match the regex above.
         return 'Email is not valid';
-
-        // For username
-      } else if (title == "nombre de usuario*") {
-        String p = "[a-zA-Z0-9\.\_\-]{1,16}";
-
-        RegExp regExp = RegExp(p);
-        if (value.trim().isEmpty) {
-          return "Nombre de usuario de entrada";
-        } else if (value.trim().length > 16) {
-          return "Nombre de usuario demasiado largo";
-        } else if (regExp.hasMatch(value)) {
-          return null;
-        } else {
-          return "Error";
-        }
       }
-      // For Surname
-      else if (title == "apellido") {
-        String p = "[a-zA-Z]{1,16}";
+      //   // For username
+      //  else if (title == "nombre de usuario*") {
+      //   String p = "[a-zA-Z0-9\.\_\-]{1,16}";
 
-        RegExp regExp = RegExp(p);
+      //   RegExp regExp = RegExp(p);
+      //   if (value.trim().isEmpty) {
+      //     return "Nombre de usuario de entrada";
+      //   } else if (value.trim().length > 16) {
+      //     return "Nombre de usuario demasiado largo";
+      //   } else if (regExp.hasMatch(value)) {
+      //     return null;
+      //   } else {
+      //     return "Error";
+      //   }
+      // }
+      // For Fullname
+      else if (title == "Numbre y Apellido*") {
         if (value.trim().isEmpty) {
           return "El apellido está vacío";
         }
-        if (value.trim().length > 16) {
-          return "Demasiado larga";
-        } else if (regExp.hasMatch(value)) {
-          return null;
-        }
-
-        return "Error";
-      } else if (title == "nombre de pila") {
-        String p = "[a-zA-Z]{1,16}";
-
-        RegExp regExp = RegExp(p);
-        if (value.trim().isEmpty) {
-          return "El nombre esta vacio";
-        }
-        if (value.trim().length > 16) {
-          return "Demasiado larga";
-        } else if (regExp.hasMatch(value)) {
-          return null;
+        if (value.trim().length < 5) {
+          return "Demasiado corta";
         } else {
-          return "Error";
+          return null;
         }
       }
+      // else if (title == "nombre de pila") {
+      //   String p = "[a-zA-Z]{1,16}";
+
+      //   RegExp regExp = RegExp(p);
+      //   if (value.trim().isEmpty) {
+      //     return "El nombre esta vacio";
+      //   }
+      //   if (value.trim().length > 16) {
+      //     return "Demasiado larga";
+      //   } else if (regExp.hasMatch(value)) {
+      //     return null;
+      //   } else {
+      //     return "Error";
+      //   }
+      // }
       // phone number
-      else if (title == "número de teléfono") {
+      else if (title == "Número móvil*") {
         String p = "[0-9]{9}";
 
         RegExp regExp = RegExp(p);
         if (value.trim().isEmpty) {
-          return "el número de teléfono está vacío";
+          return "el Número móvil está vacío";
         }
         if (regExp.hasMatch(value)) {
           return null;
@@ -184,80 +182,96 @@ class _RegisterState extends State<Register> {
         }
       }
       // password
-      else if (title == "contraseña") {
-        if (value.trim().isEmpty) {
+      else if (title == "Contraseña") {
+        RegExp strongRegex = new RegExp(
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+        if (value.isEmpty) {
           return "la contraseña está vacía";
         }
-        if (value.trim().length < 8) {
-          return "la contraseña tiene menos de 8 caracteres";
+        if (strongRegex.hasMatch(value)) {
+          return null;
+        } else {
+          return "no coincide";
+        }
+      } else if (title == "Confirmar contraseña") {
+        if (value.isEmpty) {
+          return "la contraseña está vacía";
+        } else if (value != password) {
+          return "La contraseña no coincide";
         } else {
           return null;
         }
       }
-
-      //
       return null;
     }
 
     void updateValidator(String title) {
       setState(() {
-        if (title == "correo electrónico*") {
+        if (title == "Correo electroníco*") {
           emailVal = true;
-        } else if (title == "nombre de usuario*") {
-          usernameVal = true;
-        } else if (title == "apellido") {
-          firstnameVal = true;
-        } else if (title == "nombre de pila") {
-          surnameVal = true;
-        } else if (title == "número de teléfono") {
+        }
+        //  else if (title == "nombre de usuario*") {
+        //   usernameVal = true;
+        // }
+        else if (title == "Numbre y Apellido*") {
+          fullNameVal = true;
+        }
+        //  else if (title == "nombre de pila") {
+        //   surnameVal = true;
+        // }
+        else if (title == "Número móvil*") {
           telephoneVal = true;
-        } else if (title == "contraseña") {
+        } else if (title == "Contraseña") {
           passwordVal = true;
+        } else if (title == "Confirmar contraseña") {
+          passwordConfirmVal = true;
         }
       });
     }
 
     bool getValidator(String title) {
-      if (title == "correo electrónico*") {
+      if (title == "Correo electroníco*") {
         return emailVal;
-      } else if (title == "nombre de usuario*") {
-        return usernameVal;
-      } else if (title == "apellido") {
-        return firstnameVal;
-      } else if (title == "nombre de pila") {
-        return surnameVal;
-      } else if (title == "número de teléfono") {
+      }
+      // else if (title == "nombre de usuario*") {
+      //   return usernameVal;
+      // }
+      else if (title == "Numbre y Apellido*") {
+        return fullNameVal;
+      } else if (title == "Número móvil*") {
         return telephoneVal;
-      } else if (title == "contraseña") {
+      } else if (title == "Contraseña") {
         return passwordVal;
+      } else if (title == "Confirmar contraseña") {
+        return passwordConfirmVal;
       }
       return false;
     }
 
     // for inputing the values
     parseValue(value) {
-      if (title == "correo electrónico*") {
+      if (title == "Correo electroníco*") {
         email = value;
-      } else if (title == "nombre de usuario*") {
-        username = value;
-      } else if (title == "apellido") {
-        firstname = value;
-      } else if (title == "nombre de pila") {
-        surname = value;
-      } else if (title == "número de teléfono") {
+      } else if (title == "Numbre y Apellido*") {
+        fullName = value;
+      } else if (title == "Número móvil*") {
         telephone = value;
-      } else if (title == "contraseña") {
+      } else if (title == "Contraseña") {
         password = value;
+      } else if (title == "Confirmar contraseña") {
+        passwordConfirm = value;
       }
     }
 
     // for checking keyboard type
     TextInputType _keyboardType() {
-      if (title == "número de teléfono") {
+      if (title == "Número móvil*") {
         return TextInputType.phone;
-      } else if (title == "correo electrónico*") {
+      } else if (title == "Correo electroníco*") {
         return TextInputType.emailAddress;
-      } else if (title == "contraseña") {
+      } else if (title == "Contraseña") {
+        return TextInputType.visiblePassword;
+      } else if (title == "Confirmar contraseña") {
         return TextInputType.visiblePassword;
       } else
         return null;
@@ -273,9 +287,14 @@ class _RegisterState extends State<Register> {
         vertical: 0,
       ),
       child: TextFormField(
-        obscureText: (title == "contraseña"),
-        onEditingComplete: (title != "contraseña") ? _node.nextFocus : null,
-        textInputAction: (title == "contraseña")
+        inputFormatters: (title == "Número móvil*")
+            ? [
+                WhitelistingTextInputFormatter(new RegExp("[0-9]")),
+              ]
+            : null,
+        obscureText: (title == "Contraseña" || title == "Confirmar contraseña"),
+        onEditingComplete: _node.nextFocus,
+        textInputAction: (title == "Confirmar contraseña")
             ? TextInputAction.done
             : TextInputAction.next,
         textAlign: TextAlign.center,
@@ -284,10 +303,10 @@ class _RegisterState extends State<Register> {
         validator: _validator,
         onChanged: (value) {
           setState(() {
-            (title == "nombre de pila" || title == "apellido")
-                ? value = StringUtils.capitalize(value)
-                : input = value;
-            input = value.trim();
+            // (title == "nombre de pila" || title == "apellido")
+            //     ? value = StringUtils.capitalize(value)
+            //     : input = value;
+            input = value;
             parseValue(input);
             updateValidator(title);
           });
@@ -324,11 +343,11 @@ class _RegisterState extends State<Register> {
   Map<String, Map<String, dynamic>> createUserRequestBody() {
     Map<String, Map<String, dynamic>> userRequest = {
       'user': {
-        'username': username,
+        'username': fullName,
         'password': password,
         'email': email,
-        'firstName': firstname,
-        'lastName': surname,
+        'firstName': fullName.split("\\s+").first,
+        'lastName': fullName.split("\\s+").last, // fullname.split("\\s+")[1]
         'phone': telephone,
         'cabildos': [],
         'files': "none",
@@ -373,341 +392,274 @@ class _RegisterState extends State<Register> {
             key: _formKey,
             child: FocusScope(
               node: _node,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Center(
-                      child: Text(
-                        "DATOS PERSONALES",
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
+              child: ListView(
+                // crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  SizedBox(
+                    height: 55,
+                  ),
+                  Center(
+                    child: Text(
+                      "Regístrate en Cibic",
+                      style: TextStyle(
+                        fontSize: 20,
                       ),
                     ),
-                    Center(
-                      child: Text(
-                        "Tus datos son privados.",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w200,
-                        ),
+                  ),
+                  Center(
+                    child: Text(
+                      "y sé un ciudadano o ciudadana inteligente.",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w200,
                       ),
                     ),
-                    SizedBox(height: 15),
+                  ),
+                  SizedBox(height: 15),
 
-                    textFieldInput(
-                      title: "correo electrónico*",
-                      input: email,
-                    ),
-                    textFieldInput(
-                      title: "nombre de usuario*",
-                      input: username,
-                    ),
-                    textFieldInput(
-                      title: "nombre de pila",
-                      input: firstname,
-                    ),
-                    textFieldInput(
-                      title: "apellido",
-                      input: surname,
-                    ),
-                    // Dropdown for Gender
-                    Container(
-                      height: 50,
-                      margin: EdgeInsets.fromLTRB(30, 0, 30, 15),
+                  textFieldInput(
+                    title: "Numbre y Apellido*",
+                    input: fullName,
+                  ),
+                  // textFieldInput(
+                  //   title: "nombre de usuario*",
+                  //   input: username,
+                  // ),
+                  textFieldInput(
+                    title: "Correo electroníco*",
+                    input: email,
+                  ),
+                  // textFieldInput(
+                  //   title: "apellido",
+                  //   input: surname,
+                  // ),
 
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 0,
-                      ),
-                      // alignment: Alignment.center,
-                      decoration: REGISTER_INPUT_DEC,
-                      // BoxDecoration(color: Colors.white),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          isDense: true,
-                          isExpanded: true,
+                  textFieldInput(
+                    title: "Número móvil*",
+                    input: telephone,
+                  ),
+                  textFieldInput(
+                    title: "Contraseña",
+                    input: telephone,
+                  ),
 
-                          // autofocus: true,
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black,
-                          ),
-                          items: [
-                            DropdownMenuItem(
-                              value: "1",
-                              child: Center(
-                                child: Text(
-                                  "Masculina",
-                                ),
-                              ),
-                            ),
-                            DropdownMenuItem(
-                              value: "2",
-                              child: Center(
-                                child: Text(
-                                  "Hembra",
-                                ),
-                              ),
-                            ),
-                            DropdownMenuItem(
-                              value: "3",
-                              child: Center(
-                                child: Text(
-                                  "Otro",
-                                ),
-                              ),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _value = value;
-                              if (_value == "1") {
-                                sex = "Male";
-                              } else if (_value == "2") {
-                                sex = "Female";
-                              } else {
-                                sex = "Others";
-                              }
-                            });
-                          },
-                          value: _value,
-                          hint: Center(
-                            child: Text(
-                              "sexo",
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                        ),
+                  // SizedBox(height: 1),
+
+                  // PASSWORD RULES
+                  Center(
+                    child: Text(
+                      'Mínimo 8 caractéres, un número, un caracter especial y una mayúscula',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w200,
                       ),
                     ),
+                  ),
+                  SizedBox(height: 15),
 
-                    textFieldInput(
-                      title: "número de teléfono",
-                      input: telephone,
-                    ),
-                    textFieldInput(
-                      title: "contraseña",
-                      input: telephone,
-                    ),
+                  textFieldInput(
+                    title: "Confirmar contraseña",
+                    input: passwordConfirm,
+                  ),
+                  // SizedBox(height: 2),
 
-                    SizedBox(height: 2),
+                  createPrivacyCheck(),
+                  // createSubmitButton("siguiente"),
 
-                    // PASSWORD RULES
-                    Center(
-                      child: Text(
-                        'Mínimo 8 caractéres, un número y una mayúscula',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w200,
-                        ),
-                      ),
-                    ),
+                  // submit
+                  submitChecker()
+                      ? GestureDetector(
+                          onTap: () {
+                            // print(
+                            //     "$email, $password, $passwordConfirm, $fullName, $telephone");
 
-                    createPrivacyCheck(),
-                    // createSubmitButton("siguiente"),
-
-                    // submit
-                    submitChecker()
-                        ? GestureDetector(
-                            onTap: () {
-                              if (_formKey.currentState.validate() &&
-                                  sex != '' &&
-                                  privacy) {
-                                attemptSubmit(createUserRequestBody())
-                                    .then((response) {
-                                  if (response ==
-                                      "Error: Could Not Register Your Account") {
-                                    //show alert dialog
-                                    if (Platform.isIOS) {
-                                      showDialog(
-                                          context: context,
-                                          barrierDismissible: false,
-                                          builder: (context) {
-                                            return CupertinoAlertDialog(
-                                              title: Text("Error Response"),
-                                              content: SingleChildScrollView(
-                                                child: ListBody(
-                                                  children: <Widget>[
-                                                    Text(
-                                                        "Error attempting to login"),
-                                                  ],
-                                                ),
+                            if (_formKey.currentState.validate() && privacy) {
+                              attemptSubmit(createUserRequestBody())
+                                  .then((response) {
+                                if (response ==
+                                    "Error: Could Not Register Your Account") {
+                                  //show alert dialog
+                                  if (Platform.isIOS) {
+                                    showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        builder: (context) {
+                                          return CupertinoAlertDialog(
+                                            title: Text("Error Response"),
+                                            content: SingleChildScrollView(
+                                              child: ListBody(
+                                                children: <Widget>[
+                                                  Text(
+                                                      "Error attempting to login"),
+                                                ],
                                               ),
-                                              actions: <Widget>[
-                                                FlatButton(
-                                                  child: Text('Okay'),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                              ],
-                                            );
-                                          });
-                                    } else {
-                                      showDialog(
-                                          context: context,
-                                          barrierDismissible: false,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              title: Text(
-                                                "Error Response",
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                ),
+                                            ),
+                                            actions: <Widget>[
+                                              FlatButton(
+                                                child: Text('Okay'),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
                                               ),
-                                              content: SingleChildScrollView(
-                                                child: ListBody(
-                                                  children: <Widget>[
-                                                    Text(
-                                                      "Error attempting to login",
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              actions: <Widget>[
-                                                FlatButton(
-                                                  child: Text('Okay'),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                              ],
-                                            );
-                                          });
-                                    }
+                                            ],
+                                          );
+                                        });
                                   } else {
-                                    attemptLogin(email, password).then((jwt) {
-                                      // print("jwt: $jwt");
-                                      if (jwt != null) {
-                                        storage.write(key: "jwt", value: jwt);
-                                        Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    Onboard(jwt)));
-                                      } else {
-                                        // show alert dialog
-                                        if (Platform.isIOS) {
-                                          showDialog(
-                                              context: context,
-                                              barrierDismissible: false,
-                                              builder: (context) {
-                                                return CupertinoAlertDialog(
-                                                  title: Text("Error Response"),
-                                                  content:
-                                                      SingleChildScrollView(
-                                                    child: ListBody(
-                                                      children: <Widget>[
-                                                        Text(
-                                                            "Error attempting to login"),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  actions: <Widget>[
-                                                    FlatButton(
-                                                      child: Text('Okay'),
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                    ),
-                                                  ],
-                                                );
-                                              });
-                                        } else {
-                                          showDialog(
-                                              context: context,
-                                              barrierDismissible: false,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  title: Text(
-                                                    "Error Response",
+                                    showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text(
+                                              "Error Response",
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                              ),
+                                            ),
+                                            content: SingleChildScrollView(
+                                              child: ListBody(
+                                                children: <Widget>[
+                                                  Text(
+                                                    "Error attempting to login",
                                                     style: TextStyle(
-                                                      fontSize: 20,
+                                                      fontSize: 15,
                                                     ),
                                                   ),
-                                                  content:
-                                                      SingleChildScrollView(
-                                                    child: ListBody(
-                                                      children: <Widget>[
-                                                        Text(
-                                                          "Error attempting to login",
-                                                          style: TextStyle(
-                                                            fontSize: 15,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  actions: <Widget>[
-                                                    FlatButton(
-                                                      child: Text('Okay'),
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                    ),
-                                                  ],
-                                                );
-                                              });
-                                        }
-                                      }
-                                    });
+                                                ],
+                                              ),
+                                            ),
+                                            actions: <Widget>[
+                                              FlatButton(
+                                                child: Text('Okay'),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        });
                                   }
-                                });
-                              }
-                            },
-                            child: Container(
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: COLOR_SOFT_BLUE,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              alignment: Alignment.center,
-                              margin: EdgeInsets.fromLTRB(35, 10, 35, 7),
-                              child: Text(
-                                "siguiente",
-                                textAlign: TextAlign.center,
-                                style: REGISTER_TXT,
-                              ),
+                                } else {
+                                  attemptLogin(email, password).then((jwt) {
+                                    // print("jwt: $jwt");
+                                    if (jwt != null) {
+                                      storage.write(key: "jwt", value: jwt);
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Onboard(jwt)));
+                                    } else {
+                                      // show alert dialog
+                                      if (Platform.isIOS) {
+                                        showDialog(
+                                            context: context,
+                                            barrierDismissible: false,
+                                            builder: (context) {
+                                              return CupertinoAlertDialog(
+                                                title: Text("Error Response"),
+                                                content: SingleChildScrollView(
+                                                  child: ListBody(
+                                                    children: <Widget>[
+                                                      Text(
+                                                          "Error attempting to login"),
+                                                    ],
+                                                  ),
+                                                ),
+                                                actions: <Widget>[
+                                                  FlatButton(
+                                                    child: Text('Okay'),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            });
+                                      } else {
+                                        showDialog(
+                                            context: context,
+                                            barrierDismissible: false,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                title: Text(
+                                                  "Error Response",
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                  ),
+                                                ),
+                                                content: SingleChildScrollView(
+                                                  child: ListBody(
+                                                    children: <Widget>[
+                                                      Text(
+                                                        "Error attempting to login",
+                                                        style: TextStyle(
+                                                          fontSize: 15,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                actions: <Widget>[
+                                                  FlatButton(
+                                                    child: Text('Okay'),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            });
+                                      }
+                                    }
+                                  });
+                                }
+                              });
+                            }
+                          },
+                          child: Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: COLOR_SOFT_BLUE,
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                          )
-                        : GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              alignment: Alignment.center,
-                              margin: EdgeInsets.fromLTRB(35, 10, 35, 7),
-                              child: Text(
-                                "siguiente",
-                                textAlign: TextAlign.center,
-                                style: REGISTER_TXT,
-                              ),
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.fromLTRB(35, 10, 35, 7),
+                            child: Text(
+                              "siguiente",
+                              textAlign: TextAlign.center,
+                              style: REGISTER_TXT,
                             ),
                           ),
-                    Divider(
-                      indent: 30,
-                      endIndent: 30,
-                      color: Colors.white,
-                      thickness: 1,
-                    ),
-                  ],
-                ),
+                        )
+                      : GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.fromLTRB(35, 10, 35, 7),
+                            child: Text(
+                              "siguiente",
+                              textAlign: TextAlign.center,
+                              style: REGISTER_TXT,
+                            ),
+                          ),
+                        ),
+                  SizedBox(height: 5),
+
+                  Divider(
+                    indent: 30,
+                    endIndent: 30,
+                    color: Colors.white,
+                    thickness: 1,
+                  ),
+                ],
               ),
             ),
           ),
