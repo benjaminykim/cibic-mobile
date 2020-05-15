@@ -71,10 +71,10 @@ ThemeData get cibicTheme {
   );
 }
 
-final LOGIN_INPUT_DEC = BoxDecoration(
+final loginInputDec = BoxDecoration(
   color: Colors.transparent,
   borderRadius: const BorderRadius.all(const Radius.circular(10)),
-  border:  Border.all(
+  border: Border.all(
     color: Colors.white,
     width: 1.0,
     style: BorderStyle.solid,

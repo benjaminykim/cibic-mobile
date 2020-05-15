@@ -4,8 +4,12 @@ import 'dart:io';
 
 import 'package:cibic_mobile/src/onboard/home.dart';
 import 'package:cibic_mobile/src/onboard/register.dart';
+import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/redux/actions/actions.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 class Welcome extends StatefulWidget {
   final storage;
@@ -74,7 +78,7 @@ class _WelcomeState extends State<Welcome> {
   Container createInputView(String str, TextEditingController ctlr) {
     return Container(
       height: 40,
-      decoration: LOGIN_INPUT_DEC,
+      decoration: loginInputDec,
       alignment: Alignment.center,
       margin: EdgeInsets.fromLTRB(35, 0, 35, 7),
       child: Center(
@@ -131,57 +135,63 @@ class _WelcomeState extends State<Welcome> {
                       child: createButtonView("Registrate"),
                     ),
                     SizedBox(height: 10),
-                    (this.showLogin) ? Divider(
-                      color: Colors.white,
-                      indent: 20,
-                      endIndent: 20,
-                      thickness: 0.5,
-                    ) : Container(),
-                    (this.showLogin) ? Text(
-                      "¿Has olvidado la contraseña?",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                    ) : Container(),
+                    (this.showLogin)
+                        ? Divider(
+                            color: Colors.white,
+                            indent: 20,
+                            endIndent: 20,
+                            thickness: 0.5,
+                          )
+                        : Container(),
+                    (this.showLogin)
+                        ? Text(
+                            "¿Has olvidado la contraseña?",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          )
+                        : Container(),
                     SizedBox(height: 10),
-                    GestureDetector(
-                      onTap: () async {
-                        if (this.showLogin) {
-                          if (_emailController.text == null ||
-                              _passwordController.text == null ||
-                              _emailController.text == "" ||
-                              _passwordController.text == "") {
-                            setState(() {
-                              this.showLogin = !this.showLogin;
-                            });
-                          } else {
-                            var jwt = await attemptLogin();
-                            if (jwt != null) {
-                              widget.storage.write(key: "jwt", value: jwt);
-                              Navigator.pushReplacement(
+                    StoreConnector<AppState, Function>(
+                      converter: (Store<dynamic> store) {
+                        return () => store.dispatch(attemptLogin(
+                            _emailController.text, _passwordController.text));
+                      },
+                      builder: (BuildContext context, vm) {
+                        return GestureDetector(
+                          onTap: () async {
+                            if (this.showLogin) {
+                              if (_emailController.text == null ||
+                                  _passwordController.text == null ||
+                                  _emailController.text == "" ||
+                                  _passwordController.text == "") {
+                                setState(() {
+                                  this.showLogin = !this.showLogin;
+                                });
+                              } else {
+                                vm.call();
+                                print("vm called");
+                                //var jwt = await attemptLogin1();
+                                Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          Home.fromBase64(jwt)));
+                                    builder: (context) =>Home("", "")));
+                              }
                             } else {
-                              displayDialog(context, "An Error Occurred",
-                                  "No account was found matching that username and password");
+                              setState(() {
+                                this.showLogin = !this.showLogin;
+                                this._controller.jumpTo(
+                                    _controller.position.maxScrollExtent);
+                              });
                             }
-                          }
-                        } else {
-                          setState(() {
-                            this.showLogin = !this.showLogin;
-                            this
-                                ._controller
-                                .jumpTo(_controller.position.maxScrollExtent);
-                          });
-                        }
+                          },
+                          child: createButtonView("Inicia sesión"),
+                        );
                       },
-                      child: createButtonView("Inicia sesión"),
                     ),
-                    SizedBox(height:10),
+                    SizedBox(height: 10),
                     (this.showLogin)
                         ? (createInputView(
                             "contraseña", this._passwordController))
@@ -190,7 +200,7 @@ class _WelcomeState extends State<Welcome> {
                         ? (createInputView(
                             "correo electrónico", this._emailController))
                         : Container(),
-                    SizedBox(height:30),
+                    SizedBox(height: 30),
                     // WELCOME
                     Text(
                       "Bienvenido/a",
@@ -211,7 +221,7 @@ class _WelcomeState extends State<Welcome> {
             AlertDialog(title: Text(title), content: Text(text)),
       );
 
-  Future<String> attemptLogin() async {
+  Future<String> attemptLogin1() async {
     Map requestBody = {
       'email': '${_emailController.text}',
       'password': '${_passwordController.text}'

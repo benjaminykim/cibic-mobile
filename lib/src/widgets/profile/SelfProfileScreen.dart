@@ -1,6 +1,5 @@
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
-import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/resources/api_provider.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -8,7 +7,6 @@ import 'dart:async';
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityView.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
-import 'package:redux/redux.dart';
 
 class SelfProfileScreen extends StatefulWidget {
   final String idUser;
@@ -285,46 +283,6 @@ class _UserProfileState extends State<SelfProfileScreen> {
           )
         ]),
       ),
-    );
-  }
-}
-
-class User {
-  final String idUser;
-  final String username;
-  final String email;
-  final String firstName;
-  final String middleName;
-  final String lastName;
-  final List<dynamic> followers;
-  final List<dynamic> following;
-  final List<dynamic> activityFeed;
-  final List<dynamic> cabildos;
-
-  User(
-      this.idUser,
-      this.username,
-      this.email,
-      this.firstName,
-      this.middleName,
-      this.lastName,
-      this.followers,
-      this.following,
-      this.activityFeed,
-      this.cabildos);
-
-  factory User.create(Store<AppState> store) {
-    return User(
-      store.state.idUser,
-      store.state.username,
-      store.state.email,
-      store.state.firstName,
-      store.state.middleName,
-      store.state.lastName,
-      store.state.followers,
-      store.state.following,
-      store.state.activityFeed,
-      store.state.cabildos,
     );
   }
 }
