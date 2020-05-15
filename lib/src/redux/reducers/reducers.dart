@@ -8,20 +8,24 @@ AppState appReducer(AppState prevState, dynamic action) {
 
   if (action is AppUser) {
     newState.idUser = action.payload['id'];
-    newState.cabildos = action.payload['cabildos'];
-    newState.username = action.payload['username'];
-    newState.email = action.payload['email'];
+    newState.jwt = action.payload['jwt'];
     newState.firstName = action.payload['firstName'];
-    newState.middleName = action.payload['middleName'];
     newState.lastName = action.payload['lastName'];
     newState.followers = action.payload['followers'];
     newState.following = action.payload['following'];
-    newState.activityFeed = action.payload['activityFeed'];
-  } else if (action is ChangeComposeOption) {
-    newState.selectedComposeButton = action.payload;
-  } else if (action is GetCabildos) {
-    newState.cabildos = action.payload;
+    //newState.userProfileFeed = action.payload['userProfileFeed'];
+    //newState.homeFeed = action.payload['homeFeed'];
+    //newState.publicFeed = action.payload['publicFeed'];
+    newState.cabildos = action.payload['cabildos'];
+  } else if (action is LogInSuccess) {
+    newState.jwt = action.jwt;
+    print("NEW JWT ${newState.jwt}");
+  } else if (action is FetchHomeFeed) {
+    newState.homeFeed = action.payload;
+  } else if (action is FetchPublicFeed) {
+    newState.publicFeed = action.payload;
+  } else if (action is FetchUserFeed) {
+    newState.userProfileFeed = action.payload;
   }
-
   return newState;
 }

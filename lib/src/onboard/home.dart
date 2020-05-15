@@ -1,24 +1,12 @@
+import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:cibic_mobile/src/widgets/profile/SelfProfileScreen.dart';
-
-import 'package:cibic_mobile/src/redux/AppState.dart';
-import 'package:cibic_mobile/src/redux/reducers/reducers.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux/redux.dart';
-
 import 'package:cibic_mobile/src/widgets/activity/ActivityFeed.dart';
 import 'package:cibic_mobile/src/widgets/menu/AppBar.dart';
 import 'package:cibic_mobile/src/widgets/menu/BaseBar.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/MenuOverlay.dart';
-import 'package:redux_thunk/redux_thunk.dart';
 
 class Home extends StatefulWidget {
-  final Store<AppState> store = Store<AppState>(
-    appReducer,
-    initialState: AppState.initial(),
-    middleware: [thunkMiddleware],
-  );
   final String jwt;
   final String idUser;
 
@@ -31,13 +19,12 @@ class Home extends StatefulWidget {
   Home(this.jwt, this.idUser);
 
   @override
-  _AppState createState() => _AppState();
+  _HomeState createState() => _HomeState();
 }
 
-class _AppState extends State<Home> {
-  int selectedBarIndex = 0;
-  List<dynamic> feed;
+class _HomeState extends State<Home> {
   List<Widget> _widgetOptions;
+  int selectedBarIndex = 0;
   String appBarTitle = "INICIO";
   List<String> _feedNames = ["INICIO", "PÚBLICO", "USUARIO", "ESTADÍSTICAS"];
 
@@ -62,9 +49,7 @@ class _AppState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreProvider(
-      store: widget.store,
-      child: DefaultTabController(
+    return DefaultTabController(
         length: 4,
         child: Scaffold(
           appBar: BaseAppBar(this.appBarTitle, widget.jwt),
@@ -75,7 +60,6 @@ class _AppState extends State<Home> {
           bottomNavigationBar:
               BaseBar(this.selectedBarIndex, this.onBarButtonTapped),
         ),
-      ),
     );
   }
 }

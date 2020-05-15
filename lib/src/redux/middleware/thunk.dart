@@ -5,19 +5,19 @@ import 'dart:io';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:redux/redux.dart';
-import 'package:redux_thunk/redux_thunk.dart';
+import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/redux/actions/actions.dart';
 
-class AppUser {
-  final Map<String, dynamic> payload;
-  AppUser(this.payload);
-}
+void loadUserMiddleware(Store<AppState> store, dynamic action, NextDispatcher next) async {
+	if (action is LogInAttempt) {
+    String email = action.email;
+    String password = action.password;
 
-ThunkAction<String> attemptLogin(String email, String password) {
-   return (Store<String> store) async {
     Map requestBody = {
       'email': '$email',
       'password': '$password'
     };
+
     HttpClient httpClient = new HttpClient();
     HttpClientRequest request =
         await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_LOGIN));
@@ -33,50 +33,9 @@ ThunkAction<String> attemptLogin(String email, String password) {
       String jwt = jwtResponse['access_token'];
       final storage = FlutterSecureStorage();
       storage.write(key: "jwt", value: jwt);
-      return (LogInSuccess(jwt));
+      store.dispatch(LogInSuccess(jwt));
     } else {
       store.dispatch(LogInError(response.statusCode));
-      return (LogInError(response.statusCode.toString()));
     }
-   };
- }
-
-class LogInAttempt {
-  String email;
-  String password;
-
-  String getEmail() {
-    return this.email;
   }
-
-  String getPassword() {
-    return this.password;
-  }
-
-  LogInAttempt(this.email, this.password);
-}
-
-class LogInSuccess {
-  String jwt;
-  LogInSuccess(this.jwt);
-}
-
-class LogInError {
-  var payload;
-  LogInError(this.payload);
-}
-
-class FetchHomeFeed {
-  List<dynamic> payload;
-  FetchHomeFeed(this.payload);
-}
-
-class FetchPublicFeed {
-  List<dynamic> payload;
-  FetchPublicFeed(this.payload);
-}
-
-class FetchUserFeed {
-  List<dynamic> payload;
-  FetchUserFeed(this.payload);
 }

@@ -1,36 +1,30 @@
-
 class AppState {
   String idUser;
-  String username;
-  String email;
+  String jwt;
   String firstName;
-  String middleName;
   String lastName;
   List<dynamic> followers;
   List<dynamic> following;
-  List<dynamic> activityFeed;
-  int selectedIndex;
-  int selectedComposeButton;
+  List<dynamic> userProfileFeed;
+  List<dynamic> homeFeed;
+  List<dynamic> publicFeed;
   List<dynamic> cabildos;
 
-  AppState(this.idUser, this.username, this.email, this.firstName, this.middleName,
-  this.lastName, this.followers, this.following, this.activityFeed, this.selectedIndex,
-  this.selectedComposeButton, this.cabildos);
+  AppState(this.idUser, this.jwt, this.firstName, this.lastName, this.followers, this.following, this.userProfileFeed,
+  this.homeFeed, this.publicFeed, this.cabildos);
 
   AppState.fromAppState(AppState another) {
     idUser = another.idUser;
-    username = another.username;
-    email = another.email;
+    jwt = another.jwt;
     firstName = another.firstName;
-    middleName = another.middleName;
     lastName = another.lastName;
     followers = another.followers;
     following = another.following;
-    activityFeed = another.activityFeed;
-    selectedIndex = another.selectedIndex;
-    selectedComposeButton = another.selectedComposeButton;
+    userProfileFeed = another.userProfileFeed;
+    homeFeed = another.homeFeed;
+    publicFeed = another.publicFeed;
     cabildos = another.cabildos;
   }
 
-  factory AppState.initial() => AppState("", "", "", "", "", "", [], [], [], 0, 0, []);
+  factory AppState.initial() => AppState("", "", "", "", [], [], [], [], [], []);
 }
