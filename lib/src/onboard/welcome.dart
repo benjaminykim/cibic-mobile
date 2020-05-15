@@ -156,8 +156,7 @@ class _WelcomeState extends State<Welcome> {
                     SizedBox(height: 10),
                     StoreConnector<AppState, Function>(
                       converter: (Store<dynamic> store) {
-                        return () => store.dispatch(attemptLogin(
-                            _emailController.text, _passwordController.text));
+                        return () => store;
                       },
                       builder: (BuildContext context, vm) {
                         return GestureDetector(
@@ -171,13 +170,15 @@ class _WelcomeState extends State<Welcome> {
                                   this.showLogin = !this.showLogin;
                                 });
                               } else {
-                                vm.call();
-                                print("vm called");
-                                //var jwt = await attemptLogin1();
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>Home("", "")));
+                                await vm().dispatch(LogInAttempt(
+                                    _emailController.text,
+                                    _passwordController.text));
+                                if (vm().state.isLogIn) {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Home("", "")));
+                                }
                               }
                             } else {
                               setState(() {
