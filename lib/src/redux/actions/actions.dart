@@ -1,11 +1,6 @@
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 
-class AppUser {
-  final Map<String, dynamic> payload;
-  AppUser(this.payload);
-}
-
 class LogInAttempt {
   String email;
   String password;
@@ -39,7 +34,6 @@ class FetchFeedError {
   String error;
   FetchFeedError(this.mode, this.error);
 }
-
 
 class FetchUserProfileAttempt {
 }
