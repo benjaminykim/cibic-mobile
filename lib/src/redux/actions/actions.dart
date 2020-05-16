@@ -1,3 +1,6 @@
+import 'package:cibic_mobile/src/models/feed_model.dart';
+import 'package:cibic_mobile/src/models/user_model.dart';
+
 class AppUser {
   final Map<String, dynamic> payload;
   AppUser(this.payload);
@@ -20,17 +23,43 @@ class LogInError {
   LogInError(this.payload);
 }
 
-class FetchHomeFeed {
-  List<dynamic> payload;
-  FetchHomeFeed(this.payload);
+class FetchFeedAttempt {
+  String mode;
+  FetchFeedAttempt(this.mode);
 }
 
-class FetchPublicFeed {
-  List<dynamic> payload;
-  FetchPublicFeed(this.payload);
+class FetchFeedSuccess {
+  String mode;
+  FeedModel feed;
+  FetchFeedSuccess(this.mode, this.feed);
 }
 
-class FetchUserFeed {
-  List<dynamic> payload;
-  FetchUserFeed(this.payload);
+class FetchFeedError {
+  String mode;
+  String error;
+  FetchFeedError(this.mode, this.error);
+}
+
+
+class FetchUserProfileAttempt {
+}
+
+class FetchUserProfileSuccess {
+  UserModel user;
+  FetchUserProfileSuccess(this.user);
+}
+
+class FetchUserProfileError {
+  String error;
+  FetchUserProfileError(this.error);
+}
+
+class FetchUserProfileFeedSuccess {
+  FeedModel feed;
+  FetchUserProfileFeedSuccess(this.feed);
+}
+
+class FetchUserProfileFeedError {
+  String error;
+  FetchUserProfileFeedError(this.error);
 }
