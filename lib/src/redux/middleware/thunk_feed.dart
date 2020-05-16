@@ -1,11 +1,10 @@
-import 'dart:convert';
-
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/actions/actions.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/resources/utils.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:redux/redux.dart';
 
 fetchFeed(String jwt, String mode, NextDispatcher next) async {
