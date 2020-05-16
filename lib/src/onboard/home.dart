@@ -40,9 +40,9 @@ class _HomeState extends State<Home> {
     super.initState();
 
     _widgetOptions = [
-      ActivityFeed(widget.idUser, widget.jwt, "default"),
-      ActivityFeed(widget.idUser, widget.jwt, "public"),
-      SelfProfileScreen(widget.idUser, widget.jwt),
+      ActivityFeed("default"),
+      ActivityFeed("public"),
+      SelfProfileScreen(),
       Container(),
     ];
   }
