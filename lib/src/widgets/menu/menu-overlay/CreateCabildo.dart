@@ -18,11 +18,11 @@ class _CreateCabildoState extends State<CreateCabildo> {
   final inputTagController = TextEditingController();
 
   void dispose() {
-    super.dispose();
     inputNameController.dispose();
     inputDescController.dispose();
     inputLocationController.dispose();
     inputTagController.dispose();
+    super.dispose();
   }
 
   void submitCabildo() {

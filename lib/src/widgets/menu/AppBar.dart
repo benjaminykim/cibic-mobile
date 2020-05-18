@@ -4,11 +4,10 @@ import 'package:cibic_mobile/src/widgets/menu/ComposeScreen.dart';
 
 class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String pageName;
-  final String jwt;
 
-  BaseAppBar(this.pageName, this.jwt);
+  BaseAppBar(this.pageName);
 
-  void _startAddNewActivity(BuildContext context, String jwt) {
+  void _startAddNewActivity(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -53,7 +52,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
               size: 35,
             ),
             onPressed: () {
-              _startAddNewActivity(context, this.jwt);
+              _startAddNewActivity(context);
             },
             padding: EdgeInsets.zero,
           ),

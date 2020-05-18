@@ -177,7 +177,7 @@ class _WelcomeState extends State<Welcome> {
                                   Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Home("", "")));
+                                          builder: (context) => Home()));
                                 }
                               }
                             } else {
