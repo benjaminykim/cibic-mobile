@@ -1,7 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:cibic_mobile/src/onboard/home.dart';
 import 'package:cibic_mobile/src/onboard/register.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
@@ -30,6 +27,13 @@ class _WelcomeState extends State<Welcome> {
   final TextEditingController _passwordController = new TextEditingController();
   ScrollController _controller = ScrollController();
 
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
   final welcomeTextStyle = TextStyle(
     fontSize: 24,
     fontWeight: FontWeight.w600,
@@ -221,26 +225,4 @@ class _WelcomeState extends State<Welcome> {
         builder: (context) =>
             AlertDialog(title: Text(title), content: Text(text)),
       );
-
-  Future<String> attemptLogin1() async {
-    Map requestBody = {
-      'email': '${_emailController.text}',
-      'password': '${_passwordController.text}'
-    };
-    HttpClient httpClient = new HttpClient();
-    HttpClientRequest request =
-        await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_LOGIN));
-    request.headers.set('content-type', 'application/json');
-    request.add(utf8.encode(json.encode(requestBody)));
-    HttpClientResponse response = await request.close();
-    httpClient.close();
-
-    if (response.statusCode == 201) {
-      final responseBody = await response.transform(utf8.decoder).join();
-      Map<String, dynamic> jwtResponse = jsonDecode(responseBody);
-      return jwtResponse['access_token'];
-    } else {
-      throw Exception("Error");
-    }
-  }
 }
