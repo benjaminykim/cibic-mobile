@@ -8,7 +8,7 @@ import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/resources/utils.dart';
 import 'package:redux/redux.dart';
 
-postActivity(dynamic action, String jwt, NextDispatcher next) async {
+postActivity(dynamic action, String jwt, NextDispatcher next, Store store) async {
   String type = action.type;
   String title = action.title;
   String body = action.body;
@@ -74,8 +74,8 @@ postActivity(dynamic action, String jwt, NextDispatcher next) async {
   if (response.statusCode == 201) {
     //final responseBody = await response.transform(utf8.decoder).join();
     //Map<String, dynamic> activity = jsonDecode(responseBody);
-    next(SubmitActivitySuccess);
+    store.dispatch(SubmitActivitySuccess());
   } else {
-    next(SubmitActivityError(response.statusCode.toString()));
+    store.dispatch(SubmitActivityError(response.statusCode.toString()));
   }
 }

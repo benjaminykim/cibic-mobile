@@ -6,7 +6,6 @@ import 'package:cibic_mobile/src/redux/actions/actions.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityView.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -24,14 +23,8 @@ class _UserProfileState extends State<SelfProfileScreen> {
   String followButtonText = "seguir";
   Color followButtonColor = Colors.green;
 
-  Future<Null> refreshList() async {
-    refreshKey.currentState?.show(atTop: false);
-    await Future.delayed(Duration(seconds: 2));
-    return null;
-  }
-
   ProfileViewModel generateProfileViewModel(Store<AppState> store) {
-    Function refreshFeed = () => store.dispatch(FetchUserProfileAttempt);
+    Function refreshFeed = () => store.dispatch(FetchUserProfileAttempt());
     FeedModel userFeed;
     UserModel user;
     bool error;

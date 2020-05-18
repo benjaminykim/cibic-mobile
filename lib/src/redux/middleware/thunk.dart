@@ -22,6 +22,9 @@ void apiMiddleware(
     await fetchUserProfile(store.state.jwt, next);
     await fetchUserProfileFeed(store.state.jwt, next);
   } else if (action is SubmitActivityAttempt) {
-    await postActivity(action, store.state.jwt, next);
+    await postActivity(action, store.state.jwt, next, store);
+  } else if (action is SubmitActivitySuccess) {
+    await fetchUserProfile(store.state.jwt, next);
+    await fetchUserProfileFeed(store.state.jwt, next);
   }
 }
