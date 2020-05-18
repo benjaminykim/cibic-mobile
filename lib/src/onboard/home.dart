@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:cibic_mobile/src/widgets/profile/SelfProfileScreen.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityFeed.dart';
 import 'package:cibic_mobile/src/widgets/menu/AppBar.dart';
@@ -7,16 +6,7 @@ import 'package:cibic_mobile/src/widgets/menu/BaseBar.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/MenuOverlay.dart';
 
 class Home extends StatefulWidget {
-  final String jwt;
-  final String idUser;
-
-  factory Home.fromBase64(String jwt) => Home(
-      jwt,
-      json.decode(
-          ascii.decode(base64.decode(base64.normalize(jwt.split(".")[1]))))['id'],
-          );
-
-  Home(this.jwt, this.idUser);
+  Home();
 
   @override
   _HomeState createState() => _HomeState();
@@ -52,11 +42,11 @@ class _HomeState extends State<Home> {
     return DefaultTabController(
         length: 4,
         child: Scaffold(
-          appBar: BaseAppBar(this.appBarTitle, widget.jwt),
+          appBar: BaseAppBar(this.appBarTitle),
           body: Center(
             child: _widgetOptions.elementAt(selectedBarIndex),
           ),
-          drawer: MenuOverlay(widget.jwt, this.onBarButtonTapped),
+          drawer: MenuOverlay("", this.onBarButtonTapped),
           bottomNavigationBar:
               BaseBar(this.selectedBarIndex, this.onBarButtonTapped),
         ),

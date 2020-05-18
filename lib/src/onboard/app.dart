@@ -53,7 +53,7 @@ class App extends StatelessWidget {
                     ascii.decode(base64.decode(base64.normalize(jwt[1]))));
                 if (DateTime.fromMillisecondsSinceEpoch(payload["exp"] * 1000)
                     .isAfter(DateTime.now())) {
-                  return Home.fromBase64(str);
+                  return Home();
                 } else {
                   return Welcome(storage);
                 }

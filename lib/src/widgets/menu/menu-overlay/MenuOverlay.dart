@@ -67,7 +67,7 @@ class MenuOverlay extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => MyCabildos(this.jwt)));
+                              builder: (context) => MyCabildos()));
                     }),
                 ListTile(
                   contentPadding: EdgeInsets.only(left: 20),
