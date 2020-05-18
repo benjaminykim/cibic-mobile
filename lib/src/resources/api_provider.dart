@@ -324,7 +324,7 @@ Future<int> voteToReply(
   }
 }
 
-Future<void> composeActivity(String title, String intro, String body,
+Future<void> composeActivity(String title, String body,
     String idCabildo, String tags, String jwt) async {
   String idUser = extractID(jwt);
   HttpClient httpClient = new HttpClient();
