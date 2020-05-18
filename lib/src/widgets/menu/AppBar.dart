@@ -17,7 +17,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
       builder: (bContext) {
         return GestureDetector(
           onTap: () {},
-          child: Compose(jwt),
+          child: Compose(),
           behavior: HitTestBehavior.opaque,
         );
       },

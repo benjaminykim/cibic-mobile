@@ -1,3 +1,4 @@
+import 'package:cibic_mobile/src/redux/middleware/thunk_compose.dart';
 import 'package:cibic_mobile/src/redux/middleware/thunk_feed.dart';
 import 'package:cibic_mobile/src/redux/middleware/thunk_user.dart';
 import 'package:redux/redux.dart';
@@ -20,5 +21,7 @@ void apiMiddleware(
   } else if (action is FetchUserProfileAttempt) {
     await fetchUserProfile(store.state.jwt, next);
     await fetchUserProfileFeed(store.state.jwt, next);
+  } else if (action is SubmitActivityAttempt) {
+    await postActivity(action, store.state.jwt, next);
   }
 }
