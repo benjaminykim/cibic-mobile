@@ -1,11 +1,12 @@
-import 'package:cibic_mobile/src/resources/api_provider.dart';
+import 'package:cibic_mobile/src/redux/actions/actions.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:redux/redux.dart';
 
 class CreateCabildo extends StatefulWidget {
-  final String jwt;
+  final Store store;
 
-  CreateCabildo(this.jwt);
+  CreateCabildo(this.store);
 
   @override
   _CreateCabildoState createState() => _CreateCabildoState();
@@ -37,17 +38,7 @@ class _CreateCabildoState extends State<CreateCabildo> {
         enteredTag.isEmpty) {
       return;
     } else {
-      int reply;
-      createCabildo(
-              enteredName, enteredDesc, enteredLocation, enteredTag, widget.jwt)
-          .then((result) {
-        reply = result;
-        if (reply == 201) {
-          Navigator.pop(context, enteredName);
-        } else {
-          Navigator.pop(context, "");
-        }
-      });
+      widget.store.dispatch(SubmitCabildoAttempt(enteredName, enteredDesc, enteredLocation, enteredTag, context));
     }
   }
 

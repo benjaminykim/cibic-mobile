@@ -24,7 +24,7 @@ class _ConfigurationState extends State<Configuration> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    CabildoProfileScreen(cabildo.id, widget.jwt)));
+                    CabildoProfileScreen(cabildo.id)));
       },
       child: Container(
         height: 65,

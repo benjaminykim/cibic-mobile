@@ -50,7 +50,7 @@ class _MyCabildosState extends State<MyCabildos> {
     );
   }
 
-  Widget cabildoCreate() {
+  Widget cabildoCreate(_MyCabildosViewModel vm) {
     return GestureDetector(
       onTap: () {
         showModalBottomSheet(
@@ -61,7 +61,7 @@ class _MyCabildosState extends State<MyCabildos> {
           builder: (bContext) {
             return GestureDetector(
               onTap: () {},
-              child: CreateCabildo(""),
+              child: CreateCabildo(vm.store),
               behavior: HitTestBehavior.opaque,
             );
           },
@@ -100,7 +100,7 @@ class _MyCabildosState extends State<MyCabildos> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    CabildoProfileScreen(cabildo.id, "")));
+                    CabildoProfileScreen(cabildo.id)));
       },
       child: Container(
         height: 65,
@@ -135,7 +135,7 @@ class _MyCabildosState extends State<MyCabildos> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _MyCabildosViewModel>(
       converter: (Store<AppState> store) {
-        return _MyCabildosViewModel(store.state.user);
+        return _MyCabildosViewModel(store.state.user, store);
       },
       builder: (BuildContext context, _MyCabildosViewModel vm) {
         List<CabildoModel> cabildos = vm.user.cabildos;
@@ -172,7 +172,7 @@ class _MyCabildosState extends State<MyCabildos> {
                   itemCount: cabildos.length + 1,
                   itemBuilder: (BuildContext context, int index) {
                     if (index == 0) {
-                      return cabildoCreate();
+                      return cabildoCreate(vm);
                     } else if (index == cabildos.length + 1) {
                       return cabildoAdd();
                     } else {
@@ -192,5 +192,6 @@ class _MyCabildosState extends State<MyCabildos> {
 
 class _MyCabildosViewModel {
   UserModel user;
-  _MyCabildosViewModel(this.user);
+  Store store;
+  _MyCabildosViewModel(this.user, this.store);
 }

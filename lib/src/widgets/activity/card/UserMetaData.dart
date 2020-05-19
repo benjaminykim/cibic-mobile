@@ -43,7 +43,7 @@ class UserMetaData extends StatelessWidget {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                CabildoProfileScreen(this.idCabildo, this.jwt)));
+                CabildoProfileScreen(this.idCabildo)));
   }
 
   @override

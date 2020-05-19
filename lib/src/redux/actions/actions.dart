@@ -1,5 +1,7 @@
+import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
+import 'package:flutter/material.dart';
 
 class LogInAttempt {
   String email;
@@ -73,4 +75,53 @@ class SubmitActivitySuccess {
 class SubmitActivityError {
   String error;
   SubmitActivityError(this.error);
+}
+
+class SubmitCabildoAttempt {
+  String name;
+  String desc;
+  String location;
+  String tag;
+  BuildContext context;
+  SubmitCabildoAttempt(this.name, this.desc, this.location, this.tag, this.context);
+}
+
+class SubmitCabildoSuccess {
+  String idCabildo;
+  SubmitCabildoSuccess(this.idCabildo);
+}
+
+class SubmitCabildoError {
+  String error;
+  SubmitCabildoError(this.error);
+}
+
+class FetchCabildoProfile {
+  String idCabildo;
+  FetchCabildoProfile(this.idCabildo);
+}
+
+class FetchCabildoProfileSuccess {
+  CabildoModel cabildo;
+  FetchCabildoProfileSuccess(this.cabildo);
+}
+
+class FetchCabildoProfileError {
+  String error;
+  FetchCabildoProfileError(this.error);
+}
+
+class FetchCabildoProfileFeed {
+  String idCabildo;
+  FetchCabildoProfileFeed(this.idCabildo);
+}
+
+class FetchCabildoProfileFeedSuccess {
+  FeedModel cabildo;
+  FetchCabildoProfileFeedSuccess(this.cabildo);
+}
+
+class FetchCabildoProfileFeedError {
+  String error;
+  FetchCabildoProfileFeedError(this.error);
 }

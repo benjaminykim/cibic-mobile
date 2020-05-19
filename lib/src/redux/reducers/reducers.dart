@@ -35,6 +35,8 @@ AppState appReducer(AppState prevState, dynamic action) {
     newState.userProfileError = false;
   } else if (action is FetchUserProfileFeedError) {
     newState.userProfileError = true;
+  } else if (action is FetchCabildoProfileSuccess) {
+    newState.cabildoProfile = action.cabildo;
   }
   return newState;
 }
