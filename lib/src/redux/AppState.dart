@@ -1,3 +1,4 @@
+import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 
@@ -17,9 +18,11 @@ class AppState {
   bool homeFeedError;
   bool publicFeedError;
   bool userProfileError;
+  CabildoModel cabildoProfile;
 
   AppState(this.idUser, this.jwt, this.firstName, this.lastName, this.followers, this.following, this.user, this.userProfileFeed,
-  this.homeFeed, this.publicFeed, this.cabildos, this.isLogIn, this.homeFeedError, this.publicFeedError, this.userProfileError);
+  this.homeFeed, this.publicFeed, this.cabildos, this.isLogIn, this.homeFeedError, this.publicFeedError, this.userProfileError,
+  this.cabildoProfile);
 
   AppState.fromAppState(AppState another) {
     idUser = another.idUser;
@@ -37,7 +40,8 @@ class AppState {
     homeFeedError = another.homeFeedError;
     publicFeedError = another.publicFeedError;
     userProfileError = another.userProfileError;
+    cabildoProfile = another.cabildoProfile;
   }
 
-  factory AppState.initial() => AppState("", "", "", "", [], [], null, null, null, null, [], false, false, false, false);
+  factory AppState.initial() => AppState("", "", "", "", [], [], null, null, null, null, [], false, false, false, false, null);
 }

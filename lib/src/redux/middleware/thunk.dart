@@ -1,5 +1,7 @@
 import 'package:cibic_mobile/src/redux/middleware/thunk_compose.dart';
 import 'package:cibic_mobile/src/redux/middleware/thunk_feed.dart';
+import 'package:cibic_mobile/src/redux/middleware/thunk_menu_overlay.dart';
+import 'package:cibic_mobile/src/redux/middleware/thunk_profile.dart';
 import 'package:cibic_mobile/src/redux/middleware/thunk_user.dart';
 import 'package:redux/redux.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
@@ -26,5 +28,12 @@ void apiMiddleware(
   } else if (action is SubmitActivitySuccess) {
     await fetchUserProfile(store.state.jwt, next);
     await fetchUserProfileFeed(store.state.jwt, next);
+  } else if (action is SubmitCabildoAttempt) {
+    await postCabildo(action, store.state.jwt, next, store);
+  } else if (action is SubmitCabildoSuccess) {
+    await fetchUserProfile(store.state.jwt, next);
+  } else if (action is FetchCabildoProfile) {
+    await fetchCabildoProfile(store.state.jwt, action.idCabildo, next);
+    await fetchCabildoProfileFeed(store.state.jwt, action.idCabildo, next);
   }
 }
