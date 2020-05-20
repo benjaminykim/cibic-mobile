@@ -16,7 +16,9 @@ import 'package:redux/redux.dart';
 class UserProfileScreen extends StatefulWidget {
   final String idUser;
 
-  UserProfileScreen(this.idUser);
+  UserProfileScreen(this.idUser) {
+    print("USER PROFILE SCREEN ${this.idUser}");
+  }
 
   @override
   _UserProfileState createState() => _UserProfileState();
@@ -28,8 +30,10 @@ class _UserProfileState extends State<UserProfileScreen> {
   String followButtonText = "seguir";
   Color followButtonColor = Colors.green;
 
-  ProfileViewModel generateProfileViewModel(Store<AppState> store, String idUser) {
-    Function refreshFeed = () => store.dispatch(FetchForeignUserProfileAttempt(idUser));
+  ProfileViewModel generateForeignProfileViewModel(
+      Store<AppState> store, String idUser) {
+    Function refreshFeed =
+        () => store.dispatch(FetchForeignUserProfileAttempt(idUser));
     FeedModel userFeed;
     UserModel user;
     bool error;
@@ -39,7 +43,9 @@ class _UserProfileState extends State<UserProfileScreen> {
     userFeed = store.state.foreignUserFeed;
     error = store.state.foreignUserError;
     jwt = store.state.jwt;
-    return ProfileViewModel(user, userFeed, refreshFeed, error, jwt);
+
+    Function onPop = () => store.dispatch(FetchForeignUserProfileClear());
+    return ProfileViewModel(user, userFeed, refreshFeed, error, jwt, onPop);
   }
 
   Widget generateProfileScreen(BuildContext context, ProfileViewModel vm) {
@@ -58,6 +64,7 @@ class _UserProfileState extends State<UserProfileScreen> {
             titleSpacing: 0.0,
             leading: GestureDetector(
               onTap: () {
+                vm.onPop();
                 Navigator.of(context).pop();
               },
               child: Icon(Icons.arrow_back_ios),
@@ -304,8 +311,14 @@ class _UserProfileState extends State<UserProfileScreen> {
         ),
       );
     } else {
-      return Text("Profile could not be reached, Cibic server is down",
-          textAlign: TextAlign.center, style: TextStyle(color: Colors.black));
+      return Container(
+        color: Colors.white,
+        child: Container(
+          height: 50,
+          width: 50,
+          child: CircularProgressIndicator(),
+        ),
+      );
     }
   }
 
@@ -318,7 +331,9 @@ class _UserProfileState extends State<UserProfileScreen> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, ProfileViewModel>(
       converter: (Store<AppState> store) {
-        return generateProfileViewModel(store, widget.idUser);
+        print("STORE CONNECTOR USER PROFILE SCREEN ID USER ${widget.idUser}");
+        store.dispatch(FetchForeignUserProfileAttempt(widget.idUser));
+        return generateForeignProfileViewModel(store, widget.idUser);
       },
       builder: (BuildContext context, ProfileViewModel vm) {
         return generateProfileScreen(context, vm);
@@ -334,7 +349,9 @@ class ProfileViewModel {
   bool error;
   String jwt;
   String idUser;
-  ProfileViewModel(this.user, this.feed, this.refresh, this.error, this.jwt) {
+  Function onPop;
+  ProfileViewModel(
+      this.user, this.feed, this.refresh, this.error, this.jwt, this.onPop) {
     this.idUser = extractID(jwt);
   }
 }

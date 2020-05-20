@@ -1,12 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cibic_mobile/src/models/activity_model.dart';
-import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/reaction_model.dart';
-import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/resources/utils.dart';
-import 'package:http/http.dart' as http;
 
 void printDebugResponse(var response) {
   if (response != Null) {
@@ -19,44 +16,6 @@ void printFetchRequest(String idUser, String jwt) {
   print("id: $idUser");
   print("jwt: $jwt");
 }
-
-Future<UserModel> fetchUserProfile(String idUser, String jwt) async {
-  final response = await http.get(API_BASE + ENDPOINT_USER + idUser, headers: {
-    'content-type': 'application/json',
-    'accept': 'application/json',
-    'authorization': "Bearer $jwt"
-  });
-
-  print("DEBUG: fetchUserProfile");
-  printFetchRequest(idUser, jwt);
-  printDebugResponse(response);
-  if (response.statusCode == 200) {
-    return UserModel.fromJson(json.decode(response.body));
-  } else {
-    throw Exception(
-        'Failed to load user profile: ' + response.statusCode.toString());
-  }
-}
-
-Future<FeedModel> fetchUserFeed(String idUser, String jwt) async {
-  final response =
-      await http.get(API_BASE + ENDPOINT_USER_FEED + idUser, headers: {
-    'content-type': 'application/json',
-    'accept': 'application/json',
-    'authorization': "Bearer $jwt"
-  });
-
-  print("DEBUG: fetchUserFeed");
-  printFetchRequest(idUser, jwt);
-  printDebugResponse(response);
-  if (response.statusCode == 200) {
-    return FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
-  } else {
-    throw Exception(
-        'Failed to load user feed: ' + response.statusCode.toString());
-  }
-}
-
 
 Future<String> followUser(String idUserFollow, String jwt) async {
   HttpClient httpClient = new HttpClient();
