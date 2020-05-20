@@ -27,9 +27,6 @@ void apiMiddleware(
     await fetchUserProfile(store.state.jwt, next);
     await fetchUserProfileFeed(store.state.jwt, next);
   } else if (action is FetchForeignUserProfileAttempt) {
-    print("FetchForeignUserProfileAttempt");
-    print("${store.state.jwt} jwt");
-    print("${action.idUser} idUser");
     await fetchForeignUserProfile(store.state.jwt, next, action.idUser);
     await fetchForeignUserProfileFeed(store.state.jwt, next, action.idUser);
   } else if (action is SubmitActivityAttempt) {
