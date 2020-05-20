@@ -1,6 +1,6 @@
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
-import 'package:cibic_mobile/src/redux/actions/actions.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:flutter/material.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter_redux/flutter_redux.dart';

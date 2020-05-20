@@ -2,7 +2,7 @@ import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
-import 'package:cibic_mobile/src/redux/actions/actions.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityView.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +20,6 @@ class SelfProfileScreen extends StatefulWidget {
 class _UserProfileState extends State<SelfProfileScreen> {
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   int maxLines = 4;
-  String followButtonText = "seguir";
-  Color followButtonColor = Colors.green;
 
   ProfileViewModel generateProfileViewModel(Store<AppState> store) {
     Function refreshFeed = () => store.dispatch(FetchUserProfileAttempt());

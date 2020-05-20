@@ -1,7 +1,7 @@
 import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
-import 'package:cibic_mobile/src/redux/actions/actions.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
 import 'package:cibic_mobile/src/resources/api_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -29,10 +29,6 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
   void onActivityTapped(ActivityScreen activityScreen, BuildContext context) {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => activityScreen));
-  }
-
-  void refreshList() {
-    return;
   }
 
   @override

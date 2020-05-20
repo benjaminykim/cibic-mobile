@@ -32,7 +32,7 @@ class UserMetaData extends StatelessWidget {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => UserProfileScreen(this.idUser, this.jwt)));
+            builder: (context) => UserProfileScreen(this.idUser)));
   }
 
   void onCabildoTapped(BuildContext context) {
