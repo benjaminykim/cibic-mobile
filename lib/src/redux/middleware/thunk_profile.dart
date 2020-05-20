@@ -43,34 +43,26 @@ fetchUserProfileFeed(String jwt, NextDispatcher next) async {
 }
 
 fetchCabildoProfile(String jwt, String idCabildo, NextDispatcher next) async {
-  final response =
+  final profileResponse =
       await http.get(API_BASE + ENDPOINT_CABILDO_PROFILE + idCabildo, headers: {
     'content-type': 'application/json',
     'accept': 'application/json',
     'authorization': "Bearer $jwt"
   });
 
-  if (response.statusCode == 200) {
-    CabildoModel cabildo = CabildoModel.fromJson(json.decode(response.body));
-    next(FetchCabildoProfileSuccess(cabildo));
-  } else {
-    next(FetchCabildoProfileError(response.statusCode.toString()));
-  }
-}
-
-fetchCabildoProfileFeed(
-    String jwt, String idCabildo, NextDispatcher next) async {
-  final response =
+  final feedResponse =
       await http.get(API_BASE + ENDPOINT_CABILDO_FEED + idCabildo, headers: {
     'content-type': 'application/json',
     'accept': 'application/json',
     'authorization': "Bearer $jwt"
   });
-  if (response.statusCode == 200) {
+
+  if (profileResponse.statusCode == 200 && feedResponse.statusCode == 200) {
+    CabildoModel cabildo = CabildoModel.fromJson(json.decode(profileResponse.body));
     FeedModel feed =
-        FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
-    next(FetchCabildoProfileFeedSuccess(feed));
+        FeedModel.fromJson(json.decode('{"feed": ' + feedResponse.body + '}'));
+    next(FetchCabildoProfileSuccess(cabildo, feed));
   } else {
-    next(FetchCabildoProfileFeedError(response.statusCode.toString()));
+    next(FetchCabildoProfileError(profileResponse.statusCode.toString() + " " + feedResponse.statusCode.toString()));
   }
 }

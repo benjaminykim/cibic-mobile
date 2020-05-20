@@ -37,6 +37,14 @@ AppState appReducer(AppState prevState, dynamic action) {
     newState.userProfileError = true;
   } else if (action is FetchCabildoProfileSuccess) {
     newState.cabildoProfile = action.cabildo;
+    newState.cabildoProfileFeed = action.feed;
+    newState.cabildoProfileError = false;
+  } else if (action is FetchCabildoProfileError) {
+    newState.cabildoProfileError = true;
+  }  else if (action is FetchCabildoProfileClear) {
+    newState.cabildoProfileError = false;
+    newState.cabildoProfile = null;
+    newState.cabildoProfileFeed = null;
   }
   return newState;
 }

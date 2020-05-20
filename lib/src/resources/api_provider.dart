@@ -138,6 +138,28 @@ Future<String> followCabildo(String idCabildo, String jwt) async {
   }
 }
 
+
+Future<String> unfollowCabildo(String idCabildo, String jwt) async {
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request =
+      await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_UNFOLLOW_CABILDO));
+  request.headers.add('content-type', 'application/json');
+  request.headers.add('accept', 'application/json');
+  request.headers.add('authorization', 'Bearer $jwt');
+  request.add(utf8.encode(json.encode({"idCabildo": idCabildo})));
+  HttpClientResponse response = await request.close();
+  httpClient.close();
+
+  print("DEBUG: unfollowCabildo");
+  printFetchRequest(idCabildo, jwt);
+  if (response.statusCode == 201) {
+    final responseBody = await response.transform(utf8.decoder).join();
+    return responseBody;
+  } else {
+    return "error";
+  }
+}
+
 Future<String> reactToActivity(
     ActivityModel activity, String jwt, int reactValue) async {
   String idUser = extractID(jwt);

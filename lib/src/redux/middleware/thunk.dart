@@ -32,8 +32,7 @@ void apiMiddleware(
     await postCabildo(action, store.state.jwt, next, store);
   } else if (action is SubmitCabildoSuccess) {
     await fetchUserProfile(store.state.jwt, next);
-  } else if (action is FetchCabildoProfile) {
+  } else if (action is FetchCabildoProfileAttempt) {
     await fetchCabildoProfile(store.state.jwt, action.idCabildo, next);
-    await fetchCabildoProfileFeed(store.state.jwt, action.idCabildo, next);
   }
 }
