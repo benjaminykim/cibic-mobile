@@ -67,3 +67,36 @@ fetchCabildoProfile(String jwt, String idCabildo, NextDispatcher next) async {
     next(FetchCabildoProfileError(profileResponse.statusCode.toString() + " " + feedResponse.statusCode.toString()));
   }
 }
+
+
+fetchForeignUserProfile(String jwt, NextDispatcher next, String idUser) async {
+  final response = await http.get(API_BASE + ENDPOINT_USER + idUser, headers: {
+    'content-type': 'application/json',
+    'accept': 'application/json',
+    'authorization': "Bearer $jwt"
+  });
+  print("fetchUserProfile: ${response.statusCode}");
+  if (response.statusCode == 200) {
+    UserModel user = UserModel.fromJson(json.decode(response.body));
+    next(FetchForeignUserProfileSuccess(user));
+  } else {
+    next(FetchForeignUserProfileError(response.statusCode.toString()));
+  }
+}
+
+fetchForeignUserProfileFeed(String jwt, NextDispatcher next, String idUser) async {
+  final response =
+      await http.get(API_BASE + ENDPOINT_USER_FEED + idUser, headers: {
+    'content-type': 'application/json',
+    'accept': 'application/json',
+    'authorization': "Bearer $jwt"
+  });
+  print("fetchUserProfileFeed: ${response.statusCode}");
+  if (response.statusCode == 200) {
+    FeedModel feed =
+        FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
+    next(FetchForeignUserProfileFeedSuccess(feed));
+  } else {
+    next(FetchForeignUserProfileFeedError(response.statusCode.toString()));
+  }
+}

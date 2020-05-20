@@ -23,3 +23,28 @@ class FetchUserProfileFeedError {
   String error;
   FetchUserProfileFeedError(this.error);
 }
+
+class FetchForeignUserProfileAttempt {
+  String idUser;
+  FetchForeignUserProfileAttempt(this.idUser);
+}
+
+class FetchForeignUserProfileSuccess {
+  UserModel user;
+  FetchForeignUserProfileSuccess(this.user);
+}
+
+class FetchForeignUserProfileError {
+  String error;
+  FetchForeignUserProfileError(this.error);
+}
+
+class FetchForeignUserProfileFeedSuccess {
+  FeedModel feed;
+  FetchForeignUserProfileFeedSuccess(this.feed);
+}
+
+class FetchForeignUserProfileFeedError {
+  String error;
+  FetchForeignUserProfileFeedError(this.error);
+}
