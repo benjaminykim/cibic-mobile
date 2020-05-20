@@ -96,14 +96,16 @@ class SubmitCabildoError {
   SubmitCabildoError(this.error);
 }
 
-class FetchCabildoProfile {
+class FetchCabildoProfileAttempt {
   String idCabildo;
-  FetchCabildoProfile(this.idCabildo);
+  FetchCabildoProfileAttempt(this.idCabildo);
 }
+
 
 class FetchCabildoProfileSuccess {
   CabildoModel cabildo;
-  FetchCabildoProfileSuccess(this.cabildo);
+  FeedModel feed;
+  FetchCabildoProfileSuccess(this.cabildo, this.feed);
 }
 
 class FetchCabildoProfileError {
@@ -111,17 +113,4 @@ class FetchCabildoProfileError {
   FetchCabildoProfileError(this.error);
 }
 
-class FetchCabildoProfileFeed {
-  String idCabildo;
-  FetchCabildoProfileFeed(this.idCabildo);
-}
-
-class FetchCabildoProfileFeedSuccess {
-  FeedModel cabildo;
-  FetchCabildoProfileFeedSuccess(this.cabildo);
-}
-
-class FetchCabildoProfileFeedError {
-  String error;
-  FetchCabildoProfileFeedError(this.error);
-}
+class FetchCabildoProfileClear {}

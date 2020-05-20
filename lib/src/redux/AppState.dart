@@ -19,10 +19,13 @@ class AppState {
   bool publicFeedError;
   bool userProfileError;
   CabildoModel cabildoProfile;
+  FeedModel cabildoProfileFeed;
+  bool cabildoProfileError;
+  bool cabildoProfileIsLoading;
 
   AppState(this.idUser, this.jwt, this.firstName, this.lastName, this.followers, this.following, this.user, this.userProfileFeed,
   this.homeFeed, this.publicFeed, this.cabildos, this.isLogIn, this.homeFeedError, this.publicFeedError, this.userProfileError,
-  this.cabildoProfile);
+  this.cabildoProfile, this.cabildoProfileFeed, this.cabildoProfileError, this.cabildoProfileIsLoading);
 
   AppState.fromAppState(AppState another) {
     idUser = another.idUser;
@@ -41,7 +44,10 @@ class AppState {
     publicFeedError = another.publicFeedError;
     userProfileError = another.userProfileError;
     cabildoProfile = another.cabildoProfile;
+    cabildoProfileFeed = another.cabildoProfileFeed;
+    cabildoProfileError = another.cabildoProfileError;
+    cabildoProfileIsLoading = another.cabildoProfileIsLoading;
   }
 
-  factory AppState.initial() => AppState("", "", "", "", [], [], null, null, null, null, [], false, false, false, false, null);
+  factory AppState.initial() => AppState("", "", "", "", [], [], null, null, null, null, [], false, false, false, false, null, null, false, false);
 }

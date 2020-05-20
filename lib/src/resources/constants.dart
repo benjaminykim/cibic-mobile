@@ -152,6 +152,7 @@ const ENDPOINT_USER_FEED = "user/feed/";
 const ENDPOINT_DEFAULT_FEED = "user/home/";
 const ENDPOINT_FOLLOW_USER = "user/followuser";
 const ENDPOINT_FOLLOW_CABILDO = "user/followcabildo";
+const ENDPOINT_UNFOLLOW_CABILDO = "user/unfollowcabildo";
 
 const ENDPOINT_UNETE_COMMENT = "cibic/comment";
 

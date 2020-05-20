@@ -93,7 +93,7 @@ class _MyCabildosState extends State<MyCabildos> {
     );
   }
 
-  Widget cabildoItem(CabildoModel cabildo) {
+  Widget cabildoItem(CabildoModel cabildo, Store store) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -177,7 +177,7 @@ class _MyCabildosState extends State<MyCabildos> {
                       return cabildoAdd();
                     } else {
                       CabildoModel cabildo = cabildos[index - 1];
-                      return cabildoItem(cabildo);
+                      return cabildoItem(cabildo, vm.store);
                     }
                   },
                 ),
