@@ -191,7 +191,6 @@ class _CommentFeedState extends State<CommentFeed> {
                       child: Icon(Icons.reply, size: 20),
                     ),
                     onTap: () {
-                      print("attempt to reply to reply");
                       showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,

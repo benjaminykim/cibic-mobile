@@ -174,7 +174,6 @@ class CardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(this.activity.activityType);
     return Container(
       width: MediaQuery.of(context).size.width - 20,
       margin: EdgeInsets.fromLTRB(10, 0, 10, 5),

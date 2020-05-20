@@ -16,9 +16,7 @@ import 'package:redux/redux.dart';
 class UserProfileScreen extends StatefulWidget {
   final String idUser;
 
-  UserProfileScreen(this.idUser) {
-    print("USER PROFILE SCREEN ${this.idUser}");
-  }
+  UserProfileScreen(this.idUser);
 
   @override
   _UserProfileState createState() => _UserProfileState();
@@ -331,7 +329,6 @@ class _UserProfileState extends State<UserProfileScreen> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, ProfileViewModel>(
       converter: (Store<AppState> store) {
-        print("STORE CONNECTOR USER PROFILE SCREEN ID USER ${widget.idUser}");
         store.dispatch(FetchForeignUserProfileAttempt(widget.idUser));
         return generateForeignProfileViewModel(store, widget.idUser);
       },

@@ -36,7 +36,6 @@ AppState appReducer(AppState prevState, dynamic action) {
   } else if (action is FetchUserProfileFeedError) {
     newState.userProfileError = true;
   } else if (action is FetchForeignUserProfileSuccess) {
-    print("success");
     newState.foreignUser = action.user;
     newState.foreignUserError = false;
   } else if (action is FetchForeignUserProfileError) {
