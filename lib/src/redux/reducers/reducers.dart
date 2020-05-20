@@ -36,6 +36,16 @@ AppState appReducer(AppState prevState, dynamic action) {
     newState.userProfileError = false;
   } else if (action is FetchUserProfileFeedError) {
     newState.userProfileError = true;
+  } else if (action is FetchForeignUserProfileSuccess) {
+    newState.foreignUser = action.user;
+    newState.foreignUserError = false;
+  } else if (action is FetchForeignUserProfileError) {
+    newState.foreignUserError = true;
+  } else if (action is FetchForeignUserProfileFeedSuccess) {
+    newState.foreignUserFeed = action.feed;
+    newState.foreignUserError = false;
+  } else if (action is FetchForeignUserProfileFeedError) {
+    newState.foreignUserError = true;
   } else if (action is FetchCabildoProfileSuccess) {
     newState.cabildoProfile = action.cabildo;
     newState.cabildoProfileFeed = action.feed;

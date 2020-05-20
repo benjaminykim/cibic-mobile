@@ -22,10 +22,13 @@ class AppState {
   FeedModel cabildoProfileFeed;
   bool cabildoProfileError;
   bool cabildoProfileIsLoading;
+  UserModel foreignUser;
+  FeedModel foreignUserFeed;
+  bool foreignUserError;
 
   AppState(this.idUser, this.jwt, this.firstName, this.lastName, this.followers, this.following, this.user, this.userProfileFeed,
   this.homeFeed, this.publicFeed, this.cabildos, this.isLogIn, this.homeFeedError, this.publicFeedError, this.userProfileError,
-  this.cabildoProfile, this.cabildoProfileFeed, this.cabildoProfileError, this.cabildoProfileIsLoading);
+  this.cabildoProfile, this.cabildoProfileFeed, this.cabildoProfileError, this.cabildoProfileIsLoading, this.foreignUser, this.foreignUserFeed, this.foreignUserError);
 
   AppState.fromAppState(AppState another) {
     idUser = another.idUser;
@@ -47,7 +50,10 @@ class AppState {
     cabildoProfileFeed = another.cabildoProfileFeed;
     cabildoProfileError = another.cabildoProfileError;
     cabildoProfileIsLoading = another.cabildoProfileIsLoading;
+    foreignUser = another.foreignUser;
+    foreignUserFeed = another.foreignUserFeed;
+    foreignUserError = another.foreignUserError;
   }
 
-  factory AppState.initial() => AppState("", "", "", "", [], [], null, null, null, null, [], false, false, false, false, null, null, false, false);
+  factory AppState.initial() => AppState("", "", "", "", [], [], null, null, null, null, [], false, false, false, false, null, null, false, false, null, null, false);
 }
