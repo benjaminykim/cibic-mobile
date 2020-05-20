@@ -48,3 +48,6 @@ class FetchForeignUserProfileFeedError {
   String error;
   FetchForeignUserProfileFeedError(this.error);
 }
+
+class FetchForeignUserProfileClear {
+}

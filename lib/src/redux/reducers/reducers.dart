@@ -3,7 +3,6 @@ import 'package:cibic_mobile/src/redux/actions/actions.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 
-
 AppState appReducer(AppState prevState, dynamic action) {
   AppState newState = AppState.fromAppState(prevState);
 
@@ -37,6 +36,7 @@ AppState appReducer(AppState prevState, dynamic action) {
   } else if (action is FetchUserProfileFeedError) {
     newState.userProfileError = true;
   } else if (action is FetchForeignUserProfileSuccess) {
+    print("success");
     newState.foreignUser = action.user;
     newState.foreignUserError = false;
   } else if (action is FetchForeignUserProfileError) {
@@ -52,10 +52,14 @@ AppState appReducer(AppState prevState, dynamic action) {
     newState.cabildoProfileError = false;
   } else if (action is FetchCabildoProfileError) {
     newState.cabildoProfileError = true;
-  }  else if (action is FetchCabildoProfileClear) {
+  } else if (action is FetchCabildoProfileClear) {
     newState.cabildoProfileError = false;
     newState.cabildoProfile = null;
     newState.cabildoProfileFeed = null;
+  } else if (action is FetchForeignUserProfileClear) {
+    newState.foreignUserError = false;
+    newState.foreignUser = null;
+    newState.foreignUserFeed = null;
   }
   return newState;
 }
