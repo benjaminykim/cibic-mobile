@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:cibic_mobile/src/redux/actions/actions.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
 import 'package:cibic_mobile/src/resources/api_provider.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';

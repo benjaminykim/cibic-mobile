@@ -12,9 +12,8 @@ import 'package:cibic_mobile/src/resources/constants.dart';
 
 class UserProfileScreen extends StatefulWidget {
   final String idUser;
-  final String jwt;
 
-  UserProfileScreen(this.idUser, this.jwt);
+  UserProfileScreen(this.idUser);
 
   @override
   _UserProfileState createState() => _UserProfileState();

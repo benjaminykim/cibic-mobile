@@ -1,4 +1,4 @@
-import 'package:cibic_mobile/src/redux/actions/actions.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:redux/redux.dart';

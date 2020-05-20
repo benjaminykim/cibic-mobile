@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cibic_mobile/src/models/activity_model.dart';
-import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/reaction_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
@@ -58,43 +57,6 @@ Future<FeedModel> fetchUserFeed(String idUser, String jwt) async {
   }
 }
 
-Future<CabildoModel> fetchCabildoProfile(String idCabildo, String jwt) async {
-  final response =
-      await http.get(API_BASE + ENDPOINT_CABILDO_PROFILE + idCabildo, headers: {
-    'content-type': 'application/json',
-    'accept': 'application/json',
-    'authorization': "Bearer $jwt"
-  });
-
-  print("DEBUG: fetchCabildoProfile");
-  printFetchRequest(idCabildo, jwt);
-  printDebugResponse(response);
-  if (response.statusCode == 200) {
-    return CabildoModel.fromJson(json.decode(response.body));
-  } else {
-    throw Exception(
-        'Failed to load cabildo profile: ' + response.statusCode.toString());
-  }
-}
-
-Future<FeedModel> fetchCabildoFeed(String idCabildo, String jwt) async {
-  final response =
-      await http.get(API_BASE + ENDPOINT_CABILDO_FEED + idCabildo, headers: {
-    'content-type': 'application/json',
-    'accept': 'application/json',
-    'authorization': "Bearer $jwt"
-  });
-
-  print("DEBUG: fetchCabildoFeed");
-  printFetchRequest(idCabildo, jwt);
-  printDebugResponse(response);
-  if (response.statusCode == 200) {
-    return FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
-  } else {
-    throw Exception(
-        'Failed to load cabildo profile: ' + response.statusCode.toString());
-  }
-}
 
 Future<String> followUser(String idUserFollow, String jwt) async {
   HttpClient httpClient = new HttpClient();
@@ -137,7 +99,6 @@ Future<String> followCabildo(String idCabildo, String jwt) async {
     return "error";
   }
 }
-
 
 Future<String> unfollowCabildo(String idCabildo, String jwt) async {
   HttpClient httpClient = new HttpClient();
