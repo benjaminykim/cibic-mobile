@@ -10,10 +10,9 @@ import 'package:cibic_mobile/src/widgets/activity/CommentFeed.dart';
 class ActivityScreen extends StatelessWidget {
   final ActivityModel activity;
   final String jwt;
-  final int userReaction;
   final Function onReact;
 
-  ActivityScreen(this.activity, this.jwt, this.userReaction, this.onReact);
+  ActivityScreen(this.activity, this.jwt, this.onReact);
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +22,8 @@ class ActivityScreen extends StatelessWidget {
         color: APP_BACKGROUND,
         child: ListView(
           children: <Widget>[
-            UserMetaData.fromActivity(activity, jwt),
-            CardView(activity, jwt, CARD_SCREEN, userReaction, onReact),
+            UserMetaData.fromActivity(activity),
+            CardView(activity, jwt, CARD_SCREEN, onReact),
             CardMetaData(activity.ping, activity.commentNumber,
                 activity.publishDate),
             CommentFeed(activity.comments, jwt, activity.id),

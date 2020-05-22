@@ -1,5 +1,6 @@
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -65,7 +66,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
         itemCount: vm.feed.feed.length,
         itemBuilder: (BuildContext context, int index) {
           ActivityModel activity = vm.feed.feed[index];
-          return ActivityView(activity, vm.jwt);
+          return ActivityView(activity, vm.jwt, vm.reactToActivity);
         },
       );
     }
@@ -74,6 +75,8 @@ class _ActivityFeedState extends State<ActivityFeed> {
   FeedViewModel generateFeedViewModel(Store<AppState> store) {
     Function refreshFeed =
         () => store.dispatch(FetchFeedAttempt(widget.mode));
+    Function reactToActivity =
+        (ActivityModel activity, int reactValue) => store.dispatch(PostReactionAttempt(activity, reactValue));
     FeedModel feed;
     bool feedError;
     if (widget.mode == "default") {
@@ -83,7 +86,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
       feed = store.state.publicFeed;
       feedError = store.state.publicFeedError;
     }
-    return FeedViewModel(feed, store.state.jwt, refreshFeed, feedError);
+    return FeedViewModel(feed, store.state.jwt, refreshFeed, reactToActivity, feedError);
   }
 
   @override
@@ -114,7 +117,8 @@ class FeedViewModel {
   FeedModel feed;
   String jwt;
   final Function refreshList;
+  final Function reactToActivity;
   bool feedError;
 
-  FeedViewModel(this.feed, this.jwt, this.refreshList, this.feedError);
+  FeedViewModel(this.feed, this.jwt, this.refreshList, this.reactToActivity, this.feedError);
 }

@@ -1,6 +1,6 @@
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/widgets/activity/card/IconTag.dart';
-import 'package:cibic_mobile/src/widgets/activity/reaction_slider/ReactionSlider.dart';
+import 'package:cibic_mobile/src/widgets/activity/card/ReactionSlider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
@@ -9,10 +9,9 @@ class CardView extends StatelessWidget {
   final ActivityModel activity;
   final String jwt;
   final int mode;
-  final int userReaction;
   final Function onReact;
 
-  CardView(this.activity, this.jwt, this.mode, this.userReaction, this.onReact);
+  CardView(this.activity, this.jwt, this.mode, this.onReact);
 
   Container generateLabel() {
     return Container(
@@ -128,7 +127,7 @@ class CardView extends StatelessWidget {
           ),
         ),
         ReactionSlider(
-            this.activity, this.jwt, this.userReaction, this.onReact),
+            this.activity, this.jwt, this.onReact),
       ],
     );
   }
@@ -151,7 +150,7 @@ class CardView extends StatelessWidget {
           ),
         ),
         ReactionSlider(
-            this.activity, this.jwt, this.userReaction, this.onReact),
+            this.activity, this.jwt,  this.onReact),
       ],
     );
   }
