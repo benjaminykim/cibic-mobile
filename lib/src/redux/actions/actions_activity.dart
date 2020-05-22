@@ -1,4 +1,5 @@
 import 'package:cibic_mobile/src/models/activity_model.dart';
+import 'package:cibic_mobile/src/models/comment_model.dart';
 import 'package:cibic_mobile/src/models/reaction_model.dart';
 
 class SubmitActivityAttempt {
@@ -43,4 +44,23 @@ class PostReactionUpdate {
 class PostReactionError {
   String error;
   PostReactionError(this.error);
+}
+
+class PostCommentAttempt {
+  String idActivity;
+  String content;
+  int mode;
+  PostCommentAttempt(this.idActivity, this.content, this.mode);
+}
+
+class PostCommentSuccess {
+  String idActivity;
+  CommentModel comment;
+  int mode;
+  PostCommentSuccess(this.idActivity, this.comment, this.mode);
+}
+
+class PostCommentError {
+  String error;
+  PostCommentError(this.error);
 }

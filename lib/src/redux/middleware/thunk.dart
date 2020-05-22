@@ -42,5 +42,7 @@ void apiMiddleware(
     await fetchCabildoProfile(store.state.jwt, action.idCabildo, next);
   } else if (action is PostReactionAttempt) {
     await postReaction(action.activity, store.state.jwt, action.reactValue, store.state.idUser, action.mode, next);
+  } else if (action is PostCommentAttempt) {
+    await postComment(action.idActivity, store.state.jwt, action.content, action.mode, next);
   }
 }
