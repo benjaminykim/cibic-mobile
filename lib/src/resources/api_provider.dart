@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:cibic_mobile/src/models/activity_model.dart';
-import 'package:cibic_mobile/src/models/reaction_model.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/resources/utils.dart';
 
@@ -77,76 +75,6 @@ Future<String> unfollowCabildo(String idCabildo, String jwt) async {
     return responseBody;
   } else {
     return "error";
-  }
-}
-
-Future<String> reactToActivity(
-    ActivityModel activity, String jwt, int reactValue) async {
-  String idUser = extractID(jwt);
-  bool newReaction = true;
-  String idReaction;
-  for (int i = 0; i < activity.reactions.length; i++) {
-    if (idUser == activity.reactions[i].idUser) {
-      newReaction = false;
-      idReaction = activity.reactions[i].id;
-      activity.reactions[i].value = reactValue;
-      break;
-    }
-  }
-
-  if (newReaction) {
-    var reaction = {
-      "idActivity": activity.id,
-      "reaction": {"idUser": idUser, "value": reactValue}
-    };
-
-    HttpClient httpClient = new HttpClient();
-    HttpClientRequest request =
-        await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_REACT));
-    request.headers.add('content-type', 'application/json');
-    request.headers.add('accept', 'application/json');
-    request.headers.add('authorization', 'Bearer $jwt');
-    request.add(utf8.encode(json.encode(reaction)));
-    HttpClientResponse response = await request.close();
-    httpClient.close();
-
-    printFetchRequest(activity.id, jwt);
-    print(response.statusCode);
-    if (response.statusCode == 201) {
-      final responseBody = await response.transform(utf8.decoder).join();
-      String id = json.decode(responseBody)['id'];
-      ReactionModel newReaction = ReactionModel.fromJson(
-          {"_id": id, "idUser": idUser, "value": reactValue});
-      activity.reactions.add(newReaction);
-      return responseBody;
-    } else {
-      return "error";
-    }
-  } else {
-    var reaction = {
-      "idActivity": activity.id,
-      "idReaction": idReaction,
-      "value": reactValue
-    };
-
-    HttpClient httpClient = new HttpClient();
-    HttpClientRequest request =
-        await httpClient.putUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_REACT));
-    request.headers.add('content-type', 'application/json');
-    request.headers.add('accept', 'application/json');
-    request.headers.add('authorization', 'Bearer $jwt');
-    request.add(utf8.encode(json.encode(reaction)));
-    HttpClientResponse response = await request.close();
-    httpClient.close();
-
-    printFetchRequest(activity.id, jwt);
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      final responseBody = await response.transform(utf8.decoder).join();
-      return responseBody;
-    } else {
-      return "error";
-    }
   }
 }
 
