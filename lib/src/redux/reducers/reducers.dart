@@ -1,3 +1,4 @@
+import 'package:cibic_mobile/src/models/comment_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/reaction_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
@@ -142,6 +143,46 @@ AppState appReducer(AppState prevState, dynamic action) {
     }
   } else if (action is PostReactionError) {
     // String error;
+  } else if (action is PostCommentSuccess) {
+      switch (action.mode) {
+        case 1:
+          newState.homeFeed = addActivityComment(action.idActivity, action.comment, newState.homeFeed);
+          newState.publicFeed = addActivityComment(action.idActivity, action.comment, newState.publicFeed);
+          newState.userProfileFeed = addActivityComment(action.idActivity, action.comment, newState.userProfileFeed);
+          newState.cabildoProfileFeed = addActivityComment(action.idActivity, action.comment, newState.cabildoProfileFeed);
+          newState.foreignUserFeed = addActivityComment(action.idActivity, action.comment, newState.foreignUserFeed);
+          break;
+        case 2:
+          newState.publicFeed = addActivityComment(action.idActivity, action.comment, newState.publicFeed);
+          newState.homeFeed = addActivityComment(action.idActivity, action.comment, newState.homeFeed);
+          newState.userProfileFeed = addActivityComment(action.idActivity, action.comment, newState.userProfileFeed);
+          newState.cabildoProfileFeed = addActivityComment(action.idActivity, action.comment, newState.cabildoProfileFeed);
+          newState.foreignUserFeed = addActivityComment(action.idActivity, action.comment, newState.foreignUserFeed);
+          break;
+        case 3:
+          newState.userProfileFeed = addActivityComment(action.idActivity, action.comment, newState.userProfileFeed);
+          newState.homeFeed = addActivityComment(action.idActivity, action.comment, newState.homeFeed);
+          newState.publicFeed = addActivityComment(action.idActivity, action.comment, newState.publicFeed);
+          newState.cabildoProfileFeed = addActivityComment(action.idActivity, action.comment, newState.cabildoProfileFeed);
+          newState.foreignUserFeed = addActivityComment(action.idActivity, action.comment, newState.foreignUserFeed);
+          break;
+        case 4:
+          newState.cabildoProfileFeed = addActivityComment(action.idActivity, action.comment, newState.cabildoProfileFeed);
+          newState.homeFeed = addActivityComment(action.idActivity, action.comment, newState.homeFeed);
+          newState.publicFeed = addActivityComment(action.idActivity, action.comment, newState.publicFeed);
+          newState.userProfileFeed = addActivityComment(action.idActivity, action.comment, newState.userProfileFeed);
+          newState.foreignUserFeed = addActivityComment(action.idActivity, action.comment, newState.foreignUserFeed);
+          break;
+        case 5:
+          newState.foreignUserFeed = addActivityComment(action.idActivity, action.comment, newState.foreignUserFeed);
+          newState.homeFeed = addActivityComment(action.idActivity, action.comment, newState.homeFeed);
+          newState.publicFeed = addActivityComment(action.idActivity, action.comment, newState.publicFeed);
+          newState.userProfileFeed = addActivityComment(action.idActivity, action.comment, newState.userProfileFeed);
+          newState.cabildoProfileFeed = addActivityComment(action.idActivity, action.comment, newState.cabildoProfileFeed);
+          break;
+      }
+  } else if (action is PostCommentError) {
+    // String error;
   }
   return newState;
 }
@@ -170,6 +211,19 @@ FeedModel updateActivityReaction(String activityId, String reactionId, String us
         }
       }
       feed.feed[i].reactions.add(ReactionModel(reactionId, userId, reactValue));
+      return feed;
+    }
+  }
+  return feed;
+}
+
+
+FeedModel addActivityComment(String activityId, CommentModel comment, FeedModel feed) {
+  if (feed == null || feed.feed == null || activityId == null)
+    return feed;
+  for (int i = 0; i < feed.feed.length; i++) {
+    if (feed.feed[i].id == activityId) {
+      feed.feed[i].comments.insert(0, comment);
       return feed;
     }
   }

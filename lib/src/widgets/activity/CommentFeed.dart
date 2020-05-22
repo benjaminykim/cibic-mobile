@@ -1,3 +1,5 @@
+import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/resources/api_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -5,6 +7,8 @@ import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/models/comment_model.dart';
 import 'package:cibic_mobile/src/models/reply_model.dart';
 import 'package:cibic_mobile/src/widgets/activity/card/UserMetaData.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 class CommentFeed extends StatefulWidget {
   final List<CommentModel> comments;
@@ -142,10 +146,11 @@ class _CommentFeedState extends State<CommentFeed> {
             height: 80,
             child: Column(
               children: <Widget>[
-                GestureDetector(child: Icon(Icons.keyboard_arrow_up, size: 20),
-                onTap: () {
-                  voteToReply(widget.jwt, 1, widget.idActivity, r.id);
-                }),
+                GestureDetector(
+                    child: Icon(Icons.keyboard_arrow_up, size: 20),
+                    onTap: () {
+                      voteToReply(widget.jwt, 1, widget.idActivity, r.id);
+                    }),
                 Text(
                   r.score.toString(),
                   style: TextStyle(
@@ -153,10 +158,11 @@ class _CommentFeedState extends State<CommentFeed> {
                     color: Colors.black,
                   ),
                 ),
-                GestureDetector(child: Icon(Icons.keyboard_arrow_down, size: 20),
-                onTap: () {
-                  voteToReply(widget.jwt, -1, widget.idActivity, r.id);
-                }),
+                GestureDetector(
+                    child: Icon(Icons.keyboard_arrow_down, size: 20),
+                    onTap: () {
+                      voteToReply(widget.jwt, -1, widget.idActivity, r.id);
+                    }),
               ],
             ),
           ),
@@ -216,15 +222,15 @@ class _CommentFeedState extends State<CommentFeed> {
     );
   }
 
-  List<Container> generateCommentFeed(BuildContext context) {
+  List<Container> generateCommentFeed(BuildContext context, List<CommentModel> comments) {
     List<Container> commentCards = [];
-    for (int i = 0; i < widget.comments.length; i++) {
-      commentCards.add(comment(widget.comments[i], context));
+    for (int i = 0; i < comments.length; i++) {
+      commentCards.add(comment(comments[i], context));
     }
     return commentCards;
   }
 
-  Container generateNewCommentInput(BuildContext context) {
+  Container generateNewCommentInput(BuildContext context, _CommentFeedViewModel vm) {
     final inputCommentController = TextEditingController();
     return Container(
       padding: EdgeInsets.fromLTRB(30, 10, 30, 2),
@@ -260,8 +266,8 @@ class _CommentFeedState extends State<CommentFeed> {
                   color: Colors.black,
                   onPressed: () {
                     String commentText = inputCommentController.text;
-                    commentToActivity(
-                        widget.jwt, commentText, widget.idActivity);
+                    vm.commentToActivity(widget.idActivity, commentText, 0);
+                    //commentToActivity(widget.jwt, commentText, widget.idActivity);
                   },
                 ),
                 border: InputBorder.none,
@@ -315,11 +321,24 @@ class _CommentFeedState extends State<CommentFeed> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        generateNewCommentInput(context),
-        ...generateCommentFeed(context),
-      ],
-    );
+    return StoreConnector<AppState, _CommentFeedViewModel>(
+        converter: (Store<AppState> store) {
+          Function commentToActivity = (String idActivity, String content, int mode) => {
+            store.dispatch(PostCommentAttempt(idActivity, content, mode))
+          };
+          List<CommentModel> comments;
+      return _CommentFeedViewModel(commentToActivity, comments);
+    }, builder: (BuildContext context, _CommentFeedViewModel vm) {
+      return Column(children: [
+        generateNewCommentInput(context, vm),
+        ...generateCommentFeed(context, vm.comments),
+      ]);
+    });
   }
+}
+
+class _CommentFeedViewModel {
+  Function commentToActivity;
+  List<CommentModel> comments;
+  _CommentFeedViewModel(this.commentToActivity, this.comments);
 }

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cibic_mobile/src/models/activity_model.dart';
+import 'package:cibic_mobile/src/models/comment_model.dart';
 import 'package:cibic_mobile/src/models/reaction_model.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
@@ -149,5 +150,31 @@ postReaction(ActivityModel activity, String jwt, int reactValue, String idUser, 
     } else {
       next(PostReactionError(response.statusCode.toString()));
     }
+  }
+}
+
+postComment(String idActivity, String jwt, String content, int mode, NextDispatcher next) async {
+    HttpClient httpClient = new HttpClient();
+  HttpClientRequest request =
+      await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_COMMENT));
+  request.headers.add('content-type', 'application/json');
+  request.headers.add('accept', 'application/json');
+  request.headers.add('authorization', 'Bearer $jwt');
+
+  final requestBody = {
+    "idActivity": idActivity,
+    "comment": {"idUser": extractID(jwt), "content": content}
+  };
+  request.add(utf8.encode(json.encode(requestBody)));
+  HttpClientResponse response = await request.close();
+  httpClient.close();
+
+  print("DEBUG: commentToActivity: ${response.statusCode}");
+  if (response.statusCode == 201) {
+    final responseBody = await response.transform(utf8.decoder).join();
+    print("RESPONSE BODY: $responseBody");
+    next(PostCommentSuccess(idActivity, CommentModel(responseBody, {'idUser': extractID(jwt), 'username': "test"}, content, 0, []), mode));
+  } else {
+    next(PostCommentError(response.statusCode.toString()));
   }
 }
