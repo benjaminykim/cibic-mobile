@@ -1,6 +1,7 @@
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/api_provider.dart';
 import 'package:cibic_mobile/src/resources/utils.dart';
@@ -43,7 +44,9 @@ class _UserProfileState extends State<UserProfileScreen> {
     jwt = store.state.jwt;
 
     Function onPop = () => store.dispatch(FetchForeignUserProfileClear());
-    return ProfileViewModel(user, userFeed, refreshFeed, error, jwt, onPop);
+    Function reactToActivity = (ActivityModel activity, int reactValue) =>
+        store.dispatch(PostReactionAttempt(activity, reactValue, 4));
+    return ProfileViewModel(user, userFeed, refreshFeed, error, jwt, onPop, reactToActivity);
   }
 
   Widget generateProfileScreen(BuildContext context, ProfileViewModel vm) {
@@ -300,7 +303,7 @@ class _UserProfileState extends State<UserProfileScreen> {
                           itemCount: vm.feed.feed.length,
                           itemBuilder: (BuildContext context, int index) {
                             ActivityModel activity = vm.feed.feed[index];
-                            return ActivityView(activity, vm.jwt, null);
+                            return ActivityView(activity, vm.jwt, vm.onReact);
                           }),
                     ))
                   ]),
@@ -347,8 +350,9 @@ class ProfileViewModel {
   String jwt;
   String idUser;
   Function onPop;
-  ProfileViewModel(
-      this.user, this.feed, this.refresh, this.error, this.jwt, this.onPop) {
+  Function onReact;
+  ProfileViewModel(this.user, this.feed, this.refresh, this.error, this.jwt,
+      this.onPop, this.onReact) {
     this.idUser = extractID(jwt);
   }
 }

@@ -65,11 +65,81 @@ AppState appReducer(AppState prevState, dynamic action) {
     newState.foreignUser = null;
     newState.foreignUserFeed = null;
   } else if (action is PostReactionSuccess) {
-    newState.homeFeed = addActivityReaction(action.activityId, action.reaction, newState.homeFeed);
-    newState.publicFeed = addActivityReaction(action.activityId, action.reaction, newState.publicFeed);
+    switch (action.mode) {
+      case 0:
+        newState.homeFeed = addActivityReaction(action.activityId, action.reaction, newState.homeFeed);
+        newState.publicFeed = addActivityReaction(action.activityId, action.reaction, newState.publicFeed);
+        newState.userProfileFeed = addActivityReaction(action.activityId, action.reaction, newState.userProfileFeed);
+        newState.cabildoProfileFeed = addActivityReaction(action.activityId, action.reaction, newState.cabildoProfileFeed);
+        newState.foreignUserFeed = addActivityReaction(action.activityId, action.reaction, newState.foreignUserFeed);
+        break;
+      case 1:
+        newState.publicFeed = addActivityReaction(action.activityId, action.reaction, newState.publicFeed);
+        newState.homeFeed = addActivityReaction(action.activityId, action.reaction, newState.homeFeed);
+        newState.userProfileFeed = addActivityReaction(action.activityId, action.reaction, newState.userProfileFeed);
+        newState.cabildoProfileFeed = addActivityReaction(action.activityId, action.reaction, newState.cabildoProfileFeed);
+        newState.foreignUserFeed = addActivityReaction(action.activityId, action.reaction, newState.foreignUserFeed);
+        break;
+      case 2:
+        newState.userProfileFeed = addActivityReaction(action.activityId, action.reaction, newState.userProfileFeed);
+        newState.homeFeed = addActivityReaction(action.activityId, action.reaction, newState.homeFeed);
+        newState.publicFeed = addActivityReaction(action.activityId, action.reaction, newState.publicFeed);
+        newState.cabildoProfileFeed = addActivityReaction(action.activityId, action.reaction, newState.cabildoProfileFeed);
+        newState.foreignUserFeed = addActivityReaction(action.activityId, action.reaction, newState.foreignUserFeed);
+        break;
+      case 3:
+        newState.cabildoProfileFeed = addActivityReaction(action.activityId, action.reaction, newState.cabildoProfileFeed);
+        newState.homeFeed = addActivityReaction(action.activityId, action.reaction, newState.homeFeed);
+        newState.publicFeed = addActivityReaction(action.activityId, action.reaction, newState.publicFeed);
+        newState.userProfileFeed = addActivityReaction(action.activityId, action.reaction, newState.userProfileFeed);
+        newState.foreignUserFeed = addActivityReaction(action.activityId, action.reaction, newState.foreignUserFeed);
+        break;
+      case 4:
+        newState.foreignUserFeed = addActivityReaction(action.activityId, action.reaction, newState.foreignUserFeed);
+        newState.homeFeed = addActivityReaction(action.activityId, action.reaction, newState.homeFeed);
+        newState.publicFeed = addActivityReaction(action.activityId, action.reaction, newState.publicFeed);
+        newState.userProfileFeed = addActivityReaction(action.activityId, action.reaction, newState.userProfileFeed);
+        newState.cabildoProfileFeed = addActivityReaction(action.activityId, action.reaction, newState.cabildoProfileFeed);
+        break;
+    }
   } else if (action is PostReactionUpdate) {
-    newState.homeFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.homeFeed);
-    newState.publicFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.publicFeed);
+    switch (action.mode) {
+      case 0:
+        newState.homeFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.homeFeed);
+        newState.publicFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.publicFeed);
+        newState.userProfileFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.userProfileFeed);
+        newState.cabildoProfileFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.cabildoProfileFeed);
+        newState.foreignUserFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.foreignUserFeed);
+        break;
+      case 1:
+        newState.publicFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.publicFeed);
+        newState.homeFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.homeFeed);
+        newState.userProfileFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.userProfileFeed);
+        newState.cabildoProfileFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.cabildoProfileFeed);
+        newState.foreignUserFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.foreignUserFeed);
+        break;
+      case 2:
+        newState.userProfileFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.userProfileFeed);
+        newState.homeFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.homeFeed);
+        newState.publicFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.publicFeed);
+        newState.cabildoProfileFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.cabildoProfileFeed);
+        newState.foreignUserFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.foreignUserFeed);
+        break;
+      case 3:
+        newState.cabildoProfileFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.cabildoProfileFeed);
+        newState.homeFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.homeFeed);
+        newState.publicFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.publicFeed);
+        newState.userProfileFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.userProfileFeed);
+        newState.foreignUserFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.foreignUserFeed);
+        break;
+      case 4:
+        newState.foreignUserFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.foreignUserFeed);
+        newState.homeFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.homeFeed);
+        newState.publicFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.publicFeed);
+        newState.userProfileFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.userProfileFeed);
+        newState.cabildoProfileFeed = updateActivityReaction(action.activityId, action.reactionId, newState.idUser, action.reactValue, newState.cabildoProfileFeed);
+        break;
+    }
   } else if (action is PostReactionError) {
     // String error;
   }
@@ -77,7 +147,8 @@ AppState appReducer(AppState prevState, dynamic action) {
 }
 
 FeedModel addActivityReaction(String activityId, ReactionModel reaction, FeedModel feed) {
-  print("add reaction");
+  if (feed == null || feed.feed == null || activityId == null || reaction == null)
+    return feed;
   for (int i = 0; i < feed.feed.length; i++) {
     if (feed.feed[i].id == activityId) {
       feed.feed[i].reactions.add(reaction);
@@ -88,7 +159,8 @@ FeedModel addActivityReaction(String activityId, ReactionModel reaction, FeedMod
 }
 
 FeedModel updateActivityReaction(String activityId, String reactionId, String userId, int reactValue, FeedModel feed) {
-  print("update reaction");
+  if (feed == null || feed.feed == null || activityId == null || reactionId == null || userId == null)
+    return feed;
   for (int i = 0; i < feed.feed.length; i++) {
     if (feed.feed[i].id == activityId) {
       for (int j = 0; j < feed.feed[i].reactions.length; j++) {

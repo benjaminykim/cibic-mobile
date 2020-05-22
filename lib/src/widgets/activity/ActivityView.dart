@@ -41,8 +41,8 @@ class _ActivityViewState extends State<ActivityView> {
           UserMetaData.fromActivity(this.widget.activity),
           GestureDetector(
               onTap: () => this.openActivityScreen(context),
-              child: CardScroll(this.widget.activity, this.widget.jwt,
-                  this.widget.reactToActivity)),
+              child: CardScroll(
+                  this.widget.activity, this.widget.reactToActivity)),
           GestureDetector(
             onTap: () => this.openActivityScreen(context),
             child: CardMetaData.fromActivity(this.widget.activity),

@@ -23,7 +23,7 @@ class ActivityScreen extends StatelessWidget {
         child: ListView(
           children: <Widget>[
             UserMetaData.fromActivity(activity),
-            CardView(activity, jwt, CARD_SCREEN, onReact),
+            CardView(activity, CARD_SCREEN, onReact),
             CardMetaData(activity.ping, activity.commentNumber,
                 activity.publishDate),
             CommentFeed(activity.comments, jwt, activity.id),
