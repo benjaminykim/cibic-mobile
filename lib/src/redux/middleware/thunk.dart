@@ -1,7 +1,7 @@
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
-import 'package:cibic_mobile/src/redux/middleware/thunk_compose.dart';
+import 'package:cibic_mobile/src/redux/middleware/thunk_activity.dart';
 import 'package:cibic_mobile/src/redux/middleware/thunk_feed.dart';
 import 'package:cibic_mobile/src/redux/middleware/thunk_menu_overlay.dart';
 import 'package:cibic_mobile/src/redux/middleware/thunk_profile.dart';
@@ -40,5 +40,7 @@ void apiMiddleware(
     await fetchUserProfile(store.state.jwt, next);
   } else if (action is FetchCabildoProfileAttempt) {
     await fetchCabildoProfile(store.state.jwt, action.idCabildo, next);
+  } else if (action is PostReactionAttempt) {
+    await postReaction(action.activity, store.state.jwt, action.reactValue, store.state.idUser, next);
   }
 }
