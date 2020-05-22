@@ -2,6 +2,7 @@ import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityView.dart';
@@ -32,7 +33,10 @@ class _UserProfileState extends State<SelfProfileScreen> {
     userFeed = store.state.userProfileFeed;
     error = store.state.userProfileError;
     jwt = store.state.jwt;
-    return ProfileViewModel(user, userFeed, refreshFeed, error, jwt);
+    Function reactToActivity = (ActivityModel activity, int reactValue) =>
+        store.dispatch(PostReactionAttempt(activity, reactValue, 3));
+    return ProfileViewModel(
+        user, userFeed, refreshFeed, error, jwt, reactToActivity);
   }
 
   Widget generateProfileScreen(BuildContext context, ProfileViewModel vm) {
@@ -230,7 +234,7 @@ class _UserProfileState extends State<SelfProfileScreen> {
                   itemCount: vm.feed.feed.length,
                   itemBuilder: (BuildContext context, int index) {
                     ActivityModel activity = vm.feed.feed[index];
-                    return ActivityView(activity, vm.jwt, null);
+                    return ActivityView(activity, vm.jwt, vm.onReact);
                   }),
             ))
           ]),
@@ -261,5 +265,7 @@ class ProfileViewModel {
   Function refresh;
   bool error;
   String jwt;
-  ProfileViewModel(this.user, this.feed, this.refresh, this.error, this.jwt);
+  Function onReact;
+  ProfileViewModel(
+      this.user, this.feed, this.refresh, this.error, this.jwt, this.onReact);
 }

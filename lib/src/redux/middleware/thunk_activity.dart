@@ -81,7 +81,7 @@ postActivity(dynamic action, String jwt, NextDispatcher next, Store store) async
     store.dispatch(SubmitActivityError(response.statusCode.toString()));
   }
 }
-postReaction(ActivityModel activity, String jwt, int reactValue, String idUser, NextDispatcher next) async {
+postReaction(ActivityModel activity, String jwt, int reactValue, String idUser, int mode, NextDispatcher next) async {
   print("DEBUG");
   print("Activity: ${activity.id}");
   print("JWT: $jwt");
@@ -120,7 +120,7 @@ postReaction(ActivityModel activity, String jwt, int reactValue, String idUser, 
       String id = json.decode(responseBody)['id'];
       ReactionModel newReaction = ReactionModel.fromJson(
           {"_id": id, "idUser": idUser, "value": reactValue});
-      next(PostReactionSuccess(activity.id, newReaction));
+      next(PostReactionSuccess(activity.id, newReaction, mode));
     } else {
       next(PostReactionError(response.statusCode.toString()));
     }
@@ -145,7 +145,7 @@ postReaction(ActivityModel activity, String jwt, int reactValue, String idUser, 
     if (response.statusCode == 200) {
       final responseBody = await response.transform(utf8.decoder).join();
       print("Response Body: $responseBody");
-      next(PostReactionUpdate(activity.id, idReaction, reactValue));
+      next(PostReactionUpdate(activity.id, idReaction, reactValue, mode));
     } else {
       next(PostReactionError(response.statusCode.toString()));
     }

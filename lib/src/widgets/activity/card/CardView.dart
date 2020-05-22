@@ -7,11 +7,10 @@ import 'package:cibic_mobile/src/resources/constants.dart';
 
 class CardView extends StatelessWidget {
   final ActivityModel activity;
-  final String jwt;
   final int mode;
   final Function onReact;
 
-  CardView(this.activity, this.jwt, this.mode, this.onReact);
+  CardView(this.activity, this.mode, this.onReact);
 
   Container generateLabel() {
     return Container(
@@ -127,7 +126,7 @@ class CardView extends StatelessWidget {
           ),
         ),
         ReactionSlider(
-            this.activity, this.jwt, this.onReact),
+            this.activity, this.onReact),
       ],
     );
   }
@@ -150,7 +149,7 @@ class CardView extends StatelessWidget {
           ),
         ),
         ReactionSlider(
-            this.activity, this.jwt,  this.onReact),
+            this.activity, this.onReact),
       ],
     );
   }

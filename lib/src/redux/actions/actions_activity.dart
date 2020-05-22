@@ -21,20 +21,23 @@ class SubmitActivityError {
 class PostReactionAttempt {
   ActivityModel activity;
   int reactValue;
-  PostReactionAttempt(this.activity, this.reactValue);
+  int mode; // 0 -> home, 1 -> public, 2 -> user profile, 3 -> cabildo profile, 4 -> foreign user profile
+  PostReactionAttempt(this.activity, this.reactValue, this.mode);
 }
 
 class PostReactionSuccess {
   String activityId;
   ReactionModel reaction;
-  PostReactionSuccess(this.activityId, this.reaction);
+  int mode; // 0 -> home, 1 -> public, 2 -> user profile, 3 -> cabildo profile, 4 -> foreign user profile
+  PostReactionSuccess(this.activityId, this.reaction, this.mode);
 }
 
 class PostReactionUpdate {
   String activityId;
   String reactionId;
   int reactValue;
-  PostReactionUpdate(this.activityId, this.reactionId, this.reactValue);
+  int mode; // 0 -> home, 1 -> public, 2 -> user profile, 3 -> cabildo profile, 4 -> foreign user profile
+  PostReactionUpdate(this.activityId, this.reactionId, this.reactValue, this.mode);
 }
 
 class PostReactionError {

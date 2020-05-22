@@ -1,6 +1,8 @@
+import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
 import 'package:cibic_mobile/src/resources/api_provider.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +38,9 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
     return StoreConnector<AppState, _CabildoViewModel>(
       converter: (Store<AppState> store) {
         store.dispatch(FetchCabildoProfileAttempt(widget.idCabildo));
-        return _CabildoViewModel(store);
+            Function reactToActivity =
+        (ActivityModel activity, int reactValue) => store.dispatch(PostReactionAttempt(activity, reactValue, 3));
+        return _CabildoViewModel(store, reactToActivity);
       },
       builder: (BuildContext context, _CabildoViewModel vm) {
         if (vm.cabildo == null) {
@@ -290,7 +294,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                             itemCount: vm.feed.feed.length,
                             itemBuilder: (BuildContext context, int index) {
                               return (ActivityView(
-                                  vm.feed.feed[index], vm.jwt, null));
+                                  vm.feed.feed[index], vm.jwt, vm.onReact));
                             }),
                       )
                     ]),
@@ -315,11 +319,13 @@ class _CabildoViewModel {
   bool isLoading;
   Function onPop;
   CabildoModel cabildo;
-  _CabildoViewModel(store) {
+  Function onReact;
+  _CabildoViewModel(store, onReact) {
     this.jwt = store.state.jwt;
     this.idUser = store.state.idUser;
     this.isError = store.state.cabildoProfileError;
     this.onPop = () => store.dispatch(FetchCabildoProfileClear());
+    this.onReact = onReact;
     if (store.state.cabildoProfile != null) {
       this.cabildo = store.state.cabildoProfile;
       this.name = store.state.cabildoProfile.name;

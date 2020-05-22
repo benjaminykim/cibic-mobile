@@ -76,7 +76,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
     Function refreshFeed =
         () => store.dispatch(FetchFeedAttempt(widget.mode));
     Function reactToActivity =
-        (ActivityModel activity, int reactValue) => store.dispatch(PostReactionAttempt(activity, reactValue));
+        (ActivityModel activity, int reactValue) => store.dispatch(PostReactionAttempt(activity, reactValue, (widget.mode == "default") ? 0 : 1));
     FeedModel feed;
     bool feedError;
     if (widget.mode == "default") {
