@@ -36,7 +36,7 @@ class _WelcomeState extends State<Welcome> {
     Decoration buttonDecoration;
     TextStyle style;
 
-    if (str == "Inicia sesion") {
+    if (str == "Inicia sesión") {
       buttonDecoration = BoxDecoration(
         color: Colors.black,
         borderRadius: BorderRadius.circular(10),
@@ -74,18 +74,18 @@ class _WelcomeState extends State<Welcome> {
   Container createInputView(String str, TextEditingController ctlr) {
     return Container(
       height: 40,
-      decoration: REGISTER_INPUT_DEC,
+      decoration: LOGIN_INPUT_DEC,
       alignment: Alignment.center,
       margin: EdgeInsets.fromLTRB(35, 0, 35, 7),
       child: Center(
         child: TextField(
           controller: ctlr,
           textAlign: TextAlign.center,
-          obscureText: (str == "contrasena"), // password label obscurity
+          obscureText: (str == "contraseña"), // password label obscurity
           decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: str + "*",
-            hintStyle: REGISTER_INPUT_TXT,
+            hintText: str,
+            hintStyle: LOGIN_INPUT_TXT,
           ),
         ),
       ),
@@ -110,82 +110,93 @@ class _WelcomeState extends State<Welcome> {
               Container(
                 height: MediaQuery.of(context).size.height - 230,
                 child: ListView(
+                  reverse: true,
                   controller: this._controller,
                   children: <Widget>[
-                    SizedBox(height: 190),
-                    // WELCOME
-                    (this.showLogin
-                        ? Container()
-                        : Container(
-                            decoration: this.welcomeDecoration,
-                            height: 45,
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Bienvenido",
-                              textAlign: TextAlign.center,
-                              style: this.welcomeTextStyle,
-                            ),
-                          )),
-                    SizedBox(height: 50),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          this.showLogin = !this.showLogin;
-                          this
-                              ._controller
-                              .jumpTo(_controller.position.maxScrollExtent);
-                        });
-                      },
-                      child: createButtonView("Inicia sesion"),
-                    ),
-                    (this.showLogin) ? SizedBox(height: 15) : Container(),
-                    (this.showLogin)
-                        ? (createInputView(
-                            "correo electronico", this._emailController))
-                        : Container(),
-                    (this.showLogin)
-                        ? (createInputView(
-                            "contrasena", this._passwordController))
-                        : Container(),
-                    (this.showLogin)
-                        ? GestureDetector(
-                            onTap: () async {
-                              var jwt = await attemptLogin();
-                              if (jwt != null) {
-                                widget.storage.write(key: "jwt", value: jwt);
-                                Navigator.pop(context);
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            Home.fromBase64(jwt)));
-                              } else {
-                                displayDialog(context, "An Error Occurred",
-                                    "No account was found matching that username and password");
-                              }
-                            },
-                            child: createButtonView("Inicia sesión"),
-                          )
-                        : Container(),
-                    SizedBox(height: 15),
-                    (!this.showLogin)
-                        ? GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          Register(widget.storage)));
-                            },
-                            child: createButtonView("Registrate"),
-                          )
-                        : Container(),
+                    SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
                     Text(
                       '\u00a9 cibic 2020',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 12, color: Colors.black),
                     ),
-                    SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+                    SizedBox(height: 30),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    Register(widget.storage)));
+                      },
+                      child: createButtonView("Registrate"),
+                    ),
+                    SizedBox(height: 10),
+                    (this.showLogin) ? Divider(
+                      color: Colors.white,
+                      indent: 20,
+                      endIndent: 20,
+                      thickness: 0.5,
+                    ) : Container(),
+                    (this.showLogin) ? Text(
+                      "¿Has olvidado la contraseña?",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                    ) : Container(),
+                    SizedBox(height: 10),
+                    GestureDetector(
+                      onTap: () async {
+                        if (this.showLogin) {
+                          if (_emailController.text == null ||
+                              _passwordController.text == null ||
+                              _emailController.text == "" ||
+                              _passwordController.text == "") {
+                            setState(() {
+                              this.showLogin = !this.showLogin;
+                            });
+                          } else {
+                            var jwt = await attemptLogin();
+                            if (jwt != null) {
+                              widget.storage.write(key: "jwt", value: jwt);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          Home.fromBase64(jwt)));
+                            } else {
+                              displayDialog(context, "An Error Occurred",
+                                  "No account was found matching that username and password");
+                            }
+                          }
+                        } else {
+                          setState(() {
+                            this.showLogin = !this.showLogin;
+                            this
+                                ._controller
+                                .jumpTo(_controller.position.maxScrollExtent);
+                          });
+                        }
+                      },
+                      child: createButtonView("Inicia sesión"),
+                    ),
+                    SizedBox(height:10),
+                    (this.showLogin)
+                        ? (createInputView(
+                            "contraseña", this._passwordController))
+                        : Container(),
+                    (this.showLogin)
+                        ? (createInputView(
+                            "correo electrónico", this._emailController))
+                        : Container(),
+                    SizedBox(height:30),
+                    // WELCOME
+                    Text(
+                      "Bienvenido/a",
+                      textAlign: TextAlign.center,
+                      style: this.welcomeTextStyle,
+                    ),
                   ],
                 ),
               ),

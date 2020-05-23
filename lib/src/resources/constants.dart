@@ -45,23 +45,23 @@ ThemeData get cibicTheme {
     accentColor: Colors.cyan[600],
     fontFamily: 'OpenSans',
     textTheme: TextTheme(
-      headline: TextStyle(
+      headline5: TextStyle(
         fontSize: 40.0,
         fontWeight: FontWeight.w200,
       ),
-      title: TextStyle(
+      headline6: TextStyle(
         fontSize: 48.0,
         fontWeight: FontWeight.w700,
         fontFamily: "OpenSans",
         color: Color(0xff000000),
       ),
-      body1: TextStyle(
+      bodyText1: TextStyle(
         fontSize: 20.0,
         fontWeight: FontWeight.w400,
         fontFamily: "OpenSans",
         color: APP_BACKGROUND,
       ),
-      body2: TextStyle(
+      bodyText2: TextStyle(
         fontSize: 12.0,
         fontFamily: "OpenSans",
         color: Color(0xff828282),
@@ -70,6 +70,22 @@ ThemeData get cibicTheme {
     ),
   );
 }
+
+final LOGIN_INPUT_DEC = BoxDecoration(
+  color: Colors.transparent,
+  borderRadius: const BorderRadius.all(const Radius.circular(10)),
+  border:  Border.all(
+    color: Colors.white,
+    width: 1.0,
+    style: BorderStyle.solid,
+  ),
+);
+
+const LOGIN_INPUT_TXT = TextStyle(
+  fontSize: 15,
+  color: Colors.black,
+  fontWeight: FontWeight.w300,
+);
 
 const REGISTER_INPUT_DEC = const BoxDecoration(
   color: Colors.white,
@@ -136,5 +152,7 @@ const ENDPOINT_USER_FEED = "user/feed/";
 const ENDPOINT_DEFAULT_FEED = "user/home/";
 const ENDPOINT_FOLLOW_USER = "user/followuser";
 const ENDPOINT_FOLLOW_CABILDO = "user/followcabildo";
+
+const ENDPOINT_UNETE_COMMENT = "cibic/comment";
 
 const API_BASE = URL_AWS_BASE;

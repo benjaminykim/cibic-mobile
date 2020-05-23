@@ -174,7 +174,7 @@ class CardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-              print(this.activity.activityType);
+    print(this.activity.activityType);
     return Container(
       width: MediaQuery.of(context).size.width - 20,
       margin: EdgeInsets.fromLTRB(10, 0, 10, 5),
@@ -195,9 +195,22 @@ class CardView extends StatelessWidget {
           // OPTIONS
           Container(
             alignment: Alignment.topRight,
-            margin: const EdgeInsets.fromLTRB(0, 10, 30, 0),
-            child: Icon(
-              Icons.more_horiz,
+            margin: const EdgeInsets.fromLTRB(0, 0, 30, 0),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                icon: Icon(Icons.more_horiz),
+                iconSize: 22,
+                elevation: 16,
+                onChanged: (String value) {},
+                items: <String>['Guardar Publicación']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
             ),
           ),
           // TITLE

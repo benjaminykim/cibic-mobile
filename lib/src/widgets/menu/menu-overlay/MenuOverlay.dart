@@ -1,6 +1,7 @@
-import 'package:cibic_mobile/src/onboard/app.dart';
+import 'package:cibic_mobile/src/widgets/menu/menu-overlay/About.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/Configuration.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/MyCabildos.dart';
+import 'package:cibic_mobile/src/widgets/menu/menu-overlay/Unete.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
@@ -49,7 +50,7 @@ class MenuOverlay extends StatelessWidget {
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
                     'Perfil',
-                    style: Theme.of(context).textTheme.body1,
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -57,20 +58,22 @@ class MenuOverlay extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  contentPadding: EdgeInsets.only(left: 20),
-                  title: Text(
-                    'Cabildos',
-                    style: Theme.of(context).textTheme.body1,
-                  ),
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => MyCabildos(this.jwt)));
-                  }
-                ),
+                    contentPadding: EdgeInsets.only(left: 20),
+                    title: Text(
+                      'Cabildos',
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MyCabildos(this.jwt)));
+                    }),
                 ListTile(
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
                     'Guardados',
-                    style: Theme.of(context).textTheme.body1,
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -80,27 +83,31 @@ class MenuOverlay extends StatelessWidget {
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
                     'Configuración',
-                    style: Theme.of(context).textTheme.body1,
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Configuration(this.jwt)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Configuration(this.jwt)));
                   },
                 ),
                 ListTile(
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
                     'About @cibic',
-                    style: Theme.of(context).textTheme.body1,
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => About()));
                   },
                 ),
                 ListTile(
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
-                    'Cerrar Sesion',
-                    style: Theme.of(context).textTheme.body1,
+                    'Cerrar la Sesión',
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
                     return showDialog(
@@ -119,10 +126,7 @@ class MenuOverlay extends StatelessWidget {
                               child: new Text("Si"),
                               onPressed: () {
                                 storage.delete(key: "jwt");
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => App()));
+                                Navigator.of(context).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
                               },
                             ),
                             new FlatButton(
@@ -141,10 +145,11 @@ class MenuOverlay extends StatelessWidget {
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
                     'Únete!',
-                    style: Theme.of(context).textTheme.body1,
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Unete()));
                   },
                 ),
                 Spacer(),

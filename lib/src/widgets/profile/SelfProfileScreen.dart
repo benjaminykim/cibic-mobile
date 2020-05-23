@@ -270,9 +270,11 @@ class _UserProfileState extends State<SelfProfileScreen> {
                         });
                   } else if (feedSnap.hasError) {
                     return ListView(
-                      children: [Text("error: Cibic servers are down",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.black))],
+                      children: [
+                        Text("error: Cibic servers are down",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.black))
+                      ],
                     );
                   } else {
                     return CircularProgressIndicator();
