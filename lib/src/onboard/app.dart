@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cibic_mobile/src/onboard/home.dart';
 import 'package:cibic_mobile/src/onboard/welcome.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/redux/middleware/thunk.dart';
 import 'package:cibic_mobile/src/redux/reducers/reducers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -17,7 +18,7 @@ class App extends StatelessWidget {
   final Store<AppState> store = Store<AppState>(
     appReducer,
     initialState: AppState.initial(),
-    middleware: [thunkMiddleware],
+    middleware: [thunkMiddleware, apiMiddleware],
   );
 
   App();
@@ -30,7 +31,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreProvider(
+    return StoreProvider<AppState>(
       store: store,
       child: MaterialApp(
         theme: cibicTheme,
@@ -52,7 +53,7 @@ class App extends StatelessWidget {
                     ascii.decode(base64.decode(base64.normalize(jwt[1]))));
                 if (DateTime.fromMillisecondsSinceEpoch(payload["exp"] * 1000)
                     .isAfter(DateTime.now())) {
-                  return Home.fromBase64(str);
+                  return Home();
                 } else {
                   return Welcome(storage);
                 }

@@ -1,3 +1,4 @@
+import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:flutter/material.dart';
 
 String generateTimeString(DateTime publishDate) {
@@ -36,6 +37,13 @@ class CardMetaData extends StatelessWidget {
   final int pingNum;
   final int commentNum;
   final DateTime publishDate;
+
+  factory CardMetaData.fromActivity(ActivityModel activity) {
+    return CardMetaData(
+      activity.ping,
+      activity.commentNumber,
+      activity.publishDate);
+  }
 
   CardMetaData(this.pingNum, this.commentNum, this.publishDate);
 
