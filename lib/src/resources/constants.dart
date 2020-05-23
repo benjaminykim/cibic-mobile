@@ -23,6 +23,12 @@ const CARD_LAST = 4;
 const CARD_POLL = 5;
 const CARD_SCREEN = 6;
 
+const FEED_HOME = 0;
+const FEED_PUBLIC = 1;
+const FEED_USER = 2;
+const FEED_CABILDO = 3;
+const FEED_FOREIGN = 4;
+
 const ACTIVITY_DISCUSS = "discussion";
 const ACTIVITY_PROPOSAL = "proposal";
 const ACTIVITY_POLL = "poll";
@@ -71,10 +77,10 @@ ThemeData get cibicTheme {
   );
 }
 
-final LOGIN_INPUT_DEC = BoxDecoration(
+final loginInputDec = BoxDecoration(
   color: Colors.transparent,
   borderRadius: const BorderRadius.all(const Radius.circular(10)),
-  border:  Border.all(
+  border: Border.all(
     color: Colors.white,
     width: 1.0,
     style: BorderStyle.solid,
@@ -152,6 +158,7 @@ const ENDPOINT_USER_FEED = "user/feed/";
 const ENDPOINT_DEFAULT_FEED = "user/home/";
 const ENDPOINT_FOLLOW_USER = "user/followuser";
 const ENDPOINT_FOLLOW_CABILDO = "user/followcabildo";
+const ENDPOINT_UNFOLLOW_CABILDO = "user/unfollowcabildo";
 
 const ENDPOINT_UNETE_COMMENT = "cibic/comment";
 

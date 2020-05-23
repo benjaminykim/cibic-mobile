@@ -1,17 +1,18 @@
-import 'package:cibic_mobile/src/resources/utils.dart';
+import 'package:cibic_mobile/src/widgets/activity/card/CardScroll.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
 import 'package:cibic_mobile/src/widgets/activity/card/CardMetaData.dart';
-import 'package:cibic_mobile/src/widgets/activity/card/CardScroll.dart';
 import 'package:cibic_mobile/src/widgets/activity/card/UserMetaData.dart';
 
 class ActivityView extends StatefulWidget {
   final ActivityModel activity;
   final String jwt;
+  final Function reactToActivity;
+  final int mode;
 
-  ActivityView(this.activity, this.jwt) {
+  ActivityView(this.activity, this.jwt, this.reactToActivity, this.mode) {
     if (this.activity.idCabildo == null) {
       this.activity.idCabildo = {
         'name': 'todo',
@@ -25,31 +26,12 @@ class ActivityView extends StatefulWidget {
 }
 
 class _ActivityViewState extends State<ActivityView> {
-  int userReaction = 2;
-
-  @override
-  initState() {
-    super.initState();
-    String idUser = extractID(this.widget.jwt);
-    for (int i = 0; i < this.widget.activity.reactions.length; i++) {
-      if (idUser == this.widget.activity.reactions[i].idUser) {
-        this.userReaction = this.widget.activity.reactions[i].value;
-        break;
-      }
-    }
-  }
-
-  void onReact(int reactValue) {
-    setState(() {
-      this.userReaction = reactValue;
-    });
-  }
-
-  void onActivityTapped(BuildContext context) async {
-    ActivityScreen activityScreen = ActivityScreen(
-        this.widget.activity, this.widget.jwt, this.userReaction, onReact);
+  void openActivityScreen(BuildContext context) async {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => activityScreen));
+        context,
+        MaterialPageRoute(
+            builder: (context) => ActivityScreen(this.widget.activity,
+                this.widget.jwt, this.widget.reactToActivity, this.widget.mode)));
   }
 
   @override
@@ -57,17 +39,14 @@ class _ActivityViewState extends State<ActivityView> {
     return Container(
       child: Column(
         children: <Widget>[
-          UserMetaData.fromActivity(this.widget.activity, this.widget.jwt),
+          UserMetaData.fromActivity(this.widget.activity),
           GestureDetector(
-              onTap: () => this.onActivityTapped(context),
-              child: CardScroll(this.widget.activity, this.widget.jwt,
-                  this.userReaction, onReact)),
+              onTap: () => this.openActivityScreen(context),
+              child: CardScroll(
+                  this.widget.activity, this.widget.reactToActivity)),
           GestureDetector(
-            onTap: () => this.onActivityTapped(context),
-            child: CardMetaData(
-                this.widget.activity.ping,
-                this.widget.activity.commentNumber,
-                this.widget.activity.publishDate),
+            onTap: () => this.openActivityScreen(context),
+            child: CardMetaData.fromActivity(this.widget.activity),
           ),
         ],
       ),

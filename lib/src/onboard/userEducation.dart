@@ -393,7 +393,7 @@ class _UserEducationState extends State<UserEducation> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Home.fromBase64(widget.jwt)));
+                    builder: (context) => Home()));
           },
           child: Container(
             padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
