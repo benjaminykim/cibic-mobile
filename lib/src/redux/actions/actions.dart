@@ -1,15 +1,35 @@
+import 'package:cibic_mobile/src/models/feed_model.dart';
 
-class AppUser {
-  final Map<String, dynamic> payload;
-  AppUser(this.payload);
+class LogInAttempt {
+  String email;
+  String password;
+
+  LogInAttempt(this.email, this.password);
 }
 
-class ChangeComposeOption {
-  final int payload;
-  ChangeComposeOption(this.payload);
+class LogInSuccess {
+  String jwt;
+  LogInSuccess(this.jwt);
 }
 
-class GetCabildos {
-  final List<dynamic> payload;
-  GetCabildos(this.payload);
+class LogInError {
+  var payload;
+  LogInError(this.payload);
+}
+
+class FetchFeedAttempt {
+  int mode;
+  FetchFeedAttempt(this.mode);
+}
+
+class FetchFeedSuccess {
+  int mode;
+  FeedModel feed;
+  FetchFeedSuccess(this.mode, this.feed);
+}
+
+class FetchFeedError {
+  int mode;
+  String error;
+  FetchFeedError(this.mode, this.error);
 }

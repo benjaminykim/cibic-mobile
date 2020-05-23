@@ -1,13 +1,13 @@
 import 'package:cibic_mobile/src/models/user_model.dart';
-import 'package:cibic_mobile/src/resources/utils.dart';
+import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:flutter/material.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
-import 'package:cibic_mobile/src/resources/api_provider.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 class Compose extends StatefulWidget {
-  final String jwt;
-
-  Compose(this.jwt);
+  Compose();
 
   @override
   _ComposeState createState() => _ComposeState();
@@ -15,16 +15,12 @@ class Compose extends StatefulWidget {
 
 class _ComposeState extends State<Compose> {
   final inputTitleController = TextEditingController();
-  final inputIntroController = TextEditingController();
   final inputBodyController = TextEditingController();
   final inputCabildoController = TextEditingController();
   final inputTagController = TextEditingController();
   List<Container> activityButtons;
-  List<Widget> header;
-  List<Widget> actionButtons;
   int selectedActivity = 0;
   String dropdownValue = "comparte en un cabildo";
-  Future<UserModel> _user;
 
   @override
   initState() {
@@ -34,8 +30,6 @@ class _ComposeState extends State<Compose> {
       createActivityButton('poll', 0),
       createActivityButton('proposal', 0)
     ];
-
-    _user = fetchUserProfile(extractID(widget.jwt), widget.jwt);
   }
 
   DropdownMenuItem<String> createMenuItem(String value) {
@@ -78,24 +72,6 @@ class _ComposeState extends State<Compose> {
     );
   }
 
-  void createHeader() {
-    this.header = [
-      Text(
-        "Crea y comparte contenido",
-        style: TextStyle(
-            color: Colors.black, fontSize: 23, fontWeight: FontWeight.w400),
-      ),
-      SizedBox(height: 5),
-      Text(
-        "¿Qué quieres compartir?",
-        style: TextStyle(
-            color: Colors.black, fontSize: 15, fontWeight: FontWeight.w400),
-      ),
-      SizedBox(height: 10),
-      Row(children: activityButtons)
-    ];
-  }
-
   Container createTitle(String title) {
     return Container(
       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -109,7 +85,7 @@ class _ComposeState extends State<Compose> {
         controller: inputTitleController,
         decoration: InputDecoration(
           border: InputBorder.none,
-          hintText: "De qué se trata?",
+          hintText: title,
           hintStyle: TextStyle(
               fontWeight: FontWeight.w600, color: Colors.black, fontSize: 15),
         ),
@@ -123,25 +99,6 @@ class _ComposeState extends State<Compose> {
       body = [
         // title
         createTitle("¿De qué se trata?"),
-        // introduction
-        Container(
-          margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
-          padding: EdgeInsets.fromLTRB(10, 14, 0, 0),
-          height: 33,
-          decoration: BoxDecoration(
-            color: Color(0xffcccccc),
-            borderRadius: BorderRadius.all(Radius.circular(13)),
-          ),
-          child: TextField(
-            controller: inputIntroController,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: "introducción...",
-              hintStyle: TextStyle(
-                  fontWeight: FontWeight.w200, color: Color(0xffa1a1a1)),
-            ),
-          ),
-        ),
         // content body
         Container(
           margin: EdgeInsets.fromLTRB(0, 7, 0, 7),
@@ -243,9 +200,9 @@ class _ComposeState extends State<Compose> {
     });
   }
 
-  void submitActivity(String idCabildo, UserModel user) {
+  void submitActivity(String idCabildo, _ComposeViewModel vm) {
+    UserModel user = vm.user;
     final enteredTitle = inputTitleController.text;
-    final enteredIntro = inputIntroController.text;
     final enteredBody = inputBodyController.text;
     final enteredTag = inputTagController.text;
 
@@ -259,91 +216,107 @@ class _ComposeState extends State<Compose> {
     }
 
     if (selectedActivity == 0 || selectedActivity == 2) {
-      if (enteredTitle.isEmpty || enteredIntro.isEmpty || enteredBody.isEmpty) {
+      if (enteredTitle.isEmpty || enteredBody.isEmpty) {
         return;
       } else {
-        composeActivity(enteredTitle, enteredIntro, enteredBody, idCabildo,
-            enteredTag, widget.jwt);
+        vm.submitActivity((selectedActivity == 0) ? "discussion" : "proposal", enteredTitle, enteredBody, idCabildo, enteredTag);
       }
     } else if (selectedActivity == 1) {
       if (enteredTitle.isEmpty || idCabildo.isEmpty) {
         return;
       } else {
-        composePoll(enteredTitle, idCabildo, enteredTag, widget.jwt);
+        vm.submitActivity("poll", enteredTitle, enteredBody, idCabildo, enteredTag);
       }
     }
     Navigator.of(context).pop();
   }
 
-  List<Widget> createActionButtons(String cabildoName, UserModel user) {
-    return [
-      Spacer(),
-      Row(
-        children: <Widget>[
-          Spacer(),
-          IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () { Navigator.of(context).pop(); },
-          ),
-          IconButton(
-            icon: Icon(Icons.send),
-            onPressed: () => submitActivity(cabildoName, user),
-          ),
-        ],
-      )
-    ];
-  }
-
   void dispose() {
-    super.dispose();
     inputTitleController.dispose();
-    inputIntroController.dispose();
     inputBodyController.dispose();
     inputCabildoController.dispose();
     inputTagController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    createHeader();
-    return FutureBuilder(
-      future: _user,
-      builder: (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
-        if (snapshot.hasData) {
-          return Container(
-            padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
-            width: MediaQuery.of(context).size.width - 20,
-            height: MediaQuery.of(context).size.height - 100,
-            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-            decoration: BoxDecoration(
-                color: CARD_BACKGROUND,
-                borderRadius: BorderRadius.all(Radius.circular(30)),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.blue,
-                      blurRadius: 3.0,
-                      spreadRadius: 0,
-                      offset: Offset(3.0, 3.0))
-                ]),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                ...this.header,
-                ...createBody(context, snapshot.data),
-                ...createActionButtons(dropdownValue, snapshot.data),
-                SizedBox(
-                  height: MediaQuery.of(context).viewInsets.bottom,
-                )
-              ],
-            ),
-          );
-        } else if (snapshot.hasError) {
-          return Container();
-        } else {
-          return Container();
-        }
+    return StoreConnector<AppState, _ComposeViewModel>(
+      converter: (Store<AppState> store) {
+        Function submitActivityCallback = (String type, String title, String body, String idCabildo, String tag) => {
+          store.dispatch(SubmitActivityAttempt(type, title, body, idCabildo, tag))
+        };
+        return _ComposeViewModel(store.state.jwt, store.state.user, submitActivityCallback);
+      },
+      builder: (BuildContext context, _ComposeViewModel vm) {
+        return Container(
+          padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+          width: MediaQuery.of(context).size.width - 20,
+          height: MediaQuery.of(context).size.height - 100,
+          margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+          decoration: BoxDecoration(
+              color: CARD_BACKGROUND,
+              borderRadius: BorderRadius.all(Radius.circular(30)),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.blue,
+                    blurRadius: 3.0,
+                    spreadRadius: 0,
+                    offset: Offset(3.0, 3.0))
+              ]),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                "Crea y comparte contenido",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 23,
+                    fontWeight: FontWeight.w400),
+              ),
+              SizedBox(height: 5),
+              Text(
+                "¿Qué quieres compartir?",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400),
+              ),
+              SizedBox(height: 10),
+              Row(children: activityButtons),
+              ...createBody(context, vm.user),
+              Row(
+                children: <Widget>[
+                  Spacer(),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.send),
+                    onPressed: () =>
+                        submitActivity(dropdownValue, vm),
+                  ),
+                ],
+              ),
+              Spacer(),
+              SizedBox(
+                height: MediaQuery.of(context).viewInsets.bottom,
+              )
+            ],
+          ),
+        );
       },
     );
   }
+}
+
+class _ComposeViewModel {
+  String jwt;
+  UserModel user;
+  Function submitActivity;
+  _ComposeViewModel(this.jwt, this.user, this.submitActivity);
 }

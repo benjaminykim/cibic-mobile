@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 
 class UserMetaData extends StatelessWidget {
-  final String jwt;
   final String userName;
   final String idUser;
   final String cabildoName;
@@ -15,16 +14,15 @@ class UserMetaData extends StatelessWidget {
   final List<String> followers;
 
   UserMetaData(this.userName, this.cp, this.cabildoName, this.idUser,
-      this.idCabildo, this.jwt, this.followers);
+      this.idCabildo, this.followers);
 
-  factory UserMetaData.fromActivity(ActivityModel activity, String jwt) {
+  factory UserMetaData.fromActivity(ActivityModel activity) {
     return UserMetaData(
         activity.idUser['username'],
         activity.idUser['citizenPoints'],
         activity.idCabildo['name'],
         activity.idUser['_id'],
         activity.idCabildo['_id'],
-        jwt,
         activity.idUser['following']);
   }
 
@@ -32,7 +30,7 @@ class UserMetaData extends StatelessWidget {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => UserProfileScreen(this.idUser, this.jwt)));
+            builder: (context) => UserProfileScreen(this.idUser)));
   }
 
   void onCabildoTapped(BuildContext context) {
@@ -43,7 +41,7 @@ class UserMetaData extends StatelessWidget {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                CabildoProfileScreen(this.idCabildo, this.jwt)));
+                CabildoProfileScreen(this.idCabildo)));
   }
 
   @override

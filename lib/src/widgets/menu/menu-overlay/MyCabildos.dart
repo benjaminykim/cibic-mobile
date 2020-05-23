@@ -1,16 +1,15 @@
 import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
-import 'package:cibic_mobile/src/resources/api_provider.dart';
+import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
-import 'package:cibic_mobile/src/resources/utils.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/CreateCabildo.dart';
 import 'package:cibic_mobile/src/widgets/profile/CabildoProfileScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 class MyCabildos extends StatefulWidget {
-  final String jwt;
-
-  MyCabildos(this.jwt);
+  MyCabildos();
 
   @override
   _MyCabildosState createState() => _MyCabildosState();
@@ -18,20 +17,10 @@ class MyCabildos extends StatefulWidget {
 
 class _MyCabildosState extends State<MyCabildos> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-  Future<UserModel> user;
-
-  @override
-  void initState() {
-    super.initState();
-    this.user = fetchUserProfile(extractID(widget.jwt), widget.jwt);
-  }
 
   Future<Null> refreshUser() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
-    setState(() {
-      this.user = fetchUserProfile(extractID(widget.jwt), widget.jwt);
-    });
     return null;
   }
 
@@ -61,7 +50,7 @@ class _MyCabildosState extends State<MyCabildos> {
     );
   }
 
-  Widget cabildoCreate() {
+  Widget cabildoCreate(_MyCabildosViewModel vm) {
     return GestureDetector(
       onTap: () {
         showModalBottomSheet(
@@ -72,7 +61,7 @@ class _MyCabildosState extends State<MyCabildos> {
           builder: (bContext) {
             return GestureDetector(
               onTap: () {},
-              child: CreateCabildo(widget.jwt),
+              child: CreateCabildo(vm.store),
               behavior: HitTestBehavior.opaque,
             );
           },
@@ -104,14 +93,14 @@ class _MyCabildosState extends State<MyCabildos> {
     );
   }
 
-  Widget cabildoItem(CabildoModel cabildo) {
+  Widget cabildoItem(CabildoModel cabildo, Store store) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    CabildoProfileScreen(cabildo.id, widget.jwt)));
+                    CabildoProfileScreen(cabildo.id)));
       },
       child: Container(
         height: 65,
@@ -144,59 +133,65 @@ class _MyCabildosState extends State<MyCabildos> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        theme: cibicTheme,
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          appBar: AppBar(
-            title: Text("MIS CABILDOS",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w400,
-                )),
-            centerTitle: true,
-            titleSpacing: 0.0,
-            leading: GestureDetector(
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-              child: Icon(Icons.arrow_back_ios),
+    return StoreConnector<AppState, _MyCabildosViewModel>(
+      converter: (Store<AppState> store) {
+        return _MyCabildosViewModel(store.state.user, store);
+      },
+      builder: (BuildContext context, _MyCabildosViewModel vm) {
+        List<CabildoModel> cabildos = vm.user.cabildos;
+        return MaterialApp(
+          theme: cibicTheme,
+          debugShowCheckedModeBanner: false,
+          home: Scaffold(
+            appBar: AppBar(
+              title: Text("MIS CABILDOS",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w400,
+                  )),
+              centerTitle: true,
+              titleSpacing: 0.0,
+              leading: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Icon(Icons.arrow_back_ios),
+              ),
             ),
-          ),
-          body: Container(
-            color: APP_BACKGROUND,
-            child: RefreshIndicator(
+            body: Container(
+              color: APP_BACKGROUND,
+              child: RefreshIndicator(
                 key: refreshKey,
                 onRefresh: refreshUser,
-                child: FutureBuilder<UserModel>(
-                    future: fetchUserProfile(extractID(widget.jwt), widget.jwt),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        var cabildos = snapshot.data.cabildos;
-                        return ListView.separated(
-                            separatorBuilder: (context, index) => Divider(
-                                  color: Colors.black,
-                                  indent: 10,
-                                  endIndent: 10,
-                                ),
-                            itemCount: cabildos.length + 1,
-                            itemBuilder: (BuildContext context, int index) {
-                              if (index == 0) {
-                                return cabildoCreate();
-                              } else if (index == cabildos.length + 1) {
-                                return cabildoAdd();
-                              } else {
-                                CabildoModel cabildo = cabildos[index - 1];
-                                return cabildoItem(cabildo);
-                              }
-                            });
-                      } else if (snapshot.hasError) {
-                        return serverError();
-                      } else {
-                        return Center(child: CircularProgressIndicator());
-                      }
-                    })),
+                child: ListView.separated(
+                  separatorBuilder: (context, index) => Divider(
+                    color: Colors.black,
+                    indent: 10,
+                    endIndent: 10,
+                  ),
+                  itemCount: cabildos.length + 1,
+                  itemBuilder: (BuildContext context, int index) {
+                    if (index == 0) {
+                      return cabildoCreate(vm);
+                    } else if (index == cabildos.length + 1) {
+                      return cabildoAdd();
+                    } else {
+                      CabildoModel cabildo = cabildos[index - 1];
+                      return cabildoItem(cabildo, vm.store);
+                    }
+                  },
+                ),
+              ),
+            ),
           ),
-        ));
+        );
+      },
+    );
   }
+}
+
+class _MyCabildosViewModel {
+  UserModel user;
+  Store store;
+  _MyCabildosViewModel(this.user, this.store);
 }

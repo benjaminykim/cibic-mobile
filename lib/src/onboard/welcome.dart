@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:cibic_mobile/src/onboard/home.dart';
 import 'package:cibic_mobile/src/onboard/register.dart';
+import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/redux/actions/actions.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 class Welcome extends StatefulWidget {
   final storage;
@@ -26,6 +27,13 @@ class _WelcomeState extends State<Welcome> {
   final TextEditingController _passwordController = new TextEditingController();
   ScrollController _controller = ScrollController();
 
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
   final welcomeTextStyle = TextStyle(
     fontSize: 24,
     fontWeight: FontWeight.w600,
@@ -74,7 +82,7 @@ class _WelcomeState extends State<Welcome> {
   Container createInputView(String str, TextEditingController ctlr) {
     return Container(
       height: 40,
-      decoration: LOGIN_INPUT_DEC,
+      decoration: loginInputDec,
       alignment: Alignment.center,
       margin: EdgeInsets.fromLTRB(35, 0, 35, 7),
       child: Center(
@@ -131,57 +139,64 @@ class _WelcomeState extends State<Welcome> {
                       child: createButtonView("Registrate"),
                     ),
                     SizedBox(height: 10),
-                    (this.showLogin) ? Divider(
-                      color: Colors.white,
-                      indent: 20,
-                      endIndent: 20,
-                      thickness: 0.5,
-                    ) : Container(),
-                    (this.showLogin) ? Text(
-                      "¿Has olvidado la contraseña?",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                    ) : Container(),
+                    (this.showLogin)
+                        ? Divider(
+                            color: Colors.white,
+                            indent: 20,
+                            endIndent: 20,
+                            thickness: 0.5,
+                          )
+                        : Container(),
+                    (this.showLogin)
+                        ? Text(
+                            "¿Has olvidado la contraseña?",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          )
+                        : Container(),
                     SizedBox(height: 10),
-                    GestureDetector(
-                      onTap: () async {
-                        if (this.showLogin) {
-                          if (_emailController.text == null ||
-                              _passwordController.text == null ||
-                              _emailController.text == "" ||
-                              _passwordController.text == "") {
-                            setState(() {
-                              this.showLogin = !this.showLogin;
-                            });
-                          } else {
-                            var jwt = await attemptLogin();
-                            if (jwt != null) {
-                              widget.storage.write(key: "jwt", value: jwt);
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          Home.fromBase64(jwt)));
-                            } else {
-                              displayDialog(context, "An Error Occurred",
-                                  "No account was found matching that username and password");
-                            }
-                          }
-                        } else {
-                          setState(() {
-                            this.showLogin = !this.showLogin;
-                            this
-                                ._controller
-                                .jumpTo(_controller.position.maxScrollExtent);
-                          });
-                        }
+                    StoreConnector<AppState, Function>(
+                      converter: (Store<dynamic> store) {
+                        return () => store;
                       },
-                      child: createButtonView("Inicia sesión"),
+                      builder: (BuildContext context, vm) {
+                        return GestureDetector(
+                          onTap: () async {
+                            if (this.showLogin) {
+                              if (_emailController.text == null ||
+                                  _passwordController.text == null ||
+                                  _emailController.text == "" ||
+                                  _passwordController.text == "") {
+                                setState(() {
+                                  this.showLogin = !this.showLogin;
+                                });
+                              } else {
+                                await vm().dispatch(LogInAttempt(
+                                    _emailController.text,
+                                    _passwordController.text));
+                                if (vm().state.isLogIn) {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Home()));
+                                }
+                              }
+                            } else {
+                              setState(() {
+                                this.showLogin = !this.showLogin;
+                                this._controller.jumpTo(
+                                    _controller.position.maxScrollExtent);
+                              });
+                            }
+                          },
+                          child: createButtonView("Inicia sesión"),
+                        );
+                      },
                     ),
-                    SizedBox(height:10),
+                    SizedBox(height: 10),
                     (this.showLogin)
                         ? (createInputView(
                             "contraseña", this._passwordController))
@@ -190,7 +205,7 @@ class _WelcomeState extends State<Welcome> {
                         ? (createInputView(
                             "correo electrónico", this._emailController))
                         : Container(),
-                    SizedBox(height:30),
+                    SizedBox(height: 30),
                     // WELCOME
                     Text(
                       "Bienvenido/a",
@@ -210,26 +225,4 @@ class _WelcomeState extends State<Welcome> {
         builder: (context) =>
             AlertDialog(title: Text(title), content: Text(text)),
       );
-
-  Future<String> attemptLogin() async {
-    Map requestBody = {
-      'email': '${_emailController.text}',
-      'password': '${_passwordController.text}'
-    };
-    HttpClient httpClient = new HttpClient();
-    HttpClientRequest request =
-        await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_LOGIN));
-    request.headers.set('content-type', 'application/json');
-    request.add(utf8.encode(json.encode(requestBody)));
-    HttpClientResponse response = await request.close();
-    httpClient.close();
-
-    if (response.statusCode == 201) {
-      final responseBody = await response.transform(utf8.decoder).join();
-      Map<String, dynamic> jwtResponse = jsonDecode(responseBody);
-      return jwtResponse['access_token'];
-    } else {
-      throw Exception("Error");
-    }
-  }
 }
