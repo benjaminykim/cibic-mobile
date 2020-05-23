@@ -10,8 +10,9 @@ class ActivityView extends StatefulWidget {
   final ActivityModel activity;
   final String jwt;
   final Function reactToActivity;
+  final int mode;
 
-  ActivityView(this.activity, this.jwt, this.reactToActivity) {
+  ActivityView(this.activity, this.jwt, this.reactToActivity, this.mode) {
     if (this.activity.idCabildo == null) {
       this.activity.idCabildo = {
         'name': 'todo',
@@ -30,7 +31,7 @@ class _ActivityViewState extends State<ActivityView> {
         context,
         MaterialPageRoute(
             builder: (context) => ActivityScreen(this.widget.activity,
-                this.widget.jwt, this.widget.reactToActivity)));
+                this.widget.jwt, this.widget.reactToActivity, this.widget.mode)));
   }
 
   @override

@@ -11,8 +11,9 @@ class ActivityScreen extends StatelessWidget {
   final ActivityModel activity;
   final String jwt;
   final Function onReact;
+  final int mode;
 
-  ActivityScreen(this.activity, this.jwt, this.onReact);
+  ActivityScreen(this.activity, this.jwt, this.onReact, this.mode);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class ActivityScreen extends StatelessWidget {
             CardView(activity, CARD_SCREEN, onReact),
             CardMetaData(activity.ping, activity.commentNumber,
                 activity.publishDate),
-            CommentFeed(activity.comments, jwt, activity.id),
+            CommentFeed(activity, jwt, mode),
           ],
         ),
       ),
