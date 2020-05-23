@@ -1,3 +1,5 @@
+import 'package:cibic_mobile/src/models/activity_model.dart';
+import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/resources/api_provider.dart';
@@ -11,11 +13,11 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
 class CommentFeed extends StatefulWidget {
-  final List<CommentModel> comments;
+  final ActivityModel activity;
   final String jwt;
-  final String idActivity;
+  final int mode;
 
-  CommentFeed(this.comments, this.jwt, this.idActivity);
+  CommentFeed(this.activity, this.jwt, this.mode);
 
   @override
   _CommentFeedState createState() => _CommentFeedState();
@@ -31,7 +33,7 @@ class _CommentFeedState extends State<CommentFeed> {
 
   int maxCommentView = 3;
 
-  Container comment(CommentModel c, BuildContext context) {
+  Container comment(CommentModel c, BuildContext context, Function onReply) {
     final inputCommentController = TextEditingController();
     return Container(
       padding: EdgeInsets.fromLTRB(0, 10, 0, 2),
@@ -61,7 +63,7 @@ class _CommentFeedState extends State<CommentFeed> {
                   GestureDetector(
                       child: Icon(Icons.keyboard_arrow_up, size: 20),
                       onTap: () {
-                        voteToComment(widget.jwt, 1, widget.idActivity, c.id);
+                        voteToComment(widget.jwt, 1, widget.activity.id, c.id);
                       }),
                   Text(
                     c.score.toString(),
@@ -73,7 +75,7 @@ class _CommentFeedState extends State<CommentFeed> {
                   GestureDetector(
                       child: Icon(Icons.keyboard_arrow_down, size: 20),
                       onTap: () {
-                        voteToComment(widget.jwt, -1, widget.idActivity, c.id);
+                        voteToComment(widget.jwt, -1, widget.activity.id, c.id);
                       }),
                 ]),
               ),
@@ -109,8 +111,7 @@ class _CommentFeedState extends State<CommentFeed> {
                 suffixIcon: IconButton(
                   icon: Icon(Icons.send, color: Colors.black),
                   onPressed: () {
-                    replyToComment(widget.jwt, inputCommentController.text,
-                        widget.idActivity, c.id);
+                    onReply(widget.activity.id, c.id, inputCommentController.text, widget.mode);
                   },
                 ),
                 border: InputBorder.none,
@@ -149,7 +150,7 @@ class _CommentFeedState extends State<CommentFeed> {
                 GestureDetector(
                     child: Icon(Icons.keyboard_arrow_up, size: 20),
                     onTap: () {
-                      voteToReply(widget.jwt, 1, widget.idActivity, r.id);
+                      voteToReply(widget.jwt, 1, widget.activity.id, r.id);
                     }),
                 Text(
                   r.score.toString(),
@@ -161,7 +162,7 @@ class _CommentFeedState extends State<CommentFeed> {
                 GestureDetector(
                     child: Icon(Icons.keyboard_arrow_down, size: 20),
                     onTap: () {
-                      voteToReply(widget.jwt, -1, widget.idActivity, r.id);
+                      voteToReply(widget.jwt, -1, widget.activity.id, r.id);
                     }),
               ],
             ),
@@ -174,8 +175,8 @@ class _CommentFeedState extends State<CommentFeed> {
                 // RESPONSE USER METADATA
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
-                  child: UserMetaData(r.idUser['username'], 1, null,
-                      r.idUser['id'], null, null),
+                  child: UserMetaData(r.idUser['username'], r.idUser['citizenPoints'], null,
+                      r.idUser['idUser'], null, null),
                 ),
                 // RESPONSE TEXT CONTENT
                 Container(
@@ -222,15 +223,17 @@ class _CommentFeedState extends State<CommentFeed> {
     );
   }
 
-  List<Container> generateCommentFeed(BuildContext context, List<CommentModel> comments) {
+  List<Container> generateCommentFeed(
+      BuildContext context, _CommentFeedViewModel vm) {
     List<Container> commentCards = [];
-    for (int i = 0; i < comments.length; i++) {
-      commentCards.add(comment(comments[i], context));
+    for (int i = 0; i < vm.comments.length; i++) {
+      commentCards.add(comment(vm.comments[i], context, vm.onReply));
     }
     return commentCards;
   }
 
-  Container generateNewCommentInput(BuildContext context, _CommentFeedViewModel vm) {
+  Container generateNewCommentInput(
+      BuildContext context, _CommentFeedViewModel vm) {
     final inputCommentController = TextEditingController();
     return Container(
       padding: EdgeInsets.fromLTRB(30, 10, 30, 2),
@@ -262,11 +265,15 @@ class _CommentFeedState extends State<CommentFeed> {
               controller: inputCommentController,
               decoration: InputDecoration(
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.send),
+                  icon: Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Icon(Icons.send),
+                  ),
                   color: Colors.black,
                   onPressed: () {
                     String commentText = inputCommentController.text;
-                    vm.commentToActivity(widget.idActivity, commentText, 0);
+                    vm.commentToActivity(
+                        widget.activity.id, commentText, widget.mode);
                     //commentToActivity(widget.jwt, commentText, widget.idActivity);
                   },
                 ),
@@ -319,19 +326,48 @@ class _CommentFeedState extends State<CommentFeed> {
     return [Container()];
   }
 
+  _CommentFeedViewModel generateViewModel(Store<AppState> store) {
+    Function commentToActivity =
+        (String idActivity, String content, int mode) =>
+            store.dispatch(PostCommentAttempt(idActivity, content, mode));
+    Function onReply = (String idActivity, String idComment, String content, int mode) =>
+            store.dispatch(PostReplyAttempt(idActivity, idComment, content, mode));
+    List<CommentModel> comments;
+    FeedModel searchFeed;
+    switch (widget.mode) {
+      case FEED_PUBLIC:
+        searchFeed = store.state.publicFeed;
+        break;
+      case FEED_HOME:
+        searchFeed = store.state.homeFeed;
+        break;
+      case FEED_USER:
+        searchFeed = store.state.userProfileFeed;
+        break;
+      case FEED_CABILDO:
+        searchFeed = store.state.cabildoProfileFeed;
+        break;
+      case FEED_FOREIGN:
+        searchFeed = store.state.foreignUserFeed;
+        break;
+    }
+    for (int i = 0; i < searchFeed.feed.length; i++) {
+      if (searchFeed.feed[i].id == widget.activity.id) {
+        comments = searchFeed.feed[i].comments;
+      }
+    }
+    return _CommentFeedViewModel(commentToActivity, onReply, comments);
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _CommentFeedViewModel>(
         converter: (Store<AppState> store) {
-          Function commentToActivity = (String idActivity, String content, int mode) => {
-            store.dispatch(PostCommentAttempt(idActivity, content, mode))
-          };
-          List<CommentModel> comments;
-      return _CommentFeedViewModel(commentToActivity, comments);
+      return generateViewModel(store);
     }, builder: (BuildContext context, _CommentFeedViewModel vm) {
       return Column(children: [
         generateNewCommentInput(context, vm),
-        ...generateCommentFeed(context, vm.comments),
+        ...generateCommentFeed(context, vm),
       ]);
     });
   }
@@ -339,6 +375,7 @@ class _CommentFeedState extends State<CommentFeed> {
 
 class _CommentFeedViewModel {
   Function commentToActivity;
+  Function onReply;
   List<CommentModel> comments;
-  _CommentFeedViewModel(this.commentToActivity, this.comments);
+  _CommentFeedViewModel(this.commentToActivity, this.onReply, this.comments);
 }

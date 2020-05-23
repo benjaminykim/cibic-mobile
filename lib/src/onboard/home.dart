@@ -1,3 +1,4 @@
+import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:cibic_mobile/src/widgets/profile/SelfProfileScreen.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityFeed.dart';
@@ -30,8 +31,8 @@ class _HomeState extends State<Home> {
     super.initState();
 
     _widgetOptions = [
-      ActivityFeed("default"),
-      ActivityFeed("public"),
+      ActivityFeed(FEED_HOME),
+      ActivityFeed(FEED_PUBLIC),
       SelfProfileScreen(),
       Container(),
     ];

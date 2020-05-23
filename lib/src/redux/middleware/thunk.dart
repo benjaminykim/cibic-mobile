@@ -6,6 +6,7 @@ import 'package:cibic_mobile/src/redux/middleware/thunk_feed.dart';
 import 'package:cibic_mobile/src/redux/middleware/thunk_menu_overlay.dart';
 import 'package:cibic_mobile/src/redux/middleware/thunk_profile.dart';
 import 'package:cibic_mobile/src/redux/middleware/thunk_user.dart';
+import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:redux/redux.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions.dart';
@@ -16,8 +17,8 @@ void apiMiddleware(
     await attemptLogin(action.email, action.password, next);
     if (store.state.isLogIn) {
       String jwt = store.state.jwt;
-      await fetchFeed(jwt, "default", next);
-      await fetchFeed(jwt, "public", next);
+      await fetchFeed(jwt, FEED_HOME, next);
+      await fetchFeed(jwt, FEED_PUBLIC, next);
       await fetchUserProfile(store.state.jwt, next);
       await fetchUserProfileFeed(store.state.jwt, next);
     }
@@ -43,6 +44,14 @@ void apiMiddleware(
   } else if (action is PostReactionAttempt) {
     await postReaction(action.activity, store.state.jwt, action.reactValue, store.state.idUser, action.mode, next);
   } else if (action is PostCommentAttempt) {
-    await postComment(action.idActivity, store.state.jwt, action.content, action.mode, next);
+    String jwt = store.state.jwt;
+    int citizenPoints = store.state.user.citizenPoints;
+    String username = store.state.user.username;
+    await postComment(action.idActivity, jwt, action.content, action.mode, citizenPoints, username, next);
+  } else if (action is PostReplyAttempt) {
+    String jwt = store.state.jwt;
+    int citizenPoint = store.state.user.citizenPoints;
+    String username = store.state.user.username;
+    await postReply(action.idActivity, action.idComment, action.content, jwt, username, citizenPoint, action.mode, next);
   }
 }

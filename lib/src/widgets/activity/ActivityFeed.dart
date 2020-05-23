@@ -10,7 +10,8 @@ import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:redux/redux.dart';
 
 class ActivityFeed extends StatefulWidget {
-  final String mode;
+  // 0 -> HOME, 1 -> PUBLIC
+  final int mode;
 
   ActivityFeed(this.mode);
 
@@ -66,7 +67,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
         itemCount: vm.feed.feed.length,
         itemBuilder: (BuildContext context, int index) {
           ActivityModel activity = vm.feed.feed[index];
-          return ActivityView(activity, vm.jwt, vm.reactToActivity);
+          return ActivityView(activity, vm.jwt, vm.reactToActivity, widget.mode);
         },
       );
     }
@@ -76,10 +77,10 @@ class _ActivityFeedState extends State<ActivityFeed> {
     Function refreshFeed =
         () => store.dispatch(FetchFeedAttempt(widget.mode));
     Function reactToActivity =
-        (ActivityModel activity, int reactValue) => store.dispatch(PostReactionAttempt(activity, reactValue, (widget.mode == "default") ? 0 : 1));
+        (ActivityModel activity, int reactValue) => store.dispatch(PostReactionAttempt(activity, reactValue, widget.mode));
     FeedModel feed;
     bool feedError;
-    if (widget.mode == "default") {
+    if (widget.mode == FEED_HOME) {
       feed = store.state.homeFeed;
       feedError = store.state.homeFeedError;
     } else {

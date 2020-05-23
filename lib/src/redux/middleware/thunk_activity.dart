@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/models/comment_model.dart';
 import 'package:cibic_mobile/src/models/reaction_model.dart';
+import 'package:cibic_mobile/src/models/reply_model.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/resources/utils.dart';
@@ -153,7 +154,7 @@ postReaction(ActivityModel activity, String jwt, int reactValue, String idUser, 
   }
 }
 
-postComment(String idActivity, String jwt, String content, int mode, NextDispatcher next) async {
+postComment(String idActivity, String jwt, String content, int mode, int citizenPoints, String username, NextDispatcher next) async {
     HttpClient httpClient = new HttpClient();
   HttpClientRequest request =
       await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_COMMENT));
@@ -173,8 +174,35 @@ postComment(String idActivity, String jwt, String content, int mode, NextDispatc
   if (response.statusCode == 201) {
     final responseBody = await response.transform(utf8.decoder).join();
     print("RESPONSE BODY: $responseBody");
-    next(PostCommentSuccess(idActivity, CommentModel(responseBody, {'idUser': extractID(jwt), 'username': "test"}, content, 0, []), mode));
+    next(PostCommentSuccess(idActivity, CommentModel(responseBody, {'idUser': extractID(jwt), 'username': username, 'citizenPoints': citizenPoints}, content, 0, []), mode));
   } else {
     next(PostCommentError(response.statusCode.toString()));
+  }
+}
+
+postReply(String idActivity, String idComment, String content, String jwt, String username, int citizenPoints, int mode, NextDispatcher next) async {
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request =
+      await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_REPLY));
+  request.headers.add('content-type', 'application/json');
+  request.headers.add('accept', 'application/json');
+  request.headers.add('authorization', 'Bearer $jwt');
+
+  final requestBody = {
+    "idActivity": idActivity,
+    "idComment": idComment,
+    "reply": {"idUser": extractID(jwt), "content": content}
+  };
+  request.add(utf8.encode(json.encode(requestBody)));
+  HttpClientResponse response = await request.close();
+  httpClient.close();
+
+  print("postReply response: ${response.statusCode}");
+  if (response.statusCode == 201) {
+    final responseBody = await response.transform(utf8.decoder).join();
+    print("posted citizen points");
+    next(PostReplySuccess(idActivity, idComment, ReplyModel(responseBody, {'idUser': extractID(jwt), 'username': username, 'citizenPoints': citizenPoints}, content, 0), mode));
+  } else {
+    next(PostReplyError(response.statusCode.toString()));
   }
 }

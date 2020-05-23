@@ -23,6 +23,12 @@ const CARD_LAST = 4;
 const CARD_POLL = 5;
 const CARD_SCREEN = 6;
 
+const FEED_HOME = 0;
+const FEED_PUBLIC = 1;
+const FEED_USER = 2;
+const FEED_CABILDO = 3;
+const FEED_FOREIGN = 4;
+
 const ACTIVITY_DISCUSS = "discussion";
 const ACTIVITY_PROPOSAL = "proposal";
 const ACTIVITY_POLL = "poll";

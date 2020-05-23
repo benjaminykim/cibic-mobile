@@ -18,18 +18,18 @@ class LogInError {
 }
 
 class FetchFeedAttempt {
-  String mode;
+  int mode;
   FetchFeedAttempt(this.mode);
 }
 
 class FetchFeedSuccess {
-  String mode;
+  int mode;
   FeedModel feed;
   FetchFeedSuccess(this.mode, this.feed);
 }
 
 class FetchFeedError {
-  String mode;
+  int mode;
   String error;
   FetchFeedError(this.mode, this.error);
 }

@@ -5,9 +5,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:redux/redux.dart';
 
-fetchFeed(String jwt, String mode, NextDispatcher next) async {
+fetchFeed(String jwt, int mode, NextDispatcher next) async {
   String url;
-  if (mode == "public") {
+  if (mode == FEED_PUBLIC) {
     url = API_BASE + ENDPOINT_PUBLIC_FEED;
   } else {
     url = API_BASE + ENDPOINT_DEFAULT_FEED;
