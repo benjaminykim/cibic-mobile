@@ -350,6 +350,9 @@ class _CommentFeedState extends State<CommentFeed> {
       case FEED_FOREIGN:
         searchFeed = store.state.foreignUserFeed;
         break;
+      case FEED_SAVED:
+        searchFeed = store.state.savedFeed;
+        break;
     }
     for (int i = 0; i < searchFeed.feed.length; i++) {
       if (searchFeed.feed[i].id == widget.activity.id) {
