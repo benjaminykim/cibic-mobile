@@ -9,18 +9,8 @@ import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:redux/redux.dart';
 
-class ActivityFeed extends StatefulWidget {
-  // 0 -> HOME, 1 -> PUBLIC
-  final int mode;
-
-  ActivityFeed(this.mode);
-
-  @override
-  _ActivityFeedState createState() => _ActivityFeedState();
-}
-
-class _ActivityFeedState extends State<ActivityFeed> {
-  var refreshKey = GlobalKey<RefreshIndicatorState>();
+class Saved extends StatelessWidget {
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
 
   Widget generateFeed(BuildContext context, FeedViewModel vm) {
     if (vm.feedError == true) {
@@ -68,25 +58,22 @@ class _ActivityFeedState extends State<ActivityFeed> {
         itemBuilder: (BuildContext context, int index) {
           ActivityModel activity = vm.feed.feed[index];
           return ActivityView(
-              activity, vm.jwt, vm.onReact, vm.onSave, widget.mode);
+              activity, vm.jwt, vm.onReact, vm.onSave, FEED_SAVED);
         },
       );
     }
   }
 
   FeedViewModel generateFeedViewModel(Store<AppState> store) {
-    Function refreshFeed = () => store.dispatch(FetchFeedAttempt(widget.mode));
+    Function refreshFeed = () => store.dispatch(FetchFeedAttempt(FEED_SAVED));
     Function onReact = (ActivityModel activity, int reactValue) =>
-        store.dispatch(PostReactionAttempt(activity, reactValue, widget.mode));
-    Function onSave = (int activityId) => store.dispatch(PostSaveAttempt(activityId, true));
+        store.dispatch(PostReactionAttempt(activity, reactValue, FEED_SAVED));
+    Function onSave = (int activityId) => store.dispatch(PostSaveAttempt(activityId, false));
     FeedModel feed;
     bool feedError;
-    if (widget.mode == FEED_HOME) {
-      feed = store.state.homeFeed;
-      feedError = store.state.homeFeedError;
-    } else {
-      feed = store.state.publicFeed;
-      feedError = store.state.publicFeedError;
+    feed = store.state.savedFeed;
+    if (store.state.savedFeed == null) {
+      store.dispatch(FetchFeedAttempt(FEED_SAVED));
     }
     return FeedViewModel(
         feed, store.state.jwt, refreshFeed, onReact, onSave, feedError);
@@ -99,18 +86,28 @@ class _ActivityFeedState extends State<ActivityFeed> {
         return generateFeedViewModel(store);
       },
       builder: (BuildContext context, FeedViewModel vm) {
-        return (Container(
-          color: APP_BACKGROUND,
-          child: RefreshIndicator(
-            key: refreshKey,
-            onRefresh: () async {
-              refreshKey.currentState?.show(atTop: false);
-              await vm.refreshList();
-              return null;
-            },
-            child: generateFeed(context, vm),
+            return MaterialApp(
+          theme: cibicTheme,
+          debugShowCheckedModeBanner: false,
+          home: Scaffold(
+            appBar: AppBar(
+              title: Text("GUARDADOS",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w400,
+                  )),
+              centerTitle: true,
+              titleSpacing: 0.0,
+              leading: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Icon(Icons.arrow_back_ios),
+              ),
+            ),
+            body: generateFeed(context, vm),
           ),
-        ));
+        );
       },
     );
   }

@@ -8,22 +8,19 @@ part of 'user_model.dart';
 
 UserModel _$UserModelFromJson(Map<String, dynamic> json) {
   return UserModel(
-    json['_id'] as String,
+    json['id'] as int,
+    (json['cabildosIds'] as List)?.map((e) => e as int)?.toList(),
     (json['cabildos'] as List)
         ?.map((e) =>
             e == null ? null : CabildoModel.fromJson(e as Map<String, dynamic>))
         ?.toList(),
-    (json['activityVotes'] as List)?.map((e) => e as String)?.toList(),
-    (json['commentVotes'] as List)?.map((e) => e as String)?.toList(),
+    (json['activityVotes'] as List)?.map((e) => e as int)?.toList(),
+    (json['commentVotesIds'] as List)?.map((e) => e as int)?.toList(),
     (json['files'] as List)?.map((e) => e as String)?.toList(),
-    (json['followers'] as List)?.map((e) => e as String)?.toList(),
-    (json['following'] as List)
-        ?.map((e) => e as Map<String, dynamic>)
-        ?.toList(),
-    (json['activityFeed'] as List)?.map((e) => e as String)?.toList(),
-    (json['followingFeed'] as List)?.map((e) => e as String)?.toList(),
+    (json['followersIds'] as List)?.map((e) => e as int)?.toList(),
+    (json['followingIds'] as List)?.map((e) => e as int)?.toList(),
+    (json['activityFeedIds'] as List)?.map((e) => e as int)?.toList(),
     json['citizenPoints'] as int,
-    json['username'] as String,
     json['email'] as String,
     json['password'] as String,
     json['firstName'] as String,
@@ -33,21 +30,33 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
     json['phone'] as int,
     json['rut'] as String,
     json['desc'] as String,
-  );
+  )
+    ..replyVotesIds =
+        (json['replyVotesIds'] as List)?.map((e) => e as int)?.toList()
+    ..followers = (json['followers'] as List)
+        ?.map((e) =>
+            e == null ? null : UserModel.fromJson(e as Map<String, dynamic>))
+        ?.toList()
+    ..following = (json['following'] as List)
+        ?.map((e) =>
+            e == null ? null : UserModel.fromJson(e as Map<String, dynamic>))
+        ?.toList();
 }
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
-      '_id': instance.id,
+      'id': instance.id,
+      'cabildosIds': instance.cabildosIds,
       'cabildos': instance.cabildos,
       'activityVotes': instance.activityVotes,
-      'commentVotes': instance.commentVotes,
+      'commentVotesIds': instance.commentVotesIds,
+      'replyVotesIds': instance.replyVotesIds,
       'files': instance.files,
+      'followersIds': instance.followersIds,
+      'followingIds': instance.followingIds,
       'followers': instance.followers,
       'following': instance.following,
-      'activityFeed': instance.activityFeed,
-      'followingFeed': instance.followingFeed,
+      'activityFeedIds': instance.activityFeedIds,
       'citizenPoints': instance.citizenPoints,
-      'username': instance.username,
       'email': instance.email,
       'password': instance.password,
       'firstName': instance.firstName,

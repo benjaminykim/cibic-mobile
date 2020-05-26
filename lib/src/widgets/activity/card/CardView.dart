@@ -7,10 +7,12 @@ import 'package:cibic_mobile/src/resources/constants.dart';
 
 class CardView extends StatelessWidget {
   final ActivityModel activity;
-  final int mode;
+  final int type;
   final Function onReact;
+  final Function onSave;
+  final int mode;
 
-  CardView(this.activity, this.mode, this.onReact);
+  CardView(this.activity, this.type, this.onReact, this.onSave, this.mode);
 
   Container generateLabel() {
     return Container(
@@ -62,8 +64,8 @@ class CardView extends StatelessWidget {
 
   Widget generateComment() {
     int commentIndex = 0;
-    if (this.mode >= CARD_COMMENT_0 && this.mode <= CARD_COMMENT_2) {
-      commentIndex = this.mode - CARD_COMMENT_0;
+    if (this.type >= CARD_COMMENT_0 && this.type <= CARD_COMMENT_2) {
+      commentIndex = this.type - CARD_COMMENT_0;
     }
     return Container(
       margin: EdgeInsets.fromLTRB(30, 10, 30, 0),
@@ -74,13 +76,13 @@ class CardView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               IconTag(Icon(Icons.person, size: 17),
-                  this.activity.comments[commentIndex].idUser['username']),
+                  this.activity.comments[commentIndex].user['firstName']),
               IconTag(
                   Icon(Icons.offline_bolt, size: 17),
                   this
                       .activity
                       .comments[commentIndex]
-                      .idUser['citizenPoints']
+                      .user['citizenPoints']
                       .toString()),
             ],
           ),
@@ -156,14 +158,14 @@ class CardView extends StatelessWidget {
 
   Widget generateContent() {
     if (this.activity.activityType == ACTIVITY_POLL &&
-        this.mode == CARD_DEFAULT) {
+        this.type == CARD_DEFAULT) {
       return generatePoll();
-    } else if (this.mode == CARD_COMMENT_0 ||
-        this.mode == CARD_COMMENT_1 ||
-        this.mode == CARD_COMMENT_2 ||
-        this.mode == CARD_LAST) {
+    } else if (this.type == CARD_COMMENT_0 ||
+        this.type == CARD_COMMENT_1 ||
+        this.type == CARD_COMMENT_2 ||
+        this.type == CARD_LAST) {
       return generateComment();
-    } else if (this.mode == CARD_SCREEN) {
+    } else if (this.type == CARD_SCREEN) {
       return generateScreen();
     } else {
       return generateDiscussion();
@@ -200,10 +202,13 @@ class CardView extends StatelessWidget {
                 iconSize: 22,
                 elevation: 16,
                 onChanged: (String value) {},
-                items: <String>['Guardar Publicación']
+                items: <String>[(this.mode == FEED_SAVED) ? 'Eliminar Publicación' : 'Guardar Publicación']
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
+                    onTap: () {
+                      this.onSave(this.activity.id);
+                    },
                     child: Text(value),
                   );
                 }).toList(),

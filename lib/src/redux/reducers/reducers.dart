@@ -26,6 +26,8 @@ AppState appReducer(AppState prevState, dynamic action) {
     } else if (action.mode == FEED_PUBLIC) {
       newState.publicFeed = action.feed;
       newState.publicFeedError = false;
+    } else if (action.mode == FEED_SAVED) {
+      newState.savedFeed = action.feed;
     }
   } else if (action is FetchFeedError) {
     if (action.mode == FEED_HOME) {
@@ -104,7 +106,7 @@ AppState appReducer(AppState prevState, dynamic action) {
 }
 
 FeedModel addActivityReaction(
-    String activityId, ReactionModel reaction, FeedModel feed) {
+    int activityId, ReactionModel reaction, FeedModel feed) {
   if (feed == null ||
       feed.feed == null ||
       activityId == null ||
@@ -118,8 +120,8 @@ FeedModel addActivityReaction(
   return feed;
 }
 
-FeedModel updateActivityReaction(String activityId, String reactionId,
-    String userId, int reactValue, FeedModel feed) {
+FeedModel updateActivityReaction(int activityId, int reactionId,
+    int userId, int reactValue, FeedModel feed) {
   if (feed == null ||
       feed.feed == null ||
       activityId == null ||
@@ -141,29 +143,29 @@ FeedModel updateActivityReaction(String activityId, String reactionId,
 }
 
 FeedModel addActivityComment(
-    String activityId, CommentModel comment, FeedModel feed) {
+    int activityId, CommentModel comment, FeedModel feed) {
   if (feed == null || feed.feed == null || activityId == null) return feed;
   for (int i = 0; i < feed.feed.length; i++) {
     if (feed.feed[i].id == activityId) {
       feed.feed[i].comments.insert(0, comment);
-      return feed;
+      break;
     }
   }
   return feed;
 }
 
 FeedModel addCommentReply(
-    String activityId, String commentId, ReplyModel reply, FeedModel feed) {
+    int activityId, int commentId, ReplyModel reply, FeedModel feed) {
   if (feed == null || feed.feed == null || activityId == null) return feed;
   for (int i = 0; i < feed.feed.length; i++) {
     if (feed.feed[i].id == activityId) {
       for (int j = 0; j < feed.feed[i].comments.length; j++) {
         if (feed.feed[i].comments[j].id == commentId) {
-          feed.feed[i].comments[j].reply.insert(0, reply);
-          return feed;
+          feed.feed[i].comments[j].replies.insert(0, reply);
+          break;
         }
       }
-      return feed;
+      break;
     }
   }
   return feed;
@@ -175,7 +177,8 @@ List<FeedModel> orderFeeds(AppState newState, int mode) {
     newState.publicFeed,
     newState.userProfileFeed,
     newState.cabildoProfileFeed,
-    newState.foreignUserFeed
+    newState.foreignUserFeed,
+    newState.savedFeed
   ];
   switch (mode) {
     case FEED_PUBLIC:
@@ -193,6 +196,10 @@ List<FeedModel> orderFeeds(AppState newState, int mode) {
     case FEED_FOREIGN:
       feeds.removeAt(FEED_FOREIGN);
       feeds.insert(0, newState.foreignUserFeed);
+      break;
+    case FEED_SAVED:
+      feeds.removeAt(FEED_SAVED);
+      feeds.insert(0, newState.savedFeed);
       break;
   }
   return feeds;

@@ -28,18 +28,19 @@ const FEED_PUBLIC = 1;
 const FEED_USER = 2;
 const FEED_CABILDO = 3;
 const FEED_FOREIGN = 4;
+const FEED_SAVED = 5;
 
-const ACTIVITY_DISCUSS = "discussion";
-const ACTIVITY_PROPOSAL = "proposal";
-const ACTIVITY_POLL = "poll";
+const ACTIVITY_DISCUSS = 0;
+const ACTIVITY_PROPOSAL = 1;
+const ACTIVITY_POLL = 2;
 const ACTIVITY_TYPES = [ACTIVITY_DISCUSS, ACTIVITY_POLL, ACTIVITY_PROPOSAL];
 
-const Map<String, Color> labelColorPicker = {
+const Map<int, Color> labelColorPicker = {
   ACTIVITY_PROPOSAL: LABEL_PROPOSAL_COLOR,
   ACTIVITY_DISCUSS: LABEL_DISCUSS_COLOR,
   ACTIVITY_POLL: LABEL_POLL_COLOR,
 };
-const Map<String, String> labelTextPicker = {
+const Map<int, String> labelTextPicker = {
   ACTIVITY_PROPOSAL: 'propuesta',
   ACTIVITY_DISCUSS: 'discusión',
   ACTIVITY_POLL: 'encuesta',
@@ -136,7 +137,9 @@ Map<String, String> getAuthHeader(String jwt) {
   };
 }
 
-const URL_LOCALHOST_BASE = "http://10.0.2.2:3000/";
+const URL_LOCALHOST_BASE = "http://10.0.2.2:30012/";
+const URL_FIREKITTEN_BASE = "http://10.10.126.56:4444/";
+const URL_FIREKITTEN_3EA_BASE = "http://192.168.8.130:4444/";
 const URL_AWS_BASE = "https://www.cibic.app/api/";
 
 const ENDPOINT_LOGIN = "auth/login/";
@@ -148,6 +151,9 @@ const ENDPOINT_ACTIVITY_COMMENT = "activity/comment";
 const ENDPOINT_ACTIVITY_COMMENT_VOTE = "activity/comment/vote";
 const ENDPOINT_ACTIVITY_REPLY = "activity/reply";
 const ENDPOINT_ACTIVITY_REPLY_VOTE = "activity/reply/vote";
+const ENDPOINT_ACTIVITY_SAVE_FEED = "activity/save/feed";
+const ENDPOINT_ACTIVITY_SAVE = "activity/save";
+const ENDPOINT_ACTIVITY_UNSAVE = "activity/unsave";
 
 const ENDPOINT_CABILDOS = "cabildo/";
 const ENDPOINT_CABILDO_PROFILE = "cabildo/profile/";
@@ -162,4 +168,5 @@ const ENDPOINT_UNFOLLOW_CABILDO = "user/unfollowcabildo";
 
 const ENDPOINT_UNETE_COMMENT = "cibic/comment";
 
-const API_BASE = URL_AWS_BASE;
+//const API_BASE = URL_LOCALHOST_BASE;
+const API_BASE = URL_FIREKITTEN_3EA_BASE;

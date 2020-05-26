@@ -10,19 +10,19 @@ void printDebugResponse(var response) {
   }
 }
 
-void printFetchRequest(String idUser, String jwt) {
+void printFetchRequest(int idUser, String jwt) {
   print("id: $idUser");
   print("jwt: $jwt");
 }
 
-Future<String> followUser(String idUserFollow, String jwt) async {
+Future<String> followUser(int idUserFollow, String jwt) async {
   HttpClient httpClient = new HttpClient();
   HttpClientRequest request =
       await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_FOLLOW_USER));
   request.headers.add('content-type', 'application/json');
   request.headers.add('accept', 'application/json');
   request.headers.add('authorization', 'Bearer $jwt');
-  request.add(utf8.encode(json.encode({"idUser": idUserFollow})));
+  request.add(utf8.encode(json.encode({"userId": idUserFollow})));
   HttpClientResponse response = await request.close();
   httpClient.close();
 
@@ -36,14 +36,14 @@ Future<String> followUser(String idUserFollow, String jwt) async {
   }
 }
 
-Future<String> followCabildo(String idCabildo, String jwt) async {
+Future<String> followCabildo(int idCabildo, String jwt) async {
   HttpClient httpClient = new HttpClient();
   HttpClientRequest request =
       await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_FOLLOW_CABILDO));
   request.headers.add('content-type', 'application/json');
   request.headers.add('accept', 'application/json');
   request.headers.add('authorization', 'Bearer $jwt');
-  request.add(utf8.encode(json.encode({"idCabildo": idCabildo})));
+  request.add(utf8.encode(json.encode({"cabildoId": idCabildo})));
   HttpClientResponse response = await request.close();
   httpClient.close();
 
@@ -57,14 +57,14 @@ Future<String> followCabildo(String idCabildo, String jwt) async {
   }
 }
 
-Future<String> unfollowCabildo(String idCabildo, String jwt) async {
+Future<String> unfollowCabildo(int idCabildo, String jwt) async {
   HttpClient httpClient = new HttpClient();
   HttpClientRequest request =
       await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_UNFOLLOW_CABILDO));
   request.headers.add('content-type', 'application/json');
   request.headers.add('accept', 'application/json');
   request.headers.add('authorization', 'Bearer $jwt');
-  request.add(utf8.encode(json.encode({"idCabildo": idCabildo})));
+  request.add(utf8.encode(json.encode({"cabildoId": idCabildo})));
   HttpClientResponse response = await request.close();
   httpClient.close();
 
@@ -79,7 +79,7 @@ Future<String> unfollowCabildo(String idCabildo, String jwt) async {
 }
 
 Future<int> voteToComment(
-    String jwt, int value, String idActivity, String idComment) async {
+    String jwt, int value, int idActivity, int idComment) async {
   HttpClient httpClient = new HttpClient();
   HttpClientRequest request = await httpClient
       .postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_COMMENT_VOTE));
@@ -88,9 +88,9 @@ Future<int> voteToComment(
   request.headers.add('authorization', 'Bearer $jwt');
 
   final requestBody = {
-    "idActivity": idActivity,
-    "idComment": idComment,
-    "vote": {"idUser": extractID(jwt), "value": value}
+    "activityId": idActivity,
+    "commentId": idComment,
+    "vote": {"userId": extractID(jwt), "value": value}
   };
   request.add(utf8.encode(json.encode(requestBody)));
   HttpClientResponse response = await request.close();
@@ -108,7 +108,7 @@ Future<int> voteToComment(
 }
 
 Future<int> voteToReply(
-    String jwt, int value, String idActivity, String idReply) async {
+    String jwt, int value, int idActivity, int idReply) async {
   HttpClient httpClient = new HttpClient();
   HttpClientRequest request = await httpClient
       .postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_REPLY_VOTE));
@@ -117,9 +117,9 @@ Future<int> voteToReply(
   request.headers.add('authorization', 'Bearer $jwt');
 
   final requestBody = {
-    "idActivity": idActivity,
-    "idReply": idReply,
-    "vote": {"idUser": extractID(jwt), "value": value}
+    "activityId": idActivity,
+    "replyId": idReply,
+    "vote": {"userId": extractID(jwt), "value": value}
   };
   request.add(utf8.encode(json.encode(requestBody)));
   HttpClientResponse response = await request.close();

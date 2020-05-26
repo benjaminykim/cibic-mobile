@@ -9,12 +9,13 @@ import 'package:cibic_mobile/src/widgets/activity/card/UserMetaData.dart';
 class ActivityView extends StatefulWidget {
   final ActivityModel activity;
   final String jwt;
-  final Function reactToActivity;
+  final Function onReact;
+  final Function onSave;
   final int mode;
 
-  ActivityView(this.activity, this.jwt, this.reactToActivity, this.mode) {
-    if (this.activity.idCabildo == null) {
-      this.activity.idCabildo = {
+  ActivityView(this.activity, this.jwt, this.onReact, this.onSave, this.mode) {
+    if (this.activity.cabildo == null) {
+      this.activity.cabildo = {
         'name': 'todo',
         '_id': 'todo',
       };
@@ -30,8 +31,8 @@ class _ActivityViewState extends State<ActivityView> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ActivityScreen(this.widget.activity,
-                this.widget.jwt, this.widget.reactToActivity, this.widget.mode)));
+            builder: (context) => ActivityScreen(widget.activity,
+                widget.jwt, widget.onReact, widget.onSave, widget.mode)));
   }
 
   @override
@@ -39,14 +40,14 @@ class _ActivityViewState extends State<ActivityView> {
     return Container(
       child: Column(
         children: <Widget>[
-          UserMetaData.fromActivity(this.widget.activity),
+          UserMetaData.fromActivity(widget.activity),
           GestureDetector(
               onTap: () => this.openActivityScreen(context),
               child: CardScroll(
-                  this.widget.activity, this.widget.reactToActivity)),
+                  widget.activity, widget.onReact, widget.onSave, widget.mode)),
           GestureDetector(
             onTap: () => this.openActivityScreen(context),
-            child: CardMetaData.fromActivity(this.widget.activity),
+            child: CardMetaData.fromActivity(widget.activity),
           ),
         ],
       ),

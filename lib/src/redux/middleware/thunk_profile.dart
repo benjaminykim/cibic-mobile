@@ -10,7 +10,7 @@ import 'package:redux/redux.dart';
 import 'package:http/http.dart' as http;
 
 fetchUserProfile(String jwt, NextDispatcher next) async {
-  String idUser = extractID(jwt);
+  String idUser = extractID(jwt).toString();
   final response = await http.get(API_BASE + ENDPOINT_USER + idUser, headers: {
     'content-type': 'application/json',
     'accept': 'application/json',
@@ -26,14 +26,13 @@ fetchUserProfile(String jwt, NextDispatcher next) async {
 }
 
 fetchUserProfileFeed(String jwt, NextDispatcher next) async {
-  String idUser = extractID(jwt);
+  String idUser = extractID(jwt).toString();
   final response =
       await http.get(API_BASE + ENDPOINT_USER_FEED + idUser, headers: {
     'content-type': 'application/json',
     'accept': 'application/json',
     'authorization': "Bearer $jwt"
   });
-  print("fetchUserProfileFeed: ${response.statusCode}");
   if (response.statusCode == 200) {
     FeedModel feed =
         FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
@@ -43,22 +42,23 @@ fetchUserProfileFeed(String jwt, NextDispatcher next) async {
   }
 }
 
-fetchCabildoProfile(String jwt, String idCabildo, NextDispatcher next) async {
+fetchCabildoProfile(String jwt, int idCabildo, NextDispatcher next) async {
   final profileResponse =
-      await http.get(API_BASE + ENDPOINT_CABILDO_PROFILE + idCabildo, headers: {
+      await http.get(API_BASE + ENDPOINT_CABILDO_PROFILE + idCabildo.toString(), headers: {
     'content-type': 'application/json',
     'accept': 'application/json',
     'authorization': "Bearer $jwt"
   });
 
   final feedResponse =
-      await http.get(API_BASE + ENDPOINT_CABILDO_FEED + idCabildo, headers: {
+      await http.get(API_BASE + ENDPOINT_CABILDO_FEED + idCabildo.toString(), headers: {
     'content-type': 'application/json',
     'accept': 'application/json',
     'authorization': "Bearer $jwt"
   });
 
   if (profileResponse.statusCode == 200 && feedResponse.statusCode == 200) {
+    print("CABILDO PROFILE RESPONSE: ${profileResponse.body}");
     CabildoModel cabildo = CabildoModel.fromJson(json.decode(profileResponse.body));
     FeedModel feed =
         FeedModel.fromJson(json.decode('{"feed": ' + feedResponse.body + '}'));
@@ -69,8 +69,8 @@ fetchCabildoProfile(String jwt, String idCabildo, NextDispatcher next) async {
 }
 
 
-fetchForeignUserProfile(String jwt, NextDispatcher next, String idUser) async {
-  final response = await http.get(API_BASE + ENDPOINT_USER + idUser, headers: {
+fetchForeignUserProfile(String jwt, NextDispatcher next, int idUser) async {
+  final response = await http.get(API_BASE + ENDPOINT_USER + idUser.toString(), headers: {
     'content-type': 'application/json',
     'accept': 'application/json',
     'authorization': "Bearer $jwt"
@@ -84,9 +84,9 @@ fetchForeignUserProfile(String jwt, NextDispatcher next, String idUser) async {
   }
 }
 
-fetchForeignUserProfileFeed(String jwt, NextDispatcher next, String idUser) async {
+fetchForeignUserProfileFeed(String jwt, NextDispatcher next, int idUser) async {
   final response =
-      await http.get(API_BASE + ENDPOINT_USER_FEED + idUser, headers: {
+      await http.get(API_BASE + ENDPOINT_USER_FEED + idUser.toString(), headers: {
     'content-type': 'application/json',
     'accept': 'application/json',
     'authorization': "Bearer $jwt"

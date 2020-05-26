@@ -15,7 +15,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  final String idUser;
+  final int idUser;
 
   UserProfileScreen(this.idUser);
 
@@ -30,7 +30,7 @@ class _UserProfileState extends State<UserProfileScreen> {
   Color followButtonColor = Colors.green;
 
   ProfileViewModel generateForeignProfileViewModel(
-      Store<AppState> store, String idUser) {
+      Store<AppState> store, int idUser) {
     Function refreshFeed =
         () => store.dispatch(FetchForeignUserProfileAttempt(idUser));
     FeedModel userFeed;
@@ -44,9 +44,10 @@ class _UserProfileState extends State<UserProfileScreen> {
     jwt = store.state.jwt;
 
     Function onPop = () => store.dispatch(FetchForeignUserProfileClear());
-    Function reactToActivity = (ActivityModel activity, int reactValue) =>
+    Function onReact = (ActivityModel activity, int reactValue) =>
         store.dispatch(PostReactionAttempt(activity, reactValue, 4));
-    return ProfileViewModel(user, userFeed, refreshFeed, error, jwt, onPop, reactToActivity);
+    Function onSave = (int activityId) => store.dispatch(PostSaveAttempt(activityId, true));
+    return ProfileViewModel(user, userFeed, refreshFeed, error, jwt, onPop, onReact, onSave);
   }
 
   Widget generateProfileScreen(BuildContext context, ProfileViewModel vm) {
@@ -106,7 +107,7 @@ class _UserProfileState extends State<UserProfileScreen> {
                                     margin: EdgeInsets.fromLTRB(5, 4, 5, 0),
                                     width: 120,
                                     child: Text(
-                                      vm.user.username,
+                                      "${vm.user.firstName} ${vm.user.lastName}",
                                       textAlign: TextAlign.center,
                                       maxLines: 1,
                                       style: TextStyle(
@@ -121,7 +122,7 @@ class _UserProfileState extends State<UserProfileScreen> {
                                           height: 17,
                                           child: FlatButton(
                                             color: (vm.user.followers
-                                                    .any((k) => k == vm.idUser))
+                                                    .any((k) => k.id == vm.idUser))
                                                 ? Colors.blue
                                                 : Colors.green,
                                             onPressed: () async {
@@ -138,7 +139,7 @@ class _UserProfileState extends State<UserProfileScreen> {
                                             },
                                             child: Text(
                                                 (vm.user.followers.any(
-                                                        (k) => k == vm.idUser))
+                                                        (k) => k.id == vm.idUser))
                                                     ? "siguiendo"
                                                     : "seguir",
                                                 style: TextStyle(
@@ -185,7 +186,7 @@ class _UserProfileState extends State<UserProfileScreen> {
                                                   fontWeight: FontWeight.w600,
                                                 )),
                                             Text(
-                                                (vm.user.cabildos.length > 1)
+                                                (vm.user.followers.length > 1)
                                                     ? "seguidores"
                                                     : "seguidor",
                                                 style: TextStyle(
@@ -303,7 +304,7 @@ class _UserProfileState extends State<UserProfileScreen> {
                           itemCount: vm.feed.feed.length,
                           itemBuilder: (BuildContext context, int index) {
                             ActivityModel activity = vm.feed.feed[index];
-                            return ActivityView(activity, vm.jwt, vm.onReact, FEED_FOREIGN);
+                            return ActivityView(activity, vm.jwt, vm.onReact, vm.onSave, FEED_FOREIGN);
                           }),
                     ))
                   ]),
@@ -348,11 +349,12 @@ class ProfileViewModel {
   Function refresh;
   bool error;
   String jwt;
-  String idUser;
+  int idUser;
   Function onPop;
   Function onReact;
+  Function onSave;
   ProfileViewModel(this.user, this.feed, this.refresh, this.error, this.jwt,
-      this.onPop, this.onReact) {
+      this.onPop, this.onReact, this.onSave) {
     this.idUser = extractID(jwt);
   }
 }

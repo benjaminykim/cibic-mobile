@@ -33,10 +33,11 @@ class _UserProfileState extends State<SelfProfileScreen> {
     userFeed = store.state.userProfileFeed;
     error = store.state.userProfileError;
     jwt = store.state.jwt;
-    Function reactToActivity = (ActivityModel activity, int reactValue) =>
+    Function onReact = (ActivityModel activity, int reactValue) =>
         store.dispatch(PostReactionAttempt(activity, reactValue, 3));
+    Function onSave = (int activityId) => store.dispatch(PostSaveAttempt(activityId, true));
     return ProfileViewModel(
-        user, userFeed, refreshFeed, error, jwt, reactToActivity);
+        user, userFeed, refreshFeed, error, jwt, onReact, onSave);
   }
 
   Widget generateProfileScreen(BuildContext context, ProfileViewModel vm) {
@@ -75,7 +76,7 @@ class _UserProfileState extends State<SelfProfileScreen> {
                             margin: EdgeInsets.fromLTRB(5, 4, 5, 0),
                             width: 120,
                             child: Text(
-                              vm.user.username,
+                              "${vm.user.firstName} ${vm.user.lastName}",
                               textAlign: TextAlign.center,
                               maxLines: 1,
                               style: TextStyle(
@@ -120,7 +121,7 @@ class _UserProfileState extends State<SelfProfileScreen> {
                                           fontWeight: FontWeight.w600,
                                         )),
                                     Text(
-                                        (vm.user.cabildos.length > 1)
+                                        (vm.user.followers.length > 1)
                                             ? "seguidores"
                                             : "seguidor",
                                         style: TextStyle(
@@ -234,7 +235,7 @@ class _UserProfileState extends State<SelfProfileScreen> {
                   itemCount: vm.feed.feed.length,
                   itemBuilder: (BuildContext context, int index) {
                     ActivityModel activity = vm.feed.feed[index];
-                    return ActivityView(activity, vm.jwt, vm.onReact, FEED_USER);
+                    return ActivityView(activity, vm.jwt, vm.onReact, vm.onSave, FEED_USER);
                   }),
             ))
           ]),
@@ -266,6 +267,7 @@ class ProfileViewModel {
   bool error;
   String jwt;
   Function onReact;
+  Function onSave;
   ProfileViewModel(
-      this.user, this.feed, this.refresh, this.error, this.jwt, this.onReact);
+      this.user, this.feed, this.refresh, this.error, this.jwt, this.onReact, this.onSave);
 }

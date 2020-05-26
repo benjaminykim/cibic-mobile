@@ -8,11 +8,11 @@ part of 'comment_model.dart';
 
 CommentModel _$CommentModelFromJson(Map<String, dynamic> json) {
   return CommentModel(
-    json['_id'] as String,
-    json['idUser'] as Map<String, dynamic>,
+    json['id'] as int,
+    json['user'] as Map<String, dynamic>,
     json['content'] as String,
     json['score'] as int,
-    (json['reply'] as List)
+    (json['replies'] as List)
         ?.map((e) =>
             e == null ? null : ReplyModel.fromJson(e as Map<String, dynamic>))
         ?.toList(),
@@ -21,9 +21,9 @@ CommentModel _$CommentModelFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$CommentModelToJson(CommentModel instance) =>
     <String, dynamic>{
-      '_id': instance.id,
-      'idUser': instance.idUser,
+      'id': instance.id,
+      'user': instance.user,
       'score': instance.score,
       'content': instance.content,
-      'reply': instance.reply,
+      'replies': instance.replies,
     };

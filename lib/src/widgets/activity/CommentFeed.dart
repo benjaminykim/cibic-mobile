@@ -50,8 +50,8 @@ class _CommentFeedState extends State<CommentFeed> {
           // USER META DATA
           Container(
             margin: const EdgeInsets.fromLTRB(30, 0, 0, 5),
-            child: UserMetaData(c.idUser['username'], c.idUser['citizenPoints'],
-                null, c.idUser['id'], null, null),
+            child: UserMetaData(c.user['firstName'], c.user['citizenPoints'],
+                null, c.user['id'], null, null),
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +124,7 @@ class _CommentFeedState extends State<CommentFeed> {
             ),
           ),
           // RESPONSES
-          ...generateResponseFeed(c.reply, context),
+          ...generateResponseFeed(c.replies, context),
         ],
       ),
     );
@@ -175,8 +175,8 @@ class _CommentFeedState extends State<CommentFeed> {
                 // RESPONSE USER METADATA
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
-                  child: UserMetaData(r.idUser['username'], r.idUser['citizenPoints'], null,
-                      r.idUser['idUser'], null, null),
+                  child: UserMetaData(r.user['firstName'], r.user['citizenPoints'], null,
+                      r.user['id'], null, null),
                 ),
                 // RESPONSE TEXT CONTENT
                 Container(
@@ -296,7 +296,7 @@ class _CommentFeedState extends State<CommentFeed> {
     if (responses != null) {
       List<Container> responseCards = [];
       for (int i = 0;
-          i < responses.length && i < this.maxCommentView - 1;
+          i < responses.length && i < this.maxCommentView;
           i++) {
         responseCards.add(
           reply(responses[i], context),
@@ -328,9 +328,9 @@ class _CommentFeedState extends State<CommentFeed> {
 
   _CommentFeedViewModel generateViewModel(Store<AppState> store) {
     Function commentToActivity =
-        (String idActivity, String content, int mode) =>
+        (int idActivity, String content, int mode) =>
             store.dispatch(PostCommentAttempt(idActivity, content, mode));
-    Function onReply = (String idActivity, String idComment, String content, int mode) =>
+    Function onReply = (int idActivity, int idComment, String content, int mode) =>
             store.dispatch(PostReplyAttempt(idActivity, idComment, content, mode));
     List<CommentModel> comments;
     FeedModel searchFeed;

@@ -9,6 +9,8 @@ fetchFeed(String jwt, int mode, NextDispatcher next) async {
   String url;
   if (mode == FEED_PUBLIC) {
     url = API_BASE + ENDPOINT_PUBLIC_FEED;
+  } else if (mode == FEED_SAVED) {
+    url = API_BASE + ENDPOINT_ACTIVITY_SAVE_FEED;
   } else {
     url = API_BASE + ENDPOINT_DEFAULT_FEED;
   }

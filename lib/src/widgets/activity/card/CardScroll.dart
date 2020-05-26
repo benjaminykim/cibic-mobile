@@ -10,8 +10,10 @@ import 'package:cibic_mobile/src/resources/constants.dart';
 class CardScroll extends StatefulWidget {
   final ActivityModel activity;
   final Function onReact;
+  final Function onSave;
+  final int mode;
 
-  CardScroll(this.activity, this.onReact);
+  CardScroll(this.activity, this.onReact, this.onSave, this.mode);
 
   @override
   _CardScrollState createState() => _CardScrollState();
@@ -37,10 +39,10 @@ class _CardScrollState extends State<CardScroll> {
 
   List<Widget> generateCards() {
     List<Widget> widgets = [];
-    widgets.add(CardView(widget.activity, CARD_DEFAULT, widget.onReact));
+    widgets.add(CardView(widget.activity, CARD_DEFAULT, widget.onReact, widget.onSave, widget.mode));
     if (widget.activity.comments != null) {
       for (int i = 0; i < 3 && i < widget.activity.comments.length; i++) {
-        widgets.add(CardView(widget.activity, CARD_COMMENT_0 + i, widget.onReact));
+        widgets.add(CardView(widget.activity, CARD_COMMENT_0 + i, widget.onReact, widget.onSave, widget.mode));
       }
     } else {
       // empty card input comment view

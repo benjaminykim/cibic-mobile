@@ -8,35 +8,31 @@ part of 'cabildo_model.dart';
 
 CabildoModel _$CabildoModelFromJson(Map<String, dynamic> json) {
   return CabildoModel(
-    json['_id'] as String,
+    json['id'] as int,
     json['name'] as String,
-    (json['members'] as List)
-        ?.map((e) => (e as Map<String, dynamic>)?.map(
-              (k, e) => MapEntry(k, e as String),
-            ))
-        ?.toList(),
-    (json['moderators'] as List)?.map((e) => e as String)?.toList(),
-    json['admin'] as Map<String, dynamic>,
     json['location'] as String,
-    (json['issues'] as List)?.map((e) => e as String)?.toList(),
-    (json['meetings'] as List)?.map((e) => e as String)?.toList(),
-    (json['files'] as List)?.map((e) => e as String)?.toList(),
-    (json['activityFeed'] as List)?.map((e) => e as String)?.toList(),
     json['desc'] as String,
+    json['admin'] == null
+        ? null
+        : UserModel.fromJson(json['admin'] as Map<String, dynamic>),
+    (json['members'] as List)
+        ?.map((e) =>
+            e == null ? null : UserModel.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+    (json['moderators'] as List)
+        ?.map((e) =>
+            e == null ? null : UserModel.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
   );
 }
 
 Map<String, dynamic> _$CabildoModelToJson(CabildoModel instance) =>
     <String, dynamic>{
-      '_id': instance.id,
-      'members': instance.members,
-      'moderators': instance.moderators,
-      'issues': instance.issues,
-      'meetings': instance.meetings,
-      'files': instance.files,
-      'activityFeed': instance.activityFeed,
+      'id': instance.id,
       'name': instance.name,
+      'location': instance.location,
       'desc': instance.desc,
       'admin': instance.admin,
-      'location': instance.location,
+      'members': instance.members,
+      'moderators': instance.moderators,
     };

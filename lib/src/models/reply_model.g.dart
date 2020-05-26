@@ -8,8 +8,8 @@ part of 'reply_model.dart';
 
 ReplyModel _$ReplyModelFromJson(Map<String, dynamic> json) {
   return ReplyModel(
-    json['_id'] as String,
-    json['idUser'] as Map<String, dynamic>,
+    json['id'] as int,
+    json['user'] as Map<String, dynamic>,
     json['content'] as String,
     json['score'] as int,
   );
@@ -17,8 +17,8 @@ ReplyModel _$ReplyModelFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$ReplyModelToJson(ReplyModel instance) =>
     <String, dynamic>{
-      '_id': instance.id,
-      'idUser': instance.idUser,
+      'id': instance.id,
+      'user': instance.user,
       'score': instance.score,
       'content': instance.content,
     };

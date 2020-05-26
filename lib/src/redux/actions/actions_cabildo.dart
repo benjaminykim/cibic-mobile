@@ -13,8 +13,8 @@ class SubmitCabildoAttempt {
 }
 
 class SubmitCabildoSuccess {
-  String idCabildo;
-  SubmitCabildoSuccess(this.idCabildo);
+  int cabildoId;
+  SubmitCabildoSuccess(this.cabildoId);
 }
 
 class SubmitCabildoError {
@@ -23,7 +23,7 @@ class SubmitCabildoError {
 }
 
 class FetchCabildoProfileAttempt {
-  String idCabildo;
+  int idCabildo;
   FetchCabildoProfileAttempt(this.idCabildo);
 }
 

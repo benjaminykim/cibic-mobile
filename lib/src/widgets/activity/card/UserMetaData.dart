@@ -6,24 +6,24 @@ import 'package:flutter/material.dart';
 
 
 class UserMetaData extends StatelessWidget {
-  final String userName;
-  final String idUser;
+  final String firstName;
+  final int idUser;
   final String cabildoName;
-  final String idCabildo;
+  final int idCabildo;
   final int cp;
   final List<String> followers;
 
-  UserMetaData(this.userName, this.cp, this.cabildoName, this.idUser,
+  UserMetaData(this.firstName, this.cp, this.cabildoName, this.idUser,
       this.idCabildo, this.followers);
 
   factory UserMetaData.fromActivity(ActivityModel activity) {
     return UserMetaData(
-        activity.idUser['username'],
-        activity.idUser['citizenPoints'],
-        activity.idCabildo['name'],
-        activity.idUser['_id'],
-        activity.idCabildo['_id'],
-        activity.idUser['following']);
+        activity.user['firstName'],
+        activity.user['citizenPoints'],
+        activity.cabildo['name'],
+        activity.user['id'],
+        activity.cabildo['id'],
+        activity.user['following']);
   }
 
   void onUserTapped(BuildContext context) {
@@ -53,7 +53,7 @@ class UserMetaData extends StatelessWidget {
           children: <Widget>[
             GestureDetector(
                 onTap: () => this.onUserTapped(context),
-                child: IconTag(Icon(Icons.person, size: 20), userName)),
+                child: IconTag(Icon(Icons.person, size: 20), firstName)),
             Spacer(),
             IconTag(Icon(Icons.offline_bolt, size: 20), cp.toString()),
           ],
@@ -67,7 +67,7 @@ class UserMetaData extends StatelessWidget {
           children: <Widget>[
             GestureDetector(
                 onTap: () => this.onUserTapped(context),
-                child: IconTag(Icon(Icons.person, size: 20), userName)),
+                child: IconTag(Icon(Icons.person, size: 20), firstName)),
             Spacer(),
             IconTag(Icon(Icons.offline_bolt, size: 20), cp.toString()),
             Spacer(),

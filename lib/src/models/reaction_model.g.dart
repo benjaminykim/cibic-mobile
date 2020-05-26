@@ -8,15 +8,15 @@ part of 'reaction_model.dart';
 
 ReactionModel _$ReactionModelFromJson(Map<String, dynamic> json) {
   return ReactionModel(
-    json['_id'] as String,
-    json['idUser'] as String,
+    json['id'] as int,
+    json['userId'] as int,
     json['value'] as int,
   );
 }
 
 Map<String, dynamic> _$ReactionModelToJson(ReactionModel instance) =>
     <String, dynamic>{
-      '_id': instance.id,
-      'idUser': instance.idUser,
+      'id': instance.id,
+      'userId': instance.userId,
       'value': instance.value,
     };

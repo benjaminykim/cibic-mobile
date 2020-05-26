@@ -13,12 +13,10 @@ import 'package:cibic_mobile/src/resources/utils.dart';
 import 'package:redux/redux.dart';
 
 postActivity(dynamic action, String jwt, NextDispatcher next, Store store) async {
-  String type = action.type;
+  int type = action.type;
   String title = action.title;
   String body = action.body;
-  String idCabildo = action.idCabildo;
-  //String tags = action.tags;
-  String idUser = extractID(jwt);
+  int idCabildo = action.idCabildo;
   HttpClient httpClient = new HttpClient();
   HttpClientRequest request =
       await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY));
@@ -27,11 +25,10 @@ postActivity(dynamic action, String jwt, NextDispatcher next, Store store) async
   request.headers.add('authorization', 'Bearer $jwt');
 
   var requestBody;
-  if (type == "discussion" || type == "proposal") {
-    if (idCabildo == "todo") {
+  if (type == 0 || type == 1) {
+    if (idCabildo == -1) {
       requestBody = {
         'activity': {
-          'idUser': idUser,
           'activityType': type,
           'title': title,
           'text': body
@@ -40,8 +37,7 @@ postActivity(dynamic action, String jwt, NextDispatcher next, Store store) async
     } else {
       requestBody = {
         'activity': {
-          'idUser': idUser,
-          'idCabildo': idCabildo,
+          'cabildoId': idCabildo,
           'activityType': type,
           'title': title,
           'text': body
@@ -49,10 +45,9 @@ postActivity(dynamic action, String jwt, NextDispatcher next, Store store) async
       };
     }
   } else {
-    if (idCabildo == "todo") {
+    if (idCabildo == -1) {
       requestBody = {
         'activity': {
-          'idUser': idUser,
           'activityType': type,
           'title': title,
           'text': "none"
@@ -61,8 +56,7 @@ postActivity(dynamic action, String jwt, NextDispatcher next, Store store) async
     } else {
       requestBody = {
         'activity': {
-          'idUser': idUser,
-          'idCabildo': idCabildo,
+          'cabildoId': idCabildo,
           'activityType': type,
           'title': title,
           'text': "none"
@@ -83,16 +77,13 @@ postActivity(dynamic action, String jwt, NextDispatcher next, Store store) async
     store.dispatch(SubmitActivityError(response.statusCode.toString()));
   }
 }
-postReaction(ActivityModel activity, String jwt, int reactValue, String idUser, int mode, NextDispatcher next) async {
-  print("DEBUG");
-  print("Activity: ${activity.id}");
-  print("JWT: $jwt");
-  print("reactvalue: ${reactValue.toString()}");
-  print("idUser: $idUser");
+
+postReaction(ActivityModel activity, String jwt, int reactValue, int idUser, int mode, NextDispatcher next) async {
+  print("API REACTION");
   bool newReaction = true;
-  String idReaction;
+  int idReaction;
   for (int i = 0; i < activity.reactions.length; i++) {
-    if (idUser == activity.reactions[i].idUser) {
+    if (idUser == activity.reactions[i].userId) {
       newReaction = false;
       idReaction = activity.reactions[i].id;
       activity.reactions[i].value = reactValue;
@@ -101,9 +92,11 @@ postReaction(ActivityModel activity, String jwt, int reactValue, String idUser, 
   }
 
   if (newReaction) {
+  print("NEW REACTION");
     var reaction = {
-      "idActivity": activity.id,
-      "reaction": {"idUser": idUser, "value": reactValue}
+      "activityId": activity.id,
+      "userId": idUser,
+      "reaction": {"value": reactValue.toString()}
     };
 
     HttpClient httpClient = new HttpClient();
@@ -119,17 +112,18 @@ postReaction(ActivityModel activity, String jwt, int reactValue, String idUser, 
     print(response.statusCode);
     if (response.statusCode == 201) {
       final responseBody = await response.transform(utf8.decoder).join();
-      String id = json.decode(responseBody)['id'];
+      int id = json.decode(responseBody)['id'];
       ReactionModel newReaction = ReactionModel.fromJson(
-          {"_id": id, "idUser": idUser, "value": reactValue});
+          {"id": id, "userId": idUser, "value": reactValue});
       next(PostReactionSuccess(activity.id, newReaction, mode));
     } else {
       next(PostReactionError(response.statusCode.toString()));
     }
   } else {
+  print("UPDATE REACTION");
     var reaction = {
-      "idActivity": activity.id,
-      "idReaction": idReaction,
+      "activityId": activity.id,
+      "reactionId": idReaction,
       "value": reactValue
     };
 
@@ -145,8 +139,7 @@ postReaction(ActivityModel activity, String jwt, int reactValue, String idUser, 
 
     print(response.statusCode);
     if (response.statusCode == 200) {
-      final responseBody = await response.transform(utf8.decoder).join();
-      print("Response Body: $responseBody");
+      print("PUT RESPONSE BODY: ${response.statusCode}");
       next(PostReactionUpdate(activity.id, idReaction, reactValue, mode));
     } else {
       next(PostReactionError(response.statusCode.toString()));
@@ -154,7 +147,7 @@ postReaction(ActivityModel activity, String jwt, int reactValue, String idUser, 
   }
 }
 
-postComment(String idActivity, String jwt, String content, int mode, int citizenPoints, String username, NextDispatcher next) async {
+postComment(int idActivity, String jwt, String content, int mode, int citizenPoints, String firstName, NextDispatcher next) async {
     HttpClient httpClient = new HttpClient();
   HttpClientRequest request =
       await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_COMMENT));
@@ -163,8 +156,8 @@ postComment(String idActivity, String jwt, String content, int mode, int citizen
   request.headers.add('authorization', 'Bearer $jwt');
 
   final requestBody = {
-    "idActivity": idActivity,
-    "comment": {"idUser": extractID(jwt), "content": content}
+    "activityId": idActivity,
+    "comment": {"userId": extractID(jwt), "content": content}
   };
   request.add(utf8.encode(json.encode(requestBody)));
   HttpClientResponse response = await request.close();
@@ -172,15 +165,14 @@ postComment(String idActivity, String jwt, String content, int mode, int citizen
 
   print("DEBUG: commentToActivity: ${response.statusCode}");
   if (response.statusCode == 201) {
-    final responseBody = await response.transform(utf8.decoder).join();
-    print("RESPONSE BODY: $responseBody");
-    next(PostCommentSuccess(idActivity, CommentModel(responseBody, {'idUser': extractID(jwt), 'username': username, 'citizenPoints': citizenPoints}, content, 0, []), mode));
+    var responseBody = jsonDecode(await response.transform(utf8.decoder).join());
+    next(PostCommentSuccess(idActivity, CommentModel(responseBody['id'], {'userId': extractID(jwt), 'firstName': firstName, 'citizenPoints': citizenPoints}, content, 0, []), mode));
   } else {
     next(PostCommentError(response.statusCode.toString()));
   }
 }
 
-postReply(String idActivity, String idComment, String content, String jwt, String username, int citizenPoints, int mode, NextDispatcher next) async {
+postReply(int idActivity, int idComment, String content, String jwt, String firstName, int citizenPoints, int mode, NextDispatcher next) async {
   HttpClient httpClient = new HttpClient();
   HttpClientRequest request =
       await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_REPLY));
@@ -189,19 +181,18 @@ postReply(String idActivity, String idComment, String content, String jwt, Strin
   request.headers.add('authorization', 'Bearer $jwt');
 
   final requestBody = {
-    "idActivity": idActivity,
-    "idComment": idComment,
-    "reply": {"idUser": extractID(jwt), "content": content}
+    "activityId": idActivity,
+    "commentId": idComment,
+    "reply": {"userId": extractID(jwt), "content": content}
   };
   request.add(utf8.encode(json.encode(requestBody)));
   HttpClientResponse response = await request.close();
   httpClient.close();
 
-  print("postReply response: ${response.statusCode}");
+  print("DEBUG: replyToComment: ${response.statusCode}");
   if (response.statusCode == 201) {
-    final responseBody = await response.transform(utf8.decoder).join();
-    print("posted citizen points");
-    next(PostReplySuccess(idActivity, idComment, ReplyModel(responseBody, {'idUser': extractID(jwt), 'username': username, 'citizenPoints': citizenPoints}, content, 0), mode));
+    var responseBody = jsonDecode(await response.transform(utf8.decoder).join());
+    next(PostReplySuccess(idActivity, idComment, ReplyModel(responseBody['id'], {'userId': extractID(jwt), 'firstName': firstName, 'citizenPoints': citizenPoints}, content, 0), mode));
   } else {
     next(PostReplyError(response.statusCode.toString()));
   }

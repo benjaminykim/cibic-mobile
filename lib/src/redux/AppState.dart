@@ -3,7 +3,7 @@ import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 
 class AppState {
-  String idUser;
+  int idUser;
   String jwt;
   String firstName;
   String lastName;
@@ -13,6 +13,7 @@ class AppState {
   FeedModel userProfileFeed;
   FeedModel homeFeed;
   FeedModel publicFeed;
+  FeedModel savedFeed;
   List<dynamic> cabildos;
   bool isLogIn;
   bool homeFeedError;
@@ -27,7 +28,7 @@ class AppState {
   bool foreignUserError;
 
   AppState(this.idUser, this.jwt, this.firstName, this.lastName, this.followers, this.following, this.user, this.userProfileFeed,
-  this.homeFeed, this.publicFeed, this.cabildos, this.isLogIn, this.homeFeedError, this.publicFeedError, this.userProfileError,
+  this.homeFeed, this.publicFeed, this.savedFeed, this.cabildos, this.isLogIn, this.homeFeedError, this.publicFeedError, this.userProfileError,
   this.cabildoProfile, this.cabildoProfileFeed, this.cabildoProfileError, this.cabildoProfileIsLoading, this.foreignUser, this.foreignUserFeed, this.foreignUserError);
 
   AppState.fromAppState(AppState another) {
@@ -41,6 +42,7 @@ class AppState {
     userProfileFeed = another.userProfileFeed;
     homeFeed = another.homeFeed;
     publicFeed = another.publicFeed;
+    savedFeed = another.savedFeed;
     cabildos = another.cabildos;
     isLogIn = another.isLogIn;
     homeFeedError = another.homeFeedError;
@@ -55,5 +57,5 @@ class AppState {
     foreignUserError = another.foreignUserError;
   }
 
-  factory AppState.initial() => AppState("", "", "", "", [], [], null, null, null, null, [], false, false, false, false, null, null, false, false, null, null, false);
+  factory AppState.initial() => AppState(-1, "", "", "", [], [], null, null, null, null, null, [], false, false, false, false, null, null, false, false, null, null, false);
 }

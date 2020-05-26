@@ -1,23 +1,19 @@
+import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'cabildo_model.g.dart';
 
 @JsonSerializable()
 class CabildoModel {
-  String id;
-  List<Map<String, String>> members;
-  List<String> moderators;
-  List<String> issues;
-  List<String> meetings;
-  List<String> files;
-  List<String> activityFeed;
+  int id;
   String name;
-  String desc;
-  Map<String, dynamic> admin;
   String location;
+  String desc;
+  UserModel admin;
+  List<UserModel> members;
+  List<UserModel> moderators;
 
-  CabildoModel(this.id, this.name, this.members, this.moderators, this.admin, this.location, this.issues,
-  this.meetings, this.files, this.activityFeed, this.desc);
+  CabildoModel(this.id, this.name, this.location, this.desc, this.admin, this.members, this.moderators);
 
   factory CabildoModel.fromJson(Map<String, dynamic> json) => _$CabildoModelFromJson(json);
 

@@ -68,10 +68,10 @@ class _ReactionSliderState extends State<ReactionSlider> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ReactionViewModel>(
       converter: (Store<AppState> store) {
-        String idUser = store.state.idUser;
+        int idUser = store.state.idUser;
         int reactValue = 2;
         for (int i = 0; i < widget.activity.reactions.length; i++) {
-          if (widget.activity.reactions[i].idUser == idUser) {
+          if (widget.activity.reactions[i].userId == idUser) {
             reactValue = widget.activity.reactions[i].value + 2;
             break;
           }

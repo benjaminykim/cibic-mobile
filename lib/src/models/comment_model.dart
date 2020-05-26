@@ -5,13 +5,13 @@ part 'comment_model.g.dart';
 
 @JsonSerializable()
 class CommentModel {
-  String id;
-  Map<String, dynamic> idUser;
+  int id;
+  Map<String, dynamic> user;
   int score;
   String content;
-  List<ReplyModel> reply;
+  List<ReplyModel> replies;
 
-  CommentModel(this.id, this.idUser, this.content, this.score, this.reply);
+  CommentModel(this.id, this.user, this.content, this.score, this.replies);
 
   factory CommentModel.fromJson(Map<String, dynamic> json) => _$CommentModelFromJson(json);
 

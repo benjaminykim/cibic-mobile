@@ -26,9 +26,9 @@ class _ComposeState extends State<Compose> {
   initState() {
     super.initState();
     this.activityButtons = [
-      createActivityButton('discussion', 1),
-      createActivityButton('poll', 0),
-      createActivityButton('proposal', 0)
+      createActivityButton(ACTIVITY_DISCUSS, 1),
+      createActivityButton(ACTIVITY_POLL, 0),
+      createActivityButton(ACTIVITY_PROPOSAL, 0)
     ];
   }
 
@@ -44,7 +44,7 @@ class _ComposeState extends State<Compose> {
         ));
   }
 
-  Container createActivityButton(String type, int selected) {
+  Container createActivityButton(int type, int selected) {
     return Container(
       width: 68,
       height: 17,
@@ -190,7 +190,7 @@ class _ComposeState extends State<Compose> {
     return body;
   }
 
-  void handleActivityButtonClick(BuildContext context, String type) {
+  void handleActivityButtonClick(BuildContext context, int type) {
     setState(() {
       activityButtons[selectedActivity] =
           createActivityButton(ACTIVITY_TYPES[selectedActivity], 0);
@@ -200,15 +200,16 @@ class _ComposeState extends State<Compose> {
     });
   }
 
-  void submitActivity(String idCabildo, _ComposeViewModel vm) {
+  void submitActivity(String cabildoName, _ComposeViewModel vm) {
     UserModel user = vm.user;
     final enteredTitle = inputTitleController.text;
     final enteredBody = inputBodyController.text;
     final enteredTag = inputTagController.text;
+    int idCabildo = -1;
 
-    if (idCabildo != "todo") {
+    if (cabildoName != "todo") {
       for (int i = 0; i < user.cabildos.length; i++) {
-        if (user.cabildos[i].name == idCabildo) {
+        if (user.cabildos[i].name == cabildoName) {
           idCabildo = user.cabildos[i].id;
           break;
         }
@@ -219,13 +220,13 @@ class _ComposeState extends State<Compose> {
       if (enteredTitle.isEmpty || enteredBody.isEmpty) {
         return;
       } else {
-        vm.submitActivity((selectedActivity == 0) ? "discussion" : "proposal", enteredTitle, enteredBody, idCabildo, enteredTag);
+        vm.submitActivity((selectedActivity == 0) ? 0 : 1, enteredTitle, enteredBody, idCabildo, enteredTag);
       }
     } else if (selectedActivity == 1) {
-      if (enteredTitle.isEmpty || idCabildo.isEmpty) {
+      if (enteredTitle.isEmpty) {
         return;
       } else {
-        vm.submitActivity("poll", enteredTitle, enteredBody, idCabildo, enteredTag);
+        vm.submitActivity(2, enteredTitle, enteredBody, idCabildo, enteredTag);
       }
     }
     Navigator.of(context).pop();
@@ -243,7 +244,7 @@ class _ComposeState extends State<Compose> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ComposeViewModel>(
       converter: (Store<AppState> store) {
-        Function submitActivityCallback = (String type, String title, String body, String idCabildo, String tag) => {
+        Function submitActivityCallback = (int type, String title, String body, int idCabildo, String tag) => {
           store.dispatch(SubmitActivityAttempt(type, title, body, idCabildo, tag))
         };
         return _ComposeViewModel(store.state.jwt, store.state.user, submitActivityCallback);

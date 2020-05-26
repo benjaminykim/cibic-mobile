@@ -1,6 +1,7 @@
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/About.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/Configuration.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/MyCabildos.dart';
+import 'package:cibic_mobile/src/widgets/menu/menu-overlay/Saved.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/Unete.dart';
 import 'package:flutter/material.dart';
 
@@ -76,7 +77,10 @@ class MenuOverlay extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Saved()));
                   },
                 ),
                 ListTile(

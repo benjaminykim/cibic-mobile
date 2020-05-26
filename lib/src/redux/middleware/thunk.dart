@@ -14,13 +14,16 @@ import 'package:cibic_mobile/src/redux/actions/actions.dart';
 void apiMiddleware(
     Store<AppState> store, dynamic action, NextDispatcher next) async {
   if (action is LogInAttempt) {
+    print("LOGIN ATTEMPT");
     await attemptLogin(action.email, action.password, next);
     if (store.state.isLogIn) {
+      print("LOGIN SUCCESS");
       String jwt = store.state.jwt;
       await fetchFeed(jwt, FEED_HOME, next);
       await fetchFeed(jwt, FEED_PUBLIC, next);
       await fetchUserProfile(store.state.jwt, next);
       await fetchUserProfileFeed(store.state.jwt, next);
+      print("LOGIN STATE LOAD FINISH");
     }
   } else if (action is FetchFeedAttempt) {
     await fetchFeed(store.state.jwt, action.mode, next);
@@ -46,12 +49,16 @@ void apiMiddleware(
   } else if (action is PostCommentAttempt) {
     String jwt = store.state.jwt;
     int citizenPoints = store.state.user.citizenPoints;
-    String username = store.state.user.username;
-    await postComment(action.idActivity, jwt, action.content, action.mode, citizenPoints, username, next);
+    String firstName = store.state.user.firstName;
+    await postComment(action.idActivity, jwt, action.content, action.mode, citizenPoints, firstName, next);
   } else if (action is PostReplyAttempt) {
     String jwt = store.state.jwt;
     int citizenPoint = store.state.user.citizenPoints;
-    String username = store.state.user.username;
-    await postReply(action.idActivity, action.idComment, action.content, jwt, username, citizenPoint, action.mode, next);
+    String firstName = store.state.user.firstName;
+    await postReply(action.idActivity, action.idComment, action.content, jwt, firstName, citizenPoint, action.mode, next);
+  } else if (action is PostSaveAttempt) {
+    await postSaveActivity(action.activityId, store.state.jwt, action.save, next, store);
+  } else if (action is PostSaveSuccess) {
+    await fetchFeed(store.state.jwt, FEED_SAVED, next);
   }
 }

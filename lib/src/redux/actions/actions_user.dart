@@ -25,7 +25,7 @@ class FetchUserProfileFeedError {
 }
 
 class FetchForeignUserProfileAttempt {
-  String idUser;
+  int idUser;
   FetchForeignUserProfileAttempt(this.idUser);
 }
 
@@ -50,4 +50,8 @@ class FetchForeignUserProfileFeedError {
 }
 
 class FetchForeignUserProfileClear {
+}
+
+class FetchSavedFeedAttempt {
+  FetchSavedFeedAttempt();
 }

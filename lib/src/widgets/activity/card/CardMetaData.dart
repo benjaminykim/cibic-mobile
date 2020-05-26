@@ -41,7 +41,7 @@ class CardMetaData extends StatelessWidget {
   factory CardMetaData.fromActivity(ActivityModel activity) {
     return CardMetaData(
       activity.ping,
-      activity.commentNumber,
+      activity.comment_number,
       activity.publishDate);
   }
 

@@ -4,11 +4,11 @@ part 'reaction_model.g.dart';
 
 @JsonSerializable()
 class ReactionModel {
-  String id;
-  String idUser;
+  int id;
+  int userId;
   int value;
 
-  ReactionModel(this.id, this.idUser, this.value);
+  ReactionModel(this.id, this.userId, this.value);
 
   factory ReactionModel.fromJson(Map<String, dynamic> json) => _$ReactionModelFromJson(json);
 

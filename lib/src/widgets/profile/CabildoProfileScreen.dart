@@ -1,6 +1,7 @@
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
+import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
@@ -14,7 +15,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
 class CabildoProfileScreen extends StatefulWidget {
-  final String idCabildo;
+  final int idCabildo;
 
   CabildoProfileScreen(this.idCabildo);
 
@@ -38,9 +39,10 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
     return StoreConnector<AppState, _CabildoViewModel>(
       converter: (Store<AppState> store) {
         store.dispatch(FetchCabildoProfileAttempt(widget.idCabildo));
-            Function reactToActivity =
+            Function onReact =
         (ActivityModel activity, int reactValue) => store.dispatch(PostReactionAttempt(activity, reactValue, 3));
-        return _CabildoViewModel(store, reactToActivity);
+        Function onSave = (int activityId) => store.dispatch(PostSaveAttempt(activityId, true));
+        return _CabildoViewModel(store, onReact, onSave, store.state.user);
       },
       builder: (BuildContext context, _CabildoViewModel vm) {
         if (vm.cabildo == null) {
@@ -121,7 +123,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                                         height: 17,
                                         child: FlatButton(
                                           color: (vm.members.any(
-                                                  (k) => k['_id'] == vm.idUser))
+                                                  (k) => k.id == vm.idUser))
                                               ? Colors.blue
                                               : Colors.green,
                                           onPressed: () async {
@@ -132,7 +134,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                                               if (ret != "error") {
                                                 setState(() {
                                                   vm.members
-                                                      .add({'_id': vm.idUser});
+                                                      .add(vm.user);
                                                   this.followButtonText =
                                                       "siguiendo";
                                                 });
@@ -145,7 +147,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                                                 setState(() {
                                                   vm.members.removeAt(vm.members
                                                       .indexWhere((k) =>
-                                                          k['_id'] ==
+                                                          k.id ==
                                                           vm.idUser));
                                                   this.followButtonText =
                                                       "seguir";
@@ -294,7 +296,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                             itemCount: vm.feed.feed.length,
                             itemBuilder: (BuildContext context, int index) {
                               return (ActivityView(
-                                  vm.feed.feed[index], vm.jwt, vm.onReact, FEED_CABILDO));
+                                  vm.feed.feed[index], vm.jwt, vm.onReact, vm.onSave, FEED_CABILDO));
                             }),
                       )
                     ]),
@@ -308,24 +310,27 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
 }
 
 class _CabildoViewModel {
-  String idUser;
+  int idUser;
+  UserModel user;
   String jwt;
   String name;
   String description;
   String location;
   FeedModel feed;
-  List<Map<String, String>> members;
+  List<UserModel> members;
   bool isError;
   bool isLoading;
   Function onPop;
   CabildoModel cabildo;
   Function onReact;
-  _CabildoViewModel(store, onReact) {
+  Function onSave;
+  _CabildoViewModel(store, onReact, onSave, this.user) {
     this.jwt = store.state.jwt;
     this.idUser = store.state.idUser;
     this.isError = store.state.cabildoProfileError;
     this.onPop = () => store.dispatch(FetchCabildoProfileClear());
     this.onReact = onReact;
+    this.onSave = onSave;
     if (store.state.cabildoProfile != null) {
       this.cabildo = store.state.cabildoProfile;
       this.name = store.state.cabildoProfile.name;

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-String extractID(String token) {
+int extractID(String token) {
   Map<String, dynamic> parseJwt(String token) {
     final parts = token.split('.');
     if (parts.length != 3) {
@@ -31,6 +31,5 @@ String extractID(String token) {
     return payloadMap;
   }
 
-  String id = parseJwt(token)['id'];
-  return id;
+  return parseJwt(token)['id'];
 }

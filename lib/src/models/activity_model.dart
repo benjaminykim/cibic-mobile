@@ -6,31 +6,32 @@ part 'activity_model.g.dart';
 
 @JsonSerializable()
 class ActivityModel {
-  String id;
-  Map<String, dynamic> idUser;
-  Map<String, dynamic> idCabildo;
-  String activityType;
+  int id;
+  int activityType;
   int score;
   int ping;
-  int commentNumber;
+  int comment_number;
   DateTime publishDate;
   String title;
   String text;
+  int userId;
+  Map<String, dynamic> user;
+  Map<String, dynamic> cabildo;
   List<CommentModel> comments;
   List<ReactionModel> reactions;
   List<Map<String, dynamic>> votes;
 
   ActivityModel(
     this.id,
-    this.idUser,
-    this.idCabildo,
     this.activityType,
     this.score,
     this.ping,
-    this.commentNumber,
+    this.comment_number,
     this.publishDate,
     this.title,
     this.text,
+    this.user,
+    this.cabildo,
     this.comments,
     this.reactions,
     this.votes);
