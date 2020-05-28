@@ -318,7 +318,10 @@ class _UserProfileState extends State<UserProfileScreen> {
         child: Container(
           height: 50,
           width: 50,
-          child: CircularProgressIndicator(),
+          child: SizedBox(
+            height: 50,
+            width: 50,
+            child: CircularProgressIndicator()),
         ),
       );
     }

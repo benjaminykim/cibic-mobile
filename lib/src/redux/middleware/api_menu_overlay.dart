@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
-import 'package:cibic_mobile/src/resources/api_provider.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:redux/redux.dart';
@@ -38,7 +37,7 @@ postCabildo(dynamic action, String jwt, NextDispatcher next, Store store) async 
     Map<String, dynamic> cabildo = jsonDecode(responseBody);
     int reply = cabildo['id'];
     // follow cabildo
-    await followCabildo(reply, jwt);
+    store.dispatch(PostCabildoFollowAttempt(reply));
     // update user profile
     store.dispatch(SubmitCabildoSuccess(reply));
     // pop context

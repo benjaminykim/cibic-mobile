@@ -12,6 +12,7 @@ ReplyModel _$ReplyModelFromJson(Map<String, dynamic> json) {
     json['user'] as Map<String, dynamic>,
     json['content'] as String,
     json['score'] as int,
+    json['votes'] as List,
   );
 }
 
@@ -21,4 +22,5 @@ Map<String, dynamic> _$ReplyModelToJson(ReplyModel instance) =>
       'user': instance.user,
       'score': instance.score,
       'content': instance.content,
+      'votes': instance.votes,
     };

@@ -39,3 +39,23 @@ class FetchCabildoProfileError {
 }
 
 class FetchCabildoProfileClear {}
+
+class PostCabildoFollowAttempt {
+  int cabildoId;
+  PostCabildoFollowAttempt(this.cabildoId);
+}
+
+class PostCabildoUnfollowAttempt {
+  int cabildoId;
+  PostCabildoUnfollowAttempt(this.cabildoId);
+}
+ class PostCabildoFollowError {
+   String error;
+   PostCabildoFollowError(this.error);
+ }
+
+ class PostCabildoFollowSuccess {
+   int mode;
+   int cabildoId;
+   PostCabildoFollowSuccess(this.mode, this.cabildoId);
+ }

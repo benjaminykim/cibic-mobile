@@ -3,7 +3,7 @@ import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/reaction_model.dart';
 import 'package:cibic_mobile/src/models/reply_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
-import 'package:cibic_mobile/src/redux/actions/actions.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_feed.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
@@ -86,6 +86,7 @@ AppState appReducer(AppState prevState, dynamic action) {
   } else if (action is PostReactionError) {
     // String error;
   } else if (action is PostCommentSuccess) {
+    print("comment add success");
     List<FeedModel> feeds = orderFeeds(newState, action.mode);
     for (int i = 0; i < feeds.length; i++) {
       feeds[i] =
@@ -94,6 +95,7 @@ AppState appReducer(AppState prevState, dynamic action) {
   } else if (action is PostCommentError) {
     // String error;
   } else if (action is PostReplySuccess) {
+    print("reply add success");
     List<FeedModel> feeds = orderFeeds(newState, action.mode);
     for (int i = 0; i < feeds.length; i++) {
       feeds[i] = addCommentReply(
@@ -101,6 +103,44 @@ AppState appReducer(AppState prevState, dynamic action) {
     }
   } else if (action is PostReplyError) {
     // String error;
+  } else if (action is PostCommentVoteSuccess) {
+    print("comment vote success");
+    List<FeedModel> feeds = orderFeeds(newState, action.mode);
+    for (int i = 0; i < feeds.length; i++) {
+      feeds[i] = addCommentVote(
+          action.activityId, action.commentId, action.vote, feeds[i]);
+    }
+  } else if (action is PostCommentVoteUpdate) {
+    print("comment vote update");
+    List<FeedModel> feeds = orderFeeds(newState, action.mode);
+    for (int i = 0; i < feeds.length; i++) {
+      feeds[i] = updateCommentVote(action.activityId, action.commentId,
+          action.voteId, action.value, feeds[i]);
+    }
+  } else if (action is PostCommentVoteError) {
+  } else if (action is PostReplyVoteSuccess) {
+    print("reply vote success");
+    List<FeedModel> feeds = orderFeeds(newState, action.mode);
+    for (int i = 0; i < feeds.length; i++) {
+      feeds[i] = addReplyVote(
+          action.activityId, action.replyId, action.vote, feeds[i]);
+    }
+  } else if (action is PostReplyVoteUpdate) {
+    print("reply vote update");
+    List<FeedModel> feeds = orderFeeds(newState, action.mode);
+    for (int i = 0; i < feeds.length; i++) {
+      feeds[i] = updateReplyVote(action.activityId, action.replyId,
+          action.voteId, action.value, feeds[i]);
+    }
+  } else if (action is PostReplyVoteError) {
+  } else if (action is PostCabildoFollowSuccess) {
+    // this is where we mutate state
+    print("mutate state!");
+  } else if (action is PostCabildoFollowError) {
+    print("error in following/unfollowing cabildo");
+  } else if (action is FireBaseTokenSuccess) {
+    newState.firebaseToken = action.token;
+    newState.firebaseManager = action.firebase;
   }
   return newState;
 }
@@ -120,8 +160,8 @@ FeedModel addActivityReaction(
   return feed;
 }
 
-FeedModel updateActivityReaction(int activityId, int reactionId,
-    int userId, int reactValue, FeedModel feed) {
+FeedModel updateActivityReaction(int activityId, int reactionId, int userId,
+    int reactValue, FeedModel feed) {
   if (feed == null ||
       feed.feed == null ||
       activityId == null ||
@@ -168,6 +208,120 @@ FeedModel addCommentReply(
       break;
     }
   }
+  return feed;
+}
+
+FeedModel addCommentVote(
+    int activityId, int commentId, Map<String, int> vote, FeedModel feed) {
+  if (feed == null ||
+      feed.feed == null ||
+      activityId == null ||
+      commentId == null ||
+      vote == null) return feed;
+  for (int i = 0; i < feed.feed.length; i++) {
+    if (feed.feed[i].id == activityId) {
+      for (int j = 0; j < feed.feed[i].comments.length; j++) {
+        if (feed.feed[i].comments[j].id == commentId) {
+          if (feed.feed[i].comments[j].votes == null) {
+            feed.feed[i].comments[j].votes = [vote];
+          } else {
+            feed.feed[i].comments[j].votes.insert(0, vote);
+          }
+          feed.feed[i].comments[j].score += vote['value'];
+          break;
+        }
+      }
+      break;
+    }
+  }
+  return feed;
+}
+
+FeedModel updateCommentVote(
+    int activityId, int commentId, int voteId, int value, FeedModel feed) {
+  if (feed == null ||
+      feed.feed == null ||
+      activityId == null ||
+      commentId == null ||
+      voteId == null) return feed;
+  for (int i = 0; i < feed.feed.length; i++) {
+    if (feed.feed[i].id == activityId) {
+      for (int j = 0; j < feed.feed[i].comments.length; j++) {
+        if (feed.feed[i].comments[j].id == commentId) {
+          for (int k = 0; k < feed.feed[i].comments[j].votes.length; k++) {
+            if (feed.feed[i].comments[j].votes[k]['id'] == voteId) {
+              feed.feed[i].comments[j].score -= feed.feed[i].comments[j].votes[k]['value'];
+              feed.feed[i].comments[j].votes[k]['value'] = value;
+              feed.feed[i].comments[j].score += value;
+              print("found correct vote in comment");
+              break;
+            }
+          }
+          break;
+        }
+      }
+      break;
+    }
+  }
+  return feed;
+}
+
+FeedModel addReplyVote(
+    int activityId, int replyId, Map<String, int> vote, FeedModel feed) {
+  if (feed == null ||
+      feed.feed == null ||
+      activityId == null ||
+      replyId == null ||
+      vote == null) return feed;
+  for (int i = 0; i < feed.feed.length; i++) {
+    if (feed.feed[i].id == activityId) {
+      for (int j = 0; j < feed.feed[i].comments.length; j++) {
+        for (int k = 0; k < feed.feed[i].comments[j].replies.length; k++) {
+          if (feed.feed[i].comments[j].replies[k].id == replyId) {
+            if (feed.feed[i].comments[j].replies[k].votes == null) {
+              feed.feed[i].comments[j].replies[k].votes = [vote];
+            } else {
+              feed.feed[i].comments[j].replies[k].votes.insert(0, vote);
+            }
+            feed.feed[i].comments[j].replies[k].score += vote['value'];
+            return feed;
+          }
+        }
+      }
+      break;
+    }
+  }
+  return feed;
+}
+
+FeedModel updateReplyVote(
+    int activityId, int replyId, int voteId, int value, FeedModel feed) {
+  if (feed == null ||
+      feed.feed == null ||
+      activityId == null ||
+      voteId == null) return feed;
+  for (int i = 0; i < feed.feed.length; i++) {
+    if (feed.feed[i].id == activityId) {
+      print('found reply activity');
+      for (int j = 0; j < feed.feed[i].comments.length; j++) {
+          for (int k = 0; k < feed.feed[i].comments[j].replies.length; k++) {
+            if (feed.feed[i].comments[j].replies[k].id == replyId) {
+              print('found reply comment');
+              for (int l = 0; l < feed.feed[i].comments[j].replies[k].votes.length; l++) {
+                if (feed.feed[i].comments[j].replies[k].votes[l]['id'] == voteId) {
+                  print('found reply votes ');
+                  feed.feed[i].comments[j].replies[k].score -= feed.feed[i].comments[j].replies[k].votes[l]['value'];
+                  feed.feed[i].comments[j].replies[k].votes[l]['value'] = value;
+                  feed.feed[i].comments[j].replies[k].score += value;
+                  return feed;
+                }
+              }
+            }
+          }
+      }
+    }
+  }
+  print("update reply vote");
   return feed;
 }
 

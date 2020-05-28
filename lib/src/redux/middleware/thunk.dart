@@ -1,15 +1,15 @@
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
-import 'package:cibic_mobile/src/redux/middleware/thunk_activity.dart';
-import 'package:cibic_mobile/src/redux/middleware/thunk_feed.dart';
-import 'package:cibic_mobile/src/redux/middleware/thunk_menu_overlay.dart';
-import 'package:cibic_mobile/src/redux/middleware/thunk_profile.dart';
-import 'package:cibic_mobile/src/redux/middleware/thunk_user.dart';
+import 'package:cibic_mobile/src/redux/middleware/api_activity.dart';
+import 'package:cibic_mobile/src/redux/middleware/api_feed.dart';
+import 'package:cibic_mobile/src/redux/middleware/api_menu_overlay.dart';
+import 'package:cibic_mobile/src/redux/middleware/api_profile.dart';
+import 'package:cibic_mobile/src/redux/middleware/api_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:redux/redux.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
-import 'package:cibic_mobile/src/redux/actions/actions.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_feed.dart';
 
 void apiMiddleware(
     Store<AppState> store, dynamic action, NextDispatcher next) async {
@@ -60,5 +60,15 @@ void apiMiddleware(
     await postSaveActivity(action.activityId, store.state.jwt, action.save, next, store);
   } else if (action is PostSaveSuccess) {
     await fetchFeed(store.state.jwt, FEED_SAVED, next);
+  } else if (action is PostCommentVoteAttempt) {
+    await postCommentVote(store.state.jwt, action.value, action.activityid, action.comment, store.state.idUser, action.mode, next);
+  } else if (action is PostReplyVoteAttempt) {
+    await postReplyVote(store.state.jwt, action.value, action.activityid, action.reply, store.state.idUser, action.mode, next);
+  } else if (action is PostCabildoFollowAttempt) {
+    await postCabildoFollow(store.state.jwt, action.cabildoId, next);
+  } else if (action is PostCabildoUnfollowAttempt) {
+    await postCabildoUnfollow(store.state.jwt, action.cabildoId, next);
+  } else if (action is FireBaseTokenAttempt) {
+    await getFirebaseToken(store.state.jwt, next);
   }
 }

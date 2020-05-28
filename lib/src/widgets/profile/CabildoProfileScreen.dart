@@ -5,7 +5,6 @@ import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
-import 'package:cibic_mobile/src/resources/api_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
@@ -28,6 +27,13 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
   int maxLines = 4;
   String followButtonText = "seguir";
   Color followButtonColor = Colors.green;
+  bool isLoaded;
+
+  @override
+  initState() {
+    super.initState();
+    this.isLoaded = false;
+  }
 
   void onActivityTapped(ActivityScreen activityScreen, BuildContext context) {
     Navigator.push(
@@ -38,11 +44,20 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _CabildoViewModel>(
       converter: (Store<AppState> store) {
-        store.dispatch(FetchCabildoProfileAttempt(widget.idCabildo));
+        if (!this.isLoaded) {
+          store.dispatch(FetchCabildoProfileAttempt(widget.idCabildo));
+          this.isLoaded = true;
+        }
             Function onReact =
         (ActivityModel activity, int reactValue) => store.dispatch(PostReactionAttempt(activity, reactValue, 3));
         Function onSave = (int activityId) => store.dispatch(PostSaveAttempt(activityId, true));
-        return _CabildoViewModel(store, onReact, onSave, store.state.user);
+        Function onCabildoFollow = (int idCabildo) => {
+          store.dispatch(PostCabildoFollowAttempt(idCabildo))
+        };
+        Function onCabildoUnfollow = (int idCabildo) => {
+          store.dispatch(PostCabildoUnfollowAttempt(idCabildo))
+        };
+        return _CabildoViewModel(store, onReact, onSave, onCabildoFollow, onCabildoUnfollow, store.state.user);
       },
       builder: (BuildContext context, _CabildoViewModel vm) {
         if (vm.cabildo == null) {
@@ -129,8 +144,9 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                                           onPressed: () async {
                                             if (this.followButtonText ==
                                                 "seguir") {
-                                              String ret = await followCabildo(
-                                                  widget.idCabildo, vm.jwt);
+
+                                              String ret = "";
+                                              vm.onCabildoFollow(widget.idCabildo);
                                               if (ret != "error") {
                                                 setState(() {
                                                   vm.members
@@ -140,9 +156,8 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                                                 });
                                               }
                                             } else {
-                                              String ret =
-                                                  await unfollowCabildo(
-                                                      widget.idCabildo, vm.jwt);
+                                              String ret = "";
+                                              vm.onCabildoUnfollow(widget.idCabildo);
                                               if (ret != "error") {
                                                 setState(() {
                                                   vm.members.removeAt(vm.members
@@ -324,13 +339,17 @@ class _CabildoViewModel {
   CabildoModel cabildo;
   Function onReact;
   Function onSave;
-  _CabildoViewModel(store, onReact, onSave, this.user) {
+  Function onCabildoFollow;
+  Function onCabildoUnfollow;
+  _CabildoViewModel(store, onReact, onSave, onCabildoFollow, onCabildoUnfollow, this.user) {
     this.jwt = store.state.jwt;
     this.idUser = store.state.idUser;
     this.isError = store.state.cabildoProfileError;
     this.onPop = () => store.dispatch(FetchCabildoProfileClear());
     this.onReact = onReact;
     this.onSave = onSave;
+    this.onCabildoFollow = onCabildoFollow;
+    this.onCabildoUnfollow = onCabildoUnfollow;
     if (store.state.cabildoProfile != null) {
       this.cabildo = store.state.cabildoProfile;
       this.name = store.state.cabildoProfile.name;

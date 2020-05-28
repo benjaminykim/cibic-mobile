@@ -1,5 +1,5 @@
 import 'package:cibic_mobile/src/models/feed_model.dart';
-import 'package:cibic_mobile/src/redux/actions/actions.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_feed.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';

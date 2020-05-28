@@ -2,7 +2,6 @@ import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
-import 'package:cibic_mobile/src/resources/api_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
@@ -33,8 +32,26 @@ class _CommentFeedState extends State<CommentFeed> {
 
   int maxCommentView = 3;
 
-  Container comment(CommentModel c, BuildContext context, Function onReply) {
+  Container comment(
+      CommentModel c, BuildContext context, _CommentFeedViewModel vm) {
+    int userId = vm.userId;
+    Function onReply = vm.onReply;
+    Function onCommentVote = vm.onCommentVote;
     final inputCommentController = TextEditingController();
+    Color upVoteColor = Colors.black;
+    Color downVoteColor = Colors.black;
+    if (c.votes != null) {
+      for (int i = 0; i < c.votes.length; i++) {
+        if (c.votes[i]['userId'] == userId) {
+          if (c.votes[i]['value'] == 1) {
+            upVoteColor = COLOR_DEEP_BLUE;
+          } else {
+            downVoteColor = COLOR_DEEP_BLUE;
+          }
+          break;
+        }
+      }
+    }
     return Container(
       padding: EdgeInsets.fromLTRB(0, 10, 0, 2),
       width: MediaQuery.of(context).size.width - 20,
@@ -61,9 +78,10 @@ class _CommentFeedState extends State<CommentFeed> {
                 padding: const EdgeInsets.only(left: 5),
                 child: Column(children: <Widget>[
                   GestureDetector(
-                      child: Icon(Icons.keyboard_arrow_up, size: 20),
+                      child: Icon(Icons.keyboard_arrow_up,
+                          color: upVoteColor, size: 20),
                       onTap: () {
-                        voteToComment(widget.jwt, 1, widget.activity.id, c.id);
+                        onCommentVote(1, widget.activity.id, c);
                       }),
                   Text(
                     c.score.toString(),
@@ -73,9 +91,10 @@ class _CommentFeedState extends State<CommentFeed> {
                     ),
                   ),
                   GestureDetector(
-                      child: Icon(Icons.keyboard_arrow_down, size: 20),
+                      child: Icon(Icons.keyboard_arrow_down,
+                          color: downVoteColor, size: 20),
                       onTap: () {
-                        voteToComment(widget.jwt, -1, widget.activity.id, c.id);
+                        onCommentVote(-1, widget.activity.id, c);
                       }),
                 ]),
               ),
@@ -111,7 +130,8 @@ class _CommentFeedState extends State<CommentFeed> {
                 suffixIcon: IconButton(
                   icon: Icon(Icons.send, color: Colors.black),
                   onPressed: () {
-                    onReply(widget.activity.id, c.id, inputCommentController.text, widget.mode);
+                    onReply(widget.activity.id, c.id,
+                        inputCommentController.text, widget.mode);
                   },
                 ),
                 border: InputBorder.none,
@@ -124,13 +144,29 @@ class _CommentFeedState extends State<CommentFeed> {
             ),
           ),
           // RESPONSES
-          ...generateResponseFeed(c.replies, context),
+          ...generateResponseFeed(c.replies, context, vm),
         ],
       ),
     );
   }
 
-  Container reply(ReplyModel r, BuildContext c) {
+  Container reply(ReplyModel r, BuildContext c, _CommentFeedViewModel vm) {
+    int userId = vm.userId;
+    Function onReplyVote = vm.onReplyVote;
+    Color upVoteColor = Colors.black;
+    Color downVoteColor = Colors.black;
+    if (r.votes != null) {
+      for (int i = 0; i < r.votes.length; i++) {
+        if (r.votes[i]['userId'] == userId) {
+          if (r.votes[i]['value'] == 1) {
+            upVoteColor = COLOR_DEEP_BLUE;
+          } else {
+            downVoteColor = COLOR_DEEP_BLUE;
+          }
+          break;
+        }
+      }
+    }
     return Container(
       margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
       decoration: BoxDecoration(
@@ -148,9 +184,10 @@ class _CommentFeedState extends State<CommentFeed> {
             child: Column(
               children: <Widget>[
                 GestureDetector(
-                    child: Icon(Icons.keyboard_arrow_up, size: 20),
+                    child: Icon(Icons.keyboard_arrow_up,
+                        color: upVoteColor, size: 20),
                     onTap: () {
-                      voteToReply(widget.jwt, 1, widget.activity.id, r.id);
+                      onReplyVote(1, widget.activity.id, r);
                     }),
                 Text(
                   r.score.toString(),
@@ -160,9 +197,10 @@ class _CommentFeedState extends State<CommentFeed> {
                   ),
                 ),
                 GestureDetector(
-                    child: Icon(Icons.keyboard_arrow_down, size: 20),
+                    child: Icon(Icons.keyboard_arrow_down,
+                        color: downVoteColor, size: 20),
                     onTap: () {
-                      voteToReply(widget.jwt, -1, widget.activity.id, r.id);
+                      onReplyVote(-1, widget.activity.id, r);
                     }),
               ],
             ),
@@ -175,8 +213,8 @@ class _CommentFeedState extends State<CommentFeed> {
                 // RESPONSE USER METADATA
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
-                  child: UserMetaData(r.user['firstName'], r.user['citizenPoints'], null,
-                      r.user['id'], null, null),
+                  child: UserMetaData(r.user['firstName'],
+                      r.user['citizenPoints'], null, r.user['id'], null, null),
                 ),
                 // RESPONSE TEXT CONTENT
                 Container(
@@ -227,7 +265,7 @@ class _CommentFeedState extends State<CommentFeed> {
       BuildContext context, _CommentFeedViewModel vm) {
     List<Container> commentCards = [];
     for (int i = 0; i < vm.comments.length; i++) {
-      commentCards.add(comment(vm.comments[i], context, vm.onReply));
+      commentCards.add(comment(vm.comments[i], context, vm));
     }
     return commentCards;
   }
@@ -272,9 +310,7 @@ class _CommentFeedState extends State<CommentFeed> {
                   color: Colors.black,
                   onPressed: () {
                     String commentText = inputCommentController.text;
-                    vm.commentToActivity(
-                        widget.activity.id, commentText, widget.mode);
-                    //commentToActivity(widget.jwt, commentText, widget.idActivity);
+                    vm.onComment(widget.activity.id, commentText, widget.mode);
                   },
                 ),
                 border: InputBorder.none,
@@ -291,15 +327,13 @@ class _CommentFeedState extends State<CommentFeed> {
     );
   }
 
-  List<Container> generateResponseFeed(
-      List<ReplyModel> responses, BuildContext context) {
+  List<Container> generateResponseFeed(List<ReplyModel> responses,
+      BuildContext context, _CommentFeedViewModel vm) {
     if (responses != null) {
       List<Container> responseCards = [];
-      for (int i = 0;
-          i < responses.length && i < this.maxCommentView;
-          i++) {
+      for (int i = 0; i < responses.length && i < this.maxCommentView; i++) {
         responseCards.add(
-          reply(responses[i], context),
+          reply(responses[i], context, vm),
         );
       }
       if (responses.length > this.maxCommentView) {
@@ -327,11 +361,16 @@ class _CommentFeedState extends State<CommentFeed> {
   }
 
   _CommentFeedViewModel generateViewModel(Store<AppState> store) {
-    Function commentToActivity =
-        (int idActivity, String content, int mode) =>
-            store.dispatch(PostCommentAttempt(idActivity, content, mode));
-    Function onReply = (int idActivity, int idComment, String content, int mode) =>
-            store.dispatch(PostReplyAttempt(idActivity, idComment, content, mode));
+    Function commentToActivity = (int idActivity, String content, int mode) =>
+        store.dispatch(PostCommentAttempt(idActivity, content, mode));
+    Function onCommentVote = (int value, int activityId,
+            CommentModel comment) =>
+        {store.dispatch(PostCommentVoteAttempt(value, activityId, comment, widget.mode))};
+    Function onReplyVote = (int value, int activityId, ReplyModel reply) =>
+        {store.dispatch(PostReplyVoteAttempt(value, activityId, reply, widget.mode))};
+    Function onReply = (int idActivity, int idComment, String content,
+            int mode) =>
+        store.dispatch(PostReplyAttempt(idActivity, idComment, content, mode));
     List<CommentModel> comments;
     FeedModel searchFeed;
     switch (widget.mode) {
@@ -359,7 +398,8 @@ class _CommentFeedState extends State<CommentFeed> {
         comments = searchFeed.feed[i].comments;
       }
     }
-    return _CommentFeedViewModel(commentToActivity, onReply, comments);
+    return _CommentFeedViewModel(store.state.idUser, commentToActivity, onReply,
+        onCommentVote, onReplyVote, comments);
   }
 
   @override
@@ -377,8 +417,12 @@ class _CommentFeedState extends State<CommentFeed> {
 }
 
 class _CommentFeedViewModel {
-  Function commentToActivity;
+  int userId;
+  Function onComment;
   Function onReply;
+  Function onCommentVote;
+  Function onReplyVote;
   List<CommentModel> comments;
-  _CommentFeedViewModel(this.commentToActivity, this.onReply, this.comments);
+  _CommentFeedViewModel(this.userId, this.onComment, this.onReply,
+      this.onCommentVote, this.onReplyVote, this.comments);
 }

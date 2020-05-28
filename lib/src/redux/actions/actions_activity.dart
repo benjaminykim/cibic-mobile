@@ -100,3 +100,63 @@ class PostSaveError {
   String error;
   PostSaveError(this.error);
 }
+
+class PostCommentVoteAttempt {
+  int value;
+  int activityid;
+  CommentModel comment;
+  int mode;
+  PostCommentVoteAttempt(this.value, this.activityid, this.comment, this.mode);
+}
+
+class PostCommentVoteSuccess {
+  int activityId;
+  int commentId;
+  Map<String, int> vote;
+  int mode;
+  PostCommentVoteSuccess(this.activityId, this.commentId, this.vote, this.mode);
+}
+
+class PostCommentVoteUpdate {
+  int activityId;
+  int commentId;
+  int voteId;
+  int value;
+  int mode;
+  PostCommentVoteUpdate(this.activityId, this.commentId, this.voteId, this.value, this.mode);
+}
+
+class PostCommentVoteError {
+  String error;
+  PostCommentVoteError(this.error);
+}
+
+class PostReplyVoteAttempt {
+  int value;
+  int activityid;
+  ReplyModel reply;
+  int mode;
+  PostReplyVoteAttempt(this.value, this.activityid, this.reply, this.mode);
+}
+
+class PostReplyVoteSuccess {
+  int activityId;
+  int replyId;
+  Map<String, int> vote;
+  int mode;
+  PostReplyVoteSuccess(this.activityId, this.replyId, this.vote, this.mode);
+}
+
+class PostReplyVoteUpdate {
+  int activityId;
+  int replyId;
+  int voteId;
+  int value;
+  int mode;
+  PostReplyVoteUpdate(this.activityId, this.replyId, this.voteId, this.value, this.mode);
+}
+
+class PostReplyVoteError {
+  String error;
+  PostReplyVoteError(this.error);
+}

@@ -8,8 +8,9 @@ class ReplyModel {
   Map<String, dynamic> user;
   int score;
   String content;
+  List<dynamic> votes;
 
-  ReplyModel(this.id, this.user, this.content, this.score);
+  ReplyModel(this.id, this.user, this.content, this.score, this.votes);
 
   factory ReplyModel.fromJson(Map<String, dynamic> json) => _$ReplyModelFromJson(json);
 

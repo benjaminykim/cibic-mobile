@@ -7,8 +7,6 @@ import 'package:cibic_mobile/src/widgets/menu/BaseBar.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/MenuOverlay.dart';
 
 class Home extends StatefulWidget {
-  Home();
-
   @override
   _HomeState createState() => _HomeState();
 }
@@ -41,16 +39,16 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 4,
-        child: Scaffold(
-          appBar: BaseAppBar(this.appBarTitle),
-          body: Center(
-            child: _widgetOptions.elementAt(selectedBarIndex),
-          ),
-          drawer: MenuOverlay("", this.onBarButtonTapped),
-          bottomNavigationBar:
-              BaseBar(this.selectedBarIndex, this.onBarButtonTapped),
+      length: 4,
+      child: Scaffold(
+        appBar: BaseAppBar(this.appBarTitle),
+        body: Center(
+          child: _widgetOptions.elementAt(selectedBarIndex),
         ),
+        drawer: MenuOverlay("", this.onBarButtonTapped),
+        bottomNavigationBar:
+            BaseBar(this.selectedBarIndex, this.onBarButtonTapped),
+      ),
     );
   }
 }

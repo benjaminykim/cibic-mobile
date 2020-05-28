@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:cibic_mobile/src/onboard/home.dart';
 import 'package:cibic_mobile/src/onboard/register.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
-import 'package:cibic_mobile/src/redux/actions/actions.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -177,6 +177,7 @@ class _WelcomeState extends State<Welcome> {
                                 await vm().dispatch(LogInAttempt(
                                     _emailController.text,
                                     _passwordController.text));
+                                vm().dispatch(FireBaseTokenAttempt());
                                 if (vm().state.isLogIn) {
                                   Navigator.pushReplacement(
                                       context,

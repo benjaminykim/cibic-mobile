@@ -10,8 +10,9 @@ class CommentModel {
   int score;
   String content;
   List<ReplyModel> replies;
+  List<dynamic> votes;
 
-  CommentModel(this.id, this.user, this.content, this.score, this.replies);
+  CommentModel(this.id, this.user, this.content, this.score, this.replies, this.votes);
 
   factory CommentModel.fromJson(Map<String, dynamic> json) => _$CommentModelFromJson(json);
 

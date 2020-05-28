@@ -16,6 +16,7 @@ CommentModel _$CommentModelFromJson(Map<String, dynamic> json) {
         ?.map((e) =>
             e == null ? null : ReplyModel.fromJson(e as Map<String, dynamic>))
         ?.toList(),
+    json['votes'] as List,
   );
 }
 
@@ -26,4 +27,5 @@ Map<String, dynamic> _$CommentModelToJson(CommentModel instance) =>
       'score': instance.score,
       'content': instance.content,
       'replies': instance.replies,
+      'votes': instance.votes,
     };

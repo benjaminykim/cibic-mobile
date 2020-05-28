@@ -143,6 +143,7 @@ const URL_FIREKITTEN_3EA_BASE = "http://192.168.8.130:4444/";
 const URL_AWS_BASE = "https://www.cibic.app/api/";
 
 const ENDPOINT_LOGIN = "auth/login/";
+const ENDPOINT_FIREBASE = "auth/notify/";
 
 const ENDPOINT_ACTIVITY = "activity/";
 const ENDPOINT_PUBLIC_FEED = "activity/public";
