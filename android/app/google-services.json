@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "842990217241",
+    "firebase_url": "https://cibic-mobile.firebaseio.com",
+    "project_id": "cibic-mobile",
+    "storage_bucket": "cibic-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842990217241:android:ad4602f0179fc0409b2288",
+        "android_client_info": {
+          "package_name": "com.cibic_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "842990217241-ia1vsj6571nuf9jlcc86vrnnc50m0i40.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAffCHEJGq8J4sB_N5FyfKq0fPCBHlLHwQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "842990217241-ia1vsj6571nuf9jlcc86vrnnc50m0i40.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

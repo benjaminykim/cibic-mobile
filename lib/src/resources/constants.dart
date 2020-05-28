@@ -139,7 +139,7 @@ Map<String, String> getAuthHeader(String jwt) {
 
 const URL_LOCALHOST_BASE = "http://10.0.2.2:30012/";
 const URL_FIREKITTEN_BASE = "http://10.10.126.56:4444/";
-const URL_FIREKITTEN_3EA_BASE = "http://192.168.8.130:4444/";
+const URL_FIREKITTEN_3EA_BASE = "http://192.168.8.204:4444/";
 const URL_AWS_BASE = "https://www.cibic.app/api/";
 
 const ENDPOINT_LOGIN = "auth/login/";
@@ -169,5 +169,5 @@ const ENDPOINT_UNFOLLOW_CABILDO = "user/unfollowcabildo";
 
 const ENDPOINT_UNETE_COMMENT = "cibic/comment";
 
-//const API_BASE = URL_LOCALHOST_BASE;
-const API_BASE = URL_FIREKITTEN_3EA_BASE;
+const API_BASE = URL_LOCALHOST_BASE;
+//const API_BASE = URL_FIREKITTEN_3EA_BASE;
