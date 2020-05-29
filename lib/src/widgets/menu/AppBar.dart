@@ -1,4 +1,5 @@
 import 'package:cibic_mobile/src/models/cibic_icons.dart';
+import 'package:cibic_mobile/src/widgets/menu/Search.dart';
 import 'package:flutter/material.dart';
 import 'package:cibic_mobile/src/widgets/menu/ComposeScreen.dart';
 
@@ -23,6 +24,23 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
+  void _startSearch(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      elevation: 6,
+      backgroundColor: Colors.transparent,
+      builder: (bContext) {
+        return GestureDetector(
+          onTap: () {},
+          child: Search(),
+          behavior: HitTestBehavior.opaque,
+        );
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -41,7 +59,9 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
               Cibic.search,
               size: 38,
             ),
-            onPressed: () {},
+            onPressed: () {
+              _startSearch(context);
+            },
           ),
         ),
         Padding(

@@ -141,6 +141,22 @@ AppState appReducer(AppState prevState, dynamic action) {
   } else if (action is FireBaseTokenSuccess) {
     newState.firebaseToken = action.token;
     newState.firebaseManager = action.firebase;
+  } else if (action is PostSearchSuccess) {
+    // search success
+    // mutate state for search queries
+    switch (action.mode) {
+      case 0:
+        newState.searchUser = action.resultUser;
+        break;
+      case 1:
+        newState.searchCabildo = action.resultCabildo;
+        break;
+      case 2:
+        newState.searchActivity = action.resultActivity;
+        break;
+    }
+  } else if (action is PostSearchError) {
+    // error string here
   }
   return newState;
 }

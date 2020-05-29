@@ -1,5 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cibic_mobile/src/models/activity_model.dart';
+import 'package:cibic_mobile/src/models/cabildo_model.dart';
+import 'package:cibic_mobile/src/models/feed_model.dart';
+import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
@@ -90,20 +94,83 @@ getFirebaseToken(String jwt, NextDispatcher next) async {
   await _firebaseMessaging.getToken().then((String token) async {
     assert(token != null);
     print(token);
-     HttpClient httpClient = new HttpClient();
-  HttpClientRequest request =
-      await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_FIREBASE));
+    HttpClient httpClient = new HttpClient();
+    HttpClientRequest request =
+        await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_FIREBASE));
+    request.headers.add('content-type', 'application/json');
+    request.headers.add('accept', 'application/json');
+    request.add(utf8.encode(json.encode({"device_id": token})));
+    HttpClientResponse response = await request.close();
+    httpClient.close();
+
+    print("DEBUG: send firebase token ${response.statusCode.toString()}");
+    if (response.statusCode == 201) {
+      next(FireBaseTokenSuccess(token, _firebaseMessaging));
+    } else {
+      next(FireBaseTokenError(response.statusCode.toString()));
+    }
+  });
+}
+
+postSearchQuery(String jwt, String query, int mode, NextDispatcher next) async {
+  String url = API_BASE;
+  switch (mode) {
+    case 0:
+      url += ENDPOINT_SEARCH_USER;
+      break;
+    case 1:
+      url += ENDPOINT_SEARCH_CABILDO;
+      break;
+    case 2:
+      url += ENDPOINT_SEARCH_ACTIVITY;
+      break;
+  }
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request = await httpClient.postUrl(Uri.parse(url));
   request.headers.add('content-type', 'application/json');
   request.headers.add('accept', 'application/json');
-  request.add(utf8.encode(json.encode({"device_id": token})));
+  request.headers.add('authorization', 'Bearer $jwt');
+  request.add(utf8.encode(json.encode({
+    "search": {"query": query}
+  })));
   HttpClientResponse response = await request.close();
   httpClient.close();
 
-  print("DEBUG: send firebase token ${response.statusCode.toString()}");
+  print(request.toString());
+  print("SEARCH: MODE: $mode    RESPONSE: ${response.statusCode.toString()}");
   if (response.statusCode == 201) {
-    next(FireBaseTokenSuccess(token, _firebaseMessaging));
+    final responseBody = await response.transform(utf8.decoder).join();
+    switch (mode) {
+      case 0:
+        List<UserModel> responseList = jsonDecode(responseBody);
+        next(PostSearchSuccess(mode, responseList));
+        break;
+      case 1:
+        List<CabildoModel> responseList = jsonDecode(responseBody);
+        next(PostSearchSuccess(mode, responseList));
+        break;
+      case 2:
+      print(responseBody);
+        List<ActivityModel> responseList = jsonDecode(responseBody);
+        next(PostSearchSuccess(mode, responseList));
+        break;
+    }
+  } else if (response.statusCode == 204) {
+    switch (mode) {
+      case 0:
+        List<UserModel> responseList = [];
+        next(PostSearchSuccess(mode, responseList));
+        break;
+      case 1:
+        List<CabildoModel> responseList = [];
+        next(PostSearchSuccess(mode, responseList));
+        break;
+      case 2:
+        List<FeedModel> responseList = [];
+        next(PostSearchSuccess(mode, responseList));
+        break;
+    }
   } else {
-    next(FireBaseTokenError(response.statusCode.toString()));
+    next(PostSearchError(response.statusCode.toString()));
   }
-  });
 }

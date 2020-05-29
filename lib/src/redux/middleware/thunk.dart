@@ -70,5 +70,9 @@ void apiMiddleware(
     await postCabildoUnfollow(store.state.jwt, action.cabildoId, next);
   } else if (action is FireBaseTokenAttempt) {
     await getFirebaseToken(store.state.jwt, next);
+  } else if (action is PostSearchAttempt) {
+    await postSearchQuery(store.state.jwt, action.query, 0, next);
+    await postSearchQuery(store.state.jwt, action.query, 1, next);
+    await postSearchQuery(store.state.jwt, action.query, 2, next);
   }
 }
