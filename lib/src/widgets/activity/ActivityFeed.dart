@@ -68,7 +68,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
         itemBuilder: (BuildContext context, int index) {
           ActivityModel activity = vm.feed.feed[index];
           return ActivityView(
-              activity, vm.jwt, vm.onReact, vm.onSave, widget.mode);
+              activity, vm.onReact, vm.onSave, widget.mode);
         },
       );
     }

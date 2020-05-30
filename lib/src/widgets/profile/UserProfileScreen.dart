@@ -304,7 +304,7 @@ class _UserProfileState extends State<UserProfileScreen> {
                           itemCount: vm.feed.feed.length,
                           itemBuilder: (BuildContext context, int index) {
                             ActivityModel activity = vm.feed.feed[index];
-                            return ActivityView(activity, vm.jwt, vm.onReact, vm.onSave, FEED_FOREIGN);
+                            return ActivityView(activity, vm.onReact, vm.onSave, FEED_FOREIGN);
                           }),
                     ))
                   ]),

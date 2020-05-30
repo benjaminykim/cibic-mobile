@@ -8,12 +8,11 @@ import 'package:cibic_mobile/src/widgets/activity/card/UserMetaData.dart';
 
 class ActivityView extends StatefulWidget {
   final ActivityModel activity;
-  final String jwt;
   final Function onReact;
   final Function onSave;
   final int mode;
 
-  ActivityView(this.activity, this.jwt, this.onReact, this.onSave, this.mode) {
+  ActivityView(this.activity, this.onReact, this.onSave, this.mode) {
     if (this.activity.cabildo == null) {
       this.activity.cabildo = {
         'name': 'todo',
@@ -32,7 +31,7 @@ class _ActivityViewState extends State<ActivityView> {
         context,
         MaterialPageRoute(
             builder: (context) => ActivityScreen(widget.activity,
-                widget.jwt, widget.onReact, widget.onSave, widget.mode)));
+                widget.onReact, widget.onSave, widget.mode)));
   }
 
   @override

@@ -13,10 +13,9 @@ import 'package:redux/redux.dart';
 
 class CommentFeed extends StatefulWidget {
   final ActivityModel activity;
-  final String jwt;
   final int mode;
 
-  CommentFeed(this.activity, this.jwt, this.mode);
+  CommentFeed(this.activity, this.mode);
 
   @override
   _CommentFeedState createState() => _CommentFeedState();

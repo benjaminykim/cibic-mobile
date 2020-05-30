@@ -311,7 +311,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                             itemCount: vm.feed.feed.length,
                             itemBuilder: (BuildContext context, int index) {
                               return (ActivityView(
-                                  vm.feed.feed[index], vm.jwt, vm.onReact, vm.onSave, FEED_CABILDO));
+                                  vm.feed.feed[index], vm.onReact, vm.onSave, FEED_CABILDO));
                             }),
                       )
                     ]),

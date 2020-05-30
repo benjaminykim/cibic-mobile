@@ -58,7 +58,7 @@ class Saved extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           ActivityModel activity = vm.feed.feed[index];
           return ActivityView(
-              activity, vm.jwt, vm.onReact, vm.onSave, FEED_SAVED);
+              activity, vm.onReact, vm.onSave, FEED_SAVED);
         },
       );
     }

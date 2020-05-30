@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
+import 'package:cibic_mobile/src/models/search_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
@@ -142,17 +143,18 @@ postSearchQuery(String jwt, String query, int mode, NextDispatcher next) async {
     final responseBody = await response.transform(utf8.decoder).join();
     switch (mode) {
       case 0:
-        List<UserModel> responseList = jsonDecode(responseBody);
+        List<UserModel> responseList = SearchUserModel.fromJson(json.decode('{"user":' + responseBody + '}')).user;
         next(PostSearchSuccess(mode, responseList));
         break;
       case 1:
-        List<CabildoModel> responseList = jsonDecode(responseBody);
+        List<CabildoModel> responseList = SearchCabildoModel.fromJson(json.decode('{"cabildo":' + responseBody + '}')).cabildo;
         next(PostSearchSuccess(mode, responseList));
         break;
       case 2:
-      print(responseBody);
-        List<ActivityModel> responseList = jsonDecode(responseBody);
-        next(PostSearchSuccess(mode, responseList));
+        print(responseBody);
+        List<ActivityModel> feed =
+            FeedModel.fromJson(json.decode('{"feed":' + responseBody + '}')).feed;
+        next(PostSearchSuccess(mode, feed));
         break;
     }
   } else if (response.statusCode == 204) {
@@ -166,7 +168,7 @@ postSearchQuery(String jwt, String query, int mode, NextDispatcher next) async {
         next(PostSearchSuccess(mode, responseList));
         break;
       case 2:
-        List<FeedModel> responseList = [];
+        List<ActivityModel> responseList = [];
         next(PostSearchSuccess(mode, responseList));
         break;
     }

@@ -2,7 +2,11 @@ import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
+import 'package:cibic_mobile/src/widgets/activity/CabildoCard.dart';
+import 'package:cibic_mobile/src/widgets/activity/SearchActivityCard.dart';
+import 'package:cibic_mobile/src/widgets/activity/UserCard.dart';
 import 'package:flutter/material.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -20,6 +24,24 @@ class _SearchState extends State<Search> {
   var inputBorderDecoration = OutlineInputBorder(
       borderRadius: BorderRadius.zero,
       borderSide: BorderSide(width: 1, color: Colors.transparent));
+  int selectedPage = 0;
+  PageController _controller = PageController(
+    initialPage: 0,
+  );
+
+  List<String> searchButtonTextPicker = [
+    "Todo",
+    "Actividad",
+    "Usuario",
+    "Cabildo"
+  ];
+
+  Widget noResultsFound = Container(
+    height: double.infinity,
+    width: double.infinity,
+    padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+    child: Text("No Results Found"),
+  );
 
   @override
   void initState() {
@@ -33,7 +55,126 @@ class _SearchState extends State<Search> {
 
   void dispose() {
     inputSearchController.dispose();
+    _controller.dispose();
     super.dispose();
+  }
+
+  Widget searchPageTodo(_SearchViewModel vm) {
+    if (vm.searchActivity.length == 0 &&
+        vm.searchCabildo.length == 0 &&
+        vm.searchUser.length == 0) {
+      return this.noResultsFound;
+    } else {
+      return ListView.separated(
+        separatorBuilder: (context, index) => Divider(
+          color: Colors.black,
+          indent: 10,
+          endIndent: 10,
+        ),
+        itemCount: vm.searchActivity.length +
+            vm.searchUser.length +
+            vm.searchCabildo.length,
+        itemBuilder: (BuildContext context, int index) {
+          if (index < vm.searchActivity.length) {
+            ActivityModel activity = vm.searchActivity[index];
+            return SearchActivityCard(
+                activity, activity.activityType, vm.onReact, vm.onSave, 6);
+          } else if (index < vm.searchActivity.length + vm.searchUser.length) {
+            UserModel user = vm.searchUser[index - vm.searchActivity.length];
+            return UserCard(user);
+          } else {
+            CabildoModel cabildo = vm.searchCabildo[index - vm.searchUser.length - vm.searchActivity.length];
+            return CabildoCard(cabildo);
+          }
+        },
+      );
+    }
+  }
+
+  Widget searchPageActivity(_SearchViewModel vm) {
+    if (vm.searchActivity.length == 0) {
+      return this.noResultsFound;
+    } else {
+      return ListView.separated(
+        separatorBuilder: (context, index) => Divider(
+          color: Colors.black,
+          indent: 10,
+          endIndent: 10,
+        ),
+        itemCount: vm.searchActivity.length,
+        itemBuilder: (BuildContext context, int index) {
+          ActivityModel activity = vm.searchActivity[index];
+          return SearchActivityCard(
+              activity, activity.activityType, vm.onReact, vm.onSave, 6);
+        },
+      );
+    }
+  }
+
+  Widget searchPageUser(_SearchViewModel vm) {
+    if (vm.searchUser.length == 0) {
+      return this.noResultsFound;
+    } else {
+      return ListView.separated(
+        separatorBuilder: (context, index) => Divider(
+          color: Colors.black,
+          indent: 10,
+          endIndent: 10,
+        ),
+        itemCount: vm.searchUser.length,
+        itemBuilder: (BuildContext context, int index) {
+          UserModel user = vm.searchUser[index];
+          return UserCard(user);
+        },
+      );
+    }
+  }
+
+  Widget searchPageCabildo(_SearchViewModel vm) {
+    if (vm.searchCabildo.length == 0) {
+      return this.noResultsFound;
+    } else {
+      return ListView.separated(
+        separatorBuilder: (context, index) => Divider(
+          color: Colors.black,
+          indent: 10,
+          endIndent: 10,
+        ),
+        itemCount: vm.searchCabildo.length,
+        itemBuilder: (BuildContext context, int index) {
+          CabildoModel cabildo = vm.searchCabildo[index];
+          return CabildoCard(cabildo);
+        },
+      );
+    }
+  }
+
+  Widget createSearchOptionButton(int mode) {
+    return Container(
+      width: 68,
+      height: 17,
+      margin: const EdgeInsets.fromLTRB(0, 0, 7, 0),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black, width: 0.5),
+        borderRadius: BorderRadius.circular(5),
+        color: (this.selectedPage == mode) ? Colors.blue : Colors.transparent,
+      ),
+      child: GestureDetector(
+        onTap: () {
+          _controller.jumpToPage(mode);
+        },
+        child: Center(
+          child: Text(
+            searchButtonTextPicker[mode],
+            style: TextStyle(
+              color: (this.selectedPage == mode) ? Colors.white : Colors.black,
+              fontSize: 10,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -42,12 +183,18 @@ class _SearchState extends State<Search> {
       converter: (Store<AppState> store) {
         Function submitSearchQuery =
             (String query) => {store.dispatch(PostSearchAttempt(query))};
+        Function onReact = (ActivityModel activity, int reactValue) =>
+            store.dispatch(PostReactionAttempt(activity, reactValue, 6));
+        Function onSave = (int activityId) =>
+            store.dispatch(PostSaveAttempt(activityId, true));
         return _SearchViewModel(
             store.state.user,
             submitSearchQuery,
             store.state.searchActivity,
             store.state.searchUser,
-            store.state.searchCabildo);
+            store.state.searchCabildo,
+            onReact,
+            onSave);
       },
       builder: (BuildContext context, _SearchViewModel vm) {
         return Container(
@@ -56,7 +203,7 @@ class _SearchState extends State<Search> {
           height: MediaQuery.of(context).size.height - 50,
           margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
           decoration: BoxDecoration(
-              color: CARD_BACKGROUND,
+              color: APP_BACKGROUND,
               borderRadius: BorderRadius.all(Radius.circular(30)),
               boxShadow: [
                 BoxShadow(
@@ -103,38 +250,46 @@ class _SearchState extends State<Search> {
                       ),
                     ],
                   )),
+              // SEARCH OPTIONS
+              Container(
+                margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                height: 20,
+                child: Row(
+                  children: [
+                    createSearchOptionButton(0),
+                    createSearchOptionButton(1),
+                    createSearchOptionButton(2),
+                    createSearchOptionButton(3),
+                  ],
+                ),
+              ),
               // SEARCH RESULTS
               Container(
-                height: MediaQuery.of(context).size.height - 150,
-                margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                height: MediaQuery.of(context).size.height - 155,
+                margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
                 padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
                 decoration: BoxDecoration(
-                  color: Color(0xfff5f6f7),
-                  borderRadius: BorderRadius.all(Radius.circular(13)),
+                  border: Border(
+                      top: BorderSide(
+                    color: Colors.black,
+                    width: 1,
+                  )),
                 ),
-                child: ListView.builder(
-                    itemCount: vm.searchActivity.length + vm.searchUser.length + vm.searchCabildo.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index < vm.searchActivity.length) {
-                      return Text(
-                        vm.searchActivity[index].title,
-                        style: TextStyle(color: Colors.black, fontSize: 14),
-                      );
-                      } else if (index - vm.searchActivity.length < vm.searchUser.length) {
-                      return Text(
-                        vm.searchUser[index - vm.searchActivity.length].firstName + " " + vm.searchUser[index].lastName,
-                        style: TextStyle(color: Colors.black, fontSize: 14),
-                      );
-                      } else if (index - vm.searchActivity.length - vm.searchUser.length < vm.searchCabildo.length) {
-                      return Text(
-                        vm.searchCabildo[index - vm.searchActivity.length - vm.searchCabildo.length - vm.searchActivity.length].name,
-                        style: TextStyle(color: Colors.black, fontSize: 14),
-                      );
-                      } else {
-                        return Text("no hay nada");
-                      }
-                    },
-                  ),
+                child: PageView(
+                  controller: _controller,
+                  onPageChanged: (int pageIndex) {
+                    setState(() {
+                      this.selectedPage = pageIndex;
+                    });
+                  },
+                  children: [
+                    searchPageTodo(vm),
+                    searchPageActivity(vm),
+                    searchPageUser(vm),
+                    searchPageCabildo(vm),
+                  ],
+                ),
               ),
             ],
           ),
@@ -150,6 +305,8 @@ class _SearchViewModel {
   List<ActivityModel> searchActivity;
   List<UserModel> searchUser;
   List<CabildoModel> searchCabildo;
+  Function onReact;
+  Function onSave;
   _SearchViewModel(this.user, this.submitSearchQuery, this.searchActivity,
-      this.searchUser, this.searchCabildo);
+      this.searchUser, this.searchCabildo, this.onReact, this.onSave);
 }
