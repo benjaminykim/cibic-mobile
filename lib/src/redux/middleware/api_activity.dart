@@ -23,7 +23,6 @@ postActivity(
   request.headers.add('accept', 'application/json');
   request.headers.add('authorization', 'Bearer $jwt');
 
-  print("CABILDO ID: $idCabildo");
   var requestBody;
   if (type == 0 || type == 1) {
     if (idCabildo == -1) {
@@ -56,15 +55,12 @@ postActivity(
       };
     }
   }
-  print("REQUEST BODY ${requestBody.toString()}");
 
   request.add(utf8.encode(json.encode(requestBody)));
   HttpClientResponse response = await request.close();
   httpClient.close();
 
   if (response.statusCode == 201) {
-    //final responseBody = await response.transform(utf8.decoder).join();
-    //Map<String, dynamic> activity = jsonDecode(responseBody);
     store.dispatch(SubmitActivitySuccess());
   } else {
     store.dispatch(SubmitActivityError(response.statusCode.toString()));
@@ -73,7 +69,6 @@ postActivity(
 
 postReaction(ActivityModel activity, String jwt, int reactValue, int idUser,
     int mode, NextDispatcher next) async {
-  print("API REACTION");
   bool newReaction = true;
   int idReaction;
   for (int i = 0; i < activity.reactions.length; i++) {
@@ -85,10 +80,11 @@ postReaction(ActivityModel activity, String jwt, int reactValue, int idUser,
   }
 
   if (newReaction) {
-    print("NEW REACTION");
     var reaction = {
-      "activityId": activity.id,
-      "reaction": {"value": reactValue.toString()}
+      "reaction": {
+        "value": reactValue.toString(),
+        "activityId": activity.id,
+      }
     };
 
     HttpClient httpClient = new HttpClient();
@@ -101,7 +97,7 @@ postReaction(ActivityModel activity, String jwt, int reactValue, int idUser,
     HttpClientResponse response = await request.close();
     httpClient.close();
 
-    print(response.statusCode);
+    print('reaction post: ${response.statusCode}');
     if (response.statusCode == 201) {
       final responseBody = await response.transform(utf8.decoder).join();
       int id = json.decode(responseBody)['id'];
@@ -112,7 +108,6 @@ postReaction(ActivityModel activity, String jwt, int reactValue, int idUser,
       next(PostReactionError(response.statusCode.toString()));
     }
   } else {
-    print("UPDATE REACTION");
     var reaction = {
       "activityId": activity.id,
       "reactionId": idReaction,
@@ -129,7 +124,7 @@ postReaction(ActivityModel activity, String jwt, int reactValue, int idUser,
     HttpClientResponse response = await request.close();
     httpClient.close();
 
-    print(response.statusCode);
+    print("Reaction Put ${response.statusCode}");
     if (response.statusCode == 200) {
       print("PUT RESPONSE BODY: ${response.statusCode}");
       next(PostReactionUpdate(activity.id, idReaction, reactValue, mode));
@@ -160,6 +155,8 @@ postComment(int idActivity, String jwt, String content, int mode,
   if (response.statusCode == 201) {
     var responseBody =
         jsonDecode(await response.transform(utf8.decoder).join());
+    print("Activity Comment: $responseBody");
+    print("id: ${responseBody['id']}");
     next(PostCommentSuccess(
         idActivity,
         CommentModel(
@@ -258,6 +255,11 @@ postCommentVote(String jwt, int value, int activityId, CommentModel comment,
 
     print("DEBUG: postCommentVote: ${response.statusCode}");
     if (response.statusCode == 201) {
+      String responseBody = await response.transform(utf8.decoder).join();
+      Map<String, dynamic> vote = jsonDecode(responseBody);
+      print("returned vote: ${vote.toString()}");
+      requestBody['vote']['id'] = vote['id'];
+      print("stored vote: ${requestBody['vote']}");
       next(PostCommentVoteSuccess(
           activityId, comment.id, requestBody['vote'], mode));
     } else {
@@ -315,8 +317,14 @@ postReplyVote(String jwt, int value, int activityId, ReplyModel reply,
 
     print("DEBUG: postReplyVote: ${response.statusCode}");
     if (response.statusCode == 201) {
+      String responseBody = await response.transform(utf8.decoder).join();
+      print("RESPONSE BODY: $responseBody");
+      Map<String, dynamic> vote = jsonDecode(responseBody);
+      vote['value'] = value;
+      vote['userId'] = userId;
+      print("VOTE: $vote");
       next(PostReplyVoteSuccess(
-          activityId, reply.id, requestBody['vote'], mode));
+          activityId, reply.id, vote, mode));
     } else {
       next(PostReplyVoteError(response.statusCode.toString()));
     }

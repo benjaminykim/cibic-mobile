@@ -159,7 +159,7 @@ class _CommentFeedState extends State<CommentFeed> {
         if (r.votes[i]['userId'] == userId) {
           if (r.votes[i]['value'] == 1) {
             upVoteColor = COLOR_DEEP_BLUE;
-          } else {
+          } else if (r.votes[i]['value'] == -1) {
             downVoteColor = COLOR_DEEP_BLUE;
           }
           break;
@@ -395,6 +395,7 @@ class _CommentFeedState extends State<CommentFeed> {
     for (int i = 0; i < searchFeed.feed.length; i++) {
       if (searchFeed.feed[i].id == widget.activity.id) {
         comments = searchFeed.feed[i].comments;
+        break;
       }
     }
     return _CommentFeedViewModel(store.state.idUser, commentToActivity, onReply,

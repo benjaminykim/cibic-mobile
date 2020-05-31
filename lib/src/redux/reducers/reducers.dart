@@ -21,9 +21,7 @@ AppState appReducer(AppState prevState, dynamic action) {
     newState.registerError = false;
     newState.registerSuccess = true;
     Navigator.pushReplacement(
-                                    action.context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Onboard("")));
+        action.context, MaterialPageRoute(builder: (context) => Onboard("")));
   } else if (action is PostRegisterError) {
     newState.registerError = true;
     newState.registerSuccess = false;
@@ -102,7 +100,7 @@ AppState appReducer(AppState prevState, dynamic action) {
   } else if (action is PostCommentSuccess) {
     print("comment add success");
     List<FeedModel> feeds = orderFeeds(newState, action.mode);
-    for (int i = 0; i < feeds.length; i++) {
+    for (int i = 0; i < 1; i++) {
       feeds[i] =
           addActivityComment(action.idActivity, action.comment, feeds[i]);
     }
@@ -111,7 +109,7 @@ AppState appReducer(AppState prevState, dynamic action) {
   } else if (action is PostReplySuccess) {
     print("reply add success");
     List<FeedModel> feeds = orderFeeds(newState, action.mode);
-    for (int i = 0; i < feeds.length; i++) {
+    for (int i = 0; i < 1; i++) {
       feeds[i] = addCommentReply(
           action.idActivity, action.idComment, action.reply, feeds[i]);
     }
@@ -120,14 +118,14 @@ AppState appReducer(AppState prevState, dynamic action) {
   } else if (action is PostCommentVoteSuccess) {
     print("comment vote success");
     List<FeedModel> feeds = orderFeeds(newState, action.mode);
-    for (int i = 0; i < feeds.length; i++) {
+    for (int i = 0; i < 1; i++) {
       feeds[i] = addCommentVote(
           action.activityId, action.commentId, action.vote, feeds[i]);
     }
   } else if (action is PostCommentVoteUpdate) {
     print("comment vote update");
     List<FeedModel> feeds = orderFeeds(newState, action.mode);
-    for (int i = 0; i < feeds.length; i++) {
+    for (int i = 0; i < 1; i++) {
       feeds[i] = updateCommentVote(action.activityId, action.commentId,
           action.voteId, action.value, feeds[i]);
     }
@@ -135,14 +133,14 @@ AppState appReducer(AppState prevState, dynamic action) {
   } else if (action is PostReplyVoteSuccess) {
     print("reply vote success");
     List<FeedModel> feeds = orderFeeds(newState, action.mode);
-    for (int i = 0; i < feeds.length; i++) {
-      feeds[i] = addReplyVote(
-          action.activityId, action.replyId, action.vote, feeds[i]);
+    for (int i = 0; i < 1; i++) {
+      feeds[i] = addReplyVote(action.activityId,
+          action.replyId, action.vote, feeds[i]);
     }
   } else if (action is PostReplyVoteUpdate) {
     print("reply vote update");
     List<FeedModel> feeds = orderFeeds(newState, action.mode);
-    for (int i = 0; i < feeds.length; i++) {
+    for (int i = 0; i < 1; i++) {
       feeds[i] = updateReplyVote(action.activityId, action.replyId,
           action.voteId, action.value, feeds[i]);
     }
@@ -167,8 +165,7 @@ AppState appReducer(AppState prevState, dynamic action) {
         newState.searchActivity = action.resultActivity;
         break;
     }
-  } else if (action is PostSearchError) {
-  }
+  } else if (action is PostSearchError) {}
   return newState;
 }
 
@@ -228,8 +225,9 @@ FeedModel addCommentReply(
     if (feed.feed[i].id == activityId) {
       for (int j = 0; j < feed.feed[i].comments.length; j++) {
         if (feed.feed[i].comments[j].id == commentId) {
+          print("insertion comment reply");
           feed.feed[i].comments[j].replies.insert(0, reply);
-          break;
+          return feed;
         }
       }
       break;
@@ -277,7 +275,8 @@ FeedModel updateCommentVote(
         if (feed.feed[i].comments[j].id == commentId) {
           for (int k = 0; k < feed.feed[i].comments[j].votes.length; k++) {
             if (feed.feed[i].comments[j].votes[k]['id'] == voteId) {
-              feed.feed[i].comments[j].score -= feed.feed[i].comments[j].votes[k]['value'];
+              feed.feed[i].comments[j].score -=
+                  feed.feed[i].comments[j].votes[k]['value'];
               feed.feed[i].comments[j].votes[k]['value'] = value;
               feed.feed[i].comments[j].score += value;
               print("found correct vote in comment");
@@ -293,8 +292,8 @@ FeedModel updateCommentVote(
   return feed;
 }
 
-FeedModel addReplyVote(
-    int activityId, int replyId, Map<String, int> vote, FeedModel feed) {
+FeedModel addReplyVote(int activityId, int replyId,
+    Map<String, dynamic> vote, FeedModel feed) {
   if (feed == null ||
       feed.feed == null ||
       activityId == null ||
@@ -303,17 +302,17 @@ FeedModel addReplyVote(
   for (int i = 0; i < feed.feed.length; i++) {
     if (feed.feed[i].id == activityId) {
       for (int j = 0; j < feed.feed[i].comments.length; j++) {
-        for (int k = 0; k < feed.feed[i].comments[j].replies.length; k++) {
-          if (feed.feed[i].comments[j].replies[k].id == replyId) {
-            if (feed.feed[i].comments[j].replies[k].votes == null) {
-              feed.feed[i].comments[j].replies[k].votes = [vote];
-            } else {
-              feed.feed[i].comments[j].replies[k].votes.insert(0, vote);
+          for (int k = 0; k < feed.feed[i].comments[j].replies.length; k++) {
+            if (feed.feed[i].comments[j].replies[k].id == replyId) {
+              if (feed.feed[i].comments[j].replies[k].votes == null) {
+                feed.feed[i].comments[j].replies[k].votes = [vote];
+              } else {
+                feed.feed[i].comments[j].replies[k].votes.insert(0, vote);
+              }
+              feed.feed[i].comments[j].replies[k].score += vote['value'];
+              return feed;
             }
-            feed.feed[i].comments[j].replies[k].score += vote['value'];
-            return feed;
           }
-        }
       }
       break;
     }
@@ -323,29 +322,37 @@ FeedModel addReplyVote(
 
 FeedModel updateReplyVote(
     int activityId, int replyId, int voteId, int value, FeedModel feed) {
-  if (feed == null ||
-      feed.feed == null ||
-      activityId == null ||
-      voteId == null) return feed;
+  if (feed == null || feed.feed == null || activityId == null || voteId == null)
+    return feed;
   for (int i = 0; i < feed.feed.length; i++) {
     if (feed.feed[i].id == activityId) {
       print('found reply activity');
       for (int j = 0; j < feed.feed[i].comments.length; j++) {
-          for (int k = 0; k < feed.feed[i].comments[j].replies.length; k++) {
-            if (feed.feed[i].comments[j].replies[k].id == replyId) {
-              print('found reply comment');
-              for (int l = 0; l < feed.feed[i].comments[j].replies[k].votes.length; l++) {
-                if (feed.feed[i].comments[j].replies[k].votes[l]['id'] == voteId) {
-                  print('found reply votes ');
-                  feed.feed[i].comments[j].replies[k].score -= feed.feed[i].comments[j].replies[k].votes[l]['value'];
-                  feed.feed[i].comments[j].replies[k].votes[l]['value'] = value;
-                  feed.feed[i].comments[j].replies[k].score += value;
-                  return feed;
-                }
+        for (int k = 0; k < feed.feed[i].comments[j].replies.length; k++) {
+          if (feed.feed[i].comments[j].replies[k].id == replyId) {
+            print('found reply comment');
+            for (int l = 0;
+                l < feed.feed[i].comments[j].replies[k].votes.length;
+                l++) {
+              if (feed.feed[i].comments[j].replies[k].votes[l]['id'] ==
+                  voteId) {
+                print('found reply votes ');
+                print(feed.feed[i].comments[j].replies[k].score);
+                print(feed.feed[i].comments[j].replies[k].votes[l]['value']);
+                feed.feed[i].comments[j].replies[k].score -=
+                    feed.feed[i].comments[j].replies[k].votes[l]['value'];
+                feed.feed[i].comments[j].replies[k].votes[l]['value'] = value;
+                feed.feed[i].comments[j].replies[k].score += value;
+                print(feed.feed[i].comments[j].replies[k].score);
+                print(feed.feed[i].comments[j].replies[k].votes[l]['value']);
+                return feed;
               }
             }
+            return feed;
           }
+        }
       }
+      return feed;
     }
   }
   print("update reply vote");

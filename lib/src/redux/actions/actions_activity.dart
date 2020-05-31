@@ -142,7 +142,7 @@ class PostReplyVoteAttempt {
 class PostReplyVoteSuccess {
   int activityId;
   int replyId;
-  Map<String, int> vote;
+  Map<String, dynamic> vote;
   int mode;
   PostReplyVoteSuccess(this.activityId, this.replyId, this.vote, this.mode);
 }

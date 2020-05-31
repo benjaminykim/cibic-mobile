@@ -446,12 +446,9 @@ class _RegisterState extends State<Register> {
                         // submit
                         GestureDetector(
                           onTap: () async {
-                            print("tapped");
                             if (_formKey.currentState.validate() &&
                                 sex != '' &&
                                 privacy) {
-                              print("trying to register");
-                              print("${_emailController.text} ${_passwordController.text} ${_firstNameController.text} ${_lastNameController.text} ${_phoneController.text}");
                               await vm.onRegister(
                                   _emailController.text,
                                   _passwordController.text,
@@ -459,7 +456,6 @@ class _RegisterState extends State<Register> {
                                   _lastNameController.text,
                                   _phoneController.text,
                                   context);
-                              print(vm.isLogIn);
                               if (vm.isLogIn) {
                                 Navigator.pushReplacement(
                                     context,
