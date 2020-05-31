@@ -143,13 +143,13 @@ class _CommentFeedState extends State<CommentFeed> {
             ),
           ),
           // RESPONSES
-          ...generateResponseFeed(c.replies, context, vm),
+          ...generateResponseFeed(c.replies, context, vm, inputCommentController),
         ],
       ),
     );
   }
 
-  Container reply(ReplyModel r, BuildContext c, _CommentFeedViewModel vm) {
+  Container reply(ReplyModel r, BuildContext c, _CommentFeedViewModel vm, TextEditingController commentController) {
     int userId = vm.userId;
     Function onReplyVote = vm.onReplyVote;
     Color upVoteColor = Colors.black;
@@ -235,23 +235,10 @@ class _CommentFeedState extends State<CommentFeed> {
                       child: Icon(Icons.reply, size: 20),
                     ),
                     onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        elevation: 5,
-                        backgroundColor: Colors.transparent,
-                        builder: (bContext) {
-                          return GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              height: 10,
-                              color: Colors.black,
-                            ),
-                            behavior: HitTestBehavior.opaque,
-                          );
-                        },
-                      );
-                    }),
+                              print("A");
+                              print("reply id ${r.user["firstName"]}");
+                            },
+                ),
               ],
             ),
           ),
@@ -327,12 +314,12 @@ class _CommentFeedState extends State<CommentFeed> {
   }
 
   List<Container> generateResponseFeed(List<ReplyModel> responses,
-      BuildContext context, _CommentFeedViewModel vm) {
+      BuildContext context, _CommentFeedViewModel vm, TextEditingController commentController) {
     if (responses != null) {
       List<Container> responseCards = [];
       for (int i = 0; i < responses.length && i < this.maxCommentView; i++) {
         responseCards.add(
-          reply(responses[i], context, vm),
+          reply(responses[i], context, vm, commentController),
         );
       }
       if (responses.length > this.maxCommentView) {
