@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cibic_mobile/src/onboard/onboard.dart';
-import 'package:cibic_mobile/src/onboard/register2.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,18 +20,14 @@ class _RegisterState extends State<Register> {
   bool isChecked = false;
   bool isSubmitable = false;
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _sexController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   List<String> inputLabels = [
     "correo electrónico",
-    "nombre de usuario",
     "nombre de pila",
     "apellido",
-    "sexo",
     "número de teléfono",
     "contraseña"
   ];
@@ -47,10 +42,8 @@ class _RegisterState extends State<Register> {
     super.initState();
     this.inputCtlrs = [
       _emailController,
-      _usernameController,
       _firstNameController,
       _lastNameController,
-      _sexController,
       _phoneController,
       _passwordController
     ];
@@ -61,7 +54,6 @@ class _RegisterState extends State<Register> {
   Map<String, dynamic> createUserRequestBody() {
     Map<String, Map<String, dynamic>> userRequest = {
       'user': {
-        'username': '${_usernameController.text}',
         'password': '${_passwordController.text}',
         'email': '${_emailController.text}',
         'firstName': '${_firstNameController.text}',
@@ -126,17 +118,13 @@ class _RegisterState extends State<Register> {
 
   bool computeSubmitable() {
     if ((_emailController.text != null) &&
-        (_usernameController.text != null) &&
         (_firstNameController.text != null) &&
         (_lastNameController.text != null) &&
-        (_sexController.text != null) &&
         (_phoneController.text != null) &&
         (_passwordController.text != null) &&
         (_emailController.text != "") &&
-        (_usernameController.text != "") &&
         (_firstNameController.text != "") &&
         (_lastNameController.text != "") &&
-        (_sexController.text != "") &&
         (_phoneController.text != "") &&
         (_passwordController.text != "") &&
         (this.isChecked)) {
@@ -556,16 +544,6 @@ class _RegisterState extends State<Register> {
                           color: Colors.white,
                           thickness: 1,
                         ),
-                        InkWell(
-                            child: Text("Test"),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  CupertinoPageRoute(
-                                    builder: (context) =>
-                                        EmailPasswordSignInForm(),
-                                  ));
-                            }),
                         // DYNAMIC SPACING
                         SizedBox(
                           height: MediaQuery.of(context).viewInsets.bottom,

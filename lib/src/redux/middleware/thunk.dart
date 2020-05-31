@@ -15,7 +15,7 @@ void apiMiddleware(
     Store<AppState> store, dynamic action, NextDispatcher next) async {
   if (action is LogInAttempt) {
     print("LOGIN ATTEMPT");
-    await attemptLogin(action.email, action.password, next);
+    await attemptLogin(action.email, action.password, store, next);
     if (store.state.isLogIn) {
       print("LOGIN SUCCESS");
       String jwt = store.state.jwt;
@@ -25,6 +25,8 @@ void apiMiddleware(
       await fetchUserProfileFeed(store.state.jwt, next);
       print("LOGIN STATE LOAD FINISH");
     }
+  } else if (action is PostRegisterAttempt) {
+    await attemptRegister(action.email, action.password, action.firstName, action.lastName, action.telephone, store, action.context, next);
   } else if (action is FetchFeedAttempt) {
     await fetchFeed(store.state.jwt, action.mode, next);
   } else if (action is FetchUserProfileAttempt) {

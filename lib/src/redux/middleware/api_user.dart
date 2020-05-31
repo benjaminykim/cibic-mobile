@@ -9,10 +9,40 @@ import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:redux/redux.dart';
 
-attemptLogin(String email, String password, NextDispatcher next) async {
+attemptRegister(String email, String password, String firstName,
+    String lastName, String telephone, Store store, BuildContext context, NextDispatcher next) async {
+  Map<String, Map<String, dynamic>> requestBody = {
+    'user': {
+      'email': email,
+      'password': password,
+      'firstName': firstName,
+      'lastName': lastName,
+      'phone': telephone,
+    }
+  };
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request =
+      await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_USER));
+  request.headers.set('content-type', 'application/json');
+  request.add(utf8.encode(json.encode(requestBody)));
+  HttpClientResponse response = await request.close();
+  httpClient.close();
+
+  print("RequestBody: $requestBody");
+  print("REGISTER RESPONSE: ${response.statusCode}");
+  if (response.statusCode == 201) {
+    await store.dispatch(LogInAttempt(email, password));
+    next(PostRegisterSuccess(firstName, lastName, context));
+  } else {
+    next(PostRegisterError(response.statusCode.toString()));
+  }
+}
+
+attemptLogin(String email, String password, Store store, NextDispatcher next) async {
   Map requestBody = {'email': '$email', 'password': '$password'};
   HttpClient httpClient = new HttpClient();
   HttpClientRequest request =
@@ -28,6 +58,7 @@ attemptLogin(String email, String password, NextDispatcher next) async {
     String jwt = jwtResponse['access_token'];
     final storage = FlutterSecureStorage();
     storage.write(key: "jwt", value: jwt);
+    store.dispatch(FireBaseTokenAttempt());
     next(LogInSuccess(jwt));
   } else {
     next(LogInError(response.statusCode));
@@ -143,17 +174,22 @@ postSearchQuery(String jwt, String query, int mode, NextDispatcher next) async {
     final responseBody = await response.transform(utf8.decoder).join();
     switch (mode) {
       case 0:
-        List<UserModel> responseList = SearchUserModel.fromJson(json.decode('{"user":' + responseBody + '}')).user;
+        List<UserModel> responseList = SearchUserModel.fromJson(
+                json.decode('{"user":' + responseBody + '}'))
+            .user;
         next(PostSearchSuccess(mode, responseList));
         break;
       case 1:
-        List<CabildoModel> responseList = SearchCabildoModel.fromJson(json.decode('{"cabildo":' + responseBody + '}')).cabildo;
+        List<CabildoModel> responseList = SearchCabildoModel.fromJson(
+                json.decode('{"cabildo":' + responseBody + '}'))
+            .cabildo;
         next(PostSearchSuccess(mode, responseList));
         break;
       case 2:
         print(responseBody);
         List<ActivityModel> feed =
-            FeedModel.fromJson(json.decode('{"feed":' + responseBody + '}')).feed;
+            FeedModel.fromJson(json.decode('{"feed":' + responseBody + '}'))
+                .feed;
         next(PostSearchSuccess(mode, feed));
         break;
     }

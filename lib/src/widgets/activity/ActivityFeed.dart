@@ -67,6 +67,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
         itemCount: vm.feed.feed.length,
         itemBuilder: (BuildContext context, int index) {
           ActivityModel activity = vm.feed.feed[index];
+          print(activity.user.toString());
           return ActivityView(
               activity, vm.onReact, vm.onSave, widget.mode);
         },

@@ -2,6 +2,7 @@ import 'package:cibic_mobile/src/models/comment_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/reaction_model.dart';
 import 'package:cibic_mobile/src/models/reply_model.dart';
+import 'package:cibic_mobile/src/onboard/onboard.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_feed.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
@@ -9,11 +10,24 @@ import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/resources/utils.dart';
+import 'package:flutter/material.dart';
 
 AppState appReducer(AppState prevState, dynamic action) {
   AppState newState = AppState.fromAppState(prevState);
 
-  if (action is LogInSuccess) {
+  if (action is PostRegisterSuccess) {
+    newState.firstName = action.firstName;
+    newState.lastName = action.lastName;
+    newState.registerError = false;
+    newState.registerSuccess = true;
+    Navigator.pushReplacement(
+                                    action.context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Onboard("")));
+  } else if (action is PostRegisterError) {
+    newState.registerError = true;
+    newState.registerSuccess = false;
+  } else if (action is LogInSuccess) {
     newState.jwt = action.jwt;
     newState.isLogIn = true;
     newState.idUser = extractID(action.jwt);
@@ -134,7 +148,7 @@ AppState appReducer(AppState prevState, dynamic action) {
     }
   } else if (action is PostReplyVoteError) {
   } else if (action is PostCabildoFollowSuccess) {
-    // this is where we mutate state
+    // TODO MUTATE STATE
     print("mutate state!");
   } else if (action is PostCabildoFollowError) {
     print("error in following/unfollowing cabildo");
@@ -142,8 +156,6 @@ AppState appReducer(AppState prevState, dynamic action) {
     newState.firebaseToken = action.token;
     newState.firebaseManager = action.firebase;
   } else if (action is PostSearchSuccess) {
-    // search success
-    // mutate state for search queries
     switch (action.mode) {
       case 0:
         newState.searchUser = action.resultUser;
@@ -156,7 +168,6 @@ AppState appReducer(AppState prevState, dynamic action) {
         break;
     }
   } else if (action is PostSearchError) {
-    // error string here
   }
   return newState;
 }

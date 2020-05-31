@@ -3,7 +3,29 @@ import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 
+class PostRegisterAttempt {
+  String email;
+  String password;
+  String firstName;
+  String lastName;
+  String telephone;
+  BuildContext context;
+  PostRegisterAttempt(this.email, this.password, this.firstName, this.lastName, this.telephone, this.context);
+}
+
+class PostRegisterSuccess {
+  String firstName;
+  String lastName;
+  BuildContext context;
+  PostRegisterSuccess(this.firstName, this.lastName, this.context);
+}
+
+class PostRegisterError {
+  String error;
+  PostRegisterError(this.error);
+}
 class LogInAttempt {
   String email;
   String password;

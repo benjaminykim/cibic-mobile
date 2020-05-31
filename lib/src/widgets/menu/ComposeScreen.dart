@@ -200,7 +200,7 @@ class _ComposeState extends State<Compose> {
     });
   }
 
-  void submitActivity(String cabildoName, _ComposeViewModel vm) {
+  void submitActivity(String cabildoName, _ComposeViewModel vm) async {
     UserModel user = vm.user;
     final enteredTitle = inputTitleController.text;
     final enteredBody = inputBodyController.text;
@@ -220,7 +220,7 @@ class _ComposeState extends State<Compose> {
       if (enteredTitle.isEmpty || enteredBody.isEmpty) {
         return;
       } else {
-        vm.submitActivity((selectedActivity == 0) ? 0 : 1, enteredTitle, enteredBody, idCabildo, enteredTag);
+        await vm.submitActivity((selectedActivity == 0) ? 0 : 1, enteredTitle, enteredBody, idCabildo, enteredTag);
       }
     } else if (selectedActivity == 1) {
       if (enteredTitle.isEmpty) {

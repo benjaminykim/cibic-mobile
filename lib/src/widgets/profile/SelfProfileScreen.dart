@@ -42,6 +42,12 @@ class _UserProfileState extends State<SelfProfileScreen> {
 
   Widget generateProfileScreen(BuildContext context, ProfileViewModel vm) {
     if (vm.error != true && vm.user != null && vm.feed != null) {
+      if (vm.user.followers == null) {
+        vm.user.followers = [];
+      }
+      if (vm.user.cabildos == null) {
+        vm.user.cabildos = [];
+      }
       return Center(
         child: Container(
           color: APP_BACKGROUND,

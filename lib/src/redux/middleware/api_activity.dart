@@ -23,6 +23,7 @@ postActivity(
   request.headers.add('accept', 'application/json');
   request.headers.add('authorization', 'Bearer $jwt');
 
+  print("CABILDO ID: $idCabildo");
   var requestBody;
   if (type == 0 || type == 1) {
     if (idCabildo == -1) {
@@ -55,6 +56,7 @@ postActivity(
       };
     }
   }
+  print("REQUEST BODY ${requestBody.toString()}");
 
   request.add(utf8.encode(json.encode(requestBody)));
   HttpClientResponse response = await request.close();
@@ -86,7 +88,6 @@ postReaction(ActivityModel activity, String jwt, int reactValue, int idUser,
     print("NEW REACTION");
     var reaction = {
       "activityId": activity.id,
-      "userId": idUser,
       "reaction": {"value": reactValue.toString()}
     };
 

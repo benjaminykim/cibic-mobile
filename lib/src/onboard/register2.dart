@@ -1,46 +1,47 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:cibic_mobile/src/onboard/onboard.dart';
-import 'package:cibic_mobile/src/resources/api_provider.dart';
+import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:redux/redux.dart';
 
-class EmailPasswordSignInForm extends StatefulWidget {
+class Register extends StatefulWidget {
+  final storage;
+
+  Register(this.storage);
+
   @override
-  _EmailPasswordSignInFormState createState() =>
-      _EmailPasswordSignInFormState();
+  _RegisterState createState() => _RegisterState();
 }
 
-class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
+class _RegisterState extends State<Register> {
   final FocusScopeNode _node = FocusScopeNode();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String username, email, firstname, surname, sex, _value, telephone, password;
-  bool usernameVal,
-      emailVal,
-      firstnameVal,
-      surnameVal,
-      telephoneVal,
-      passwordVal;
+  String email, firstName, lastName, sex, _value, telephone, password;
+  bool emailVal, firstNameVal, lastNameVal, telephoneVal, passwordVal;
   bool privacy;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   final storage = FlutterSecureStorage();
 
   @override
   initState() {
     super.initState();
-    username = "";
     email = "";
-    firstname = "";
-    surname = "";
+    firstName = "";
+    lastName = "";
     sex = "";
     telephone = "";
     password = "";
-    usernameVal = false;
     emailVal = false;
-    firstnameVal = false;
-    surnameVal = false;
+    firstNameVal = false;
+    lastNameVal = false;
     telephoneVal = false;
     passwordVal = false;
     privacy = false;
@@ -80,8 +81,8 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
     );
   }
 
-  Container textFieldInput({String title, String input}) {
-    bool _validate = false;
+  Container textFieldInput(
+      {String title, String input, TextEditingController controller}) {
     // for validation
     String _validator(String value) {
       // email validation
@@ -126,7 +127,7 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
           return "Error";
         }
       }
-      // For Surname
+      // For lastName
       else if (title == "apellido") {
         String p = "[a-zA-Z]{1,16}";
 
@@ -190,12 +191,10 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
       setState(() {
         if (title == "correo electrónico*") {
           emailVal = true;
-        } else if (title == "nombre de usuario*") {
-          usernameVal = true;
         } else if (title == "apellido") {
-          firstnameVal = true;
+          firstNameVal = true;
         } else if (title == "nombre de pila") {
-          surnameVal = true;
+          lastNameVal = true;
         } else if (title == "número de teléfono") {
           telephoneVal = true;
         } else if (title == "contraseña") {
@@ -207,12 +206,10 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
     bool getValidator(String title) {
       if (title == "correo electrónico*") {
         return emailVal;
-      } else if (title == "nombre de usuario*") {
-        return usernameVal;
       } else if (title == "apellido") {
-        return firstnameVal;
+        return firstNameVal;
       } else if (title == "nombre de pila") {
-        return surnameVal;
+        return lastNameVal;
       } else if (title == "número de teléfono") {
         return telephoneVal;
       } else if (title == "contraseña") {
@@ -237,16 +234,18 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
             ? TextInputAction.done
             : TextInputAction.next,
         textAlign: TextAlign.center,
+        controller: controller,
         autovalidate: getValidator(title),
         validator: _validator,
         onChanged: (value) {
           (title == "nombre de pila" || title == "apellido")
               ? value = value.toUpperCase()
               : value = value;
-          input = value.trim();
+          setState(() {
+            input = value.trim();
+          });
           updateValidator(title);
         },
-        // onSaved: (val) => username = val,
         decoration: InputDecoration(
           alignLabelWithHint: true,
           filled: true,
@@ -267,7 +266,6 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-
         style: TextStyle(
           color: Colors.black,
         ),
@@ -275,273 +273,237 @@ class _EmailPasswordSignInFormState extends State<EmailPasswordSignInForm> {
     );
   }
 
-  Map<String, Map<String, dynamic>> createUserRequestBody() {
-    Map<String, Map<String, dynamic>> userRequest = {
-      'user': {
-        'username': username,
-        'password': password,
-        'email': email,
-        'firstName': firstname,
-        'lastName': surname,
-        'phone': telephone,
-        'cabildos': [],
-        'files': "none",
-        'followers': [],
-        'following': [],
-        'activityFeed': []
-      }
-    };
-    return userRequest;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        backgroundColor: COLOR_SOFT_BLUE,
-        automaticallyImplyLeading: false,
-        title: Center(
-          child: Text(
-            "REGISTRARSE",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-              fontSize: 26,
-            ),
-          ),
-        ),
-      ),
-      // resizeToAvoidBottomInset: true,
-      // resizeToAvoidBottomPadding: false,
-      body: GestureDetector(
-        onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
-        },
-        child: Container(
-          color: COLOR_DEEP_BLUE,
-          child: Form(
-            key: _formKey,
-            child: FocusScope(
-              node: _node,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Center(
-                      child: Text(
-                        "DATOS PERSONALES",
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: Text(
-                        "Tus datos son privados.",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w200,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 15),
-                    //TODO Everything is fine upwards
-
-                    textFieldInput(
-                      title: "correo electrónico*",
-                      input: email,
-                    ),
-                    textFieldInput(
-                      title: "nombre de usuario*",
-                      input: username,
-                    ),
-                    textFieldInput(
-                      title: "nombre de pila",
-                      input: firstname,
-                    ),
-                    textFieldInput(
-                      title: "apellido",
-                      input: surname,
-                    ),
-
-                    Container(
-                      height: 50,
-                      margin: EdgeInsets.fromLTRB(30, 0, 30, 15),
-
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 0,
-                      ),
-                      // alignment: Alignment.center,
-                      decoration: REGISTER_INPUT_DEC,
-                      // BoxDecoration(color: Colors.white),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          isDense: true,
-                          isExpanded: true,
-
-                          // autofocus: true,
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black,
-                          ),
-                          items: [
-                            DropdownMenuItem(
-                              value: "1",
-                              child: Center(
-                                child: Text(
-                                  "Masculina",
-                                ),
-                              ),
-                            ),
-                            DropdownMenuItem(
-                              value: "2",
-                              child: Center(
-                                child: Text(
-                                  "Hembra",
-                                ),
-                              ),
-                            ),
-                            DropdownMenuItem(
-                              value: "3",
-                              child: Center(
-                                child: Text(
-                                  "Otro",
-                                ),
-                              ),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _value = value;
-                              if (_value == "1") {
-                                sex = "Male";
-                              } else if (_value == "2") {
-                                sex = "Female";
-                              } else {
-                                sex = "Others";
-                              }
-                            });
-                          },
-                          value: _value,
-                          hint: Center(
-                            child: Text(
-                              "sexo",
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    textFieldInput(
-                      title: "número de teléfono",
-                      input: telephone,
-                    ),
-                    textFieldInput(
-                      title: "contraseña",
-                      input: telephone,
-                    ),
-
-                    SizedBox(height: 2),
-                    // PASSWORD RULES
-                    Center(
-                      child: Text(
-                        'Mínimo 8 caractéres, un número y una mayúscula',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w200,
-                        ),
-                      ),
-                    ),
-
-                    createPrivacyCheck(),
-                    // createSubmitButton("siguiente"),
-
-                    // submit
-                    GestureDetector(
-                      onTap: () {
-                        if (_formKey.currentState.validate() &&
-                            sex != '' &&
-                            privacy) {
-                          attemptSubmit(createUserRequestBody())
-                              .then((response) {
-                                print("attempt submit");
-                            if (response == "Err") {
-                              // TODO: show alert dialog
-                            } else {
-                              attemptLogin(username, password).then((jwt) {
-                                print("attempt login");
-                                print("username: $username");
-                                print("password: $password");
-                                print("jwt: $jwt");
-                                if (jwt != null) {
-                                  storage.write(key: "jwt", value: jwt);
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Onboard(jwt)));
-                                } else {
-                                  // TODO: show alert dialog
-                                }
-                              });
-                            }
-                          });
-                        }
-                      },
-                      child: Container(
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: COLOR_SOFT_BLUE,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.fromLTRB(35, 10, 35, 7),
-                        child: Text(
-                          "siguiente",
-                          textAlign: TextAlign.center,
-                          style: REGISTER_TXT,
-                        ),
-                      ),
-                    ),
-                    Divider(
-                      indent: 30,
-                      endIndent: 30,
-                      color: Colors.white,
-                      thickness: 1,
-                    ),
-                  ],
+    return StoreConnector<AppState, _RegisterViewModel>(
+      converter: (Store<AppState> store) {
+        Function onRegister = (String email, String password, String firstName,
+            String lastName, String telephone, BuildContext context) {
+          store.dispatch(PostRegisterAttempt(
+              email, password, firstName, lastName, telephone, context));
+        };
+        return _RegisterViewModel(onRegister, store.state.isLogIn);
+      },
+      builder: (BuildContext context, _RegisterViewModel vm) {
+        return Scaffold(
+          appBar: AppBar(
+            elevation: 0.0,
+            backgroundColor: COLOR_SOFT_BLUE,
+            automaticallyImplyLeading: false,
+            title: Center(
+              child: Text(
+                "REGISTRARSE",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 26,
                 ),
               ),
             ),
           ),
-        ),
-      ),
+          body: GestureDetector(
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+            },
+            child: Container(
+              color: COLOR_DEEP_BLUE,
+              child: Form(
+                key: _formKey,
+                child: FocusScope(
+                  node: _node,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Center(
+                          child: Text(
+                            "DATOS PERSONALES",
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: Text(
+                            "Tus datos son privados.",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w200,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 15),
+                        textFieldInput(
+                          title: "correo electrónico*",
+                          input: email,
+                          controller: _emailController,
+                        ),
+                        textFieldInput(
+                          title: "nombre de pila",
+                          input: firstName,
+                          controller: _firstNameController,
+                        ),
+                        textFieldInput(
+                          title: "apellido",
+                          input: lastName,
+                          controller: _lastNameController,
+                        ),
+                        Container(
+                          height: 50,
+                          margin: EdgeInsets.fromLTRB(30, 0, 30, 15),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 0,
+                          ),
+                          decoration: REGISTER_INPUT_DEC,
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              isDense: true,
+                              isExpanded: true,
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.black,
+                              ),
+                              items: [
+                                DropdownMenuItem(
+                                  value: "1",
+                                  child: Center(
+                                    child: Text(
+                                      "Masculina",
+                                    ),
+                                  ),
+                                ),
+                                DropdownMenuItem(
+                                  value: "2",
+                                  child: Center(
+                                    child: Text(
+                                      "Hembra",
+                                    ),
+                                  ),
+                                ),
+                                DropdownMenuItem(
+                                  value: "3",
+                                  child: Center(
+                                    child: Text(
+                                      "Otro",
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                setState(() {
+                                  _value = value;
+                                  if (_value == "1") {
+                                    sex = "Male";
+                                  } else if (_value == "2") {
+                                    sex = "Female";
+                                  } else {
+                                    sex = "Others";
+                                  }
+                                });
+                              },
+                              value: _value,
+                              hint: Center(
+                                child: Text(
+                                  "sexo",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        textFieldInput(
+                          title: "número de teléfono",
+                          input: telephone,
+                          controller: _phoneController,
+                        ),
+                        textFieldInput(
+                          title: "contraseña",
+                          input: password,
+                          controller: _passwordController,
+                        ),
+                        SizedBox(height: 2),
+                        // PASSWORD RULES
+                        Center(
+                          child: Text(
+                            'Mínimo 8 caractéres, un número y una mayúscula',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w200,
+                            ),
+                          ),
+                        ),
+                        createPrivacyCheck(),
+                        // submit
+                        GestureDetector(
+                          onTap: () async {
+                            print("tapped");
+                            if (_formKey.currentState.validate() &&
+                                sex != '' &&
+                                privacy) {
+                              print("trying to register");
+                              print("${_emailController.text} ${_passwordController.text} ${_firstNameController.text} ${_lastNameController.text} ${_phoneController.text}");
+                              await vm.onRegister(
+                                  _emailController.text,
+                                  _passwordController.text,
+                                  _firstNameController.text,
+                                  _lastNameController.text,
+                                  _phoneController.text,
+                                  context);
+                              print(vm.isLogIn);
+                              if (vm.isLogIn) {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Onboard("")));
+                              }
+                            }
+                          },
+                          child: Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: COLOR_SOFT_BLUE,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.fromLTRB(35, 10, 35, 7),
+                            child: Text(
+                              "siguiente",
+                              textAlign: TextAlign.center,
+                              style: REGISTER_TXT,
+                            ),
+                          ),
+                        ),
+                        Divider(
+                          indent: 30,
+                          endIndent: 30,
+                          color: Colors.white,
+                          thickness: 1,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
 
-class Register2 extends StatefulWidget {
-  final storage;
-
-  Register2(this.storage);
-  @override
-  _Register2State createState() => _Register2State();
-}
-
-class _Register2State extends State<Register2> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
+class _RegisterViewModel {
+  Function onRegister;
+  bool isLogIn;
+  _RegisterViewModel(this.onRegister, this.isLogIn);
 }
