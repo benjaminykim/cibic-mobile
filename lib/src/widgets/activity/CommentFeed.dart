@@ -114,39 +114,75 @@ class _CommentFeedState extends State<CommentFeed> {
               )
             ],
           ),
-          // INPUT RESPONSE
-          Container(
-            margin: EdgeInsets.fromLTRB(30, 2, 30, 10),
-            padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-            height: 33,
-            decoration: BoxDecoration(
-              color: Color(0xffcccccc),
-              borderRadius: BorderRadius.all(Radius.circular(12)),
-            ),
-            child: TextField(
-              controller: inputCommentController,
-              decoration: InputDecoration(
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.send, color: Colors.black),
-                  onPressed: () {
-                    if (inputCommentController.text != "" && inputCommentController.text != null) {
-                      onReply(widget.activity.id, c.id,
-                          inputCommentController.text, widget.mode);
-                    }
-                  },
-                ),
-                border: InputBorder.none,
-                hintText: "comenta...",
-                hintStyle: TextStyle(
-                    fontWeight: FontWeight.w200,
-                    color: Colors.black,
-                    fontSize: 14),
-              ),
-            ),
-          ),
           // RESPONSES
           ...generateResponseFeed(
               c.replies, context, vm, inputCommentController),
+          // INPUT RESPONSE
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                margin: EdgeInsets.fromLTRB(30, 2, 30, 10),
+                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                decoration: BoxDecoration(
+                  color: Color(0xffcccccc),
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                ),
+                child: new ConstrainedBox(
+                  constraints: new BoxConstraints(
+                    minHeight: 25,
+                    maxHeight: 100.0,
+                  ),
+                  child: new SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    reverse: true,
+                    child: TextField(
+                      controller: inputCommentController,
+                      maxLines: null,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "comenta...",
+                        hintStyle: TextStyle(
+                            fontWeight: FontWeight.w200,
+                            color: Colors.black,
+                            fontSize: 14),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                alignment: Alignment.bottomRight,
+                margin: EdgeInsets.fromLTRB(0, 0, 30, 10),
+                child: Row(
+                  children: [
+                    Spacer(),
+                    InkWell(
+                      onTap: () {
+                        if (inputCommentController.text != "" &&
+                            inputCommentController.text != null) {
+                          inputCommentController.clear();
+                        }
+                      },
+                      child: Icon(Icons.delete, color: Colors.black, size: 25),
+                    ),
+                    SizedBox(width: 5),
+                    InkWell(
+                      onTap: () {
+                        if (inputCommentController.text != "" &&
+                            inputCommentController.text != null) {
+                          onReply(widget.activity.id, c.id,
+                              inputCommentController.text, widget.mode);
+                        }
+                      },
+                      child: Icon(Icons.send, color: Colors.black, size: 25),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -266,15 +302,16 @@ class _CommentFeedState extends State<CommentFeed> {
     return Container(
       padding: EdgeInsets.fromLTRB(30, 10, 30, 2),
       width: MediaQuery.of(context).size.width - 20,
-      height: 75,
       margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
       decoration: BoxDecoration(
         color: CARD_BACKGROUND,
         borderRadius: BorderRadius.all(Radius.circular(30)),
         boxShadow: [commentShadow],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: // INPUT RESPONSE
+          Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Text("Deja un comentario",
               style: TextStyle(
@@ -282,35 +319,63 @@ class _CommentFeedState extends State<CommentFeed> {
                 color: Colors.black,
               )),
           Container(
-            margin: EdgeInsets.fromLTRB(0, 2, 0, 0),
+            margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
             padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-            height: 33,
             decoration: BoxDecoration(
               color: Color(0xffcccccc),
               borderRadius: BorderRadius.all(Radius.circular(12)),
             ),
-            child: TextField(
-              controller: inputCommentController,
-              decoration: InputDecoration(
-                suffixIcon: IconButton(
-                  icon: Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Icon(Icons.send),
+            child: new ConstrainedBox(
+              constraints: new BoxConstraints(
+                minHeight: 25,
+                maxHeight: 100.0,
+              ),
+              child: new SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                reverse: true,
+                child: TextField(
+                  controller: inputCommentController,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "comenta...",
+                    hintStyle: TextStyle(
+                        fontWeight: FontWeight.w200,
+                        color: Colors.black,
+                        fontSize: 14),
                   ),
-                  color: Colors.black,
-                  onPressed: () {
-                    if (inputCommentController.text != "" && inputCommentController.text != null) {
-                      vm.onComment(widget.activity.id, inputCommentController.text, widget.mode);
+                ),
+              ),
+            ),
+          ),
+          Container(
+            alignment: Alignment.bottomRight,
+            margin: EdgeInsets.fromLTRB(0, 5, 0, 10),
+            child: Row(
+              children: [
+                Spacer(),
+                InkWell(
+                  onTap: () {
+                    if (inputCommentController.text != "" &&
+                        inputCommentController.text != null) {
+                      inputCommentController.clear();
                     }
                   },
+                  child: Icon(Icons.delete, color: Colors.black, size: 25),
                 ),
-                border: InputBorder.none,
-                hintText: "comenta...",
-                hintStyle: TextStyle(
-                    fontWeight: FontWeight.w200,
-                    color: Colors.black,
-                    fontSize: 14),
-              ),
+                SizedBox(width: 5),
+                InkWell(
+                  onTap: () {
+                    if (inputCommentController.text != "" &&
+                        inputCommentController.text != null) {
+                      String commentText = inputCommentController.text;
+                      vm.onComment(
+                          widget.activity.id, commentText, widget.mode);
+                    }
+                  },
+                  child: Icon(Icons.send, color: Colors.black, size: 25),
+                ),
+              ],
             ),
           ),
         ],
