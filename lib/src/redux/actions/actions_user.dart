@@ -29,13 +29,16 @@ class PostRegisterError {
 class LogInAttempt {
   String email;
   String password;
-  LogInAttempt(this.email, this.password);
+  BuildContext context;
+  LogInAttempt(this.email, this.password, this.context);
 }
 
 class LogInSuccess {
   String jwt;
   LogInSuccess(this.jwt);
 }
+
+class LogInLoading {}
 
 class LogInError {
   var payload;

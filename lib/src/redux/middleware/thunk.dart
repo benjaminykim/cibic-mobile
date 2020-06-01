@@ -1,3 +1,4 @@
+import 'package:cibic_mobile/src/onboard/home.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
@@ -8,6 +9,7 @@ import 'package:cibic_mobile/src/redux/middleware/api_profile.dart';
 import 'package:cibic_mobile/src/redux/middleware/api_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/resources/utils.dart';
+import 'package:flutter/material.dart';
 import 'package:redux/redux.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_feed.dart';
@@ -15,16 +17,23 @@ import 'package:cibic_mobile/src/redux/actions/actions_feed.dart';
 void apiMiddleware(
     Store<AppState> store, dynamic action, NextDispatcher next) async {
   if (action is LogInAttempt) {
-    print("LOGIN ATTEMPT");
-    await attemptLogin(action.email, action.password, store, next);
-    if (store.state.loginState['isSuccess']) {
-      print("LOGIN SUCCESS");
-      String jwt = store.state.user['jwt'];
-      await fetchFeed(jwt, FEED_HOME, next);
-      await fetchFeed(jwt, FEED_PUBLIC, next);
-      await fetchProfile(jwt, "selfUser", extractID(jwt).toString(), next);
-      await fetchProfileFeed(jwt, "selfUser", extractID(jwt).toString(), next);
-      print("LOGIN STATE LOAD FINISH");
+    if (store.state.loginState['isLoading'] == false &&
+          store.state.loginState['isSuccess'] == false) {
+      print("LOGIN ATTEMPT");
+      await store.dispatch(LogInLoading());
+      await attemptLogin(action.email, action.password, store, next);
+      if (store.state.loginState['isSuccess']) {
+        print("LOGIN SUCCESS");
+        String jwt = store.state.user['jwt'];
+        await fetchFeed(jwt, FEED_HOME, next);
+        await fetchFeed(jwt, FEED_PUBLIC, next);
+        await fetchProfile(jwt, "selfUser", extractID(jwt).toString(), next);
+        await fetchProfileFeed(
+            jwt, "selfUser", extractID(jwt).toString(), next);
+        print("LOGIN STATE LOAD FINISH");
+        Navigator.pushReplacement(
+            action.context, MaterialPageRoute(builder: (context) => Home()));
+      }
     }
   } else if (action is PostRegisterAttempt) {
     await attemptRegister(action.email, action.password, action.firstName,

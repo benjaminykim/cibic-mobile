@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:cibic_mobile/src/onboard/home.dart';
 import 'package:cibic_mobile/src/onboard/register2.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
@@ -22,10 +21,18 @@ class _WelcomeState extends State<Welcome> {
     color: COLOR_SOFT_BLUE,
     borderRadius: BorderRadius.circular(15),
   );
-  bool showLogin = false;
+  bool showLogin;
+  bool isLoginable;
   final TextEditingController _emailController = new TextEditingController();
   final TextEditingController _passwordController = new TextEditingController();
   ScrollController _controller = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    this.showLogin = false;
+    this.isLoginable = true;
+  }
 
   @override
   void dispose() {
@@ -160,15 +167,24 @@ class _WelcomeState extends State<Welcome> {
                     SizedBox(height: 10),
                     StoreConnector<AppState, _WelcomeViewModel>(
                       converter: (Store<dynamic> store) {
-                        Function onLogIn = (String email, String password) {
-                          store.dispatch(LogInAttempt(email, password));
+                        Function onLogIn = (String email, String password,
+                            BuildContext context) {
+                          store
+                              .dispatch(LogInAttempt(email, password, context));
+                        };
+                        Function setLogInLoading = () {
+                          store.dispatch(LogInLoading());
                         };
                         return _WelcomeViewModel(
-                            store.state.loginState['isSuccess'], onLogIn);
+                            store.state.loginState['isSuccess'],
+                            store.state.loginState['isLoading'],
+                            store.state.loginState['isError'],
+                            onLogIn,
+                            setLogInLoading);
                       },
                       builder: (BuildContext context, _WelcomeViewModel vm) {
                         return GestureDetector(
-                          onTap: () async {
+                          onTap: () {
                             if (this.showLogin) {
                               if (_emailController.text == null ||
                                   _passwordController.text == null ||
@@ -178,12 +194,18 @@ class _WelcomeState extends State<Welcome> {
                                   this.showLogin = !this.showLogin;
                                 });
                               } else {
-                                await vm.onLogIn(_emailController.text, _passwordController.text);
-                                if (vm.isLoggedIn) {
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Home()));
+                                if (this.isLoginable &&
+                                    vm.isLoginLoading == false) {
+                                  this.isLoginable = false;
+                                  vm.setLogInLoading();
+                                  vm.onLogIn(_emailController.text,
+                                      _passwordController.text, context);
+                                } else {
+                                  if (vm.isLoginError == true &&
+                                      vm.isLoginLoading == false &&
+                                      vm.isLoginSuccess == false) {
+                                    this.isLoginable = true;
+                                  }
                                 }
                               }
                             } else {
@@ -230,7 +252,11 @@ class _WelcomeState extends State<Welcome> {
 }
 
 class _WelcomeViewModel {
-  bool isLoggedIn;
+  bool isLoginSuccess;
+  bool isLoginLoading;
+  bool isLoginError;
   Function onLogIn;
-  _WelcomeViewModel(this.isLoggedIn, this.onLogIn);
+  Function setLogInLoading;
+  _WelcomeViewModel(this.isLoginSuccess, this.isLoginLoading, this.isLoginError,
+      this.onLogIn, this.setLogInLoading);
 }

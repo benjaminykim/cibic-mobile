@@ -25,11 +25,18 @@ AppState appReducer(AppState prevState, dynamic action) {
   } else if (action is PostRegisterError) {
     newState.registerState['isSuccess'] = false;
     newState.registerState['isError'] = true;
+  } else if (action is LogInLoading) {
+    newState.loginState['isLoading'] = true;
+    newState.loginState['isError'] = false;
+    newState.loginState['isSuccess'] = false;
   } else if (action is LogInSuccess) {
     newState.user['jwt'] = action.jwt;
     newState.user['idUser'] = extractID(action.jwt);
+    newState.loginState['isLoading'] = false;
+    newState.loginState['isError'] = false;
     newState.loginState['isSuccess'] = true;
   } else if (action is LogInError) {
+    newState.loginState['isLoading'] = false;
     newState.loginState['isError'] = true;
     newState.loginState['isSuccess'] = false;
   } else if (action is FetchFeedSuccess) {
