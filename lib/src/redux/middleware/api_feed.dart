@@ -22,6 +22,7 @@ fetchFeed(String jwt, int mode, NextDispatcher next) async {
         FeedModel.fromJson(json.decode('{"feed":' + response.body + '}'));
     next(FetchFeedSuccess(mode, feed));
   } else {
+    print("error jwt: $jwt");
     next(FetchFeedError(mode, response.statusCode.toString()));
   }
 }

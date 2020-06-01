@@ -47,6 +47,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
       converter: (Store<AppState> store) {
         if (!this.isLoaded) {
           store.dispatch(FetchProfileAttempt(widget.idCabildo, "cabildo"));
+          store.dispatch(FetchProfileFeedAttempt(widget.idCabildo, "cabildo"));
           this.isLoaded = true;
         }
             Function onReact =
@@ -343,21 +344,21 @@ class _CabildoViewModel {
   Function onCabildoFollow;
   Function onCabildoUnfollow;
   _CabildoViewModel(store, onReact, onSave, onCabildoFollow, onCabildoUnfollow, this.user) {
-    this.jwt = store.state.jwt;
-    this.idUser = store.state.idUser;
-    this.isError = store.state.cabildoProfileError;
+    this.jwt = store.state.user['jwt'];
+    this.idUser = store.state.user['idUser'];
+    this.isError = store.state.profileState['cabildoIsError'];
     this.onPop = () => store.dispatch(ClearProfile("cabildo"));
     this.onReact = onReact;
     this.onSave = onSave;
     this.onCabildoFollow = onCabildoFollow;
     this.onCabildoUnfollow = onCabildoUnfollow;
-    if (store.state.cabildoProfile != null) {
-      this.cabildo = store.state.cabildoProfile;
-      this.name = store.state.cabildoProfile.name;
-      this.description = store.state.cabildoProfile.desc;
-      this.location = store.state.cabildoProfile.location;
-      this.members = store.state.cabildoProfile.members;
-      this.feed = store.state.cabildoProfileFeed;
+    if (store.state.profile['cabildo'] != null) {
+      this.cabildo = store.state.profile['cabildo'];
+      this.name = store.state.profile['cabildo']['name'];
+      this.description = store.state.profile['cabildo']['desc'];
+      this.location = store.state.profile['cabildo']['location'];
+      this.members = store.state.profile['cabildo']['members'];
+      this.feed = store.state.feeds['cabildo'];
       this.isLoading = false;
     } else {
       this.isLoading = true;

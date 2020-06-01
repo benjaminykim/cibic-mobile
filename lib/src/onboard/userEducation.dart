@@ -2,11 +2,12 @@ import 'package:cibic_mobile/src/onboard/home.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:redux/redux.dart';
 
 class UserEducation extends StatefulWidget {
-  final jwt;
+  final Store store;
 
-  UserEducation(this.jwt);
+  UserEducation(this.store);
 
   @override
   _UserEducationState createState() => _UserEducationState();
@@ -393,7 +394,7 @@ class _UserEducationState extends State<UserEducation> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Home()));
+                    builder: (context) => Home(widget.store)));
           },
           child: Container(
             padding: EdgeInsets.fromLTRB(30, 10, 30, 10),

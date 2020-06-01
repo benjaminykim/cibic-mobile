@@ -50,6 +50,9 @@ fetchProfileFeed(
     'accept': 'application/json',
     'authorization': "Bearer $jwt"
   });
+
+  print("fetchFeed: ${response.statusCode}");
+  print(" type: $type     id: $id");
   if (response.statusCode == 200) {
     FeedModel feed =
         FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
@@ -58,119 +61,3 @@ fetchProfileFeed(
     next(FetchProfileFeedError(type, response.statusCode.toString()));
   }
 }
-// fetchCabildoProfile(String jwt, int idCabildo, NextDispatcher next) async {
-//   final profileResponse =
-//       await http.get(API_BASE + ENDPOINT_CABILDO_PROFILE + idCabildo.toString(), headers: {
-//     'content-type': 'application/json',
-//     'accept': 'application/json',
-//     'authorization': "Bearer $jwt"
-//   });
-
-//   final feedResponse =
-//       await http.get(API_BASE + ENDPOINT_CABILDO_FEED + idCabildo.toString(), headers: {
-//     'content-type': 'application/json',
-//     'accept': 'application/json',
-//     'authorization': "Bearer $jwt"
-//   });
-
-//   if (profileResponse.statusCode == 200 && feedResponse.statusCode == 200) {
-//     print("CABILDO PROFILE RESPONSE: ${profileResponse.body}");
-//     CabildoModel cabildo = CabildoModel.fromJson(json.decode(profileResponse.body));
-//     FeedModel feed =
-//         FeedModel.fromJson(json.decode('{"feed": ' + feedResponse.body + '}'));
-//     next(FetchCabildoProfileSuccess(cabildo, feed));
-//   } else {
-//     next(FetchCabildoProfileError(profileResponse.statusCode.toString() + " " + feedResponse.statusCode.toString()));
-//   }
-// }
-
-// fetchUserProfile(String jwt, NextDispatcher next) async {
-//   String idUser = extractID(jwt).toString();
-//   final response = await http.get(API_BASE + ENDPOINT_USER + idUser, headers: {
-//     'content-type': 'application/json',
-//     'accept': 'application/json',
-//     'authorization': "Bearer $jwt"
-//   });
-//   print("fetchUserProfile: ${response.statusCode}");
-//   if (response.statusCode == 200) {
-//     UserModel user = UserModel.fromJson(json.decode(response.body));
-//     next(FetchProfileSuccess('selfUser', user));
-//   } else {
-//     next(FetchProfileSuccess('selfUser', response.statusCode.toString()));
-//   }
-// }
-
-// fetchUserProfileFeed(String jwt, NextDispatcher next) async {
-//   String idUser = extractID(jwt).toString();
-//   final response =
-//       await http.get(API_BASE + ENDPOINT_USER_FEED + idUser, headers: {
-//     'content-type': 'application/json',
-//     'accept': 'application/json',
-//     'authorization': "Bearer $jwt"
-//   });
-//   if (response.statusCode == 200) {
-//     FeedModel feed =
-//         FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
-//     next(FetchProfileFeedSuccess('selfUser', feed));
-//   } else {
-//     next(FetchProfileFeedError('selfUser', response.statusCode.toString()));
-//   }
-// }
-
-// fetchCabildoProfile(String jwt, int idCabildo, NextDispatcher next) async {
-//   final profileResponse =
-//       await http.get(API_BASE + ENDPOINT_CABILDO_PROFILE + idCabildo.toString(), headers: {
-//     'content-type': 'application/json',
-//     'accept': 'application/json',
-//     'authorization': "Bearer $jwt"
-//   });
-
-//   final feedResponse =
-//       await http.get(API_BASE + ENDPOINT_CABILDO_FEED + idCabildo.toString(), headers: {
-//     'content-type': 'application/json',
-//     'accept': 'application/json',
-//     'authorization': "Bearer $jwt"
-//   });
-
-//   if (profileResponse.statusCode == 200 && feedResponse.statusCode == 200) {
-//     print("CABILDO PROFILE RESPONSE: ${profileResponse.body}");
-//     CabildoModel cabildo = CabildoModel.fromJson(json.decode(profileResponse.body));
-//     FeedModel feed =
-//         FeedModel.fromJson(json.decode('{"feed": ' + feedResponse.body + '}'));
-//     next(FetchCabildoProfileSuccess(cabildo, feed));
-//   } else {
-//     next(FetchCabildoProfileError(profileResponse.statusCode.toString() + " " + feedResponse.statusCode.toString()));
-//   }
-// }
-
-// fetchForeignUserProfile(String jwt, NextDispatcher next, int idUser) async {
-//   final response = await http.get(API_BASE + ENDPOINT_USER + idUser.toString(), headers: {
-//     'content-type': 'application/json',
-//     'accept': 'application/json',
-//     'authorization': "Bearer $jwt"
-//   });
-//   print("fetchUserProfile: ${response.statusCode}");
-//   if (response.statusCode == 200) {
-//     UserModel user = UserModel.fromJson(json.decode(response.body));
-//     next(FetchForeignUserProfileSuccess(user));
-//   } else {
-//     next(FetchForeignUserProfileError(response.statusCode.toString()));
-//   }
-// }
-
-// fetchForeignUserProfileFeed(String jwt, NextDispatcher next, int idUser) async {
-//   final response =
-//       await http.get(API_BASE + ENDPOINT_USER_FEED + idUser.toString(), headers: {
-//     'content-type': 'application/json',
-//     'accept': 'application/json',
-//     'authorization': "Bearer $jwt"
-//   });
-//   print("fetchUserProfileFeed: ${response.statusCode}");
-//   if (response.statusCode == 200) {
-//     FeedModel feed =
-//         FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
-//     next(FetchForeignUserProfileFeedSuccess(feed));
-//   } else {
-//     next(FetchForeignUserProfileFeedError(response.statusCode.toString()));
-//   }
-// }

@@ -285,6 +285,7 @@ class _RegisterState extends State<Register> {
               email, password, firstName, lastName, telephone, context));
         };
         return _RegisterViewModel(
+          store,
           onRegister,
           store.state.loginState['isSuccess'],
           store.state.loginState['isLoading'],
@@ -470,7 +471,7 @@ class _RegisterState extends State<Register> {
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Onboard("")));
+                                        builder: (context) => Onboard(vm.store)));
                               }
                               }
                             }
@@ -510,9 +511,10 @@ class _RegisterState extends State<Register> {
 }
 
 class _RegisterViewModel {
+  Store store;
   Function onRegister;
   bool isLoading;
   bool isSuccess;
   bool isError;
-  _RegisterViewModel(this.onRegister, this.isLoading, this.isSuccess, this.isError);
+  _RegisterViewModel(this.store, this.onRegister, this.isLoading, this.isSuccess, this.isError);
 }

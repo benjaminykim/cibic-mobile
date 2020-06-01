@@ -426,7 +426,7 @@ class _RegisterState extends State<Register> {
                 if (jwt != null) {
                   widget.storage.write(key: "jwt", value: jwt);
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => Onboard(jwt)));
+                      MaterialPageRoute(builder: (context) => Onboard(null)));
                 } else {
                   setState(() {
                     this.isSubmitable = false;

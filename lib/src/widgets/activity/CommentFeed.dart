@@ -376,7 +376,8 @@ class _CommentFeedState extends State<CommentFeed> {
                 InkWell(
                   onTap: () {
                     if (inputCommentController.text != "" &&
-                        inputCommentController.text != null && this.isLoading == false) {
+                        inputCommentController.text != null &&
+                        this.isLoading == false) {
                       String commentText = inputCommentController.text;
                       vm.onComment(
                           widget.activity.id, commentText, widget.mode);

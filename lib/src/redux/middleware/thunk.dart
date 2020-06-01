@@ -18,7 +18,7 @@ void apiMiddleware(
     Store<AppState> store, dynamic action, NextDispatcher next) async {
   if (action is LogInAttempt) {
     if (store.state.loginState['isLoading'] == false &&
-          store.state.loginState['isSuccess'] == false) {
+        store.state.loginState['isSuccess'] == false) {
       print("LOGIN ATTEMPT");
       await store.dispatch(LogInLoading());
       await attemptLogin(action.email, action.password, store, next);
@@ -31,10 +31,29 @@ void apiMiddleware(
         await fetchProfileFeed(
             jwt, "selfUser", extractID(jwt).toString(), next);
         print("LOGIN STATE LOAD FINISH");
-        Navigator.pushReplacement(
-            action.context, MaterialPageRoute(builder: (context) => Home()));
+        Navigator.pushReplacement(action.context,
+            MaterialPageRoute(builder: (context) => Home(store)));
       }
     }
+  } else if (action is RefreshApp) {
+    print("App Refreshed");
+    print("action's jwt: ${action.jwt}");
+    print("store's jwt: ${store.state.user['jwt']}");
+    String jwt;
+    if (store.state.user['jwt'] != null &&
+        store.state.user['jwt'] != "" &&
+        store.state.user['jwt'] != action.jwt) {
+      jwt = store.state.user['jwt'];
+    } else {
+      jwt = action.jwt;
+    }
+    await store.dispatch(LogInSuccess(jwt));
+    await fetchFeed(jwt, FEED_HOME, next);
+    await fetchFeed(jwt, FEED_PUBLIC, next);
+    await fetchProfile(jwt, "selfUser", extractID(jwt).toString(), next);
+    await fetchProfileFeed(jwt, "selfUser", extractID(jwt).toString(), next);
+    Navigator.pushReplacement(
+        action.context, MaterialPageRoute(builder: (context) => Home(store)));
   } else if (action is PostRegisterAttempt) {
     await attemptRegister(action.email, action.password, action.firstName,
         action.lastName, action.telephone, store, action.context, next);

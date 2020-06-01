@@ -17,13 +17,15 @@ AppState appReducer(AppState prevState, dynamic action) {
 
   if (action is IsLoading) {
     newState.isLoading = true;
+  } else if (action is LogOut) {
+    newState = AppState.initial();
   } else if (action is PostRegisterSuccess) {
     newState.user['firstName'] = action.firstName;
     newState.user['lastName'] = action.lastName;
     newState.registerState['isSuccess'] = true;
     newState.registerState['isError'] = false;
-    Navigator.pushReplacement(
-        action.context, MaterialPageRoute(builder: (context) => Onboard("")));
+    Navigator.pushReplacement(action.context,
+        MaterialPageRoute(builder: (context) => Onboard(action.store)));
   } else if (action is PostRegisterError) {
     newState.registerState['isSuccess'] = false;
     newState.registerState['isError'] = true;
@@ -33,6 +35,7 @@ AppState appReducer(AppState prevState, dynamic action) {
     newState.loginState['isSuccess'] = false;
   } else if (action is LogInSuccess) {
     newState.user['jwt'] = action.jwt;
+    print("loginsuccess reducer ${action.jwt}");
     newState.user['idUser'] = extractID(action.jwt);
     newState.loginState['isLoading'] = false;
     newState.loginState['isError'] = false;
@@ -76,6 +79,7 @@ AppState appReducer(AppState prevState, dynamic action) {
       newState.feedState['savedError'] = true;
     }
   } else if (action is FetchProfileSuccess) {
+    print("reducer profile type: ${action.type}");
     newState.profile[action.type] = action.profile;
     newState.profileState[action.type + "IsSuccess"] = true;
     newState.profileState[action.type + 'IsLoading'] = false;
@@ -85,6 +89,7 @@ AppState appReducer(AppState prevState, dynamic action) {
     newState.profileState[action.type + 'IsLoading'] = false;
     newState.profileState[action.type + 'IsError'] = true;
   } else if (action is FetchProfileFeedSuccess) {
+    print("reducer feed type: ${action.type}");
     newState.feeds[action.type] = action.feed;
     newState.feedState[action.type + "IsLoading"] = false;
     newState.feedState[action.type + "IsSuccess"] = true;
@@ -149,8 +154,8 @@ AppState appReducer(AppState prevState, dynamic action) {
     print("reply vote success");
     List<FeedModel> feeds = orderFeeds(newState, action.mode);
     for (int i = 0; i < 1; i++) {
-      feeds[i] = addReplyVote(action.activityId,
-          action.replyId, action.vote, feeds[i]);
+      feeds[i] = addReplyVote(
+          action.activityId, action.replyId, action.vote, feeds[i]);
     }
   } else if (action is PostReplyVoteUpdate) {
     print("reply vote update");
@@ -307,8 +312,8 @@ FeedModel updateCommentVote(
   return feed;
 }
 
-FeedModel addReplyVote(int activityId, int replyId,
-    Map<String, dynamic> vote, FeedModel feed) {
+FeedModel addReplyVote(
+    int activityId, int replyId, Map<String, dynamic> vote, FeedModel feed) {
   if (feed == null ||
       feed.feed == null ||
       activityId == null ||
@@ -317,17 +322,17 @@ FeedModel addReplyVote(int activityId, int replyId,
   for (int i = 0; i < feed.feed.length; i++) {
     if (feed.feed[i].id == activityId) {
       for (int j = 0; j < feed.feed[i].comments.length; j++) {
-          for (int k = 0; k < feed.feed[i].comments[j].replies.length; k++) {
-            if (feed.feed[i].comments[j].replies[k].id == replyId) {
-              if (feed.feed[i].comments[j].replies[k].votes == null) {
-                feed.feed[i].comments[j].replies[k].votes = [vote];
-              } else {
-                feed.feed[i].comments[j].replies[k].votes.insert(0, vote);
-              }
-              feed.feed[i].comments[j].replies[k].score += vote['value'];
-              return feed;
+        for (int k = 0; k < feed.feed[i].comments[j].replies.length; k++) {
+          if (feed.feed[i].comments[j].replies[k].id == replyId) {
+            if (feed.feed[i].comments[j].replies[k].votes == null) {
+              feed.feed[i].comments[j].replies[k].votes = [vote];
+            } else {
+              feed.feed[i].comments[j].replies[k].votes.insert(0, vote);
             }
+            feed.feed[i].comments[j].replies[k].score += vote['value'];
+            return feed;
           }
+        }
       }
       break;
     }

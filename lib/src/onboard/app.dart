@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cibic_mobile/src/onboard/home.dart';
 import 'package:cibic_mobile/src/onboard/welcome.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/redux/middleware/thunk.dart';
 import 'package:cibic_mobile/src/redux/reducers/reducers.dart';
 import 'package:flutter/material.dart';
@@ -47,19 +48,20 @@ class App extends StatelessWidget {
               var jwt = str.split(".");
 
               if (jwt.length != 3) {
-                  return Welcome(storage);
+                return Welcome();
               } else {
                 var payload = json.decode(
                     ascii.decode(base64.decode(base64.normalize(jwt[1]))));
                 if (DateTime.fromMillisecondsSinceEpoch(payload["exp"] * 1000)
                     .isAfter(DateTime.now())) {
-                  return Home();
+                  store.dispatch(RefreshApp(str, context));
+                  return Home(store);
                 } else {
-                  return Welcome(storage);
+                  return Welcome();
                 }
               }
             } else {
-                  return Welcome(storage);
+              return Welcome();
             }
           },
         ),

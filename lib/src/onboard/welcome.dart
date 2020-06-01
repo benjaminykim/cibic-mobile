@@ -5,18 +5,18 @@ import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:redux/redux.dart';
 
 class Welcome extends StatefulWidget {
-  final storage;
-
-  Welcome(this.storage);
+  Welcome();
 
   @override
   _WelcomeState createState() => _WelcomeState();
 }
 
 class _WelcomeState extends State<Welcome> {
+  FlutterSecureStorage storage = FlutterSecureStorage();
   final welcomeDecoration = BoxDecoration(
     color: COLOR_SOFT_BLUE,
     borderRadius: BorderRadius.circular(15),
@@ -141,7 +141,7 @@ class _WelcomeState extends State<Welcome> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    Register(widget.storage)));
+                                    Register(this.storage)));
                       },
                       child: createButtonView("Registrate"),
                     ),

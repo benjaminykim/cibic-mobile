@@ -3,6 +3,7 @@ import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:redux/redux.dart';
 
 class PostRegisterAttempt {
   String email;
@@ -11,20 +12,23 @@ class PostRegisterAttempt {
   String lastName;
   String telephone;
   BuildContext context;
-  PostRegisterAttempt(this.email, this.password, this.firstName, this.lastName, this.telephone, this.context);
+  PostRegisterAttempt(this.email, this.password, this.firstName, this.lastName,
+      this.telephone, this.context);
 }
 
 class PostRegisterSuccess {
   String firstName;
   String lastName;
   BuildContext context;
-  PostRegisterSuccess(this.firstName, this.lastName, this.context);
+  Store store;
+  PostRegisterSuccess(this.firstName, this.lastName, this.context, this.store);
 }
 
 class PostRegisterError {
   String error;
   PostRegisterError(this.error);
 }
+
 class LogInAttempt {
   String email;
   String password;
@@ -44,8 +48,15 @@ class LogInError {
   LogInError(this.payload);
 }
 
-class FireBaseTokenAttempt {
+class LogOut {}
+
+class RefreshApp {
+  String jwt;
+  BuildContext context;
+  RefreshApp(this.jwt, this.context);
 }
+
+class FireBaseTokenAttempt {}
 
 class FireBaseTokenSuccess {
   String token;
@@ -114,7 +125,7 @@ class PostSearchSuccess {
   List<CabildoModel> resultCabildo;
   List<ActivityModel> resultActivity;
   PostSearchSuccess(this.mode, result) {
-    switch(this.mode) {
+    switch (this.mode) {
       case 0:
         this.resultUser = result;
         break;
@@ -133,5 +144,4 @@ class PostSearchError {
   PostSearchError(this.error);
 }
 
-class IsLoading {
-}
+class IsLoading {}

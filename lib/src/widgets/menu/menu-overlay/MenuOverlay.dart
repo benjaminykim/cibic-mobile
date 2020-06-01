@@ -1,3 +1,4 @@
+import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/About.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/Configuration.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/MyCabildos.dart';
@@ -7,14 +8,16 @@ import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:redux/redux.dart';
 
 final storage = FlutterSecureStorage();
 
 class MenuOverlay extends StatelessWidget {
   final Function onPerfilTap;
   final String jwt;
+  final Store store;
 
-  MenuOverlay(this.jwt, this.onPerfilTap);
+  MenuOverlay(this.jwt, this.onPerfilTap, this.store);
 
   @override
   Widget build(BuildContext context) {
@@ -77,10 +80,8 @@ class MenuOverlay extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
-                    Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Saved()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Saved()));
                   },
                 ),
                 ListTile(
@@ -126,13 +127,16 @@ class MenuOverlay extends StatelessWidget {
                           ),
                           content: Text("Quieres cerrar tu sesion?"),
                           actions: <Widget>[
-                            new FlatButton(
-                              child: new Text("Si"),
-                              onPressed: () {
-                                storage.delete(key: "jwt");
-                                Navigator.of(context).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
-                              },
-                            ),
+                                  FlatButton(
+                                    child: new Text("Si"),
+                                    onPressed: () {
+                                      this.store.dispatch(LogOut());
+                                      storage.delete(key: "jwt");
+                                      Navigator.of(context)
+                                          .pushNamedAndRemoveUntil('/',
+                                              (Route<dynamic> route) => false);
+                                    },
+                                  ),
                             new FlatButton(
                               child: new Text("No"),
                               onPressed: () {

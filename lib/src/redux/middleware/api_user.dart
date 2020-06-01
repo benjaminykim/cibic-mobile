@@ -35,7 +35,7 @@ attemptRegister(String email, String password, String firstName,
   print("REGISTER RESPONSE: ${response.statusCode}");
   if (response.statusCode == 201) {
     await store.dispatch(LogInAttempt(email, password, context));
-    next(PostRegisterSuccess(firstName, lastName, context));
+    next(PostRegisterSuccess(firstName, lastName, context, store));
   } else {
     next(PostRegisterError(response.statusCode.toString()));
   }
