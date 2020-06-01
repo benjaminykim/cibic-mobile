@@ -2,7 +2,6 @@ import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 class PostRegisterAttempt {
@@ -50,7 +49,7 @@ class FireBaseTokenAttempt {
 
 class FireBaseTokenSuccess {
   String token;
-  FirebaseMessaging firebase;
+  dynamic firebase;
   FireBaseTokenSuccess(this.token, this.firebase);
 }
 

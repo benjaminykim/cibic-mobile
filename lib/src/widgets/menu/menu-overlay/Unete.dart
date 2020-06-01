@@ -1,6 +1,5 @@
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Unete extends StatefulWidget {
   @override
@@ -26,20 +25,22 @@ class _UneteState extends State<Unete> {
 
   _launchURL() async {
     const url = 'https://www.github.com/cibic-io';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
+    print(url);
+    // if (await canLaunch(url)) {
+    //   await launch(url);
+    // } else {
+    //   throw 'Could not launch $url';
+    // }
   }
 
   _launchEmail() async {
     const url = 'mailto:contacto@cibic.app?subject=Contacto&body=Hola!';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
+    print(url);
+    // if (await canLaunch(url)) {
+    //   await launch(url);
+    // } else {
+    //   throw 'Could not launch $url';
+    // }
   }
 
   @override

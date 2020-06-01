@@ -1,6 +1,5 @@
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class About extends StatelessWidget {
   final TextStyle style = TextStyle(
@@ -17,11 +16,12 @@ class About extends StatelessWidget {
 
   _launchURL() async {
     const url = 'https://www.cibic.app';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
+    print(url);
+    // if (await canLaunch(url)) {
+    //   await launch(url);
+    // } else {
+    //   throw 'Could not launch $url';
+    // }
   }
 
   final EdgeInsets aboutPadding = EdgeInsets.fromLTRB(30, 10, 30, 10);
