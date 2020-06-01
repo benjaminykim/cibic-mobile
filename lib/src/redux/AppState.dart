@@ -9,9 +9,10 @@ class AppState {
   Map<String, bool> registerState;
   Map<String, bool> feedState;
   Map<String, bool> profileState;
+  bool isLoading;
 
   AppState(this.user, this.feeds, this.profile, this.search, this.loginState,
-      this.registerState, this.feedState, this.profileState);
+      this.registerState, this.feedState, this.profileState, this.isLoading);
 
   AppState.fromAppState(AppState another) {
     user = another.user;
@@ -22,6 +23,7 @@ class AppState {
     registerState = another.registerState;
     feedState = another.feedState;
     profileState = another.profileState;
+    isLoading = another.isLoading;
   }
 
   factory AppState.initial() {
@@ -108,6 +110,6 @@ class AppState {
     };
 
     return AppState(
-        user, feeds, profile, search, loginState, registerState, feedState, profileState);
+        user, feeds, profile, search, loginState, registerState, feedState, profileState, false);
   }
 }

@@ -15,7 +15,9 @@ import 'package:flutter/material.dart';
 AppState appReducer(AppState prevState, dynamic action) {
   AppState newState = AppState.fromAppState(prevState);
 
-  if (action is PostRegisterSuccess) {
+  if (action is IsLoading) {
+    newState.isLoading = true;
+  } else if (action is PostRegisterSuccess) {
     newState.user['firstName'] = action.firstName;
     newState.user['lastName'] = action.lastName;
     newState.registerState['isSuccess'] = true;

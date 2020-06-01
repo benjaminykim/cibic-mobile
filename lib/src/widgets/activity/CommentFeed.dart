@@ -22,6 +22,14 @@ class CommentFeed extends StatefulWidget {
 }
 
 class _CommentFeedState extends State<CommentFeed> {
+  bool isLoading;
+
+  @override
+  initState() {
+    super.initState();
+    this.isLoading = false;
+  }
+
   final BoxShadow commentShadow = BoxShadow(
     color: Color(0xff000000),
     blurRadius: 0,
@@ -174,6 +182,7 @@ class _CommentFeedState extends State<CommentFeed> {
                             inputCommentController.text != null) {
                           onReply(widget.activity.id, c.id,
                               inputCommentController.text, widget.mode);
+                          inputCommentController.clear();
                         }
                       },
                       child: Icon(Icons.send, color: Colors.black, size: 25),
@@ -367,10 +376,11 @@ class _CommentFeedState extends State<CommentFeed> {
                 InkWell(
                   onTap: () {
                     if (inputCommentController.text != "" &&
-                        inputCommentController.text != null) {
+                        inputCommentController.text != null && this.isLoading == false) {
                       String commentText = inputCommentController.text;
                       vm.onComment(
                           widget.activity.id, commentText, widget.mode);
+                      inputCommentController.clear();
                     }
                   },
                   child: Icon(Icons.send, color: Colors.black, size: 25),

@@ -100,54 +100,6 @@ class ClearProfile {
   ClearProfile(this.type);
 }
 
-// class FetchUserProfileSuccess {
-//   UserModel user;
-//   FetchUserProfileSuccess(this.user);
-// }
-
-// class FetchUserProfileError {
-//   String error;
-//   FetchUserProfileError(this.error);
-// }
-
-// class FetchUserProfileFeedSuccess {
-//   FeedModel feed;
-//   FetchUserProfileFeedSuccess(this.feed);
-// }
-
-// class FetchUserProfileFeedError {
-//   String error;
-//   FetchUserProfileFeedError(this.error);
-// }
-
-// class FetchForeignUserProfileAttempt {
-//   int idUser;
-//   FetchForeignUserProfileAttempt(this.idUser);
-// }
-
-// class FetchForeignUserProfileSuccess {
-//   UserModel user;
-//   FetchForeignUserProfileSuccess(this.user);
-// }
-
-// class FetchForeignUserProfileError {
-//   String error;
-//   FetchForeignUserProfileError(this.error);
-// }
-
-// class FetchForeignUserProfileFeedSuccess {
-//   FeedModel feed;
-//   FetchForeignUserProfileFeedSuccess(this.feed);
-// }
-
-// class FetchForeignUserProfileFeedError {
-//   String error;
-//   FetchForeignUserProfileFeedError(this.error);
-// }
-
-// class FetchForeignUserProfileClear {
-// }
-
 class FetchSavedFeedAttempt {
   FetchSavedFeedAttempt();
 }
@@ -175,10 +127,12 @@ class PostSearchSuccess {
         break;
     }
   }
-  //PostSearchSuccess(this.mode, this.resultUser, this.resultCabildo, this.resultActivity);
 }
 
 class PostSearchError {
   String error;
   PostSearchError(this.error);
+}
+
+class IsLoading {
 }
