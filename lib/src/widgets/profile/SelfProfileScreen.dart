@@ -5,6 +5,7 @@ import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
+import 'package:cibic_mobile/src/resources/utils.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityView.dart';
 import 'package:flutter/material.dart';
 
@@ -23,16 +24,16 @@ class _UserProfileState extends State<SelfProfileScreen> {
   int maxLines = 4;
 
   ProfileViewModel generateProfileViewModel(Store<AppState> store) {
-    Function refreshFeed = () => store.dispatch(FetchUserProfileAttempt());
+    Function refreshFeed = () => store.dispatch(FetchProfileAttempt(extractID(store.state.user['jwt']), "selfUser"));
     FeedModel userFeed;
     UserModel user;
     bool error;
     String jwt;
 
-    user = store.state.user;
-    userFeed = store.state.userProfileFeed;
-    error = store.state.userProfileError;
-    jwt = store.state.jwt;
+    user = store.state.profile['selfUser'];
+    userFeed = store.state.feeds['selfUser'];
+    error = store.state.feedState['selfUserIsError'];
+    jwt = store.state.user['jwt'];
     Function onReact = (ActivityModel activity, int reactValue) =>
         store.dispatch(PostReactionAttempt(activity, reactValue, 3));
     Function onSave = (int activityId) => store.dispatch(PostSaveAttempt(activityId, true));

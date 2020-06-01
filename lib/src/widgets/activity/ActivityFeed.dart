@@ -82,14 +82,14 @@ class _ActivityFeedState extends State<ActivityFeed> {
     FeedModel feed;
     bool feedError;
     if (widget.mode == FEED_HOME) {
-      feed = store.state.homeFeed;
-      feedError = store.state.homeFeedError;
+      feed = store.state.feeds['home'];
+      feedError = store.state.feedState['homeIsError'];
     } else {
-      feed = store.state.publicFeed;
-      feedError = store.state.publicFeedError;
+      feed = store.state.feeds['public'];
+      feedError = store.state.feedState['publicIsError'];
     }
     return FeedViewModel(
-        feed, store.state.jwt, refreshFeed, onReact, onSave, feedError);
+        feed, store.state.user['jwt'], refreshFeed, onReact, onSave, feedError);
   }
 
   @override

@@ -247,7 +247,7 @@ class _ComposeState extends State<Compose> {
         Function submitActivityCallback = (int type, String title, String body, int idCabildo, String tag) => {
           store.dispatch(SubmitActivityAttempt(type, title, body, idCabildo, tag))
         };
-        return _ComposeViewModel(store.state.jwt, store.state.user, submitActivityCallback);
+        return _ComposeViewModel(store.state.user['jwt'], store.state.profile['selfUser'], submitActivityCallback);
       },
       builder: (BuildContext context, _ComposeViewModel vm) {
         return Container(

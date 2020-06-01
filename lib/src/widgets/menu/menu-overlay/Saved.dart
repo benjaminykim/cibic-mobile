@@ -71,12 +71,12 @@ class Saved extends StatelessWidget {
     Function onSave = (int activityId) => store.dispatch(PostSaveAttempt(activityId, false));
     FeedModel feed;
     bool feedError;
-    feed = store.state.savedFeed;
-    if (store.state.savedFeed == null) {
+    feed = store.state.feeds['saved'];
+    if (store.state.feeds['saved'] == null) {
       store.dispatch(FetchFeedAttempt(FEED_SAVED));
     }
     return FeedViewModel(
-        feed, store.state.jwt, refreshFeed, onReact, onSave, feedError);
+        feed, store.state.user['jwt'], refreshFeed, onReact, onSave, feedError);
   }
 
   @override

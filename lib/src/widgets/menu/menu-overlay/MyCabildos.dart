@@ -135,7 +135,7 @@ class _MyCabildosState extends State<MyCabildos> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _MyCabildosViewModel>(
       converter: (Store<AppState> store) {
-        return _MyCabildosViewModel(store.state.user, store);
+        return _MyCabildosViewModel(store.state.profile['selfUser'], store);
       },
       builder: (BuildContext context, _MyCabildosViewModel vm) {
         List<CabildoModel> cabildos = vm.user.cabildos;

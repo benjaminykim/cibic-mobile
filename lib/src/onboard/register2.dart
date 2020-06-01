@@ -282,7 +282,7 @@ class _RegisterState extends State<Register> {
           store.dispatch(PostRegisterAttempt(
               email, password, firstName, lastName, telephone, context));
         };
-        return _RegisterViewModel(onRegister, store.state.isLogIn);
+        return _RegisterViewModel(onRegister, store.state.loginState['isSuccess']);
       },
       builder: (BuildContext context, _RegisterViewModel vm) {
         return Scaffold(

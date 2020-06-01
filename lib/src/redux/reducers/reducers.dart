@@ -16,71 +16,77 @@ AppState appReducer(AppState prevState, dynamic action) {
   AppState newState = AppState.fromAppState(prevState);
 
   if (action is PostRegisterSuccess) {
-    newState.firstName = action.firstName;
-    newState.lastName = action.lastName;
-    newState.registerError = false;
-    newState.registerSuccess = true;
+    newState.user['firstName'] = action.firstName;
+    newState.user['lastName'] = action.lastName;
+    newState.registerState['isSuccess'] = true;
+    newState.registerState['isError'] = false;
     Navigator.pushReplacement(
         action.context, MaterialPageRoute(builder: (context) => Onboard("")));
   } else if (action is PostRegisterError) {
-    newState.registerError = true;
-    newState.registerSuccess = false;
+    newState.registerState['isSuccess'] = false;
+    newState.registerState['isError'] = true;
   } else if (action is LogInSuccess) {
-    newState.jwt = action.jwt;
-    newState.isLogIn = true;
-    newState.idUser = extractID(action.jwt);
+    newState.user['jwt'] = action.jwt;
+    newState.user['idUser'] = extractID(action.jwt);
+    newState.loginState['isSuccess'] = true;
   } else if (action is LogInError) {
-    newState.isLogIn = false;
+    newState.loginState['isError'] = true;
+    newState.loginState['isSuccess'] = false;
   } else if (action is FetchFeedSuccess) {
     if (action.mode == FEED_HOME) {
-      newState.homeFeed = action.feed;
-      newState.homeFeedError = false;
+      newState.feeds['home'] = action.feed;
+      newState.feedState['homeError'] = false;
     } else if (action.mode == FEED_PUBLIC) {
-      newState.publicFeed = action.feed;
-      newState.publicFeedError = false;
+      newState.feeds['public'] = action.feed;
+      newState.feedState['publicError'] = false;
+    } else if (action.mode == FEED_USER) {
+      newState.feeds['selfUser'] = action.feed;
+      newState.feedState['selfUserError'] = false;
+    } else if (action.mode == FEED_FOREIGN) {
+      newState.feeds['foreignUser'] = action.feed;
+      newState.feedState['foreignUserError'] = false;
+    } else if (action.mode == FEED_CABILDO) {
+      newState.feeds['cabildo'] = action.feed;
+      newState.feedState['cabildoError'] = false;
     } else if (action.mode == FEED_SAVED) {
-      newState.savedFeed = action.feed;
+      newState.feeds['saved'] = action.feed;
+      newState.feedState['savedError'] = false;
     }
   } else if (action is FetchFeedError) {
     if (action.mode == FEED_HOME) {
-      newState.homeFeedError = true;
+      newState.feedState['homeError'] = true;
     } else if (action.mode == FEED_PUBLIC) {
-      newState.publicFeedError = true;
+      newState.feedState['publicError'] = true;
+    } else if (action.mode == FEED_USER) {
+      newState.feedState['selfUserError'] = true;
+    } else if (action.mode == FEED_FOREIGN) {
+      newState.feedState['foreignUserError'] = true;
+    } else if (action.mode == FEED_CABILDO) {
+      newState.feedState['cabildoError'] = true;
+    } else if (action.mode == FEED_SAVED) {
+      newState.feedState['savedError'] = true;
     }
-  } else if (action is FetchUserProfileSuccess) {
-    newState.user = action.user;
-    newState.userProfileError = false;
-  } else if (action is FetchUserProfileError) {
-    newState.userProfileError = true;
-  } else if (action is FetchUserProfileFeedSuccess) {
-    newState.userProfileFeed = action.feed;
-    newState.userProfileError = false;
-  } else if (action is FetchUserProfileFeedError) {
-    newState.userProfileError = true;
-  } else if (action is FetchForeignUserProfileSuccess) {
-    newState.foreignUser = action.user;
-    newState.foreignUserError = false;
-  } else if (action is FetchForeignUserProfileError) {
-    newState.foreignUserError = true;
-  } else if (action is FetchForeignUserProfileFeedSuccess) {
-    newState.foreignUserFeed = action.feed;
-    newState.foreignUserError = false;
-  } else if (action is FetchForeignUserProfileFeedError) {
-    newState.foreignUserError = true;
-  } else if (action is FetchCabildoProfileSuccess) {
-    newState.cabildoProfile = action.cabildo;
-    newState.cabildoProfileFeed = action.feed;
-    newState.cabildoProfileError = false;
-  } else if (action is FetchCabildoProfileError) {
-    newState.cabildoProfileError = true;
-  } else if (action is FetchCabildoProfileClear) {
-    newState.cabildoProfileError = false;
-    newState.cabildoProfile = null;
-    newState.cabildoProfileFeed = null;
-  } else if (action is FetchForeignUserProfileClear) {
-    newState.foreignUserError = false;
-    newState.foreignUser = null;
-    newState.foreignUserFeed = null;
+  } else if (action is FetchProfileSuccess) {
+    newState.profile[action.type] = action.profile;
+    newState.profileState[action.type + "IsSuccess"] = true;
+    newState.profileState[action.type + 'IsLoading'] = false;
+    newState.profileState[action.type + 'IsError'] = false;
+  } else if (action is FetchProfileError) {
+    newState.profileState[action.type + 'IsSuccess'] = false;
+    newState.profileState[action.type + 'IsLoading'] = false;
+    newState.profileState[action.type + 'IsError'] = true;
+  } else if (action is FetchProfileFeedSuccess) {
+    newState.feeds[action.type] = action.feed;
+    newState.feedState[action.type + "IsLoading"] = false;
+    newState.feedState[action.type + "IsSuccess"] = true;
+    newState.feedState[action.type + "IsError"] = false;
+  } else if (action is FetchProfileFeedError) {
+    newState.feedState[action.type + "IsLoading"] = false;
+    newState.feedState[action.type + "IsSuccess"] = false;
+    newState.feedState[action.type + "IsError"] = true;
+  } else if (action is ClearProfile) {
+    newState.profile[action.type] = null;
+    newState.feeds[action.type] = null;
   } else if (action is PostReactionSuccess) {
     List<FeedModel> feeds = orderFeeds(newState, action.mode);
 
@@ -93,7 +99,7 @@ AppState appReducer(AppState prevState, dynamic action) {
 
     for (int i = 0; i < feeds.length; i++) {
       feeds[i] = updateActivityReaction(action.activityId, action.reactionId,
-          newState.idUser, action.reactValue, feeds[i]);
+          newState.user['idUser'], action.reactValue, feeds[i]);
     }
   } else if (action is PostReactionError) {
     // String error;
@@ -151,18 +157,18 @@ AppState appReducer(AppState prevState, dynamic action) {
   } else if (action is PostCabildoFollowError) {
     print("error in following/unfollowing cabildo");
   } else if (action is FireBaseTokenSuccess) {
-    newState.firebaseToken = action.token;
-    newState.firebaseManager = action.firebase;
+    newState.user['firebaseToken'] = action.token;
+    newState.user['firebaseManager'] = action.firebase;
   } else if (action is PostSearchSuccess) {
     switch (action.mode) {
       case 0:
-        newState.searchUser = action.resultUser;
+        newState.search['user'] = action.resultUser;
         break;
       case 1:
-        newState.searchCabildo = action.resultCabildo;
+        newState.search['cabildo'] = action.resultCabildo;
         break;
       case 2:
-        newState.searchActivity = action.resultActivity;
+        newState.search['activity'] = action.resultActivity;
         break;
     }
   } else if (action is PostSearchError) {}
@@ -361,34 +367,13 @@ FeedModel updateReplyVote(
 
 List<FeedModel> orderFeeds(AppState newState, int mode) {
   List<FeedModel> feeds = [
-    newState.homeFeed,
-    newState.publicFeed,
-    newState.userProfileFeed,
-    newState.cabildoProfileFeed,
-    newState.foreignUserFeed,
-    newState.savedFeed
+    newState.feeds['home'],
+    newState.feeds['public'],
+    newState.feeds['selfUser'],
+    newState.feeds['foreignUser'],
+    newState.feeds['cabildo'],
+    newState.feeds['saved'],
   ];
-  switch (mode) {
-    case FEED_PUBLIC:
-      feeds.removeAt(FEED_PUBLIC);
-      feeds.insert(0, newState.publicFeed);
-      break;
-    case FEED_USER:
-      feeds.removeAt(FEED_USER);
-      feeds.insert(0, newState.userProfileFeed);
-      break;
-    case FEED_CABILDO:
-      feeds.removeAt(FEED_CABILDO);
-      feeds.insert(0, newState.cabildoProfileFeed);
-      break;
-    case FEED_FOREIGN:
-      feeds.removeAt(FEED_FOREIGN);
-      feeds.insert(0, newState.foreignUserFeed);
-      break;
-    case FEED_SAVED:
-      feeds.removeAt(FEED_SAVED);
-      feeds.insert(0, newState.savedFeed);
-      break;
-  }
+  feeds.insert(0, feeds.removeAt(mode));
   return feeds;
 }

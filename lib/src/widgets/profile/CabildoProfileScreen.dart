@@ -5,6 +5,7 @@ import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
@@ -45,7 +46,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
     return StoreConnector<AppState, _CabildoViewModel>(
       converter: (Store<AppState> store) {
         if (!this.isLoaded) {
-          store.dispatch(FetchCabildoProfileAttempt(widget.idCabildo));
+          store.dispatch(FetchProfileAttempt(widget.idCabildo, "cabildo"));
           this.isLoaded = true;
         }
             Function onReact =
@@ -57,7 +58,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
         Function onCabildoUnfollow = (int idCabildo) => {
           store.dispatch(PostCabildoUnfollowAttempt(idCabildo))
         };
-        return _CabildoViewModel(store, onReact, onSave, onCabildoFollow, onCabildoUnfollow, store.state.user);
+        return _CabildoViewModel(store, onReact, onSave, onCabildoFollow, onCabildoUnfollow, store.state.profile['selfUser']);
       },
       builder: (BuildContext context, _CabildoViewModel vm) {
         if (vm.cabildo == null) {
@@ -345,7 +346,7 @@ class _CabildoViewModel {
     this.jwt = store.state.jwt;
     this.idUser = store.state.idUser;
     this.isError = store.state.cabildoProfileError;
-    this.onPop = () => store.dispatch(FetchCabildoProfileClear());
+    this.onPop = () => store.dispatch(ClearProfile("cabildo"));
     this.onReact = onReact;
     this.onSave = onSave;
     this.onCabildoFollow = onCabildoFollow;

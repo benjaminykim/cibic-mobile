@@ -188,11 +188,11 @@ class _SearchState extends State<Search> {
         Function onSave = (int activityId) =>
             store.dispatch(PostSaveAttempt(activityId, true));
         return _SearchViewModel(
-            store.state.user,
+            store.state.profile['selfUser'],
             submitSearchQuery,
-            store.state.searchActivity,
-            store.state.searchUser,
-            store.state.searchCabildo,
+            store.state.search['activity'],
+            store.state.search['cabildo'],
+            store.state.search['user'],
             onReact,
             onSave);
       },

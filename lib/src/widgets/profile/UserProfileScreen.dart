@@ -32,18 +32,21 @@ class _UserProfileState extends State<UserProfileScreen> {
   ProfileViewModel generateForeignProfileViewModel(
       Store<AppState> store, int idUser) {
     Function refreshFeed =
-        () => store.dispatch(FetchForeignUserProfileAttempt(idUser));
+        () {
+          store.dispatch(FetchProfileAttempt(idUser, "foreignUser"));
+          store.dispatch(FetchProfileFeedAttempt(idUser, "foreignUser"));
+        };
     FeedModel userFeed;
     UserModel user;
     bool error;
     String jwt;
 
-    user = store.state.foreignUser;
-    userFeed = store.state.foreignUserFeed;
-    error = store.state.foreignUserError;
-    jwt = store.state.jwt;
+    user = store.state.profile['foreignUser'];
+    userFeed = store.state.feeds['foreignUser'];
+    error = store.state.feedState['foreignUserIsError'];
+    jwt = store.state.user['jwt'];
 
-    Function onPop = () => store.dispatch(FetchForeignUserProfileClear());
+    Function onPop = () => store.dispatch(ClearProfile("foreignUser"));
     Function onReact = (ActivityModel activity, int reactValue) =>
         store.dispatch(PostReactionAttempt(activity, reactValue, 4));
     Function onSave = (int activityId) => store.dispatch(PostSaveAttempt(activityId, true));
@@ -336,7 +339,7 @@ class _UserProfileState extends State<UserProfileScreen> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, ProfileViewModel>(
       converter: (Store<AppState> store) {
-        store.dispatch(FetchForeignUserProfileAttempt(widget.idUser));
+        store.dispatch(FetchProfileAttempt(widget.idUser, "foreignUser"));
         return generateForeignProfileViewModel(store, widget.idUser);
       },
       builder: (BuildContext context, ProfileViewModel vm) {

@@ -361,22 +361,22 @@ class _CommentFeedState extends State<CommentFeed> {
     FeedModel searchFeed;
     switch (widget.mode) {
       case FEED_PUBLIC:
-        searchFeed = store.state.publicFeed;
+        searchFeed = store.state.feeds['public'];
         break;
       case FEED_HOME:
-        searchFeed = store.state.homeFeed;
+        searchFeed = store.state.feeds['home'];
         break;
       case FEED_USER:
-        searchFeed = store.state.userProfileFeed;
+        searchFeed = store.state.feeds['selfUser'];
         break;
       case FEED_CABILDO:
-        searchFeed = store.state.cabildoProfileFeed;
+        searchFeed = store.state.feeds['cabildo'];
         break;
       case FEED_FOREIGN:
-        searchFeed = store.state.foreignUserFeed;
+        searchFeed = store.state.feeds['foreignUser'];
         break;
       case FEED_SAVED:
-        searchFeed = store.state.savedFeed;
+        searchFeed = store.state.feeds['saved'];
         break;
     }
     for (int i = 0; i < searchFeed.feed.length; i++) {
@@ -385,7 +385,7 @@ class _CommentFeedState extends State<CommentFeed> {
         break;
       }
     }
-    return _CommentFeedViewModel(store.state.idUser, commentToActivity, onReply,
+    return _CommentFeedViewModel(store.state.user['idUser'], commentToActivity, onReply,
         onCommentVote, onReplyVote, comments);
   }
 

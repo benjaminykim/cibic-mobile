@@ -56,56 +56,94 @@ class FireBaseTokenError {
   FireBaseTokenError(this.error);
 }
 
-class FetchUserProfileAttempt {
+class FetchProfileAttempt {
+  int id;
+  String type;
+  FetchProfileAttempt(this.id, this.type);
 }
 
-class FetchUserProfileSuccess {
-  UserModel user;
-  FetchUserProfileSuccess(this.user);
+class FetchProfileSuccess {
+  String type;
+  dynamic profile;
+  FetchProfileSuccess(this.type, this.profile);
 }
 
-class FetchUserProfileError {
+class FetchProfileError {
+  String type;
   String error;
-  FetchUserProfileError(this.error);
+  FetchProfileError(this.type, this.error);
 }
 
-class FetchUserProfileFeedSuccess {
+class FetchProfileFeedAttempt {
+  int id;
+  String type;
+  FetchProfileFeedAttempt(this.id, this.type);
+}
+
+class FetchProfileFeedSuccess {
+  String type;
   FeedModel feed;
-  FetchUserProfileFeedSuccess(this.feed);
+  FetchProfileFeedSuccess(this.type, this.feed);
 }
 
-class FetchUserProfileFeedError {
+class FetchProfileFeedError {
+  String type;
   String error;
-  FetchUserProfileFeedError(this.error);
+  FetchProfileFeedError(this.type, this.error);
 }
 
-class FetchForeignUserProfileAttempt {
-  int idUser;
-  FetchForeignUserProfileAttempt(this.idUser);
+class ClearProfile {
+  String type;
+  ClearProfile(this.type);
 }
 
-class FetchForeignUserProfileSuccess {
-  UserModel user;
-  FetchForeignUserProfileSuccess(this.user);
-}
+// class FetchUserProfileSuccess {
+//   UserModel user;
+//   FetchUserProfileSuccess(this.user);
+// }
 
-class FetchForeignUserProfileError {
-  String error;
-  FetchForeignUserProfileError(this.error);
-}
+// class FetchUserProfileError {
+//   String error;
+//   FetchUserProfileError(this.error);
+// }
 
-class FetchForeignUserProfileFeedSuccess {
-  FeedModel feed;
-  FetchForeignUserProfileFeedSuccess(this.feed);
-}
+// class FetchUserProfileFeedSuccess {
+//   FeedModel feed;
+//   FetchUserProfileFeedSuccess(this.feed);
+// }
 
-class FetchForeignUserProfileFeedError {
-  String error;
-  FetchForeignUserProfileFeedError(this.error);
-}
+// class FetchUserProfileFeedError {
+//   String error;
+//   FetchUserProfileFeedError(this.error);
+// }
 
-class FetchForeignUserProfileClear {
-}
+// class FetchForeignUserProfileAttempt {
+//   int idUser;
+//   FetchForeignUserProfileAttempt(this.idUser);
+// }
+
+// class FetchForeignUserProfileSuccess {
+//   UserModel user;
+//   FetchForeignUserProfileSuccess(this.user);
+// }
+
+// class FetchForeignUserProfileError {
+//   String error;
+//   FetchForeignUserProfileError(this.error);
+// }
+
+// class FetchForeignUserProfileFeedSuccess {
+//   FeedModel feed;
+//   FetchForeignUserProfileFeedSuccess(this.feed);
+// }
+
+// class FetchForeignUserProfileFeedError {
+//   String error;
+//   FetchForeignUserProfileFeedError(this.error);
+// }
+
+// class FetchForeignUserProfileClear {
+// }
 
 class FetchSavedFeedAttempt {
   FetchSavedFeedAttempt();

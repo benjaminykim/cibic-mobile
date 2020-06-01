@@ -27,13 +27,13 @@ class _WelcomeState extends State<Welcome> {
   final TextEditingController _passwordController = new TextEditingController();
   ScrollController _controller = ScrollController();
 
-
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
+
   final welcomeTextStyle = TextStyle(
     fontSize: 24,
     fontWeight: FontWeight.w600,
@@ -158,11 +158,15 @@ class _WelcomeState extends State<Welcome> {
                           )
                         : Container(),
                     SizedBox(height: 10),
-                    StoreConnector<AppState, Function>(
+                    StoreConnector<AppState, _WelcomeViewModel>(
                       converter: (Store<dynamic> store) {
-                        return () => store;
+                        Function onLogIn = (String email, String password) {
+                          store.dispatch(LogInAttempt(email, password));
+                        };
+                        return _WelcomeViewModel(
+                            store.state.loginState['isSuccess'], onLogIn);
                       },
-                      builder: (BuildContext context, vm) {
+                      builder: (BuildContext context, _WelcomeViewModel vm) {
                         return GestureDetector(
                           onTap: () async {
                             if (this.showLogin) {
@@ -174,10 +178,8 @@ class _WelcomeState extends State<Welcome> {
                                   this.showLogin = !this.showLogin;
                                 });
                               } else {
-                                await vm().dispatch(LogInAttempt(
-                                    _emailController.text,
-                                    _passwordController.text));
-                                if (vm().state.isLogIn) {
+                                await vm.onLogIn(_emailController.text, _passwordController.text);
+                                if (vm.isLoggedIn) {
                                   Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
@@ -225,4 +227,10 @@ class _WelcomeState extends State<Welcome> {
         builder: (context) =>
             AlertDialog(title: Text(title), content: Text(text)),
       );
+}
+
+class _WelcomeViewModel {
+  bool isLoggedIn;
+  Function onLogIn;
+  _WelcomeViewModel(this.isLoggedIn, this.onLogIn);
 }

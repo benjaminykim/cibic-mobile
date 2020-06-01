@@ -1,6 +1,4 @@
 
-import 'package:cibic_mobile/src/models/cabildo_model.dart';
-import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:flutter/material.dart';
 
 class SubmitCabildoAttempt {
@@ -22,23 +20,23 @@ class SubmitCabildoError {
   SubmitCabildoError(this.error);
 }
 
-class FetchCabildoProfileAttempt {
-  int idCabildo;
-  FetchCabildoProfileAttempt(this.idCabildo);
-}
+// class FetchCabildoProfileAttempt {
+//   int idCabildo;
+//   FetchCabildoProfileAttempt(this.idCabildo);
+// }
 
-class FetchCabildoProfileSuccess {
-  CabildoModel cabildo;
-  FeedModel feed;
-  FetchCabildoProfileSuccess(this.cabildo, this.feed);
-}
+// class FetchCabildoProfileSuccess {
+//   CabildoModel cabildo;
+//   FeedModel feed;
+//   FetchCabildoProfileSuccess(this.cabildo, this.feed);
+// }
 
-class FetchCabildoProfileError {
-  String error;
-  FetchCabildoProfileError(this.error);
-}
+// class FetchCabildoProfileError {
+//   String error;
+//   FetchCabildoProfileError(this.error);
+// }
 
-class FetchCabildoProfileClear {}
+// class FetchCabildoProfileClear {}
 
 class PostCabildoFollowAttempt {
   int cabildoId;
