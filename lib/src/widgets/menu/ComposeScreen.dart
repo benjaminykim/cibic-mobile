@@ -75,19 +75,31 @@ class _ComposeState extends State<Compose> {
   Container createTitle(String title) {
     return Container(
       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
-      padding: EdgeInsets.fromLTRB(10, 14, 0, 0),
-      height: 33,
+      padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
       decoration: BoxDecoration(
         color: Color(0xffcccccc),
         borderRadius: BorderRadius.all(Radius.circular(13)),
       ),
-      child: TextField(
-        controller: inputTitleController,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: title,
-          hintStyle: TextStyle(
-              fontWeight: FontWeight.w600, color: Colors.black, fontSize: 15),
+      child: new ConstrainedBox(
+        constraints: new BoxConstraints(
+          minHeight: 25,
+          maxHeight: 100.0,
+        ),
+        child: new SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          reverse: true,
+          child: TextField(
+            controller: inputTitleController,
+            maxLines: null,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: title,
+              hintStyle: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                  fontSize: 15),
+            ),
+          ),
         ),
       ),
     );

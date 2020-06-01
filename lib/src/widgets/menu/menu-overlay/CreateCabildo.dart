@@ -38,7 +38,8 @@ class _CreateCabildoState extends State<CreateCabildo> {
         enteredTag.isEmpty) {
       return;
     } else {
-      widget.store.dispatch(SubmitCabildoAttempt(enteredName, enteredDesc, enteredLocation, enteredTag, context));
+      widget.store.dispatch(SubmitCabildoAttempt(
+          enteredName, enteredDesc, enteredLocation, enteredTag, context));
     }
   }
 
@@ -99,37 +100,61 @@ class _CreateCabildoState extends State<CreateCabildo> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
-            padding: EdgeInsets.fromLTRB(10, 14, 0, 0),
-            height: 33,
+            padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
             decoration: BoxDecoration(
               color: Color(0xffcccccc),
               borderRadius: BorderRadius.all(Radius.circular(13)),
             ),
-            child: TextField(
-              controller: inputNameController,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: "Nombre del Cabildo",
-                hintStyle: TextStyle(
-                    fontWeight: FontWeight.w200, color: Color(0xffa1a1a1)),
+            child: new ConstrainedBox(
+              constraints: new BoxConstraints(
+                minHeight: 25,
+                maxHeight: 100.0,
+              ),
+              child: new SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                reverse: true,
+                child: TextField(
+                  controller: inputNameController,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "Nombre del Cabildo",
+                    hintStyle: TextStyle(
+                      fontWeight: FontWeight.w200,
+                      color: Color(0xffa1a1a1),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
           Container(
             margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
-            padding: EdgeInsets.fromLTRB(10, 14, 0, 0),
-            height: 33,
+            padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
             decoration: BoxDecoration(
               color: Color(0xffcccccc),
               borderRadius: BorderRadius.all(Radius.circular(13)),
             ),
-            child: TextField(
-              controller: inputDescController,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: "descripción...",
-                hintStyle: TextStyle(
-                    fontWeight: FontWeight.w200, color: Color(0xffa1a1a1)),
+            child: new ConstrainedBox(
+              constraints: new BoxConstraints(
+                minHeight: 25,
+                maxHeight: 100.0,
+              ),
+              child: new SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                reverse: true,
+                child: TextField(
+                  controller: inputDescController,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "descripción...",
+                    hintStyle: TextStyle(
+                      fontWeight: FontWeight.w200,
+                      color: Color(0xffa1a1a1),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -181,7 +206,16 @@ class _CreateCabildoState extends State<CreateCabildo> {
               ),
               IconButton(
                 icon: Icon(Icons.send),
-                onPressed: () => submitCabildo(),
+                onPressed: () {
+                  if (inputNameController.text != "" ||
+                  inputNameController.text != null ||
+                  inputDescController.text != "" ||
+                  inputDescController.text != null ||
+                  inputLocationController.text != "" ||
+                  inputLocationController.text != null) {
+                    submitCabildo();
+                  }
+                }
               ),
             ],
           ),
