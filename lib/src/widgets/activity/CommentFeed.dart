@@ -129,8 +129,10 @@ class _CommentFeedState extends State<CommentFeed> {
                 suffixIcon: IconButton(
                   icon: Icon(Icons.send, color: Colors.black),
                   onPressed: () {
-                    onReply(widget.activity.id, c.id,
-                        inputCommentController.text, widget.mode);
+                    if (inputCommentController.text != "" && inputCommentController.text != null) {
+                      onReply(widget.activity.id, c.id,
+                          inputCommentController.text, widget.mode);
+                    }
                   },
                 ),
                 border: InputBorder.none,
@@ -143,13 +145,15 @@ class _CommentFeedState extends State<CommentFeed> {
             ),
           ),
           // RESPONSES
-          ...generateResponseFeed(c.replies, context, vm, inputCommentController),
+          ...generateResponseFeed(
+              c.replies, context, vm, inputCommentController),
         ],
       ),
     );
   }
 
-  Container reply(ReplyModel r, BuildContext c, _CommentFeedViewModel vm, TextEditingController commentController) {
+  Container reply(ReplyModel r, BuildContext c, _CommentFeedViewModel vm,
+      TextEditingController commentController) {
     int userId = vm.userId;
     Function onReplyVote = vm.onReplyVote;
     Color upVoteColor = Colors.black;
@@ -229,15 +233,15 @@ class _CommentFeedState extends State<CommentFeed> {
                 ),
                 // RESPONSE ICON
                 GestureDetector(
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(0, 0, 10, 5),
-                      alignment: Alignment.bottomRight,
-                      child: Icon(Icons.reply, size: 20),
-                    ),
-                    onTap: () {
-                              print("A");
-                              print("reply id ${r.user["firstName"]}");
-                            },
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(0, 0, 10, 5),
+                    alignment: Alignment.bottomRight,
+                    child: Icon(Icons.reply, size: 20),
+                  ),
+                  onTap: () {
+                    print("A");
+                    print("reply id ${r.user["firstName"]}");
+                  },
                 ),
               ],
             ),
@@ -295,8 +299,9 @@ class _CommentFeedState extends State<CommentFeed> {
                   ),
                   color: Colors.black,
                   onPressed: () {
-                    String commentText = inputCommentController.text;
-                    vm.onComment(widget.activity.id, commentText, widget.mode);
+                    if (inputCommentController.text != "" && inputCommentController.text != null) {
+                      vm.onComment(widget.activity.id, inputCommentController.text, widget.mode);
+                    }
                   },
                 ),
                 border: InputBorder.none,
@@ -313,8 +318,11 @@ class _CommentFeedState extends State<CommentFeed> {
     );
   }
 
-  List<Container> generateResponseFeed(List<ReplyModel> responses,
-      BuildContext context, _CommentFeedViewModel vm, TextEditingController commentController) {
+  List<Container> generateResponseFeed(
+      List<ReplyModel> responses,
+      BuildContext context,
+      _CommentFeedViewModel vm,
+      TextEditingController commentController) {
     if (responses != null) {
       List<Container> responseCards = [];
       for (int i = 0; i < responses.length && i < this.maxCommentView; i++) {
@@ -351,9 +359,14 @@ class _CommentFeedState extends State<CommentFeed> {
         store.dispatch(PostCommentAttempt(idActivity, content, mode));
     Function onCommentVote = (int value, int activityId,
             CommentModel comment) =>
-        {store.dispatch(PostCommentVoteAttempt(value, activityId, comment, widget.mode))};
-    Function onReplyVote = (int value, int activityId, ReplyModel reply) =>
-        {store.dispatch(PostReplyVoteAttempt(value, activityId, reply, widget.mode))};
+        {
+          store.dispatch(
+              PostCommentVoteAttempt(value, activityId, comment, widget.mode))
+        };
+    Function onReplyVote = (int value, int activityId, ReplyModel reply) => {
+          store.dispatch(
+              PostReplyVoteAttempt(value, activityId, reply, widget.mode))
+        };
     Function onReply = (int idActivity, int idComment, String content,
             int mode) =>
         store.dispatch(PostReplyAttempt(idActivity, idComment, content, mode));
@@ -385,8 +398,8 @@ class _CommentFeedState extends State<CommentFeed> {
         break;
       }
     }
-    return _CommentFeedViewModel(store.state.user['idUser'], commentToActivity, onReply,
-        onCommentVote, onReplyVote, comments);
+    return _CommentFeedViewModel(store.state.user['idUser'], commentToActivity,
+        onReply, onCommentVote, onReplyVote, comments);
   }
 
   @override
