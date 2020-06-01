@@ -41,6 +41,8 @@ void apiMiddleware(
     await postActivity(action, store.state.user['jwt'], next, store);
   } else if (action is SubmitActivitySuccess) {
     String jwt = store.state.user['jwt'];
+    await fetchFeed(jwt, FEED_HOME, next);
+    await fetchFeed(jwt, FEED_PUBLIC, next);
     await fetchProfileFeed(jwt, "selfUser", extractID(jwt).toString(), next);
   } else if (action is SubmitCabildoAttempt) {
     await postCabildo(action, store.state.user['jwt'], next, store);
