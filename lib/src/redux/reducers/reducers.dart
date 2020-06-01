@@ -53,9 +53,6 @@ AppState appReducer(AppState prevState, dynamic action) {
     } else if (action.mode == FEED_USER) {
       newState.feeds['selfUser'] = action.feed;
       newState.feedState['selfUserError'] = false;
-    } else if (action.mode == FEED_FOREIGN) {
-      newState.feeds['foreignUser'] = action.feed;
-      newState.feedState['foreignUserError'] = false;
     } else if (action.mode == FEED_SAVED) {
       newState.feeds['saved'] = action.feed;
       newState.feedState['savedError'] = false;
@@ -67,8 +64,6 @@ AppState appReducer(AppState prevState, dynamic action) {
       newState.feedState['publicError'] = true;
     } else if (action.mode == FEED_USER) {
       newState.feedState['selfUserError'] = true;
-    } else if (action.mode == FEED_FOREIGN) {
-      newState.feedState['foreignUserError'] = true;
     } else if (action.mode == FEED_SAVED) {
       newState.feedState['savedError'] = true;
     }

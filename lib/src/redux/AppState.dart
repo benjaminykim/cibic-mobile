@@ -58,9 +58,6 @@ class AppState {
       'selfUserIsLoading': false,
       'selfUserIsSuccess': false,
       'selfUserIsError': false,
-      'foreignUserIsLoading': false,
-      'foreignUserIsSuccess': false,
-      'foreignUserIsError': false,
       'savedIsLoading': false,
       'savedIsSuccess': false,
       'savedIsError': false,
@@ -72,9 +69,6 @@ class AppState {
     };
 
     Map<String, bool> profileState = {
-      'foreignUserIsLoading': false,
-      'foreignUserIsSuccess': false,
-      'foreignUserIsError': false,
       'selfUserIsLoading': false,
       'selfUserIsSuccess': false,
       'selfUserIsError': false,

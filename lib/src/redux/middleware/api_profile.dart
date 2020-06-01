@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 
 fetchProfile(String jwt, String type, String id, NextDispatcher next) async {
   String url = API_BASE;
-  if (type == "selfUser" || type == "foreignUser") {
+  if (type == "selfUser") {
     url += ENDPOINT_USER + id;
   }
 
@@ -31,7 +31,7 @@ fetchProfile(String jwt, String type, String id, NextDispatcher next) async {
 fetchProfileFeed(
     String jwt, String type, String id, NextDispatcher next) async {
   String url = API_BASE;
-  if (type == "selfUser" || type == "foreignUser") {
+  if (type == "selfUser") {
     url += ENDPOINT_USER_FEED + id;
   }
 

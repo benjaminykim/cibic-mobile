@@ -30,8 +30,6 @@ class CabildoProfileScreen extends StatefulWidget {
 class _CabildoProfileState extends State<CabildoProfileScreen> {
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   int maxLines;
-  String followButtonText;
-  Color followButtonColor;
   Future<CabildoModel> cabildoProfile;
   Future<FeedModel> cabildoFeed;
   double profileHeight;
@@ -42,8 +40,6 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
   initState() {
     super.initState();
     this.maxLines = 4;
-    this.followButtonText = "seguir";
-    this.followButtonColor = Colors.green;
     this.profileHeight = 180;
     this.isFollowing = false;
     this.isLoaded = false;

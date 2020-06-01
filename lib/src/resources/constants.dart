@@ -165,6 +165,7 @@ const ENDPOINT_USER = "user/";
 const ENDPOINT_USER_FEED = "user/feed/";
 const ENDPOINT_DEFAULT_FEED = "user/home/";
 const ENDPOINT_FOLLOW_USER = "user/followuser";
+const ENDPOINT_UNFOLLOW_USER = "user/unfollowuser";
 const ENDPOINT_FOLLOW_CABILDO = "user/followcabildo";
 const ENDPOINT_UNFOLLOW_CABILDO = "user/unfollowcabildo";
 
