@@ -102,19 +102,31 @@ class _ComposeState extends State<Compose> {
         // content body
         Container(
           margin: EdgeInsets.fromLTRB(0, 7, 0, 7),
-          padding: EdgeInsets.fromLTRB(10, 14, 0, 0),
-          height: 33,
+          padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
           decoration: BoxDecoration(
             color: Color(0xffcccccc),
             borderRadius: BorderRadius.all(Radius.circular(13)),
           ),
-          child: TextField(
-            controller: inputBodyController,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: "cuéntanos más...",
-              hintStyle: TextStyle(
-                  fontWeight: FontWeight.w200, color: Color(0xffa1a1a1)),
+          child: new ConstrainedBox(
+            constraints: new BoxConstraints(
+              minHeight: 25,
+              maxHeight: 100.0,
+            ),
+            child: new SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              reverse: true,
+              child: TextField(
+                controller: inputBodyController,
+                maxLines: null,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: "cuéntanos más...",
+                  hintStyle: TextStyle(
+                    fontWeight: FontWeight.w200,
+                    color: Color(0xffa1a1a1),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -220,7 +232,8 @@ class _ComposeState extends State<Compose> {
       if (enteredTitle.isEmpty || enteredBody.isEmpty) {
         return;
       } else {
-        await vm.submitActivity((selectedActivity == 0) ? 0 : 1, enteredTitle, enteredBody, idCabildo, enteredTag);
+        await vm.submitActivity((selectedActivity == 0) ? 0 : 1, enteredTitle,
+            enteredBody, idCabildo, enteredTag);
       }
     } else if (selectedActivity == 1) {
       if (enteredTitle.isEmpty) {
@@ -244,10 +257,14 @@ class _ComposeState extends State<Compose> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ComposeViewModel>(
       converter: (Store<AppState> store) {
-        Function submitActivityCallback = (int type, String title, String body, int idCabildo, String tag) => {
-          store.dispatch(SubmitActivityAttempt(type, title, body, idCabildo, tag))
-        };
-        return _ComposeViewModel(store.state.user['jwt'], store.state.profile['selfUser'], submitActivityCallback);
+        Function submitActivityCallback =
+            (int type, String title, String body, int idCabildo, String tag) =>
+                {
+                  store.dispatch(
+                      SubmitActivityAttempt(type, title, body, idCabildo, tag))
+                };
+        return _ComposeViewModel(store.state.user['jwt'],
+            store.state.profile['selfUser'], submitActivityCallback);
       },
       builder: (BuildContext context, _ComposeViewModel vm) {
         return Container(
@@ -298,8 +315,7 @@ class _ComposeState extends State<Compose> {
                   ),
                   IconButton(
                     icon: Icon(Icons.send),
-                    onPressed: () =>
-                        submitActivity(dropdownValue, vm),
+                    onPressed: () => submitActivity(dropdownValue, vm),
                   ),
                 ],
               ),
