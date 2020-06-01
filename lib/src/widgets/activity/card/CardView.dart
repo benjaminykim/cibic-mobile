@@ -88,7 +88,7 @@ class CardView extends StatelessWidget {
           ),
           Text(
             this.activity.comments[commentIndex].content,
-            maxLines: 15,
+            maxLines: 4,
             style: TextStyle(
               fontSize: 14,
               color: Colors.black,
@@ -141,7 +141,7 @@ class CardView extends StatelessWidget {
           alignment: Alignment.topLeft,
           child: Text(
             this.activity.text,
-            maxLines: 15,
+            maxLines: 4,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: Colors.black,
