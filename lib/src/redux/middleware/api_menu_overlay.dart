@@ -36,8 +36,7 @@ postCabildo(dynamic action, String jwt, NextDispatcher next, Store store) async 
     final responseBody = await response.transform(utf8.decoder).join();
     Map<String, dynamic> cabildo = jsonDecode(responseBody);
     int reply = cabildo['id'];
-    // follow cabildo
-    store.dispatch(PostCabildoFollowAttempt(reply));
+    // TODO FOLLOW CABILDO
     // update user profile
     store.dispatch(SubmitCabildoSuccess(reply));
     // pop context

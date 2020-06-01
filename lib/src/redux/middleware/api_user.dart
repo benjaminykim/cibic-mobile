@@ -5,7 +5,6 @@ import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/search_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
-import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/material.dart';
@@ -64,43 +63,6 @@ attemptLogin(String email, String password, Store store, NextDispatcher next) as
   }
 }
 
-postCabildoFollow(String jwt, int cabildoId, NextDispatcher next) async {
-  HttpClient httpClient = new HttpClient();
-  HttpClientRequest request =
-      await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_FOLLOW_CABILDO));
-  request.headers.add('content-type', 'application/json');
-  request.headers.add('accept', 'application/json');
-  request.headers.add('authorization', 'Bearer $jwt');
-  request.add(utf8.encode(json.encode({"cabildoId": cabildoId})));
-  HttpClientResponse response = await request.close();
-  httpClient.close();
-
-  print("DEBUG: followCabildo ${response.statusCode.toString()}");
-  if (response.statusCode == 201) {
-    next(PostCabildoFollowSuccess(1, cabildoId));
-  } else {
-    next(PostCabildoFollowError(response.statusCode.toString()));
-  }
-}
-
-postCabildoUnfollow(String jwt, int cabildoId, NextDispatcher next) async {
-  HttpClient httpClient = new HttpClient();
-  HttpClientRequest request =
-      await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_UNFOLLOW_CABILDO));
-  request.headers.add('content-type', 'application/json');
-  request.headers.add('accept', 'application/json');
-  request.headers.add('authorization', 'Bearer $jwt');
-  request.add(utf8.encode(json.encode({"cabildoId": cabildoId})));
-  HttpClientResponse response = await request.close();
-  httpClient.close();
-
-  print("DEBUG: unFollowCabildo ${response.statusCode.toString()}");
-  if (response.statusCode == 201) {
-    next(PostCabildoFollowSuccess(-1, cabildoId));
-  } else {
-    next(PostCabildoFollowError(response.statusCode.toString()));
-  }
-}
 
 // getFirebaseToken(String jwt, NextDispatcher next) async {
 //   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();

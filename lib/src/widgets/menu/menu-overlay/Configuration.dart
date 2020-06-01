@@ -1,6 +1,4 @@
-import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
-import 'package:cibic_mobile/src/widgets/profile/CabildoProfileScreen.dart';
 import 'package:flutter/material.dart';
 
 class Configuration extends StatefulWidget {
@@ -16,46 +14,8 @@ class _ConfigurationState extends State<Configuration> {
   bool showNotificationSettings = false;
   bool notificationsOn = false;
   bool soundsOn = false;
-
-  Widget cabildoItem(CabildoModel cabildo) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    CabildoProfileScreen(cabildo.id)));
-      },
-      child: Container(
-        height: 65,
-        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              width: 50.0,
-              height: 50.0,
-              margin: EdgeInsets.fromLTRB(0, 0, 15, 0),
-              decoration: new BoxDecoration(
-                color: Colors.blue,
-                shape: BoxShape.circle,
-              ),
-            ),
-            Text(
-              cabildo.name,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Divider divider = Divider(color: Colors.black, indent: 50, endIndent: 20);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

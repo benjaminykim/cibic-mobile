@@ -28,11 +28,34 @@ class UserModel {
   String rut;
   String desc;
 
-  UserModel(this.id, this.cabildosIds, this.cabildos, this.activityVotes, this.commentVotesIds, this.files, this.followersIds,
-  this.followingIds, this.activityFeedIds, this.citizenPoints, this.email,
-  this.password, this.firstName, this.middleName, this.lastName, this.maidenName, this.phone, this.rut, this.desc);
+  UserModel(
+      this.id,
+      this.cabildosIds,
+      this.cabildos,
+      this.activityVotes,
+      this.commentVotesIds,
+      this.files,
+      this.followersIds,
+      this.followingIds,
+      this.activityFeedIds,
+      this.citizenPoints,
+      this.email,
+      this.password,
+      this.firstName,
+      this.middleName,
+      this.lastName,
+      this.maidenName,
+      this.phone,
+      this.rut,
+      this.desc);
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
+
+  factory UserModel.fromUserId(int id) {
+    return UserModel(id, null, null, null, null, null, null, null, null, null,
+        null, null, "", "", "", "", 0, "", "");
+  }
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 }

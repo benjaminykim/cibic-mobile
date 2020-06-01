@@ -6,7 +6,6 @@ import 'package:cibic_mobile/src/onboard/onboard.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_feed.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
-import 'package:cibic_mobile/src/redux/actions/actions_cabildo.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/resources/utils.dart';
@@ -57,9 +56,6 @@ AppState appReducer(AppState prevState, dynamic action) {
     } else if (action.mode == FEED_FOREIGN) {
       newState.feeds['foreignUser'] = action.feed;
       newState.feedState['foreignUserError'] = false;
-    } else if (action.mode == FEED_CABILDO) {
-      newState.feeds['cabildo'] = action.feed;
-      newState.feedState['cabildoError'] = false;
     } else if (action.mode == FEED_SAVED) {
       newState.feeds['saved'] = action.feed;
       newState.feedState['savedError'] = false;
@@ -73,8 +69,6 @@ AppState appReducer(AppState prevState, dynamic action) {
       newState.feedState['selfUserError'] = true;
     } else if (action.mode == FEED_FOREIGN) {
       newState.feedState['foreignUserError'] = true;
-    } else if (action.mode == FEED_CABILDO) {
-      newState.feedState['cabildoError'] = true;
     } else if (action.mode == FEED_SAVED) {
       newState.feedState['savedError'] = true;
     }
@@ -165,11 +159,6 @@ AppState appReducer(AppState prevState, dynamic action) {
           action.voteId, action.value, feeds[i]);
     }
   } else if (action is PostReplyVoteError) {
-  } else if (action is PostCabildoFollowSuccess) {
-    // TODO MUTATE STATE
-    print("mutate state!");
-  } else if (action is PostCabildoFollowError) {
-    print("error in following/unfollowing cabildo");
   } else if (action is FireBaseTokenSuccess) {
     newState.user['firebaseToken'] = action.token;
     newState.user['firebaseManager'] = action.firebase;
@@ -385,7 +374,6 @@ List<FeedModel> orderFeeds(AppState newState, int mode) {
     newState.feeds['public'],
     newState.feeds['selfUser'],
     newState.feeds['foreignUser'],
-    newState.feeds['cabildo'],
     newState.feeds['saved'],
   ];
   feeds.insert(0, feeds.removeAt(mode));

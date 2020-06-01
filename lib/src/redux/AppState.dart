@@ -45,7 +45,6 @@ class AppState {
       'public': null,
       'selfUser': null,
       'foreignUser': null,
-      'cabildo': null,
       'saved': null,
     };
 
@@ -62,24 +61,17 @@ class AppState {
       'foreignUserIsLoading': false,
       'foreignUserIsSuccess': false,
       'foreignUserIsError': false,
-      'cabildoIsLoading': false,
-      'cabildoIsSuccess': false,
-      'cabildoIsError': false,
       'savedIsLoading': false,
       'savedIsSuccess': false,
       'savedIsError': false,
     };
 
     Map<String, dynamic> profile = {
-      'cabildo': null,
       'foreignUser': null,
       'selfUser': null,
     };
 
     Map<String, bool> profileState = {
-      'cabildoIsLoading': false,
-      'cabildoIsSuccess': false,
-      'cabildoIsError': false,
       'foreignUserIsLoading': false,
       'foreignUserIsSuccess': false,
       'foreignUserIsError': false,

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
@@ -9,9 +8,7 @@ import 'package:http/http.dart' as http;
 
 fetchProfile(String jwt, String type, String id, NextDispatcher next) async {
   String url = API_BASE;
-  if (type == "cabildo") {
-    url += ENDPOINT_CABILDO_PROFILE + id;
-  } else if (type == "selfUser" || type == "foreignUser") {
+  if (type == "selfUser" || type == "foreignUser") {
     url += ENDPOINT_USER + id;
   }
 
@@ -24,14 +21,8 @@ fetchProfile(String jwt, String type, String id, NextDispatcher next) async {
   print("fetchProfile: ${response.statusCode}");
   print(" type: $type     id: $id");
   if (response.statusCode == 200) {
-    if (type == "cabildo") {
-      print("profile process cabildo");
-      CabildoModel cabildo = CabildoModel.fromJson(json.decode(response.body));
-      next(FetchProfileSuccess(type, cabildo));
-    } else {
-      UserModel user = UserModel.fromJson(json.decode(response.body));
-      next(FetchProfileSuccess(type, user));
-    }
+    UserModel user = UserModel.fromJson(json.decode(response.body));
+    next(FetchProfileSuccess(type, user));
   } else {
     next(FetchProfileSuccess(type, response.statusCode.toString()));
   }
@@ -40,9 +31,7 @@ fetchProfile(String jwt, String type, String id, NextDispatcher next) async {
 fetchProfileFeed(
     String jwt, String type, String id, NextDispatcher next) async {
   String url = API_BASE;
-  if (type == "cabildo") {
-    url += ENDPOINT_CABILDO_FEED + id;
-  } else if (type == "selfUser" || type == "foreignUser") {
+  if (type == "selfUser" || type == "foreignUser") {
     url += ENDPOINT_USER_FEED + id;
   }
 
@@ -55,7 +44,7 @@ fetchProfileFeed(
   print("fetchFeed: ${response.statusCode}");
   print(" type: $type     id: $id");
   if (response.statusCode == 200) {
-      print("profile feed process cabildo");
+    print("profile feed process cabildo");
     FeedModel feed =
         FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
     next(FetchProfileFeedSuccess(type, feed));
