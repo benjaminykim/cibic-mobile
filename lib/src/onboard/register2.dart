@@ -29,6 +29,7 @@ class _RegisterState extends State<Register> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final storage = FlutterSecureStorage();
+  bool isClickable;
 
   @override
   initState() {
@@ -45,6 +46,7 @@ class _RegisterState extends State<Register> {
     telephoneVal = false;
     passwordVal = false;
     privacy = false;
+    this.isClickable = true;
   }
 
   @override
@@ -282,7 +284,12 @@ class _RegisterState extends State<Register> {
           store.dispatch(PostRegisterAttempt(
               email, password, firstName, lastName, telephone, context));
         };
-        return _RegisterViewModel(onRegister, store.state.loginState['isSuccess']);
+        return _RegisterViewModel(
+          onRegister,
+          store.state.loginState['isSuccess'],
+          store.state.loginState['isLoading'],
+          store.state.loginState['isError'],
+          );
       },
       builder: (BuildContext context, _RegisterViewModel vm) {
         return Scaffold(
@@ -449,6 +456,9 @@ class _RegisterState extends State<Register> {
                             if (_formKey.currentState.validate() &&
                                 sex != '' &&
                                 privacy) {
+                              if (this.isClickable  &&
+                              vm.isLoading == false ) {
+                                this.isClickable = false;
                               await vm.onRegister(
                                   _emailController.text,
                                   _passwordController.text,
@@ -456,11 +466,12 @@ class _RegisterState extends State<Register> {
                                   _lastNameController.text,
                                   _phoneController.text,
                                   context);
-                              if (vm.isLogIn) {
+                              if (vm.isSuccess) {
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => Onboard("")));
+                              }
                               }
                             }
                           },
@@ -500,6 +511,8 @@ class _RegisterState extends State<Register> {
 
 class _RegisterViewModel {
   Function onRegister;
-  bool isLogIn;
-  _RegisterViewModel(this.onRegister, this.isLogIn);
+  bool isLoading;
+  bool isSuccess;
+  bool isError;
+  _RegisterViewModel(this.onRegister, this.isLoading, this.isSuccess, this.isError);
 }
