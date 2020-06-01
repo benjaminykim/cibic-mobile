@@ -25,6 +25,7 @@ fetchProfile(String jwt, String type, String id, NextDispatcher next) async {
   print(" type: $type     id: $id");
   if (response.statusCode == 200) {
     if (type == "cabildo") {
+      print("profile process cabildo");
       CabildoModel cabildo = CabildoModel.fromJson(json.decode(response.body));
       next(FetchProfileSuccess(type, cabildo));
     } else {
@@ -54,6 +55,7 @@ fetchProfileFeed(
   print("fetchFeed: ${response.statusCode}");
   print(" type: $type     id: $id");
   if (response.statusCode == 200) {
+      print("profile feed process cabildo");
     FeedModel feed =
         FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
     next(FetchProfileFeedSuccess(type, feed));

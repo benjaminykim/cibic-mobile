@@ -24,7 +24,6 @@ class AppState {
     feedState = another.feedState;
     profileState = another.profileState;
     isLoading = another.isLoading;
-    print("App State Copy jwt ${user['jwt']}");
   }
 
   factory AppState.initial() {
