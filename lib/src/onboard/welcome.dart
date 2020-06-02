@@ -91,7 +91,7 @@ class _WelcomeState extends State<Welcome> {
       height: 40,
       decoration: loginInputDec,
       alignment: Alignment.center,
-      margin: EdgeInsets.fromLTRB(35, 0, 35, 7),
+      margin: EdgeInsets.fromLTRB(10, 0, 10, 7),
       child: Center(
         child: TextField(
           controller: ctlr,

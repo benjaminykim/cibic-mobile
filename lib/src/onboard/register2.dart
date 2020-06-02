@@ -20,39 +20,76 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   final FocusScopeNode _node = FocusScopeNode();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String email, firstName, lastName, sex, _value, telephone, password;
-  bool emailVal, firstNameVal, lastNameVal, telephoneVal, passwordVal;
+  List<String> titles;
+  List<bool> shouldValidate;
+  List<bool> isValid;
+  List<TextInputType> keyboards;
   bool privacy;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordConfirmController =
+      TextEditingController();
   final storage = FlutterSecureStorage();
-  bool isClickable;
+  bool isSubmitable;
 
   @override
   initState() {
     super.initState();
-    email = "";
-    firstName = "";
-    lastName = "";
-    sex = "";
-    telephone = "";
-    password = "";
-    emailVal = false;
-    firstNameVal = false;
-    lastNameVal = false;
-    telephoneVal = false;
-    passwordVal = false;
-    privacy = false;
-    this.isClickable = true;
+    titles = [
+      "correo electrónico",
+      "nombre de pila",
+      "apellido",
+      "número móvil",
+      "contraseña",
+      "confirmar contraseña"
+    ];
+    this.isValid = [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ];
+    this.shouldValidate = [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ];
+    this.keyboards = [
+      TextInputType.emailAddress,
+      TextInputType.text,
+      TextInputType.text,
+      TextInputType.number,
+      TextInputType.text,
+      TextInputType.text,
+    ];
+    this.isSubmitable = false;
+    this.privacy = false;
   }
 
   @override
   void dispose() {
     _node.dispose();
     super.dispose();
+  }
+
+  bool computeSubmitable() {
+    if (this.privacy == false) {
+      return false;
+    }
+    for (int i = 0; i < this.isValid.length; i++) {
+      if (this.isValid[i] == false) {
+        return false;
+      }
+    }
+    return true;
   }
 
   Widget createPrivacyCheck() {
@@ -66,16 +103,28 @@ class _RegisterState extends State<Register> {
             onChanged: (value) {
               setState(() {
                 this.privacy = value;
-                // this.isSubmitable = computeSubmitable();
+                this.isSubmitable = computeSubmitable();
               });
             },
           ),
-          Text(
-            "Acepto las políticas de privacidad.",
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.white,
-              fontWeight: FontWeight.w200,
+          Text.rich(
+            TextSpan(
+              text: 'Acepto las ',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.white,
+                fontWeight: FontWeight.w200,
+              ),
+              children: <TextSpan>[
+                TextSpan(
+                    text: "políticas de privacidad.",
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w200,
+                    )),
+              ],
             ),
           ),
         ],
@@ -83,21 +132,15 @@ class _RegisterState extends State<Register> {
     );
   }
 
-  Container textFieldInput(
-      {String title, String input, TextEditingController controller}) {
-    // for validation
-    String _validator(String value) {
-      // email validation
-      // setState(() {
-      // _validate = true;
-      // });
-      if (title == "correo electrónico*") {
-        if (value.isEmpty) {
-          // The form is empty
-          return "Introducir la dirección de correo electrónico";
-        }
+  void updateSubmitable(int index) {
+    this.isValid[index] = true;
+    this.isSubmitable = computeSubmitable();
+  }
 
-        // This is just a regular expression for email addresses
+  Container textFieldInput({int index, TextEditingController controller}) {
+    String _validator(String value) {
+      if (index == 0) {
+        // EMAIL
         String p = "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
             "\\@" +
             "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
@@ -105,119 +148,74 @@ class _RegisterState extends State<Register> {
             "\\." +
             "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
             ")+";
-
-        RegExp regExp = RegExp(p);
-        if (regExp.hasMatch(value)) {
-          // So, the email is valid
-          return null;
-        }
-        // The pattern of the email didn't match the regex above.
-        return 'Email is not valid';
-
-        // For username
-      } else if (title == "nombre de usuario*") {
-        String p = "[a-zA-Z0-9\.\_\-]{1,16}";
-
-        RegExp regExp = RegExp(p);
-        if (value.trim().isEmpty) {
-          return "Nombre de usuario de entrada";
-        } else if (value.trim().length > 16) {
-          return "Nombre de usuario demasiado largo";
-        } else if (regExp.hasMatch(value)) {
+        if (value.isEmpty) {
+          return 'Introduce un correo electrónico válido';
+        } else if (RegExp(p).hasMatch(value)) {
+          updateSubmitable(index);
           return null;
         } else {
-          return "Error";
+          return 'Introduce un correo electrónico válido';
         }
-      }
-      // For lastName
-      else if (title == "apellido") {
+      } else if (index == 1) {
+        // FIRSTNAME
         String p = "[a-zA-Z]{1,16}";
-
         RegExp regExp = RegExp(p);
         if (value.trim().isEmpty) {
-          return "El apellido está vacío";
-        }
-        if (value.trim().length > 16) {
-          return "Demasiado larga";
+          return "Introduce un nombre válido";
         } else if (regExp.hasMatch(value)) {
+          updateSubmitable(index);
           return null;
+        } else {
+          return "Introduce un nombre válido";
         }
-
-        return "Error";
-      } else if (title == "nombre de pila") {
+      } else if (index == 2) {
+        // LASTNAME
         String p = "[a-zA-Z]{1,16}";
-
         RegExp regExp = RegExp(p);
         if (value.trim().isEmpty) {
-          return "El nombre esta vacio";
-        }
-        if (value.trim().length > 16) {
-          return "Demasiado larga";
+          return "Introduce un apellido válido";
         } else if (regExp.hasMatch(value)) {
+          updateSubmitable(index);
           return null;
+        } else {
+          return "Introduce un apellido válido";
         }
-
-        return "Error";
-      }
-      // phone number
-      else if (title == "número de teléfono") {
+      } else if (index == 3) {
+        // PHONE NUMBER
         String p = "[0-9]{9}";
-
         RegExp regExp = RegExp(p);
         if (value.trim().isEmpty) {
-          return "el número de teléfono está vacío";
-        }
-        if (regExp.hasMatch(value)) {
+          return "Introduce un número válido";
+        } else if (regExp.hasMatch(value)) {
+          updateSubmitable(index);
           return null;
         } else {
-          return "Error";
+          return "Introduce un número válido";
         }
       }
       // password
-      else if (title == "contraseña") {
+      else if (index == 4) {
+        String reg =
+            r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$";
+        RegExp regExp = RegExp(reg);
         if (value.trim().isEmpty) {
-          return "la contraseña está vacía";
-        }
-        if (value.trim().length < 8) {
-          return "la contraseña tiene menos de 8 caracteres";
+          return "Introduce una contraseña válida";
+        } else if (regExp.hasMatch(value.trim())) {
+          updateSubmitable(index);
+          return null;
         } else {
+          return "Introduce una contraseña válida";
+        }
+      } else if (index == 5) {
+        if (_passwordController.text != _passwordConfirmController.text) {
+          return ("Las contraseñas no coinciden");
+        } else {
+          updateSubmitable(index);
           return null;
         }
+      } else {
+        return null;
       }
-
-      //
-      return null;
-    }
-
-    void updateValidator(String title) {
-      setState(() {
-        if (title == "correo electrónico*") {
-          emailVal = true;
-        } else if (title == "apellido") {
-          firstNameVal = true;
-        } else if (title == "nombre de pila") {
-          lastNameVal = true;
-        } else if (title == "número de teléfono") {
-          telephoneVal = true;
-        } else if (title == "contraseña") {
-          passwordVal = true;
-        }
-      });
-    }
-
-    bool getValidator(String title) {
-      if (title == "correo electrónico*") {
-        return emailVal;
-      } else if (title == "apellido") {
-        return firstNameVal;
-      } else if (title == "nombre de pila") {
-        return lastNameVal;
-      } else if (title == "número de teléfono") {
-        return telephoneVal;
-      } else if (title == "contraseña") {
-        return passwordVal;
-      }
-      return false;
     }
 
     return Container(
@@ -230,24 +228,21 @@ class _RegisterState extends State<Register> {
         vertical: 0,
       ),
       child: TextFormField(
-        obscureText: (title == "contraseña"),
-        onEditingComplete: (title != "contraseña") ? _node.nextFocus : null,
-        textInputAction: (title == "contraseña")
-            ? TextInputAction.done
-            : TextInputAction.next,
+        obscureText: (index == 4 || index == 5),
+        onEditingComplete: () {
+          if (index != 5) {
+            _node.nextFocus();
+          }
+          shouldValidate[index] = true;
+        },
+        textInputAction:
+            (index == 5) ? TextInputAction.done : TextInputAction.next,
         textAlign: TextAlign.center,
         controller: controller,
-        autovalidate: getValidator(title),
+        autovalidate: shouldValidate[index],
         validator: _validator,
-        onChanged: (value) {
-          (title == "nombre de pila" || title == "apellido")
-              ? value = value.toUpperCase()
-              : value = value;
-          setState(() {
-            input = value.trim();
-          });
-          updateValidator(title);
-        },
+        keyboardType: this.keyboards[index],
+        onChanged: (value) {},
         decoration: InputDecoration(
           alignLabelWithHint: true,
           filled: true,
@@ -256,7 +251,7 @@ class _RegisterState extends State<Register> {
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          hintText: title,
+          hintText: this.titles[index],
           hintStyle: TextStyle(
             fontSize: 15,
             color: Colors.grey,
@@ -290,7 +285,7 @@ class _RegisterState extends State<Register> {
           store.state.loginState['isSuccess'],
           store.state.loginState['isLoading'],
           store.state.loginState['isError'],
-          );
+        );
       },
       builder: (BuildContext context, _RegisterViewModel vm) {
         return Scaffold(
@@ -331,122 +326,59 @@ class _RegisterState extends State<Register> {
                         ),
                         Center(
                           child: Text(
-                            "DATOS PERSONALES",
+                            "Regístrate en Cibic",
                             style: TextStyle(
                               fontSize: 20,
+                              color: Colors.white,
                             ),
                           ),
                         ),
                         Center(
                           child: Text(
-                            "Tus datos son privados.",
+                            "y sé un ciudadano o ciudadana inteligente",
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w200,
+                              color: Colors.white,
                             ),
                           ),
                         ),
                         SizedBox(height: 15),
                         textFieldInput(
-                          title: "correo electrónico*",
-                          input: email,
+                          index: 0,
                           controller: _emailController,
                         ),
                         textFieldInput(
-                          title: "nombre de pila",
-                          input: firstName,
+                          index: 1,
                           controller: _firstNameController,
                         ),
                         textFieldInput(
-                          title: "apellido",
-                          input: lastName,
+                          index: 2,
                           controller: _lastNameController,
                         ),
-                        Container(
-                          height: 50,
-                          margin: EdgeInsets.fromLTRB(30, 0, 30, 15),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 0,
-                          ),
-                          decoration: REGISTER_INPUT_DEC,
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              isDense: true,
-                              isExpanded: true,
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.black,
-                              ),
-                              items: [
-                                DropdownMenuItem(
-                                  value: "1",
-                                  child: Center(
-                                    child: Text(
-                                      "Masculina",
-                                    ),
-                                  ),
-                                ),
-                                DropdownMenuItem(
-                                  value: "2",
-                                  child: Center(
-                                    child: Text(
-                                      "Hembra",
-                                    ),
-                                  ),
-                                ),
-                                DropdownMenuItem(
-                                  value: "3",
-                                  child: Center(
-                                    child: Text(
-                                      "Otro",
-                                    ),
-                                  ),
-                                ),
-                              ],
-                              onChanged: (value) {
-                                setState(() {
-                                  _value = value;
-                                  if (_value == "1") {
-                                    sex = "Male";
-                                  } else if (_value == "2") {
-                                    sex = "Female";
-                                  } else {
-                                    sex = "Others";
-                                  }
-                                });
-                              },
-                              value: _value,
-                              hint: Center(
-                                child: Text(
-                                  "sexo",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
                         textFieldInput(
-                          title: "número de teléfono",
-                          input: telephone,
+                          index: 3,
                           controller: _phoneController,
                         ),
                         textFieldInput(
-                          title: "contraseña",
-                          input: password,
+                          index: 4,
                           controller: _passwordController,
+                        ),
+                        textFieldInput(
+                          index: 5,
+                          controller: _passwordConfirmController,
                         ),
                         SizedBox(height: 2),
                         // PASSWORD RULES
-                        Center(
+                        Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          padding: EdgeInsets.symmetric(horizontal: 35),
                           child: Text(
-                            'Mínimo 8 caractéres, un número y una mayúscula',
+                            'Mínimo 8 caractéres, un número, un carácter especial y una mayúscula',
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 12,
                               fontWeight: FontWeight.w200,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -454,32 +386,32 @@ class _RegisterState extends State<Register> {
                         // submit
                         GestureDetector(
                           onTap: () async {
-                            if (_formKey.currentState.validate() &&
-                                sex != '' &&
-                                privacy) {
-                              if (this.isClickable  &&
-                              vm.isLoading == false ) {
-                                this.isClickable = false;
-                              await vm.onRegister(
-                                  _emailController.text,
-                                  _passwordController.text,
-                                  _firstNameController.text,
-                                  _lastNameController.text,
-                                  _phoneController.text,
-                                  context);
-                              if (vm.isSuccess) {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Onboard(vm.store)));
-                              }
+                            if (_formKey.currentState.validate() && privacy) {
+                              if (this.isSubmitable && vm.isLoading == false) {
+                                this.isSubmitable = false;
+                                await vm.onRegister(
+                                    _emailController.text,
+                                    _passwordController.text,
+                                    _firstNameController.text,
+                                    _lastNameController.text,
+                                    _phoneController.text,
+                                    context);
+                                if (vm.isSuccess) {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              Onboard(vm.store)));
+                                }
                               }
                             }
                           },
                           child: Container(
                             height: 40,
                             decoration: BoxDecoration(
-                              color: COLOR_SOFT_BLUE,
+                              color: (this.isSubmitable)
+                                  ? COLOR_SOFT_BLUE
+                                  : COLOR_SOFT_BLUE,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             alignment: Alignment.center,
@@ -496,6 +428,10 @@ class _RegisterState extends State<Register> {
                           endIndent: 30,
                           color: Colors.white,
                           thickness: 1,
+                        ),
+                        Container(
+                          height: MediaQuery.of(context).size.height / 2,
+                          color: COLOR_DEEP_BLUE,
                         ),
                       ],
                     ),
@@ -516,5 +452,6 @@ class _RegisterViewModel {
   bool isLoading;
   bool isSuccess;
   bool isError;
-  _RegisterViewModel(this.store, this.onRegister, this.isLoading, this.isSuccess, this.isError);
+  _RegisterViewModel(this.store, this.onRegister, this.isLoading,
+      this.isSuccess, this.isError);
 }
