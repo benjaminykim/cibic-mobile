@@ -41,24 +41,46 @@ class CardView extends StatelessWidget {
   Widget generatePoll() {
     return Container(
       margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(right: 30),
-            padding: const EdgeInsets.only(top: 26),
-            child: Icon(Icons.thumb_down, size: 50),
-          ),
-          Container(
-            margin: EdgeInsets.only(right: 30),
-            padding: const EdgeInsets.only(top: 10),
-            child: Icon(Icons.cancel, size: 30),
-          ),
-          Container(
-            child: Icon(Icons.thumb_up, size: 50),
-          )
-        ],
-      ),
+      child: Column(children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            GestureDetector(
+              onTap: () {},
+              child: Container(
+                margin: EdgeInsets.only(right: 30),
+                padding: const EdgeInsets.only(top: 26),
+                child: Icon(Icons.thumb_down, size: 50),
+              ),
+            ),
+            SizedBox(
+              width: 60,
+            ),
+            GestureDetector(
+              onTap: () {},
+              child: Container(
+                child: Icon(Icons.thumb_up, size: 50),
+              ),
+            )
+          ],
+        ),
+        Center(
+          child: FlatButton(
+            onPressed: () {},
+            child: Container(
+              color: COLOR_DEEP_BLUE,
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: Text(
+                "VOTO EN BLANCO",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            ),
+        ),
+      ]),
     );
   }
 
@@ -127,8 +149,7 @@ class CardView extends StatelessWidget {
             ),
           ),
         ),
-        ReactionSlider(
-            this.activity, this.onReact),
+        ReactionSlider(this.activity, this.onReact),
       ],
     );
   }
@@ -150,8 +171,7 @@ class CardView extends StatelessWidget {
             ),
           ),
         ),
-        ReactionSlider(
-            this.activity, this.onReact),
+        ReactionSlider(this.activity, this.onReact),
       ],
     );
   }
@@ -202,8 +222,11 @@ class CardView extends StatelessWidget {
                 iconSize: 22,
                 elevation: 16,
                 onChanged: (String value) {},
-                items: <String>[(this.mode == FEED_SAVED) ? 'Eliminar Publicación' : 'Guardar Publicación']
-                    .map<DropdownMenuItem<String>>((String value) {
+                items: <String>[
+                  (this.mode == FEED_SAVED)
+                      ? 'Eliminar Publicación'
+                      : 'Guardar Publicación'
+                ].map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     onTap: () {
