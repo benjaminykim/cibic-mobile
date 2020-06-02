@@ -93,17 +93,27 @@ class _ComposeState extends State<Compose> {
         ),
         child: new SingleChildScrollView(
           scrollDirection: Axis.vertical,
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
           reverse: true,
           child: TextField(
             controller: inputTitleController,
+            scrollPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
             maxLines: null,
+            style: TextStyle(
+              fontWeight: FontWeight.w200,
+              color: Colors.black,
+              fontSize: 15,
+            ),
+            onSubmitted: (String value) {},
             decoration: InputDecoration(
+              isDense: true,
               border: InputBorder.none,
               hintText: title,
               hintStyle: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                  fontSize: 15),
+                fontWeight: FontWeight.w400,
+                color: Colors.black,
+                fontSize: 15,
+              ),
             ),
           ),
         ),
@@ -123,22 +133,42 @@ class _ComposeState extends State<Compose> {
     return Column(children: [
       // title
       createTitle("¿De qué se trata?"),
-      // content body
       Container(
         margin: EdgeInsets.fromLTRB(0, 7, 0, 7),
-        padding: EdgeInsets.fromLTRB(10, 14, 0, 0),
-        height: 33,
+        padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
         decoration: BoxDecoration(
           color: Color(0xffcccccc),
           borderRadius: BorderRadius.all(Radius.circular(13)),
         ),
-        child: TextField(
-          controller: inputBodyController,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: "cuéntanos más...",
-            hintStyle: TextStyle(
-                fontWeight: FontWeight.w200, color: Color(0xffa1a1a1)),
+        child: new ConstrainedBox(
+          constraints: new BoxConstraints(
+            minHeight: 25,
+            maxHeight: 100.0,
+          ),
+          child: new SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+            reverse: true,
+            child: TextField(
+              controller: inputBodyController,
+              scrollPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              maxLines: null,
+              style: TextStyle(
+                  fontWeight: FontWeight.w200,
+                  color: Colors.black,
+                  fontSize: 15),
+              onSubmitted: (String value) {},
+              decoration: InputDecoration(
+                isDense: true,
+                border: InputBorder.none,
+                hintText: "cuéntanos más...",
+                hintStyle: TextStyle(
+                  fontWeight: FontWeight.w200,
+                  color: Color(0xffa1a1a1),
+                  fontSize: 15,
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -385,9 +415,7 @@ class _ComposeState extends State<Compose> {
                     controller: _controller,
                     onPageChanged: (int pageIndex) {
                       setState(() {
-                        print("pageIndex $pageIndex");
                         this.selectedActivity = pageIndex;
-                        print("selected activity ${this.selectedActivity}");
                       });
                     },
                     children: [
