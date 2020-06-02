@@ -139,7 +139,7 @@ class _CommentFeedState extends State<CommentFeed> {
                 ),
                 child: new ConstrainedBox(
                   constraints: new BoxConstraints(
-                    minHeight: 25,
+                    minHeight: 15,
                     maxHeight: 100.0,
                   ),
                   child: new SingleChildScrollView(
@@ -148,13 +148,21 @@ class _CommentFeedState extends State<CommentFeed> {
                     child: TextField(
                       controller: inputCommentController,
                       maxLines: null,
+                      onSubmitted: (String value) {
+                        if (inputCommentController.text != "" &&
+                            inputCommentController.text != null) {
+                          onReply(widget.activity.id, c.id,
+                              inputCommentController.text, widget.mode);
+                          inputCommentController.clear();
+                        }
+                      },
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: "comenta...",
                         hintStyle: TextStyle(
                             fontWeight: FontWeight.w200,
                             color: Colors.black,
-                            fontSize: 14),
+                            fontSize: 12),
                       ),
                     ),
                   ),
@@ -324,7 +332,7 @@ class _CommentFeedState extends State<CommentFeed> {
         children: <Widget>[
           Text("Deja un comentario",
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 12,
                 color: Colors.black,
               )),
           Container(
@@ -345,13 +353,23 @@ class _CommentFeedState extends State<CommentFeed> {
                 child: TextField(
                   controller: inputCommentController,
                   maxLines: null,
+                  onSubmitted: (String value) {
+                    if (inputCommentController.text != "" &&
+                        inputCommentController.text != null &&
+                        this.isLoading == false) {
+                      String commentText = inputCommentController.text;
+                      vm.onComment(
+                          widget.activity.id, commentText, widget.mode);
+                      inputCommentController.clear();
+                    }
+                  },
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "comenta...",
                     hintStyle: TextStyle(
                         fontWeight: FontWeight.w200,
                         color: Colors.black,
-                        fontSize: 14),
+                        fontSize: 12),
                   ),
                 ),
               ),

@@ -1,5 +1,6 @@
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
+import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
 import 'package:cibic_mobile/src/widgets/activity/card/IconTag.dart';
 import 'package:cibic_mobile/src/widgets/activity/card/ReactionSlider.dart';
 import 'package:flutter/material.dart';
@@ -11,70 +12,85 @@ class SearchActivityCard extends StatelessWidget {
   final Function onSave;
   final int mode;
 
-  SearchActivityCard(this.activity, this.type, this.onReact, this.onSave, this.mode);
+  SearchActivityCard(
+      this.activity, this.type, this.onReact, this.onSave, this.mode);
+
+  void openActivityScreen(BuildContext context) async {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ActivityScreen(
+                this.activity, this.onReact, this.onSave, this.mode)));
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(5, 0, 5, 5),
-      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-      decoration: BoxDecoration(
-          color: CARD_BACKGROUND,
-          borderRadius: BorderRadius.all(Radius.circular(30)),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black,
-                blurRadius: 3.0,
-                spreadRadius: 0,
-                offset: Offset(3.0, 3.0))
-          ]),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          // OPTIONS
-          Container(
-            alignment: Alignment.topRight,
-            margin: const EdgeInsets.fromLTRB(0, 0, 30, 0),
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                icon: Icon(Icons.more_horiz),
-                iconSize: 22,
-                elevation: 16,
-                onChanged: (String value) {},
-                items: <String>[(this.mode == FEED_SAVED) ? 'Eliminar Publicación' : 'Guardar Publicación']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    onTap: () {
-                      this.onSave(this.activity.id);
-                    },
-                    child: Text(value),
-                  );
-                }).toList(),
+    return GestureDetector(
+      onTap: () => this.openActivityScreen(context),
+      child: Container(
+        margin: EdgeInsets.fromLTRB(5, 0, 5, 5),
+        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+        decoration: BoxDecoration(
+            color: CARD_BACKGROUND,
+            borderRadius: BorderRadius.all(Radius.circular(30)),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black,
+                  blurRadius: 3.0,
+                  spreadRadius: 0,
+                  offset: Offset(3.0, 3.0))
+            ]),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            // OPTIONS
+            Container(
+              alignment: Alignment.topRight,
+              margin: const EdgeInsets.fromLTRB(0, 0, 30, 0),
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  icon: Icon(Icons.more_horiz),
+                  iconSize: 22,
+                  elevation: 16,
+                  onChanged: (String value) {},
+                  items: <String>[
+                    (this.mode == FEED_SAVED)
+                        ? 'Eliminar Publicación'
+                        : 'Guardar Publicación'
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      onTap: () {
+                        this.onSave(this.activity.id);
+                      },
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
               ),
             ),
-          ),
-          // TITLE
-          Container(
-            alignment: Alignment.topLeft,
-            margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-            child: Text(
-              this.activity.title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w400),
+            // TITLE
+            Container(
+              alignment: Alignment.topLeft,
+              margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+              child: Text(
+                this.activity.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w400),
+              ),
             ),
-          ),
-          // LABEL
-          generateLabel(),
-          // CONTENTS
-          generateContent(),
-        ],
+            // LABEL
+            generateLabel(),
+            // CONTENTS
+            generateContent(),
+          ],
+        ),
       ),
     );
   }
@@ -192,8 +208,7 @@ class SearchActivityCard extends StatelessWidget {
             ),
           ),
         ),
-        ReactionSlider(
-            this.activity, this.onReact),
+        ReactionSlider(this.activity, this.onReact),
       ],
     );
   }
@@ -215,8 +230,7 @@ class SearchActivityCard extends StatelessWidget {
             ),
           ),
         ),
-        ReactionSlider(
-            this.activity, this.onReact),
+        ReactionSlider(this.activity, this.onReact),
       ],
     );
   }

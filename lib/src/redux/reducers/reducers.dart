@@ -16,6 +16,8 @@ AppState appReducer(AppState prevState, dynamic action) {
 
   if (action is IsLoading) {
     newState.isLoading = true;
+  } if (action is VoteLock) {
+    newState.feedState['voteLock'] = action.lock;
   } else if (action is LogOut) {
     newState = AppState.initial();
   } else if (action is PostRegisterSuccess) {

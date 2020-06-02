@@ -47,7 +47,6 @@ class AppState {
       'home': null,
       'public': null,
       'selfUser': null,
-      'foreignUser': null,
       'saved': null,
     };
 
@@ -64,10 +63,10 @@ class AppState {
       'savedIsLoading': false,
       'savedIsSuccess': false,
       'savedIsError': false,
+      'voteLock': false,
     };
 
     Map<String, dynamic> profile = {
-      'foreignUser': null,
       'selfUser': null,
     };
 

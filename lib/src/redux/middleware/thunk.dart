@@ -98,24 +98,32 @@ void apiMiddleware(
   } else if (action is PostSaveSuccess) {
     await fetchFeed(store.state.user['jwt'], FEED_SAVED, next);
   } else if (action is PostCommentVoteAttempt) {
-    await postCommentVote(
-        store.state.user['jwt'],
-        action.value,
-        action.activityid,
-        action.comment,
-        store.state.user['idUser'],
-        action.mode,
-        next);
+    if (store.state.feedState['voteLock'] == false) {
+      await store.dispatch(VoteLock(true));
+      await postCommentVote(
+          store.state.user['jwt'],
+          action.value,
+          action.activityid,
+          action.comment,
+          store.state.user['idUser'],
+          action.mode,
+          next);
+      await store.dispatch(VoteLock(false));
+    }
   } else if (action is PostReplyVoteAttempt) {
-    await postReplyVote(
-        store.state.user['jwt'],
-        action.value,
-        action.activityid,
-        action.reply,
-        store.state.user['idUser'],
-        action.mode,
-        next);
-  }  else if (action is FireBaseTokenAttempt) {
+    if (store.state.feedState['voteLock'] == false) {
+      await store.dispatch(VoteLock(true));
+      await postReplyVote(
+          store.state.user['jwt'],
+          action.value,
+          action.activityid,
+          action.reply,
+          store.state.user['idUser'],
+          action.mode,
+          next);
+      await store.dispatch(VoteLock(false));
+    }
+  } else if (action is FireBaseTokenAttempt) {
     //await getFirebaseToken(store.state.user['jwt'], next);
   } else if (action is PostSearchAttempt) {
     await postSearchQuery(store.state.user['jwt'], action.query, 0, next);

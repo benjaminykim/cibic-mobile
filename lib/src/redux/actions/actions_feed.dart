@@ -16,3 +16,8 @@ class FetchFeedError {
   String error;
   FetchFeedError(this.mode, this.error);
 }
+
+class VoteLock {
+  bool lock;
+  VoteLock(this.lock);
+}
