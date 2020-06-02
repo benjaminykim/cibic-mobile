@@ -322,6 +322,7 @@ class _ComposeState extends State<Compose> {
       if (enteredTitle.isEmpty) {
         return;
       } else {
+        print("post poll");
         vm.submitActivity(2, enteredTitle, enteredBody, idCabildo, enteredTag);
       }
     }

@@ -1,4 +1,4 @@
-import 'package:cibic_mobile/src/models/cibic_icons.dart';
+import 'package:cibic_mobile/src/resources/cibic_icons.dart';
 import 'package:cibic_mobile/src/widgets/menu/Search.dart';
 import 'package:flutter/material.dart';
 import 'package:cibic_mobile/src/widgets/menu/ComposeScreen.dart';

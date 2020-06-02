@@ -40,7 +40,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
   initState() {
     super.initState();
     this.maxLines = 4;
-    this.profileHeight = 180;
+    this.profileHeight = 160;
     this.isFollowing = false;
     this.isLoaded = false;
   }
@@ -201,7 +201,8 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                                           child: Text(
                                             cabildo.name,
                                             textAlign: TextAlign.center,
-                                            maxLines: 1,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                               fontSize: 16,
                                               color: Colors.black,
@@ -225,10 +226,14 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                                                   if (success) {
                                                     setState(() {
                                                       this.isFollowing = false;
-                                                      Function condition = (UserModel user) {
-                                                        return user.id == vm.userId;
+                                                      Function condition =
+                                                          (UserModel user) {
+                                                        return user.id ==
+                                                            vm.userId;
                                                       };
-                                                      cabildo.members.removeWhere(condition);
+                                                      cabildo.members
+                                                          .removeWhere(
+                                                              condition);
                                                     });
                                                   }
                                                 } else {
@@ -240,7 +245,9 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                                                   if (success) {
                                                     setState(() {
                                                       this.isFollowing = true;
-                                                      cabildo.members.add(UserModel.fromUserId(vm.userId));
+                                                      cabildo.members.add(
+                                                          UserModel.fromUserId(
+                                                              vm.userId));
                                                     });
                                                   }
                                                 }

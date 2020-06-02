@@ -93,12 +93,9 @@ flutter:
           weight: 700
         - asset: assets/fonts/OpenSans/OpenSans-Bold.ttf
           weight: 900
-    - family: CustomIcons
-      fonts:
-        - asset: assets/icons/CustomIcons.ttf
     - family: Cibic
       fonts:
-        - asset: assets/icons/Cibic.ttf
+        - asset: assets/icons/cibic.ttf
 
 flutter_icons:
   android: "launcher_icon"

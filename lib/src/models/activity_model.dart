@@ -10,7 +10,7 @@ class ActivityModel {
   int activityType;
   int score;
   int ping;
-  int comment_number;
+  int commentNumber;
   DateTime publishDate;
   String title;
   String text;
@@ -26,7 +26,7 @@ class ActivityModel {
     this.activityType,
     this.score,
     this.ping,
-    this.comment_number,
+    this.commentNumber,
     this.publishDate,
     this.title,
     this.text,

@@ -39,7 +39,7 @@ Map<String, dynamic> _$ActivityModelToJson(ActivityModel instance) =>
       'activityType': instance.activityType,
       'score': instance.score,
       'ping': instance.ping,
-      'comment_number': instance.comment_number,
+      'comment_number': instance.commentNumber,
       'publishDate': instance.publishDate?.toIso8601String(),
       'title': instance.title,
       'text': instance.text,

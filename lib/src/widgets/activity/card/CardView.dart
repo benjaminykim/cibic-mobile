@@ -1,4 +1,5 @@
 import 'package:cibic_mobile/src/models/activity_model.dart';
+import 'package:cibic_mobile/src/resources/cibic_icons.dart';
 import 'package:cibic_mobile/src/widgets/activity/card/IconTag.dart';
 import 'package:cibic_mobile/src/widgets/activity/card/ReactionSlider.dart';
 import 'package:flutter/material.dart';
@@ -48,37 +49,31 @@ class CardView extends StatelessWidget {
             GestureDetector(
               onTap: () {},
               child: Container(
-                margin: EdgeInsets.only(right: 30),
-                padding: const EdgeInsets.only(top: 26),
-                child: Icon(Icons.thumb_down, size: 50),
+                padding: const EdgeInsets.only(top: 16),
+                child: Icon(Cibic.dislike, color: Colors.black, size: 50),
               ),
             ),
             SizedBox(
-              width: 60,
+              width: 10,
             ),
             GestureDetector(
               onTap: () {},
               child: Container(
-                child: Icon(Icons.thumb_up, size: 50),
+                width: 90,
+                alignment: Alignment.centerLeft,
+                child: Icon(Cibic.abstain),
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            GestureDetector(
+              onTap: () {},
+              child: Container(
+                child: Icon(Cibic.like, size: 50),
               ),
             )
           ],
-        ),
-        Center(
-          child: FlatButton(
-            onPressed: () {},
-            child: Container(
-              color: COLOR_DEEP_BLUE,
-              padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-              child: Text(
-                "VOTO EN BLANCO",
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            ),
         ),
       ]),
     );
@@ -138,8 +133,8 @@ class CardView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Container(
-          alignment: Alignment.topLeft,
           margin: EdgeInsets.fromLTRB(30, 10, 30, 0),
+          alignment: Alignment.topLeft,
           child: Text(
             this.activity.text,
             style: TextStyle(
@@ -177,9 +172,14 @@ class CardView extends StatelessWidget {
   }
 
   Widget generateContent() {
-    if (this.activity.activityType == ACTIVITY_POLL &&
+    if (this.activity.activityType == ACTIVITY_POLL) {
+      if (this.type == CARD_DEFAULT) {
+        return generatePoll();
+      } else if (this.type == CARD_SCREEN) {
+        return generatePoll();
+      }
+    } else if (this.activity.activityType == ACTIVITY_POLL &&
         this.type == CARD_DEFAULT) {
-      return generatePoll();
     } else if (this.type == CARD_COMMENT_0 ||
         this.type == CARD_COMMENT_1 ||
         this.type == CARD_COMMENT_2 ||

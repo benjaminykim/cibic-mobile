@@ -18,8 +18,6 @@ class BaseBar extends StatelessWidget {
           BoxDecoration(border: Border.all(color: Colors.grey, width: 0.5)),
       child: CupertinoTabBar(
         border: Border(top: BorderSide.none),
-        // activeColor: COLOR_DEEP_BLUE,
-        // iconSize: 50,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(
@@ -34,7 +32,6 @@ class BaseBar extends StatelessWidget {
               size: 42,
               semanticLabel: "Inicio",
             ),
-            // title: Text(""),
           ),
           BottomNavigationBarItem(
             icon: Icon(
@@ -47,24 +44,22 @@ class BaseBar extends StatelessWidget {
               Cibic.public,
               color: COLOR_DEEP_BLUE,
               size: 42,
-              semanticLabel: "Inicio",
+              semanticLabel: "Publico",
             ),
-            // title: Text(""),
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Cibic.user_2,
+              Cibic.user,
               color: Colors.black,
               size: 42,
               semanticLabel: "Perfil",
             ),
             activeIcon: Icon(
-              Cibic.user_2,
+              Cibic.user,
               color: COLOR_DEEP_BLUE,
               size: 42,
-              semanticLabel: "Inicio",
+              semanticLabel: "Perfil",
             ),
-            // title: Text(""),
           ),
           BottomNavigationBarItem(
             icon: Icon(
@@ -77,22 +72,12 @@ class BaseBar extends StatelessWidget {
               Cibic.results,
               color: COLOR_DEEP_BLUE,
               size: 42,
-              semanticLabel: "Inicio",
+              semanticLabel: "Estadisticas",
             ),
-            // title: Text(
-            //   "*",
-            //   style: TextStyle(
-            //     color: Colors.black,
-            //     fontSize: 20,
-            //   ),
-            // ),
           ),
         ],
-        // type: BottomNavigationBarType.fixed,
         currentIndex: selectedIndex,
         onTap: onItemTapped,
-        // showSelectedLabels: true,
-        // showUnselectedLabels: false,
         backgroundColor: Colors.white,
       ),
     );

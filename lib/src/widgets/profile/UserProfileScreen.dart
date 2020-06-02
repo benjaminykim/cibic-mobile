@@ -39,7 +39,7 @@ class _UserProfileState extends State<UserProfileScreen> {
   initState() {
     super.initState();
     this.maxLines = 4;
-    this.profileHeight = 180;
+    this.profileHeight = 160;
     this.isFollowing = false;
     this.isLoaded = false;
   }
@@ -128,7 +128,8 @@ class _UserProfileState extends State<UserProfileScreen> {
                                         child: Text(
                                           "${user.firstName} ${user.lastName}",
                                           textAlign: TextAlign.center,
-                                          maxLines: 1,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
                                             fontSize: 16,
                                             color: Colors.black,

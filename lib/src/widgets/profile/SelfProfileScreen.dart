@@ -22,9 +22,11 @@ class SelfProfileScreen extends StatefulWidget {
 class _UserProfileState extends State<SelfProfileScreen> {
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   int maxLines = 4;
+  double profileHeight = 160;
 
   ProfileViewModel generateProfileViewModel(Store<AppState> store) {
-    Function refreshFeed = () => store.dispatch(FetchProfileAttempt(extractID(store.state.user['jwt']), "selfUser"));
+    Function refreshFeed = () => store.dispatch(
+        FetchProfileAttempt(extractID(store.state.user['jwt']), "selfUser"));
     FeedModel userFeed;
     UserModel user;
     bool error;
@@ -36,7 +38,8 @@ class _UserProfileState extends State<SelfProfileScreen> {
     jwt = store.state.user['jwt'];
     Function onReact = (ActivityModel activity, int reactValue) =>
         store.dispatch(PostReactionAttempt(activity, reactValue, 3));
-    Function onSave = (int activityId) => store.dispatch(PostSaveAttempt(activityId, true));
+    Function onSave =
+        (int activityId) => store.dispatch(PostSaveAttempt(activityId, true));
     return ProfileViewModel(
         user, userFeed, refreshFeed, error, jwt, onReact, onSave);
   }
@@ -56,6 +59,7 @@ class _UserProfileState extends State<SelfProfileScreen> {
               Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Container(
               width: MediaQuery.of(context).size.width,
+              height: this.profileHeight,
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: Colors.grey, width: 0.5),
@@ -85,7 +89,8 @@ class _UserProfileState extends State<SelfProfileScreen> {
                             child: Text(
                               "${vm.user.firstName} ${vm.user.lastName}",
                               textAlign: TextAlign.center,
-                              maxLines: 1,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.black,
@@ -191,42 +196,6 @@ class _UserProfileState extends State<SelfProfileScreen> {
                       ),
                     ],
                   ),
-                  // feed button bar
-                  Container(
-                      margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                      padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.grey, width: 0.5),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Actividad",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          Text(
-                            "Encuestas",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          Text(
-                            "Discusiones",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey,
-                            ),
-                          )
-                        ],
-                      ))
                 ],
               ),
             ),
@@ -242,7 +211,8 @@ class _UserProfileState extends State<SelfProfileScreen> {
                   itemCount: vm.feed.feed.length,
                   itemBuilder: (BuildContext context, int index) {
                     ActivityModel activity = vm.feed.feed[index];
-                    return ActivityView(activity, vm.onReact, vm.onSave, FEED_USER);
+                    return ActivityView(
+                        activity, vm.onReact, vm.onSave, FEED_USER);
                   }),
             ))
           ]),
@@ -275,6 +245,43 @@ class ProfileViewModel {
   String jwt;
   Function onReact;
   Function onSave;
-  ProfileViewModel(
-      this.user, this.feed, this.refresh, this.error, this.jwt, this.onReact, this.onSave);
+  ProfileViewModel(this.user, this.feed, this.refresh, this.error, this.jwt,
+      this.onReact, this.onSave);
 }
+
+// feed button bar
+// Container(
+//     margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+//     padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+//     height: 40,
+//     decoration: BoxDecoration(
+//       color: Colors.white,
+//       border: Border.all(color: Colors.grey, width: 0.5),
+//     ),
+//     child: Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//       crossAxisAlignment: CrossAxisAlignment.center,
+//       children: [
+//         Text(
+//           "Actividad",
+//           style: TextStyle(
+//             fontSize: 16,
+//             color: Colors.grey,
+//           ),
+//         ),
+//         Text(
+//           "Encuestas",
+//           style: TextStyle(
+//             fontSize: 16,
+//             color: Colors.grey,
+//           ),
+//         ),
+//         Text(
+//           "Discusiones",
+//           style: TextStyle(
+//             fontSize: 16,
+//             color: Colors.grey,
+//           ),
+//         )
+//       ],
+//     ))
