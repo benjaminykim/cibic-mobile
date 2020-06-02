@@ -40,7 +40,7 @@ class _SearchState extends State<Search> {
     height: double.infinity,
     width: double.infinity,
     padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-    child: Text("No Results Found"),
+    child: Text("No se han encontrado resultados para tu búsqueda"),
   );
 
   @override
@@ -50,6 +50,7 @@ class _SearchState extends State<Search> {
 
   void submitSearch(_SearchViewModel vm) {
     final enteredSearchQuery = inputSearchController.text;
+    if (enteredSearchQuery == "" || enteredSearchQuery == null) return;
     vm.submitSearchQuery(enteredSearchQuery);
   }
 
@@ -83,7 +84,8 @@ class _SearchState extends State<Search> {
             UserModel user = vm.searchUser[index - vm.searchActivity.length];
             return UserCard(user);
           } else {
-            CabildoModel cabildo = vm.searchCabildo[index - vm.searchUser.length - vm.searchActivity.length];
+            CabildoModel cabildo = vm.searchCabildo[
+                index - vm.searchUser.length - vm.searchActivity.length];
             return CabildoCard(cabildo);
           }
         },
@@ -157,7 +159,7 @@ class _SearchState extends State<Search> {
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black, width: 0.5),
         borderRadius: BorderRadius.circular(5),
-        color: (this.selectedPage == mode) ? Colors.blue : Colors.transparent,
+        color: (this.selectedPage == mode) ? COLOR_SOFT_BLUE : Colors.transparent,
       ),
       child: GestureDetector(
         onTap: () {
@@ -191,27 +193,21 @@ class _SearchState extends State<Search> {
             store.state.profile['selfUser'],
             submitSearchQuery,
             store.state.search['activity'],
-            store.state.search['cabildo'],
             store.state.search['user'],
+            store.state.search['cabildo'],
             onReact,
             onSave);
       },
       builder: (BuildContext context, _SearchViewModel vm) {
         return Container(
-          padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+          padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
           width: MediaQuery.of(context).size.width - 20,
           height: MediaQuery.of(context).size.height - 50,
-          margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+          margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
           decoration: BoxDecoration(
-              color: APP_BACKGROUND,
-              borderRadius: BorderRadius.all(Radius.circular(30)),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.blue,
-                    blurRadius: 3.0,
-                    spreadRadius: 0,
-                    offset: Offset(3.0, 3.0))
-              ]),
+            color: APP_BACKGROUND,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -221,6 +217,7 @@ class _SearchState extends State<Search> {
                   width: double.infinity,
                   height: 30,
                   padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
                   decoration: BoxDecoration(
                     color: Color(0xffcccccc),
                     borderRadius: BorderRadius.all(Radius.circular(13)),
@@ -232,6 +229,7 @@ class _SearchState extends State<Search> {
                         child: TextField(
                           controller: inputSearchController,
                           style: TextStyle(fontSize: 15),
+                          onEditingComplete: () => submitSearch(vm),
                           decoration: InputDecoration(
                             hintText: "buscar...",
                             contentPadding: EdgeInsets.zero,
@@ -252,8 +250,8 @@ class _SearchState extends State<Search> {
                   )),
               // SEARCH OPTIONS
               Container(
-                margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                margin: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                alignment: Alignment.center,
                 height: 20,
                 child: Row(
                   children: [
@@ -268,7 +266,7 @@ class _SearchState extends State<Search> {
               Container(
                 height: MediaQuery.of(context).size.height - 155,
                 margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
-                padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                padding: EdgeInsets.fromLTRB(0, 2, 0, 0),
                 decoration: BoxDecoration(
                   border: Border(
                       top: BorderSide(

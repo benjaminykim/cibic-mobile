@@ -1,4 +1,7 @@
+import 'package:cibic_mobile/src/models/activity_model.dart';
+import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
+import 'package:cibic_mobile/src/models/user_model.dart';
 
 class AppState {
   Map<String, dynamic> user;
@@ -75,9 +78,9 @@ class AppState {
     };
 
     Map<String, dynamic> search = {
-      'activity': [],
-      'cabildo': [],
-      'user': [],
+      'activity': List<ActivityModel>(),
+      'cabildo': List<CabildoModel>(),
+      'user': List<UserModel>(),
       'isLoading': false,
       'isSuccess': false,
       'isError': false,
@@ -98,4 +101,14 @@ class AppState {
     return AppState(
         user, feeds, profile, search, loginState, registerState, feedState, profileState, false);
   }
+}
+
+class SearchResults {
+  List<ActivityModel> activity;
+  List<CabildoModel> cabildo;
+  List<UserModel> user;
+  bool isLoading;
+  bool isSuccess;
+  bool isError;
+  SearchResults(this.activity, this.cabildo, this.user, this.isLoading, this.isSuccess, this.isError);
 }
