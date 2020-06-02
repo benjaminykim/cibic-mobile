@@ -77,16 +77,6 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
             padding: EdgeInsets.zero,
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: IconButton(
-            icon: Icon(
-              Cibic.notification,
-              size: 30,
-            ),
-            onPressed: () {},
-          ),
-        ),
       ],
     );
   }
