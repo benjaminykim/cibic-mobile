@@ -232,7 +232,11 @@ FeedModel addCommentReply(
       for (int j = 0; j < feed.feed[i].comments.length; j++) {
         if (feed.feed[i].comments[j].id == commentId) {
           print("insertion comment reply");
-          feed.feed[i].comments[j].replies.insert(0, reply);
+          if (feed.feed[i].comments[j].replies == null) {
+            feed.feed[i].comments[j].replies = [reply];
+          } else {
+            feed.feed[i].comments[j].replies.insert(0, reply);
+          }
           return feed;
         }
       }

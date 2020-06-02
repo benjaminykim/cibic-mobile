@@ -2,6 +2,7 @@ import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
+import 'package:cibic_mobile/src/resources/cibic_icons.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
@@ -132,68 +133,69 @@ class _CommentFeedState extends State<CommentFeed> {
             children: [
               Container(
                 margin: EdgeInsets.fromLTRB(30, 2, 30, 10),
-                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                decoration: BoxDecoration(
-                  color: Color(0xffcccccc),
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                ),
-                child: new ConstrainedBox(
-                  constraints: new BoxConstraints(
-                    minHeight: 15,
-                    maxHeight: 100.0,
-                  ),
-                  child: new SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    reverse: true,
-                    child: TextField(
-                      controller: inputCommentController,
-                      maxLines: null,
-                      onSubmitted: (String value) {
-                        if (inputCommentController.text != "" &&
-                            inputCommentController.text != null) {
-                          onReply(widget.activity.id, c.id,
-                              inputCommentController.text, widget.mode);
-                          inputCommentController.clear();
-                        }
-                      },
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "comenta...",
-                        hintStyle: TextStyle(
-                            fontWeight: FontWeight.w200,
-                            color: Colors.black,
-                            fontSize: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Flexible(
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                        padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                        decoration: BoxDecoration(
+                          color: Color(0xffcccccc),
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                        ),
+                        child: new ConstrainedBox(
+                          constraints: new BoxConstraints(
+                            minHeight: 15,
+                            maxHeight: 100.0,
+                          ),
+                          child: new SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            reverse: true,
+                            child: TextField(
+                              controller: inputCommentController,
+                              scrollPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              maxLines: null,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w200,
+                                  color: Colors.black,
+                                  fontSize: 12),
+                              onSubmitted: (String value) {
+                                if (inputCommentController.text != "" &&
+                                    inputCommentController.text != null &&
+                                    this.isLoading == false) {
+                                  onReply(widget.activity.id, c.id,
+                                      inputCommentController.text, widget.mode);
+                                  inputCommentController.clear();
+                                }
+                              },
+                              decoration: InputDecoration(
+                                isDense: true,
+                                border: InputBorder.none,
+                                hintText: "comenta...",
+                                hintStyle: TextStyle(
+                                    fontWeight: FontWeight.w200,
+                                    color: Colors.black,
+                                    fontSize: 12),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-              Container(
-                alignment: Alignment.bottomRight,
-                margin: EdgeInsets.fromLTRB(0, 0, 30, 10),
-                child: Row(
-                  children: [
-                    Spacer(),
                     InkWell(
                       onTap: () {
                         if (inputCommentController.text != "" &&
-                            inputCommentController.text != null) {
-                          inputCommentController.clear();
-                        }
-                      },
-                      child: Icon(Icons.delete, color: Colors.black, size: 25),
-                    ),
-                    SizedBox(width: 5),
-                    InkWell(
-                      onTap: () {
-                        if (inputCommentController.text != "" &&
-                            inputCommentController.text != null) {
+                            inputCommentController.text != null &&
+                            this.isLoading == false) {
                           onReply(widget.activity.id, c.id,
                               inputCommentController.text, widget.mode);
                           inputCommentController.clear();
                         }
                       },
-                      child: Icon(Icons.send, color: Colors.black, size: 25),
+                      child: Icon(Cibic.comment, color: Colors.black, size: 25),
                     ),
                   ],
                 ),
@@ -289,7 +291,7 @@ class _CommentFeedState extends State<CommentFeed> {
                   child: Container(
                     margin: EdgeInsets.fromLTRB(0, 0, 10, 5),
                     alignment: Alignment.bottomRight,
-                    child: Icon(Icons.reply, size: 20),
+                    child: Icon(Cibic.reply, size: 20),
                   ),
                   onTap: () {
                     print("A");
@@ -335,62 +337,62 @@ class _CommentFeedState extends State<CommentFeed> {
                 fontSize: 12,
                 color: Colors.black,
               )),
+          // INPUT FIELD
           Container(
-            margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
-            padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-            decoration: BoxDecoration(
-              color: Color(0xffcccccc),
-              borderRadius: BorderRadius.all(Radius.circular(12)),
-            ),
-            child: new ConstrainedBox(
-              constraints: new BoxConstraints(
-                minHeight: 25,
-                maxHeight: 100.0,
-              ),
-              child: new SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                reverse: true,
-                child: TextField(
-                  controller: inputCommentController,
-                  maxLines: null,
-                  onSubmitted: (String value) {
-                    if (inputCommentController.text != "" &&
-                        inputCommentController.text != null &&
-                        this.isLoading == false) {
-                      String commentText = inputCommentController.text;
-                      vm.onComment(
-                          widget.activity.id, commentText, widget.mode);
-                      inputCommentController.clear();
-                    }
-                  },
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "comenta...",
-                    hintStyle: TextStyle(
-                        fontWeight: FontWeight.w200,
-                        color: Colors.black,
-                        fontSize: 12),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Container(
-            alignment: Alignment.bottomRight,
             margin: EdgeInsets.fromLTRB(0, 5, 0, 10),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Spacer(),
-                InkWell(
-                  onTap: () {
-                    if (inputCommentController.text != "" &&
-                        inputCommentController.text != null) {
-                      inputCommentController.clear();
-                    }
-                  },
-                  child: Icon(Icons.delete, color: Colors.black, size: 25),
+                Flexible(
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    decoration: BoxDecoration(
+                      color: Color(0xffcccccc),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                    child: new ConstrainedBox(
+                      constraints: new BoxConstraints(
+                        minHeight: 15,
+                        maxHeight: 100.0,
+                      ),
+                      child: new SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        reverse: true,
+                        child: TextField(
+                          controller: inputCommentController,
+                          scrollPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                          maxLines: null,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w200,
+                              color: Colors.black,
+                              fontSize: 12),
+                          onSubmitted: (String value) {
+                            if (inputCommentController.text != "" &&
+                                inputCommentController.text != null &&
+                                this.isLoading == false) {
+                              String commentText = inputCommentController.text;
+                              vm.onComment(
+                                  widget.activity.id, commentText, widget.mode);
+                              inputCommentController.clear();
+                            }
+                          },
+                          decoration: InputDecoration(
+                            isDense: true,
+                            border: InputBorder.none,
+                            hintText: "comenta...",
+                            hintStyle: TextStyle(
+                                fontWeight: FontWeight.w200,
+                                color: Colors.black,
+                                fontSize: 12),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-                SizedBox(width: 5),
                 InkWell(
                   onTap: () {
                     if (inputCommentController.text != "" &&
@@ -402,7 +404,7 @@ class _CommentFeedState extends State<CommentFeed> {
                       inputCommentController.clear();
                     }
                   },
-                  child: Icon(Icons.send, color: Colors.black, size: 25),
+                  child: Icon(Cibic.comment, color: Colors.black, size: 25),
                 ),
               ],
             ),
