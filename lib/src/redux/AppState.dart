@@ -102,13 +102,3 @@ class AppState {
         user, feeds, profile, search, loginState, registerState, feedState, profileState, false);
   }
 }
-
-class SearchResults {
-  List<ActivityModel> activity;
-  List<CabildoModel> cabildo;
-  List<UserModel> user;
-  bool isLoading;
-  bool isSuccess;
-  bool isError;
-  SearchResults(this.activity, this.cabildo, this.user, this.isLoading, this.isSuccess, this.isError);
-}

@@ -54,6 +54,7 @@ class _SearchState extends State<Search> {
     vm.submitSearchQuery(enteredSearchQuery);
   }
 
+  @override
   void dispose() {
     inputSearchController.dispose();
     _controller.dispose();
@@ -159,7 +160,7 @@ class _SearchState extends State<Search> {
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black, width: 0.5),
         borderRadius: BorderRadius.circular(5),
-        color: (this.selectedPage == mode) ? COLOR_SOFT_BLUE : Colors.transparent,
+        color: (this.selectedPage == mode) ? COLOR_DEEP_BLUE : Colors.transparent,
       ),
       child: GestureDetector(
         onTap: () {
@@ -255,10 +256,12 @@ class _SearchState extends State<Search> {
                 height: 20,
                 child: Row(
                   children: [
+                    Spacer(),
                     createSearchOptionButton(0),
                     createSearchOptionButton(1),
                     createSearchOptionButton(2),
                     createSearchOptionButton(3),
+                    Spacer(),
                   ],
                 ),
               ),

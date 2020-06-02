@@ -18,18 +18,20 @@ class _ComposeState extends State<Compose> {
   final inputBodyController = TextEditingController();
   final inputCabildoController = TextEditingController();
   final inputTagController = TextEditingController();
-  List<Container> activityButtons;
   int selectedActivity = 0;
+  PageController _controller = PageController(
+    initialPage: 0,
+  );
   String dropdownValue = "comparte en un cabildo";
 
   @override
-  initState() {
-    super.initState();
-    this.activityButtons = [
-      createActivityButton(ACTIVITY_DISCUSS, 1),
-      createActivityButton(ACTIVITY_POLL, 0),
-      createActivityButton(ACTIVITY_PROPOSAL, 0)
-    ];
+  void dispose() {
+    inputTitleController.dispose();
+    inputBodyController.dispose();
+    inputCabildoController.dispose();
+    inputTagController.dispose();
+    _controller.dispose();
+    super.dispose();
   }
 
   DropdownMenuItem<String> createMenuItem(String value) {
@@ -44,7 +46,7 @@ class _ComposeState extends State<Compose> {
         ));
   }
 
-  Container createActivityButton(int type, int selected) {
+  Container createActivityButton(int type, int pageIndex) {
     return Container(
       width: 68,
       height: 17,
@@ -52,17 +54,21 @@ class _ComposeState extends State<Compose> {
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black, width: 0.5),
         borderRadius: BorderRadius.circular(5),
-        color: (selected == 1) ? Colors.blue : Colors.transparent,
+        color: (pageIndex == this.selectedActivity)
+            ? COLOR_DEEP_BLUE
+            : Colors.transparent,
       ),
       child: GestureDetector(
         onTap: () {
-          handleActivityButtonClick(context, type);
+          _controller.jumpToPage(pageIndex);
         },
         child: Center(
           child: Text(
             labelTextPicker[type],
             style: TextStyle(
-              color: (selected == 1) ? Colors.white : Colors.black,
+              color: (pageIndex == this.selectedActivity)
+                  ? Colors.white
+                  : Colors.black,
               fontSize: 10,
               fontWeight: FontWeight.w300,
             ),
@@ -105,51 +111,8 @@ class _ComposeState extends State<Compose> {
     );
   }
 
-  List<Widget> createBody(BuildContext context, UserModel user) {
-    List<Widget> body = [];
-    if (selectedActivity == 0 || selectedActivity == 2) {
-      body = [
-        // title
-        createTitle("¿De qué se trata?"),
-        // content body
-        Container(
-          margin: EdgeInsets.fromLTRB(0, 7, 0, 7),
-          padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-          decoration: BoxDecoration(
-            color: Color(0xffcccccc),
-            borderRadius: BorderRadius.all(Radius.circular(13)),
-          ),
-          child: new ConstrainedBox(
-            constraints: new BoxConstraints(
-              minHeight: 25,
-              maxHeight: 100.0,
-            ),
-            child: new SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              reverse: true,
-              child: TextField(
-                controller: inputBodyController,
-                maxLines: null,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: "cuéntanos más...",
-                  hintStyle: TextStyle(
-                    fontWeight: FontWeight.w200,
-                    color: Color(0xffa1a1a1),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ];
-    } else if (selectedActivity == 1) {
-      body = [
-        // title
-        createTitle("¿Qué quieres preguntar?"),
-      ];
-    }
-    // cabildos and tags
+  Widget createDiscussionPage(
+      BuildContext context, UserModel user, _ComposeViewModel vm) {
     List<DropdownMenuItem<String>> cabildoMenu = [];
 
     cabildoMenu.add(createMenuItem("comparte en un cabildo"));
@@ -157,71 +120,179 @@ class _ComposeState extends State<Compose> {
     for (int i = 0; i < user.cabildos.length; i++) {
       cabildoMenu.add(createMenuItem(user.cabildos[i].name));
     }
-
-    body.add(Row(
-      children: <Widget>[
-        Icon(Icons.people, size: 40),
-        SizedBox(width: 8),
-        Column(
-          children: <Widget>[
-            // cabildo
-            Container(
-              margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
-              padding: EdgeInsets.fromLTRB(10, 5, 0, 0),
-              height: 30,
-              width: MediaQuery.of(context).size.width - 108,
-              decoration: BoxDecoration(
-                color: Color(0xffcccccc),
-                borderRadius: BorderRadius.all(Radius.circular(7)),
-              ),
-              child: DropdownButton<String>(
-                value: dropdownValue,
-                icon: Icon(Icons.arrow_downward),
-                iconSize: 24,
-                elevation: 16,
-                onChanged: (String newValue) {
-                  setState(() {
-                    dropdownValue = newValue;
-                  });
-                },
-                items: cabildoMenu,
-              ),
-            ),
-            // tags
-            Container(
-              margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
-              padding: EdgeInsets.fromLTRB(10, 12, 0, 0),
-              height: 30,
-              width: MediaQuery.of(context).size.width - 108,
-              decoration: BoxDecoration(
-                color: Color(0xffcccccc),
-                borderRadius: BorderRadius.all(Radius.circular(7)),
-              ),
-              child: TextFormField(
-                controller: inputTagController,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: "#tags",
-                  hintStyle: TextStyle(
-                      fontWeight: FontWeight.w200, color: Color(0xffa1a1a1)),
+    return Column(children: [
+      // title
+      createTitle("¿De qué se trata?"),
+      // content body
+      Container(
+        margin: EdgeInsets.fromLTRB(0, 7, 0, 7),
+        padding: EdgeInsets.fromLTRB(10, 14, 0, 0),
+        height: 33,
+        decoration: BoxDecoration(
+          color: Color(0xffcccccc),
+          borderRadius: BorderRadius.all(Radius.circular(13)),
+        ),
+        child: TextField(
+          controller: inputBodyController,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: "cuéntanos más...",
+            hintStyle: TextStyle(
+                fontWeight: FontWeight.w200, color: Color(0xffa1a1a1)),
+          ),
+        ),
+      ),
+      Row(
+        children: <Widget>[
+          Icon(Icons.people, size: 40),
+          SizedBox(width: 8),
+          Column(
+            children: <Widget>[
+              // cabildo
+              Container(
+                margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
+                padding: EdgeInsets.fromLTRB(10, 5, 0, 0),
+                height: 30,
+                width: MediaQuery.of(context).size.width - 108,
+                decoration: BoxDecoration(
+                  color: Color(0xffcccccc),
+                  borderRadius: BorderRadius.all(Radius.circular(7)),
+                ),
+                child: DropdownButton<String>(
+                  value: dropdownValue,
+                  icon: Icon(Icons.arrow_downward),
+                  iconSize: 24,
+                  elevation: 16,
+                  onChanged: (String newValue) {
+                    setState(() {
+                      dropdownValue = newValue;
+                    });
+                  },
+                  items: cabildoMenu,
                 ),
               ),
-            ),
-          ],
-        ),
-      ],
-    ));
-    return body;
+              // tags
+              Container(
+                margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
+                padding: EdgeInsets.fromLTRB(10, 12, 0, 0),
+                height: 30,
+                width: MediaQuery.of(context).size.width - 108,
+                decoration: BoxDecoration(
+                  color: Color(0xffcccccc),
+                  borderRadius: BorderRadius.all(Radius.circular(7)),
+                ),
+                child: TextFormField(
+                  controller: inputTagController,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "#tags",
+                    hintStyle: TextStyle(
+                        fontWeight: FontWeight.w200, color: Color(0xffa1a1a1)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      Row(
+        children: <Widget>[
+          Spacer(),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.send),
+            onPressed: () => submitActivity(dropdownValue, vm),
+          ),
+        ],
+      ),
+    ]);
   }
 
-  void handleActivityButtonClick(BuildContext context, int type) {
-    setState(() {
-      activityButtons[selectedActivity] =
-          createActivityButton(ACTIVITY_TYPES[selectedActivity], 0);
-      activityButtons[ACTIVITY_TYPES.indexOf(type)] =
-          createActivityButton(type, 1);
-      selectedActivity = ACTIVITY_TYPES.indexOf(type);
-    });
+  Widget createPollPage(
+      BuildContext context, UserModel user, _ComposeViewModel vm) {
+    List<DropdownMenuItem<String>> cabildoMenu = [];
+
+    cabildoMenu.add(createMenuItem("comparte en un cabildo"));
+    cabildoMenu.add(createMenuItem("todo"));
+    for (int i = 0; i < user.cabildos.length; i++) {
+      cabildoMenu.add(createMenuItem(user.cabildos[i].name));
+    }
+    return Column(children: [
+      createTitle("¿Qué quieres preguntar?"),
+      Row(
+        children: <Widget>[
+          Icon(Icons.people, size: 40),
+          SizedBox(width: 8),
+          Column(
+            children: <Widget>[
+              // cabildo
+              Container(
+                margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
+                padding: EdgeInsets.fromLTRB(10, 5, 0, 0),
+                height: 30,
+                width: MediaQuery.of(context).size.width - 108,
+                decoration: BoxDecoration(
+                  color: Color(0xffcccccc),
+                  borderRadius: BorderRadius.all(Radius.circular(7)),
+                ),
+                child: DropdownButton<String>(
+                  value: dropdownValue,
+                  icon: Icon(Icons.arrow_downward),
+                  iconSize: 24,
+                  elevation: 16,
+                  onChanged: (String newValue) {
+                    setState(() {
+                      dropdownValue = newValue;
+                    });
+                  },
+                  items: cabildoMenu,
+                ),
+              ),
+              // tags
+              Container(
+                margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
+                padding: EdgeInsets.fromLTRB(10, 12, 0, 0),
+                height: 30,
+                width: MediaQuery.of(context).size.width - 108,
+                decoration: BoxDecoration(
+                  color: Color(0xffcccccc),
+                  borderRadius: BorderRadius.all(Radius.circular(7)),
+                ),
+                child: TextFormField(
+                  controller: inputTagController,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "#tags",
+                    hintStyle: TextStyle(
+                        fontWeight: FontWeight.w200, color: Color(0xffa1a1a1)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      Row(
+        children: <Widget>[
+          Spacer(),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.send),
+            onPressed: () => submitActivity(dropdownValue, vm),
+          ),
+        ],
+      ),
+    ]);
   }
 
   void submitActivity(String cabildoName, _ComposeViewModel vm) async {
@@ -257,14 +328,6 @@ class _ComposeState extends State<Compose> {
     Navigator.of(context).pop();
   }
 
-  void dispose() {
-    inputTitleController.dispose();
-    inputBodyController.dispose();
-    inputCabildoController.dispose();
-    inputTagController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ComposeViewModel>(
@@ -280,20 +343,15 @@ class _ComposeState extends State<Compose> {
       },
       builder: (BuildContext context, _ComposeViewModel vm) {
         return Container(
-          padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+          padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
           width: MediaQuery.of(context).size.width - 20,
-          height: MediaQuery.of(context).size.height - 100,
-          margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+          height: MediaQuery.of(context).size.height - 50,
+          margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
           decoration: BoxDecoration(
-              color: CARD_BACKGROUND,
-              borderRadius: BorderRadius.all(Radius.circular(30)),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.blue,
-                    blurRadius: 3.0,
-                    spreadRadius: 0,
-                    offset: Offset(3.0, 3.0))
-              ]),
+            color: CARD_BACKGROUND,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30), topRight: Radius.circular(30)),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -314,27 +372,30 @@ class _ComposeState extends State<Compose> {
                     fontWeight: FontWeight.w400),
               ),
               SizedBox(height: 10),
-              Row(children: activityButtons),
-              ...createBody(context, vm.user),
-              Row(
-                children: <Widget>[
-                  Spacer(),
-                  IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () {
-                      Navigator.of(context).pop();
+              Row(children: [
+                Spacer(),
+                createActivityButton(ACTIVITY_DISCUSS, 0),
+                createActivityButton(ACTIVITY_POLL, 1),
+                Spacer(),
+              ]),
+              Expanded(
+                child: Container(
+                  child: PageView(
+                    controller: _controller,
+                    onPageChanged: (int pageIndex) {
+                      setState(() {
+                        print("pageIndex $pageIndex");
+                        this.selectedActivity = pageIndex;
+                        print("selected activity ${this.selectedActivity}");
+                      });
                     },
+                    children: [
+                      createDiscussionPage(context, vm.user, vm),
+                      createPollPage(context, vm.user, vm),
+                    ],
                   ),
-                  IconButton(
-                    icon: Icon(Icons.send),
-                    onPressed: () => submitActivity(dropdownValue, vm),
-                  ),
-                ],
+                ),
               ),
-              Spacer(),
-              SizedBox(
-                height: MediaQuery.of(context).viewInsets.bottom,
-              )
             ],
           ),
         );
