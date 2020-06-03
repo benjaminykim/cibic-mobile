@@ -27,10 +27,10 @@ fetchProfile(String jwt, String type, String id, NextDispatcher next) async {
 }
 
 fetchProfileFeed(
-    String jwt, String type, String id, NextDispatcher next) async {
+    String jwt, String type, String id, int offset, NextDispatcher next) async {
   String url = API_BASE;
   if (type == "selfUser") {
-    url += ENDPOINT_USER_FEED + id;
+    url += ENDPOINT_USER_FEED + id + "/" + offset.toString();
   }
 
   final response = await http.get(url, headers: {
@@ -42,7 +42,11 @@ fetchProfileFeed(
   if (response.statusCode == 200) {
     FeedModel feed =
         FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
+    if (offset != 0) {
+    next(FetchProfileFeedAppend(type, feed));
+    } else {
     next(FetchProfileFeedSuccess(type, feed));
+    }
   } else {
     next(FetchProfileFeedError(type, response.statusCode.toString()));
   }

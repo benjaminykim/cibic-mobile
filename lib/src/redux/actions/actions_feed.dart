@@ -2,7 +2,14 @@ import 'package:cibic_mobile/src/models/feed_model.dart';
 
 class FetchFeedAttempt {
   int mode;
-  FetchFeedAttempt(this.mode);
+  int offset;
+  FetchFeedAttempt(this.mode, this.offset);
+}
+
+class FetchFeedAppend {
+  int mode;
+  FeedModel feed;
+  FetchFeedAppend(this.mode, this.feed);
 }
 
 class FetchFeedSuccess {

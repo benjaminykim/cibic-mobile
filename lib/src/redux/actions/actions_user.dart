@@ -90,13 +90,20 @@ class FetchProfileError {
 class FetchProfileFeedAttempt {
   int id;
   String type;
-  FetchProfileFeedAttempt(this.id, this.type);
+  int offset;
+  FetchProfileFeedAttempt(this.id, this.type, this.offset);
 }
 
 class FetchProfileFeedSuccess {
   String type;
   FeedModel feed;
   FetchProfileFeedSuccess(this.type, this.feed);
+}
+
+class FetchProfileFeedAppend {
+  String type;
+  FeedModel feed;
+  FetchProfileFeedAppend(this.type, this.feed);
 }
 
 class FetchProfileFeedError {
@@ -116,12 +123,14 @@ class FetchSavedFeedAttempt {
 
 class PostSearchAttempt {
   String query;
-  PostSearchAttempt(this.query);
+  int offset;
+  PostSearchAttempt(this.query, this.offset);
 }
 
 class PostSearchActivityByTagAttempt {
   String query;
-  PostSearchActivityByTagAttempt(this.query);
+  int offset;
+  PostSearchActivityByTagAttempt(this.query, this.offset);
 }
 
 class PostSearchSuccess {

@@ -23,10 +23,19 @@ class _UserProfileState extends State<SelfProfileScreen> {
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   int maxLines = 4;
   double profileHeight = 160;
+  int offset = 0;
+  ScrollController controller;
 
   ProfileViewModel generateProfileViewModel(Store<AppState> store) {
-    Function refreshFeed = () => store.dispatch(
-        FetchProfileAttempt(extractID(store.state.user['jwt']), "selfUser"));
+    refreshFeed() {
+      store.dispatch(
+          FetchProfileAttempt(extractID(store.state.user['jwt']), "selfUser"));
+      store.dispatch(FetchProfileFeedAttempt(
+          extractID(store.state.user['jwt']), "selfUser", 0));
+      this.offset = 0;
+      return null;
+    }
+
     FeedModel userFeed;
     UserModel user;
     bool error;
@@ -40,8 +49,18 @@ class _UserProfileState extends State<SelfProfileScreen> {
         store.dispatch(PostReactionAttempt(activity, reactValue, 3));
     Function onSave =
         (int activityId) => store.dispatch(PostSaveAttempt(activityId, true));
+
+    void _scrollListener() {
+      if (controller.position.maxScrollExtent == controller.offset) {
+        this.offset += 20;
+        store.dispatch(FetchProfileFeedAttempt(
+            extractID(store.state.user['jwt']), "selfUser", this.offset));
+      }
+    }
+
+    controller = new ScrollController()..addListener(_scrollListener);
     return ProfileViewModel(
-        user, userFeed, refreshFeed, error, jwt, onReact, onSave);
+        user, userFeed, refreshFeed, error, jwt, onReact, onSave, controller);
   }
 
   Widget generateProfileScreen(BuildContext context, ProfileViewModel vm) {
@@ -201,20 +220,17 @@ class _UserProfileState extends State<SelfProfileScreen> {
             ),
             // feed
             Expanded(
-                child: RefreshIndicator(
-              key: refreshKey,
-              onRefresh: () => vm.refresh(),
-              child: ListView.separated(
-                  separatorBuilder: (context, index) => Divider(
-                        color: Colors.black,
-                      ),
-                  itemCount: vm.feed.feed.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    ActivityModel activity = vm.feed.feed[index];
-                    return ActivityView(
-                        activity, vm.onReact, vm.onSave, FEED_USER);
-                  }),
-            ))
+                child: ListView.separated(
+                    controller: vm.controller,
+                    separatorBuilder: (context, index) => Divider(
+                          color: Colors.black,
+                        ),
+                    itemCount: vm.feed.feed.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      ActivityModel activity = vm.feed.feed[index];
+                      return ActivityView(
+                          activity, vm.onReact, vm.onSave, FEED_USER);
+                    }))
           ]),
         ),
       );
@@ -245,8 +261,9 @@ class ProfileViewModel {
   String jwt;
   Function onReact;
   Function onSave;
+  ScrollController controller;
   ProfileViewModel(this.user, this.feed, this.refresh, this.error, this.jwt,
-      this.onReact, this.onSave);
+      this.onReact, this.onSave, this.controller);
 }
 
 // feed button bar

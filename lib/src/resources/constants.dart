@@ -144,7 +144,7 @@ const ENDPOINT_LOGIN = "auth/login/";
 const ENDPOINT_FIREBASE = "auth/notify/";
 
 const ENDPOINT_ACTIVITY = "activity/";
-const ENDPOINT_PUBLIC_FEED = "activity/public";
+const ENDPOINT_PUBLIC_FEED = "activity/public/";
 const ENDPOINT_ACTIVITY_REACT = "activity/react";
 const ENDPOINT_ACTIVITY_VOTE = "activity/vote";
 const ENDPOINT_ACTIVITY_COMMENT = "activity/comment";
@@ -175,8 +175,8 @@ const ENDPOINT_SEARCH_TAG = "tag/";
 
 const ENDPOINT_UNETE_COMMENT = "cibic/comment";
 
-const API_BASE = URL_LOCALHOST_BASE;
+//const API_BASE = URL_LOCALHOST_BASE;
 //const API_BASE = URL_FIREKITTEN_BASE;
 //const API_BASE = URL_FIREKITTEN_3EA_SMONROE_BASE;
 //const API_BASE = URL_FIREKITTEN_3EA_BEKIM_BASE;
-//const API_BASE = URL_AWS_BASE;
+const API_BASE = URL_AWS_BASE;

@@ -22,6 +22,8 @@ class ActivityFeed extends StatefulWidget {
 
 class _ActivityFeedState extends State<ActivityFeed> {
   var refreshKey = GlobalKey<RefreshIndicatorState>();
+  ScrollController controller;
+  int index = 0;
 
   Widget generateFeed(BuildContext context, FeedViewModel vm) {
     if (vm.feedError == true) {
@@ -64,6 +66,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
       );
     } else {
       return ListView.separated(
+        controller: vm.controller,
         separatorBuilder: (context, index) => Divider(
           color: Colors.black,
         ),
@@ -77,7 +80,8 @@ class _ActivityFeedState extends State<ActivityFeed> {
   }
 
   FeedViewModel generateFeedViewModel(Store<AppState> store) {
-    Function refreshFeed = () => store.dispatch(FetchFeedAttempt(widget.mode));
+    Function refreshFeed =
+        () => store.dispatch(FetchFeedAttempt(widget.mode, 0));
     Function onReact = (ActivityModel activity, int reactValue) =>
         store.dispatch(PostReactionAttempt(activity, reactValue, widget.mode));
     Function onSave =
@@ -91,8 +95,18 @@ class _ActivityFeedState extends State<ActivityFeed> {
       feed = store.state.feeds['public'];
       feedError = store.state.feedState['publicIsError'];
     }
-    return FeedViewModel(
-        feed, store.state.user['jwt'], refreshFeed, onReact, onSave, feedError);
+
+    void _scrollListener() {
+      if (controller.position.maxScrollExtent == controller.offset) {
+        this.index += 20;
+        store
+            .dispatch(FetchFeedAttempt(widget.mode, this.index));
+      }
+    }
+
+    controller = new ScrollController()..addListener(_scrollListener);
+    return FeedViewModel(feed, store.state.user['jwt'], refreshFeed, onReact,
+        onSave, feedError, controller);
   }
 
   @override
@@ -107,6 +121,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
           child: RefreshIndicator(
             key: refreshKey,
             onRefresh: () async {
+              this.index = 0;
               refreshKey.currentState?.show(atTop: false);
               await vm.refreshList();
               return null;
@@ -126,7 +141,8 @@ class FeedViewModel {
   final Function onReact;
   final Function onSave;
   bool feedError;
+  ScrollController controller;
 
   FeedViewModel(this.feed, this.jwt, this.refreshList, this.onReact,
-      this.onSave, this.feedError);
+      this.onSave, this.feedError, this.controller);
 }

@@ -30,9 +30,12 @@ class _UserProfileState extends State<UserProfileScreen> {
   int maxLines = 4;
   Future<UserModel> userProfile;
   Future<FeedModel> userFeed;
+  List<ActivityModel> feed;
   double profileHeight;
   bool isFollowing;
   bool isLoaded;
+  int offset = 0;
+  ScrollController controller;
 
   @override
   initState() {
@@ -41,6 +44,13 @@ class _UserProfileState extends State<UserProfileScreen> {
     this.profileHeight = 160;
     this.isFollowing = false;
     this.isLoaded = false;
+    this.feed = [];
+  }
+
+  refresh(String jwt) async {
+    this.offset = 0;
+    this.userFeed = fetchProfileFeed(jwt, widget.idUser.toString(), 0);
+    return null;
   }
 
   _ProfileViewModel generateForeignProfileViewModel(
@@ -53,10 +63,25 @@ class _UserProfileState extends State<UserProfileScreen> {
         (int activityId) => store.dispatch(PostSaveAttempt(activityId, true));
     if (this.isLoaded == false) {
       this.userProfile = fetchProfile(jwt, widget.idUser.toString());
-      this.userFeed = fetchProfileFeed(jwt, widget.idUser.toString());
+      this.userFeed = fetchProfileFeed(jwt, widget.idUser.toString(), 0);
       this.isLoaded = true;
     }
-    return _ProfileViewModel(jwt, onReact, onSave);
+
+    void _scrollListener() {
+      if (controller.position.maxScrollExtent == controller.offset) {
+        this.offset += 20;
+        this.userFeed =
+            fetchProfileFeed(jwt, extractID(jwt).toString(), this.offset);
+        setState(() async {
+          this
+              .feed
+              .addAll(await this.userFeed.then((FeedModel feed) => feed.feed));
+        });
+      }
+    }
+
+    controller = new ScrollController()..addListener(_scrollListener);
+    return _ProfileViewModel(jwt, onReact, onSave, controller);
   }
 
   Widget generateProfileScreen(BuildContext context, _ProfileViewModel vm) {
@@ -348,16 +373,14 @@ class _UserProfileState extends State<UserProfileScreen> {
                         if (snapshot.hasData) {
                           return Expanded(
                             child: ListView.separated(
+                                controller: vm.controller,
                                 separatorBuilder: (context, index) => Divider(
                                       color: Colors.black,
                                     ),
                                 itemCount: snapshot.data.feed.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  return (ActivityView(
-                                      snapshot.data.feed[index],
-                                      vm.onReact,
-                                      vm.onSave,
-                                      4));
+                                  return (ActivityView(snapshot.data.feed[index],
+                                      vm.onReact, vm.onSave, 4));
                                 }),
                           );
                         } else {
@@ -390,8 +413,8 @@ class _UserProfileState extends State<UserProfileScreen> {
     }
   }
 
-  Future<FeedModel> fetchProfileFeed(String jwt, String id) async {
-    String url = API_BASE + ENDPOINT_USER_FEED + id;
+  Future<FeedModel> fetchProfileFeed(String jwt, String id, int offset) async {
+    String url = API_BASE + ENDPOINT_USER_FEED + id + "/" + offset.toString();
 
     final response = await http.get(url, headers: {
       'content-type': 'application/json',
@@ -401,7 +424,13 @@ class _UserProfileState extends State<UserProfileScreen> {
 
     printResponse("USER PROFILE FEED", "GET", response.statusCode);
     if (response.statusCode == 200) {
-      return FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
+      if (offset != 0) {
+        return FeedModel.fromJson(
+            json.decode('{"feed": ' + response.body + '}'));
+      } else {
+        return FeedModel.fromJson(
+            json.decode('{"feed": ' + response.body + '}'));
+      }
     } else {
       throw Exception(
           "Failed to load User Feed ${response.statusCode.toString()}");
@@ -424,7 +453,8 @@ class _UserProfileState extends State<UserProfileScreen> {
     HttpClientResponse response = await request.close();
     httpClient.close();
 
-    printResponse((follow) ? "USER FOLLOW" : "USER UNFOLLOW", "POST", response.statusCode);
+    printResponse((follow) ? "USER FOLLOW" : "USER UNFOLLOW", "POST",
+        response.statusCode);
     if (response.statusCode == 201) {
       return true;
     } else {
@@ -450,7 +480,8 @@ class _ProfileViewModel {
   int id;
   Function onReact;
   Function onSave;
-  _ProfileViewModel(this.jwt, this.onReact, this.onSave) {
+  ScrollController controller;
+  _ProfileViewModel(this.jwt, this.onReact, this.onSave, this.controller) {
     this.id = extractID(jwt);
   }
 }

@@ -28,6 +28,7 @@ class _SearchState extends State<Search> {
   PageController _controller = PageController(
     initialPage: 0,
   );
+  int offset = 0;
 
   List<String> searchButtonTextPicker = [
     "Todo",
@@ -242,13 +243,13 @@ class _SearchState extends State<Search> {
     return StoreConnector<AppState, _SearchViewModel>(
       converter: (Store<AppState> store) {
         Function submitSearchQuery =
-            (String query) => {store.dispatch(PostSearchAttempt(query))};
+            (String query) => {store.dispatch(PostSearchAttempt(query, this.offset))};
         Function onReact = (ActivityModel activity, int reactValue) =>
             store.dispatch(PostReactionAttempt(activity, reactValue, -1));
         Function onSave = (int activityId) =>
             store.dispatch(PostSaveAttempt(activityId, true));
         Function onSearchActivityByTag = (String query) =>
-            store.dispatch(PostSearchActivityByTagAttempt(query));
+            store.dispatch(PostSearchActivityByTagAttempt(query, this.offset));
         return _SearchViewModel(
             store.state.profile['selfUser'],
             submitSearchQuery,

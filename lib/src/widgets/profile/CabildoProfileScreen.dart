@@ -31,9 +31,12 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
   int maxLines;
   Future<CabildoModel> cabildoProfile;
   Future<FeedModel> cabildoFeed;
+  List<ActivityModel> feed;
   double profileHeight;
   bool isFollowing;
   bool isLoaded;
+  int offset = 0;
+  ScrollController controller;
 
   @override
   initState() {
@@ -62,8 +65,8 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
     }
   }
 
-  Future<FeedModel> fetchCabildoFeed(String id, String jwt) async {
-    String url = API_BASE + ENDPOINT_CABILDO_FEED + id;
+  Future<FeedModel> fetchCabildoFeed(String id, int offset, String jwt) async {
+    String url = API_BASE + ENDPOINT_CABILDO_FEED + id + "/" + offset.toString();
 
     final response = await http.get(url, headers: {
       'content-type': 'application/json',
@@ -112,13 +115,21 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
         if (this.isLoaded == false) {
           this.cabildoProfile =
               fetchCabildoProfile(widget.idCabildo.toString(), jwt);
-          this.cabildoFeed = fetchCabildoFeed(widget.idCabildo.toString(), jwt);
+          this.cabildoFeed = fetchCabildoFeed(widget.idCabildo.toString(), this.offset, jwt);
           this.isLoaded = true;
         }
         Function onReact = (ActivityModel activity, int reactValue) =>
             store.dispatch(PostReactionAttempt(activity, reactValue, 3));
         Function onSave = (int activityId) =>
             store.dispatch(PostSaveAttempt(activityId, true));
+            void _scrollListener() async {
+      if (controller.position.maxScrollExtent == controller.offset) {
+        this.offset += 20;
+        this.cabildoFeed = fetchCabildoFeed(widget.idCabildo.toString(), this.offset, jwt);
+      }
+    }
+
+    controller = new ScrollController()..addListener(_scrollListener);
         return _CabildoViewModel(
           store.state.user['jwt'],
           onReact,

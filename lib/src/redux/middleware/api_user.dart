@@ -119,23 +119,23 @@ postSearchActivityByTag(
   }
 }
 
-postSearchQuery(String jwt, String query, int mode, NextDispatcher next) async {
+postSearchQuery(String jwt, int offset, String query, int mode, NextDispatcher next) async {
   String url = API_BASE;
   switch (mode) {
     case 0:
-      url += ENDPOINT_SEARCH_USER;
+      url += ENDPOINT_SEARCH_USER + "/" + offset.toString();
       break;
     case 1:
-      url += ENDPOINT_SEARCH_CABILDO;
+      url += ENDPOINT_SEARCH_CABILDO + "/" + offset.toString();
       break;
     case 2:
-      url += ENDPOINT_SEARCH_ACTIVITY;
+      url += ENDPOINT_SEARCH_ACTIVITY + "/" + offset.toString();
       break;
     case 3:
       filterTag(jwt, query, mode, next);
       return;
     case 4:
-      url += ENDPOINT_SEARCH_ACTIVITY_BY_TAG;
+      url += ENDPOINT_SEARCH_ACTIVITY_BY_TAG + "/" + offset.toString();
       break;
   }
   HttpClient httpClient = new HttpClient();

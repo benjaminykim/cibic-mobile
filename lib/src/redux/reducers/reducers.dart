@@ -54,6 +54,17 @@ AppState appReducer(AppState prevState, dynamic action) {
       newState.feeds['selfUser'] = action.feed;
       newState.feedState['selfUserError'] = false;
     }
+  } else if (action is FetchFeedAppend) {
+    if (action.mode == FEED_HOME) {
+      newState.feeds['home'].feed.addAll(action.feed.feed);
+      newState.feedState['homeError'] = false;
+    } else if (action.mode == FEED_PUBLIC) {
+      newState.feeds['public'].feed.addAll(action.feed.feed);
+      newState.feedState['publicError'] = false;
+    } else if (action.mode == FEED_USER) {
+      newState.feeds['selfUser'].feed.addAll(action.feed.feed);
+      newState.feedState['selfUserError'] = false;
+    }
   } else if (action is FetchFeedError) {
     if (action.mode == FEED_HOME) {
       newState.feedState['homeError'] = true;
@@ -73,6 +84,11 @@ AppState appReducer(AppState prevState, dynamic action) {
     newState.profileState[action.type + 'IsError'] = true;
   } else if (action is FetchProfileFeedSuccess) {
     newState.feeds[action.type] = action.feed;
+    newState.feedState[action.type + "IsLoading"] = false;
+    newState.feedState[action.type + "IsSuccess"] = true;
+    newState.feedState[action.type + "IsError"] = false;
+  } else if (action is FetchProfileFeedAppend) {
+    newState.feeds[action.type].feed.addAll(action.feed.feed);
     newState.feedState[action.type + "IsLoading"] = false;
     newState.feedState[action.type + "IsSuccess"] = true;
     newState.feedState[action.type + "IsError"] = false;
@@ -179,8 +195,8 @@ AppState appReducer(AppState prevState, dynamic action) {
       }
     }
     for (int i = 0; i < feeds.length; i++) {
-      feeds[i] = updatePollVote(action.activityId, action.voteId,
-          idUser, action.reactValue, feeds[i]);
+      feeds[i] = updatePollVote(action.activityId, action.voteId, idUser,
+          action.reactValue, feeds[i]);
     }
   } else if (action is PostPollError) {
   } else if (action is FireBaseTokenSuccess) {
@@ -269,7 +285,7 @@ FeedModel updatePollVote(
     if (feed.feed[i].id == activityId) {
       for (int j = 0; j < feed.feed[i].votes.length; j++) {
         if (feed.feed[i].votes[j]['id'] == voteId &&
-        feed.feed[i].votes[j]['userId'] == userId) {
+            feed.feed[i].votes[j]['userId'] == userId) {
           feed.feed[i].votes[j]['value'] = reactValue;
           return feed;
         }

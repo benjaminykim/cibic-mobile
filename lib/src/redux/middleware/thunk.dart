@@ -23,11 +23,11 @@ void apiMiddleware(
       await attemptLogin(action.email, action.password, store, next);
       if (store.state.loginState['isSuccess']) {
         String jwt = store.state.user['jwt'];
-        await fetchFeed(jwt, FEED_HOME, next);
-        await fetchFeed(jwt, FEED_PUBLIC, next);
+        await fetchFeed(jwt, FEED_HOME, 0, next);
+        await fetchFeed(jwt, FEED_PUBLIC, 0, next);
         await fetchProfile(jwt, "selfUser", extractID(jwt).toString(), next);
         await fetchProfileFeed(
-            jwt, "selfUser", extractID(jwt).toString(), next);
+            jwt, "selfUser", extractID(jwt).toString(), 0, next);
         Navigator.pushReplacement(action.context,
             MaterialPageRoute(builder: (context) => Home(store)));
       }
@@ -42,37 +42,38 @@ void apiMiddleware(
       jwt = action.jwt;
     }
     next(LogInSuccess(jwt));
-    await fetchFeed(jwt, FEED_HOME, next);
+    await fetchFeed(jwt, FEED_HOME, 0, next);
+    await fetchFeed(jwt, FEED_PUBLIC, 0, next);
     await fetchProfile(jwt, "selfUser", extractID(jwt).toString(), next);
-    await fetchFeed(jwt, FEED_PUBLIC, next);
-    await fetchProfileFeed(jwt, "selfUser", extractID(jwt).toString(), next);
+    await fetchProfileFeed(jwt, "selfUser", extractID(jwt).toString(), 0, next);
     Navigator.pushReplacement(
         action.context, MaterialPageRoute(builder: (context) => Home(store)));
   } else if (action is PostRegisterAttempt) {
     await attemptRegister(action.email, action.password, action.firstName,
         action.lastName, action.telephone, store, action.context, next);
   } else if (action is FetchFeedAttempt) {
-    await fetchFeed(store.state.user['jwt'], action.mode, next);
+    await fetchFeed(store.state.user['jwt'], action.mode, action.offset, next);
   } else if (action is FetchProfileAttempt) {
     String jwt = store.state.user['jwt'];
     await fetchProfile(jwt, action.type, action.id.toString(), next);
   } else if (action is FetchProfileFeedAttempt) {
     String jwt = store.state.user['jwt'];
-    await fetchProfileFeed(jwt, action.type, action.id.toString(), next);
+    await fetchProfileFeed(jwt, action.type, action.id.toString(), action.offset, next);
   } else if (action is SubmitActivityAttempt) {
     await postActivity(action, store.state.user['jwt'], next, store);
   } else if (action is SubmitActivitySuccess) {
     String jwt = store.state.user['jwt'];
-    await fetchFeed(jwt, FEED_HOME, next);
-    await fetchFeed(jwt, FEED_PUBLIC, next);
-    await fetchProfileFeed(jwt, "selfUser", extractID(jwt).toString(), next);
+    await fetchFeed(jwt, FEED_HOME, 0, next);
+    await fetchFeed(jwt, FEED_PUBLIC, 0, next);
+    await fetchProfileFeed(jwt, "selfUser", extractID(jwt).toString(), 0, next);
   } else if (action is SubmitCabildoAttempt) {
     await postCabildo(action, store.state.user['jwt'], next, store);
   } else if (action is SubmitCabildoSuccess) {
     String jwt = store.state.user['jwt'];
     await fetchProfile(jwt, "selfUser", extractID(jwt).toString(), next);
   } else if (action is PostPollAttempt) {
-    await postPollVote(action.activity, store.state.user['jwt'], action.reactValue, store.state.user['id'], action.mode, next);
+    await postPollVote(action.activity, store.state.user['jwt'],
+        action.reactValue, store.state.user['id'], action.mode, next);
   } else if (action is PostReactionAttempt) {
     await postReaction(action.activity, store.state.user['jwt'],
         action.reactValue, store.state.user['idUser'], action.mode, next);
@@ -80,9 +81,9 @@ void apiMiddleware(
     await postSaveActivity(
         action.activityId, store.state.user['jwt'], action.save, next, store);
   } else if (action is PostSearchAttempt) {
-    await postSearchQuery(store.state.user['jwt'], action.query, 0, next);
-    await postSearchQuery(store.state.user['jwt'], action.query, 1, next);
-    await postSearchQuery(store.state.user['jwt'], action.query, 2, next);
-    await postSearchQuery(store.state.user['jwt'], action.query, 3, next);
+    await postSearchQuery(store.state.user['jwt'], action.offset, action.query, 0, next);
+    await postSearchQuery(store.state.user['jwt'], action.offset, action.query, 1, next);
+    await postSearchQuery(store.state.user['jwt'], action.offset, action.query, 2, next);
+    await postSearchQuery(store.state.user['jwt'], action.offset, action.query, 3, next);
   }
 }

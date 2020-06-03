@@ -21,9 +21,10 @@ class Saved extends StatefulWidget {
 class _SavedState extends State<Saved> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   Future<FeedModel> savedFeed;
+  int offset = 0;
 
-  Future<FeedModel> fetchSavedFeed(String jwt) async {
-    var url = API_BASE + ENDPOINT_ACTIVITY_SAVE_FEED;
+  Future<FeedModel> fetchSavedFeed(String jwt, int offset) async {
+    var url = API_BASE + ENDPOINT_ACTIVITY_SAVE_FEED + "/" + offset.toString();
     Map<String, String> header = getAuthHeader(jwt);
 
     var response = await http.get(url, headers: header);
@@ -49,7 +50,7 @@ class _SavedState extends State<Saved> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, FeedViewModel>(
       converter: (Store<AppState> store) {
-        this.savedFeed = fetchSavedFeed(store.state.user['jwt']);
+        this.savedFeed = fetchSavedFeed(store.state.user['jwt'], this.offset);
         return generateFeedViewModel(store);
       },
       builder: (BuildContext context, FeedViewModel vm) {
