@@ -173,9 +173,9 @@ class CardView extends StatelessWidget {
 
   Widget generateContent() {
     if (this.activity.activityType == ACTIVITY_POLL) {
-      if (this.type == CARD_DEFAULT) {
+      if (this.type == CARD_SCREEN) {
         return generatePoll();
-      } else if (this.type == CARD_SCREEN) {
+      } else {
         return generatePoll();
       }
     } else if (this.activity.activityType == ACTIVITY_POLL &&
