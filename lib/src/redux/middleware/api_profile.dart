@@ -18,8 +18,6 @@ fetchProfile(String jwt, String type, String id, NextDispatcher next) async {
     'authorization': "Bearer $jwt"
   });
 
-  print("fetchProfile: ${response.statusCode}");
-  print(" type: $type     id: $id");
   if (response.statusCode == 200) {
     UserModel user = UserModel.fromJson(json.decode(response.body));
     next(FetchProfileSuccess(type, user));
@@ -41,10 +39,7 @@ fetchProfileFeed(
     'authorization': "Bearer $jwt"
   });
 
-  print("fetchFeed: ${response.statusCode}");
-  print(" type: $type     id: $id");
   if (response.statusCode == 200) {
-    print("profile feed process cabildo");
     FeedModel feed =
         FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
     next(FetchProfileFeedSuccess(type, feed));

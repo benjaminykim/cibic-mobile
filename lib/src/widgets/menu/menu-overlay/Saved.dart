@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
+import 'package:cibic_mobile/src/resources/utils.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityView.dart';
 import 'package:cibic_mobile/src/widgets/menu/loading.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class _SavedState extends State<Saved> {
     Map<String, String> header = getAuthHeader(jwt);
 
     var response = await http.get(url, headers: header);
-    print("status code: ${response.statusCode}");
+    printResponse("SAVED FEED", "GET", response.statusCode);
     if (response != null && response.statusCode == 200) {
       FeedModel feed =
           FeedModel.fromJson(json.decode('{"feed":' + response.body + '}'));

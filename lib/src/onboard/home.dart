@@ -1,5 +1,6 @@
 import 'package:cibic_mobile/src/onboard/welcome.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
+import 'package:cibic_mobile/src/widgets/menu/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:cibic_mobile/src/widgets/profile/SelfProfileScreen.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityFeed.dart';
@@ -39,7 +40,18 @@ class _HomeState extends State<Home> {
       ActivityFeed(FEED_HOME),
       ActivityFeed(FEED_PUBLIC),
       SelfProfileScreen(),
-      Container(),
+      Container(
+        child: Center(
+          child: Text(
+            "Próximamente",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w400,
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ),
     ];
   }
 
@@ -52,7 +64,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<String>(
-        future: _jwt, // a previously-obtained Future<String> or null
+        future: _jwt,
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data == "") {
@@ -65,24 +77,15 @@ class _HomeState extends State<Home> {
                   body: Center(
                     child: _widgetOptions.elementAt(selectedBarIndex),
                   ),
-                  drawer: MenuOverlay(snapshot.data, this.onBarButtonTapped, widget.store),
+                  drawer: MenuOverlay(
+                      snapshot.data, this.onBarButtonTapped, widget.store),
                   bottomNavigationBar:
                       BaseBar(this.selectedBarIndex, this.onBarButtonTapped),
                 ),
               );
             }
           } else {
-            return Container(
-              color: COLOR_DEEP_BLUE,
-              child: Center(
-                child: SizedBox(
-                  child: CircularProgressIndicator(
-                  ),
-                  width: 60,
-                  height: 60,
-                ),
-              ),
-            );
+            return LoadingScreen();
           }
         });
   }

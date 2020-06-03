@@ -146,6 +146,7 @@ const ENDPOINT_FIREBASE = "auth/notify/";
 const ENDPOINT_ACTIVITY = "activity/";
 const ENDPOINT_PUBLIC_FEED = "activity/public";
 const ENDPOINT_ACTIVITY_REACT = "activity/react";
+const ENDPOINT_ACTIVITY_VOTE = "activity/vote";
 const ENDPOINT_ACTIVITY_COMMENT = "activity/comment";
 const ENDPOINT_ACTIVITY_COMMENT_VOTE = "activity/comment/vote";
 const ENDPOINT_ACTIVITY_REPLY = "activity/reply";

@@ -25,7 +25,7 @@ class _UneteState extends State<Unete> {
 
   _launchURL() async {
     const url = 'https://www.github.com/cibic-io';
-    print(url);
+    return url;
     // if (await canLaunch(url)) {
     //   await launch(url);
     // } else {
@@ -35,7 +35,7 @@ class _UneteState extends State<Unete> {
 
   _launchEmail() async {
     const url = 'mailto:contacto@cibic.app?subject=Contacto&body=Hola!';
-    print(url);
+    return url;
     // if (await canLaunch(url)) {
     //   await launch(url);
     // } else {

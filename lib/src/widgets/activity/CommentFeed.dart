@@ -61,6 +61,7 @@ class _CommentFeedState extends State<CommentFeed> {
     HttpClientResponse response = await request.close();
     httpClient.close();
 
+    printResponse("COMMENT", "POST", response.statusCode);
     if (response.statusCode == 201) {
       var responseBody =
           jsonDecode(await response.transform(utf8.decoder).join());
@@ -118,7 +119,7 @@ class _CommentFeedState extends State<CommentFeed> {
       HttpClientResponse response = await request.close();
       httpClient.close();
 
-      print("DEBUG: postCommentVote: ${response.statusCode}");
+      printResponse("COMMENT VOTE", "POST", response.statusCode);
       if (response.statusCode == 201) {
         String responseBody = await response.transform(utf8.decoder).join();
         Map<String, dynamic> vote = jsonDecode(responseBody);
@@ -146,7 +147,7 @@ class _CommentFeedState extends State<CommentFeed> {
       HttpClientResponse response = await request.close();
       httpClient.close();
 
-      print("DEBUG: putCommentVote: ${response.statusCode}");
+      printResponse("COMMENT VOTE", "PUT", response.statusCode);
       if (response.statusCode == 200) {
         setState(() {
           widget.activity.comments
@@ -194,6 +195,7 @@ class _CommentFeedState extends State<CommentFeed> {
     HttpClientResponse response = await request.close();
     httpClient.close();
 
+    printResponse("REPLY", "POST", response.statusCode);
     if (response.statusCode == 201) {
       var responseBody =
           jsonDecode(await response.transform(utf8.decoder).join());
@@ -256,6 +258,7 @@ class _CommentFeedState extends State<CommentFeed> {
       HttpClientResponse response = await request.close();
       httpClient.close();
 
+      printResponse("REPLY VOTE", "POST", response.statusCode);
       if (response.statusCode == 201) {
         String responseBody = await response.transform(utf8.decoder).join();
         Map<String, dynamic> vote = jsonDecode(responseBody);
@@ -288,7 +291,7 @@ class _CommentFeedState extends State<CommentFeed> {
       HttpClientResponse response = await request.close();
       httpClient.close();
 
-      print("DEBUG: putReplyVote: ${response.statusCode}");
+      printResponse("REPLY VOTE", "PUT", response.statusCode);
       if (response.statusCode == 200) {
         setState(() {
           widget.activity.comments
@@ -324,7 +327,6 @@ class _CommentFeedState extends State<CommentFeed> {
         }
       }
     }
-    print("tagged user ${r.taggedUser}");
     return Container(
       margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
       decoration: BoxDecoration(

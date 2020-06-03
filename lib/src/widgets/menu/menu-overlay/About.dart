@@ -16,7 +16,7 @@ class About extends StatelessWidget {
 
   _launchURL() async {
     const url = 'https://www.cibic.app';
-    print(url);
+    return url;
     // if (await canLaunch(url)) {
     //   await launch(url);
     // } else {

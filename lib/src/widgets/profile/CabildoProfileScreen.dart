@@ -53,7 +53,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
       'authorization': "Bearer $jwt"
     });
 
-    print("Cabildo fetchProfile: ${response.statusCode}");
+    printResponse("CABILDO PROFILE", "GET", response.statusCode);
     if (response.statusCode == 200) {
       return CabildoModel.fromJson(json.decode(response.body));
     } else {
@@ -71,7 +71,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
       'authorization': "Bearer $jwt"
     });
 
-    print("Cabildo fetchFeed: ${response.statusCode}");
+    printResponse("CABILDO FEED", "GET", response.statusCode);
     if (response.statusCode == 200) {
       return FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
     } else {
@@ -96,8 +96,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
     HttpClientResponse response = await request.close();
     httpClient.close();
 
-    print("DEBUG: ${(follow) ? 'follow' : 'unfollow'} cabildo ");
-    print("     response: ${response.statusCode.toString()}");
+    printResponse((follow) ? "CABILDO FOLLOW" : "CABILDO UNFOLLOW", "POST", response.statusCode);
     if (response.statusCode == 201) {
       return true;
     } else {

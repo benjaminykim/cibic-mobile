@@ -19,26 +19,20 @@ void apiMiddleware(
   if (action is LogInAttempt) {
     if (store.state.loginState['isLoading'] == false &&
         store.state.loginState['isSuccess'] == false) {
-      print("LOGIN ATTEMPT");
-      await store.dispatch(LogInLoading());
+      store.dispatch(LogInLoading());
       await attemptLogin(action.email, action.password, store, next);
       if (store.state.loginState['isSuccess']) {
-        print("LOGIN SUCCESS");
         String jwt = store.state.user['jwt'];
         await fetchFeed(jwt, FEED_HOME, next);
         await fetchFeed(jwt, FEED_PUBLIC, next);
         await fetchProfile(jwt, "selfUser", extractID(jwt).toString(), next);
         await fetchProfileFeed(
             jwt, "selfUser", extractID(jwt).toString(), next);
-        print("LOGIN STATE LOAD FINISH");
         Navigator.pushReplacement(action.context,
             MaterialPageRoute(builder: (context) => Home(store)));
       }
     }
   } else if (action is RefreshApp) {
-    print("App Refreshed");
-    print("action's jwt: ${action.jwt}");
-    print("store's jwt: ${store.state.user['jwt']}");
     String jwt;
     if (store.state.user['jwt'] != null &&
         store.state.user['jwt'] != "" &&
@@ -47,12 +41,10 @@ void apiMiddleware(
     } else {
       jwt = action.jwt;
     }
-    print("calling log in success");
     next(LogInSuccess(jwt));
-    store.dispatch(LogInSuccess(jwt));
     await fetchFeed(jwt, FEED_HOME, next);
-    await fetchFeed(jwt, FEED_PUBLIC, next);
     await fetchProfile(jwt, "selfUser", extractID(jwt).toString(), next);
+    await fetchFeed(jwt, FEED_PUBLIC, next);
     await fetchProfileFeed(jwt, "selfUser", extractID(jwt).toString(), next);
     Navigator.pushReplacement(
         action.context, MaterialPageRoute(builder: (context) => Home(store)));
@@ -79,14 +71,14 @@ void apiMiddleware(
   } else if (action is SubmitCabildoSuccess) {
     String jwt = store.state.user['jwt'];
     await fetchProfile(jwt, "selfUser", extractID(jwt).toString(), next);
+  } else if (action is PostPollAttempt) {
+    await postPollVote(action.activity, store.state.user['jwt'], action.reactValue, store.state.user['id'], action.mode, next);
   } else if (action is PostReactionAttempt) {
     await postReaction(action.activity, store.state.user['jwt'],
         action.reactValue, store.state.user['idUser'], action.mode, next);
   } else if (action is PostSaveAttempt) {
     await postSaveActivity(
         action.activityId, store.state.user['jwt'], action.save, next, store);
-  } else if (action is FireBaseTokenAttempt) {
-    //await getFirebaseToken(store.state.user['jwt'], next);
   } else if (action is PostSearchAttempt) {
     await postSearchQuery(store.state.user['jwt'], action.query, 0, next);
     await postSearchQuery(store.state.user['jwt'], action.query, 1, next);

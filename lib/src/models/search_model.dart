@@ -28,9 +28,9 @@ class SearchCabildoModel {
 
 @JsonSerializable(explicitToJson: true)
 class SearchTagModel {
-  List<Map<String, dynamic>> tag;
+  List<Map<String, dynamic>> tags;
 
-  SearchTagModel(this.tag);
+  SearchTagModel(this.tags);
 
   factory SearchTagModel.fromJson(Map<String, dynamic> json) => _$SearchTagModelFromJson(json);
 

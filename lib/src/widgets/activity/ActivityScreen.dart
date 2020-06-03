@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/resources/utils.dart';
 import 'package:cibic_mobile/src/widgets/activity/card/CardMetaData.dart';
 import 'package:cibic_mobile/src/widgets/activity/card/CardView.dart';
 import 'package:cibic_mobile/src/widgets/activity/card/UserMetaData.dart';
@@ -37,9 +38,10 @@ class _ActivityScreenState extends State<ActivityScreen> {
 
   Future<ActivityModel> fetchActivity(String jwt, int id) async {
     var url = API_BASE + ENDPOINT_ACTIVITY + id.toString();
-    print("URL $url");
     Map<String, String> header = getAuthHeader(jwt);
     var response = await http.get(url, headers: header);
+
+    printResponse("ACTIVITY", "GET", response.statusCode);
     if (response != null && response.statusCode == 200) {
       return ActivityModel.fromJson(json.decode(response.body));
     } else {
@@ -53,7 +55,8 @@ class _ActivityScreenState extends State<ActivityScreen> {
       converter: (Store<AppState> store) {
         this.activity =
             fetchActivity(store.state.user['jwt'], widget.activityId);
-            return _UserViewModel(store.state.user['jwt'], store.state.profile['selfUser']);
+        return _UserViewModel(
+            store.state.user['jwt'], store.state.profile['selfUser']);
       },
       builder: (BuildContext context, _UserViewModel vm) {
         return FutureBuilder<ActivityModel>(
@@ -66,15 +69,20 @@ class _ActivityScreenState extends State<ActivityScreen> {
                 appBar: AppBar(),
                 body: Container(
                   color: APP_BACKGROUND,
-                  child: ListView(
-                    children: <Widget>[
-                      UserMetaData.fromActivity(activity),
-                      CardView(activity, CARD_SCREEN, widget.onReact,
-                          widget.onSave, widget.mode),
-                      CardMetaData(activity.ping, activity.commentNumber,
-                          activity.publishDate),
-                      CommentFeed(activity, widget.mode, vm.jwt, vm.user),
-                    ],
+                  child: RefreshIndicator(
+                    onRefresh: () {
+                      return fetchActivity(vm.jwt, widget.activityId);
+                    },
+                    child: ListView(
+                      children: <Widget>[
+                        UserMetaData.fromActivity(activity),
+                        CardView(activity, CARD_SCREEN, widget.onReact,
+                            widget.onSave, widget.mode),
+                        CardMetaData(activity.ping, activity.commentNumber,
+                            activity.publishDate),
+                        CommentFeed(activity, widget.mode, vm.jwt, vm.user),
+                      ],
+                    ),
                   ),
                 ),
               );

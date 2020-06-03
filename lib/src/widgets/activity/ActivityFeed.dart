@@ -2,6 +2,7 @@ import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_feed.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityView.dart';
+import 'package:cibic_mobile/src/widgets/menu/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:cibic_mobile/src/models/activity_model.dart';
@@ -41,7 +42,9 @@ class _ActivityFeedState extends State<ActivityFeed> {
           ),
         ],
       );
-    } else if (vm.feed == null || vm.feed.feed.length == 0) {
+    } else if (vm.feed == null) {
+      return LoadingPiece();
+    } else if (vm.feed.feed.length == 0) {
       return ListView(
         children: <Widget>[
           Container(
@@ -67,9 +70,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
         itemCount: vm.feed.feed.length,
         itemBuilder: (BuildContext context, int index) {
           ActivityModel activity = vm.feed.feed[index];
-          print("FEED ACTIVITY ID: ${activity.id}");
-          return ActivityView(
-              activity, vm.onReact, vm.onSave, widget.mode);
+          return ActivityView(activity, vm.onReact, vm.onSave, widget.mode);
         },
       );
     }
@@ -79,7 +80,8 @@ class _ActivityFeedState extends State<ActivityFeed> {
     Function refreshFeed = () => store.dispatch(FetchFeedAttempt(widget.mode));
     Function onReact = (ActivityModel activity, int reactValue) =>
         store.dispatch(PostReactionAttempt(activity, reactValue, widget.mode));
-    Function onSave = (int activityId) => store.dispatch(PostSaveAttempt(activityId, true));
+    Function onSave =
+        (int activityId) => store.dispatch(PostSaveAttempt(activityId, true));
     FeedModel feed;
     bool feedError;
     if (widget.mode == FEED_HOME) {
@@ -125,6 +127,6 @@ class FeedViewModel {
   final Function onSave;
   bool feedError;
 
-  FeedViewModel(this.feed, this.jwt, this.refreshList, this.onReact, this.onSave,
-      this.feedError);
+  FeedViewModel(this.feed, this.jwt, this.refreshList, this.onReact,
+      this.onSave, this.feedError);
 }

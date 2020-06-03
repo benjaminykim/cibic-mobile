@@ -133,7 +133,7 @@ class SearchActivityCard extends StatelessWidget {
     for (int i = 0; i < activity.tags.length; i++) {
       tags.add(GestureDetector(
         onTap: () {
-          print("${activity.tags[i]['label']}");
+          // TODO TAG TOUCH
         },
         child: Container(
           margin: EdgeInsets.fromLTRB(15, 0, 0, 0),

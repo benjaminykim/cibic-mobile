@@ -381,7 +381,7 @@ class _UserProfileState extends State<UserProfileScreen> {
       'authorization': "Bearer $jwt"
     });
 
-    print("fetchProfile id:$id    response:${response.statusCode}");
+    printResponse("USER PROFILE", "GET", response.statusCode);
     if (response.statusCode == 200) {
       return UserModel.fromJson(json.decode(response.body));
     } else {
@@ -399,7 +399,7 @@ class _UserProfileState extends State<UserProfileScreen> {
       'authorization': "Bearer $jwt"
     });
 
-    print("fetchFeed id:$id    response:${response.statusCode}");
+    printResponse("USER PROFILE FEED", "GET", response.statusCode);
     if (response.statusCode == 200) {
       return FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
     } else {
@@ -424,8 +424,7 @@ class _UserProfileState extends State<UserProfileScreen> {
     HttpClientResponse response = await request.close();
     httpClient.close();
 
-    print("DEBUG: ${(follow) ? 'follow' : 'unfollow'} user ");
-    print("     response: ${response.statusCode.toString()}");
+    printResponse((follow) ? "USER FOLLOW" : "USER UNFOLLOW", "POST", response.statusCode);
     if (response.statusCode == 201) {
       return true;
     } else {

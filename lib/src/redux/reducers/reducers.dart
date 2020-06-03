@@ -34,9 +34,7 @@ AppState appReducer(AppState prevState, dynamic action) {
     newState.loginState['isError'] = false;
     newState.loginState['isSuccess'] = false;
   } else if (action is LogInSuccess) {
-    print("LOG IN SUCCESS JWT ${action.jwt}");
     newState.user['jwt'] = action.jwt;
-    print("loginsuccess reducer ${action.jwt}");
     newState.user['idUser'] = extractID(action.jwt);
     newState.loginState['isLoading'] = false;
     newState.loginState['isError'] = false;
@@ -65,7 +63,6 @@ AppState appReducer(AppState prevState, dynamic action) {
       newState.feedState['selfUserError'] = true;
     }
   } else if (action is FetchProfileSuccess) {
-    print("reducer profile type: ${action.type}");
     newState.profile[action.type] = action.profile;
     newState.profileState[action.type + "IsSuccess"] = true;
     newState.profileState[action.type + 'IsLoading'] = false;
@@ -75,7 +72,6 @@ AppState appReducer(AppState prevState, dynamic action) {
     newState.profileState[action.type + 'IsLoading'] = false;
     newState.profileState[action.type + 'IsError'] = true;
   } else if (action is FetchProfileFeedSuccess) {
-    print("reducer feed type: ${action.type}");
     newState.feeds[action.type] = action.feed;
     newState.feedState[action.type + "IsLoading"] = false;
     newState.feedState[action.type + "IsSuccess"] = true;
@@ -84,6 +80,7 @@ AppState appReducer(AppState prevState, dynamic action) {
     newState.feedState[action.type + "IsLoading"] = false;
     newState.feedState[action.type + "IsSuccess"] = false;
     newState.feedState[action.type + "IsError"] = true;
+  } else if (action is SubmitActivitySuccess) {
   } else if (action is ClearProfile) {
     newState.profile[action.type] = null;
     newState.feeds[action.type] = null;
@@ -117,9 +114,13 @@ AppState appReducer(AppState prevState, dynamic action) {
       } else {
         for (int i = 0; i < newState.search['activity'].length; i++) {
           if (newState.search['activity'][i].id == action.activityId) {
-            for (int j = 0; j < newState.search['activity'][i].reactions.length; j++) {
-              if (action.reactionId == newState.search['activity'][i].reactions[j].id) {
-                newState.search['activity'][i].reactions[j].value = action.reactValue;
+            for (int j = 0;
+                j < newState.search['activity'][i].reactions.length;
+                j++) {
+              if (action.reactionId ==
+                  newState.search['activity'][i].reactions[j].id) {
+                newState.search['activity'][i].reactions[j].value =
+                    action.reactValue;
               }
               break;
             }
@@ -133,7 +134,55 @@ AppState appReducer(AppState prevState, dynamic action) {
           newState.user['idUser'], action.reactValue, feeds[i]);
     }
   } else if (action is PostReactionError) {
-    // String error;
+  } else if (action is PostPollSuccess) {
+    List<FeedModel> feeds = orderFeeds(newState, action.mode);
+
+    if (action.mode == -1) {
+      if (action.activityId == null || action.vote == null) {
+      } else {
+        for (int i = 0; i < newState.search['activity'].length; i++) {
+          if (newState.search['activity'][i].id == action.activityId) {
+            if (newState.search['activity'][i].votes == null) {
+              newState.search['activity'][i].votes = [action.vote];
+            } else {
+              newState.search['activity'][i].votes.add(action.vote);
+            }
+          }
+          break;
+        }
+      }
+    }
+    for (int i = 0; i < feeds.length; i++) {
+      feeds[i] = addPollVote(action.activityId, action.vote, feeds[i]);
+    }
+  } else if (action is PostPollUpdate) {
+    List<FeedModel> feeds = orderFeeds(newState, action.mode);
+    int idUser = extractID(newState.user['jwt']);
+    if (action.mode == -1) {
+      if (action.activityId == null) {
+      } else {
+        for (int i = 0; i < newState.search['activity'].length; i++) {
+          if (newState.search['activity'][i].id == action.activityId) {
+            for (int j = 0;
+                j < newState.search['activity'][i].votes.length;
+                j++) {
+              if (action.voteId ==
+                  newState.search['activity'][i].votes[j]['id']) {
+                newState.search['activity'][i].votes[j]['value'] =
+                    action.reactValue;
+              }
+              break;
+            }
+          }
+          break;
+        }
+      }
+    }
+    for (int i = 0; i < feeds.length; i++) {
+      feeds[i] = updatePollVote(action.activityId, action.voteId,
+          idUser, action.reactValue, feeds[i]);
+    }
+  } else if (action is PostPollError) {
   } else if (action is FireBaseTokenSuccess) {
     newState.user['firebaseToken'] = action.token;
     newState.user['firebaseManager'] = action.firebase;
@@ -187,6 +236,44 @@ FeedModel updateActivityReaction(int activityId, int reactionId, int userId,
         }
       }
       feed.feed[i].reactions.add(ReactionModel(reactionId, userId, reactValue));
+      return feed;
+    }
+  }
+  return feed;
+}
+
+FeedModel addPollVote(
+    int activityId, Map<String, dynamic> vote, FeedModel feed) {
+  if (feed == null || feed.feed == null || activityId == null || vote == null)
+    return feed;
+  print("activityID: $activityId");
+  for (int i = 0; i < feed.feed.length; i++) {
+    print("${feed.feed[i].id}");
+    if (feed.feed[i].id == activityId) {
+      print(vote);
+      feed.feed[i].votes.add(vote);
+      return feed;
+    }
+  }
+  return feed;
+}
+
+FeedModel updatePollVote(
+    int activityId, int voteId, int userId, int reactValue, FeedModel feed) {
+  if (feed == null ||
+      feed.feed == null ||
+      activityId == null ||
+      voteId == null ||
+      userId == null) return feed;
+  for (int i = 0; i < feed.feed.length; i++) {
+    if (feed.feed[i].id == activityId) {
+      for (int j = 0; j < feed.feed[i].votes.length; j++) {
+        if (feed.feed[i].votes[j]['id'] == voteId &&
+        feed.feed[i].votes[j]['userId'] == userId) {
+          feed.feed[i].votes[j]['value'] = reactValue;
+          return feed;
+        }
+      }
       return feed;
     }
   }

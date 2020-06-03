@@ -33,3 +33,7 @@ int extractID(String token) {
 
   return parseJwt(token)['id'];
 }
+
+printResponse(String noun, String verb, int response) {
+  print("$noun $verb $response");
+}

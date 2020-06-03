@@ -18,6 +18,33 @@ class SubmitActivityError {
   SubmitActivityError(this.error);
 }
 
+class PostPollAttempt {
+  ActivityModel activity;
+  int reactValue;
+  int mode;
+  PostPollAttempt(this.activity, this.reactValue, this.mode);
+}
+
+class PostPollSuccess {
+  int activityId;
+  Map<String, dynamic> vote;
+  int mode;
+  PostPollSuccess(this.activityId, this.vote, this.mode);
+}
+
+class PostPollUpdate {
+  int activityId;
+  int voteId;
+  int reactValue;
+  int mode;
+  PostPollUpdate(this.activityId, this.voteId, this.reactValue, this.mode);
+}
+
+class PostPollError {
+  String error;
+  PostPollError(this.error);
+}
+
 class PostReactionAttempt {
   ActivityModel activity;
   int reactValue;

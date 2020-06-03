@@ -7,6 +7,7 @@ import 'package:cibic_mobile/src/models/search_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
+import 'package:cibic_mobile/src/resources/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:redux/redux.dart';
@@ -37,8 +38,7 @@ attemptRegister(
   HttpClientResponse response = await request.close();
   httpClient.close();
 
-  print("RequestBody: $requestBody");
-  print("REGISTER RESPONSE: ${response.statusCode}");
+  printResponse("REGISTER", "POST", response.statusCode);
   if (response.statusCode == 201) {
     await store.dispatch(LogInAttempt(email, password, context));
     next(PostRegisterSuccess(firstName, lastName, context, store));
@@ -58,59 +58,18 @@ attemptLogin(
   HttpClientResponse response = await request.close();
   httpClient.close();
 
+  printResponse("LOGIN", "POST", response.statusCode);
   if (response.statusCode == 201) {
     final responseBody = await response.transform(utf8.decoder).join();
     Map<String, dynamic> jwtResponse = jsonDecode(responseBody);
     String jwt = jwtResponse['access_token'];
     final storage = FlutterSecureStorage();
     storage.write(key: "jwt", value: jwt);
-    store.dispatch(FireBaseTokenAttempt());
     next(LogInSuccess(jwt));
   } else {
     next(LogInError(response.statusCode));
   }
 }
-
-// getFirebaseToken(String jwt, NextDispatcher next) async {
-//   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-//   _firebaseMessaging.configure(
-//     onMessage: (Map<String, dynamic> message) async {
-//       print("onMessage: $message");
-//     },
-//     onLaunch: (Map<String, dynamic> message) async {
-//       print("onLaunch: $message");
-//     },
-//     onResume: (Map<String, dynamic> message) async {
-//       print("onResume: $message");
-//     },
-//   );
-//   // _firebaseMessaging.requestNotificationPermissions(
-//   //     const IosNotificationSettings(
-//   //         sound: true, badge: true, alert: true, provisional: true));
-//   // _firebaseMessaging.onIosSettingsRegistered
-//   //     .listen((IosNotificationSettings settings) {
-//   //   print("Settings registered: $settings");
-//   // });
-//   await _firebaseMessaging.getToken().then((String token) async {
-//     assert(token != null);
-//     print(token);
-//     HttpClient httpClient = new HttpClient();
-//     HttpClientRequest request =
-//         await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_FIREBASE));
-//     request.headers.add('content-type', 'application/json');
-//     request.headers.add('accept', 'application/json');
-//     request.add(utf8.encode(json.encode({"device_id": token})));
-//     HttpClientResponse response = await request.close();
-//     httpClient.close();
-
-//     print("DEBUG: send firebase token ${response.statusCode.toString()}");
-//     if (response.statusCode == 201) {
-//       next(FireBaseTokenSuccess(token, _firebaseMessaging));
-//     } else {
-//       next(FireBaseTokenError(response.statusCode.toString()));
-//     }
-//   });
-// }
 
 filterTag(String jwt, String query, int mode, NextDispatcher next) async {
   String url = API_BASE + ENDPOINT_SEARCH_TAG + query;
@@ -121,11 +80,11 @@ filterTag(String jwt, String query, int mode, NextDispatcher next) async {
   request.headers.add('authorization', 'Bearer $jwt');
   HttpClientResponse response = await request.close();
   httpClient.close();
-  print("SEARCH: MODE: $mode    RESPONSE: ${response.statusCode.toString()}");
+  printResponse("SEARCH FILTER", "GET", response.statusCode);
   if (response.statusCode == 200) {
     final responseBody = await response.transform(utf8.decoder).join();
     List<Map<String, dynamic>> responseList =
-        SearchTagModel.fromJson(json.decode(responseBody)).tag;
+        SearchTagModel.fromJson(json.decode(responseBody)).tags;
     next(PostSearchSuccess(mode, responseList));
   } else {
     next(PostSearchSuccess(mode, []));
@@ -146,7 +105,7 @@ postSearchActivityByTag(
   HttpClientResponse response = await request.close();
   httpClient.close();
 
-  print("SEARCH: MODE: $mode    RESPONSE: ${response.statusCode.toString()}");
+  printResponse("SEARCH ACTIVITY BY TAG", "POST", response.statusCode);
   if (response.statusCode == 201) {
     final responseBody = await response.transform(utf8.decoder).join();
     List<ActivityModel> feed =
@@ -190,7 +149,7 @@ postSearchQuery(String jwt, String query, int mode, NextDispatcher next) async {
   HttpClientResponse response = await request.close();
   httpClient.close();
 
-  print("SEARCH: MODE: $mode    RESPONSE: ${response.statusCode.toString()}");
+  printResponse("SEARCH QUERY", "POST", response.statusCode);
   if (response.statusCode == 201) {
     final responseBody = await response.transform(utf8.decoder).join();
     switch (mode) {
