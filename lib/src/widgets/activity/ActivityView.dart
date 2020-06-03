@@ -30,7 +30,7 @@ class _ActivityViewState extends State<ActivityView> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ActivityScreen(widget.activity,
+            builder: (context) => ActivityScreen(widget.activity.id,
                 widget.onReact, widget.onSave, widget.mode)));
   }
 

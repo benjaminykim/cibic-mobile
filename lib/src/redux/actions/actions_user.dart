@@ -119,11 +119,18 @@ class PostSearchAttempt {
   PostSearchAttempt(this.query);
 }
 
+class PostSearchActivityByTagAttempt {
+  String query;
+  PostSearchActivityByTagAttempt(this.query);
+}
+
 class PostSearchSuccess {
-  int mode; // 0 -> user, 1 -> cabildo, 2 -> activity
+  int mode; // 0 -> user, 1 -> cabildo, 2 -> activity, 3 -> tag, 4-> activity by tag
   List<UserModel> resultUser;
   List<CabildoModel> resultCabildo;
   List<ActivityModel> resultActivity;
+  List<Map<String, dynamic>> resultTag;
+  List<ActivityModel> resultActivityByTag;
   PostSearchSuccess(this.mode, result) {
     switch (this.mode) {
       case 0:
@@ -134,6 +141,12 @@ class PostSearchSuccess {
         break;
       case 2:
         this.resultActivity = result;
+        break;
+      case 3:
+        this.resultTag = result;
+        break;
+      case 4:
+        this.resultActivityByTag = result;
         break;
     }
   }

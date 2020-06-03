@@ -20,7 +20,7 @@ class SearchActivityCard extends StatelessWidget {
         context,
         MaterialPageRoute(
             builder: (context) => ActivityScreen(
-                this.activity, this.onReact, this.onSave, this.mode)));
+                this.activity.id, this.onReact, this.onSave, this.mode)));
   }
 
   @override
@@ -56,9 +56,7 @@ class SearchActivityCard extends StatelessWidget {
                   elevation: 16,
                   onChanged: (String value) {},
                   items: <String>[
-                    (this.mode == FEED_SAVED)
-                        ? 'Eliminar Publicación'
-                        : 'Guardar Publicación'
+                    'Guardar Publicación'
                   ].map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -98,25 +96,59 @@ class SearchActivityCard extends StatelessWidget {
   Container generateLabel() {
     return Container(
       alignment: Alignment.topLeft,
-      width: 60,
-      height: 15,
       margin: const EdgeInsets.fromLTRB(30, 5, 0, 0),
-      child: Center(
-        child: Text(
-          labelTextPicker[this.activity.activityType],
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 10,
-            fontWeight: FontWeight.w300,
+      child: Row(
+        children: [
+          Container(
+            width: 60,
+            height: 15,
+            child: Center(
+              child: Text(
+                labelTextPicker[this.activity.activityType],
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ),
+            decoration: BoxDecoration(
+              border: Border.all(
+                  color: labelColorPicker[this.activity.activityType],
+                  width: 0.5),
+              borderRadius: BorderRadius.circular(5),
+            ),
           ),
-        ),
-      ),
-      decoration: BoxDecoration(
-        border: Border.all(
-            color: labelColorPicker[this.activity.activityType], width: 0.5),
-        borderRadius: BorderRadius.circular(5),
+          ...generateTags(),
+        ],
       ),
     );
+  }
+
+  List<Widget> generateTags() {
+    if (activity.tags == null || activity.tags.length == 0) {
+      return [];
+    }
+    List<Widget> tags = [];
+    for (int i = 0; i < activity.tags.length; i++) {
+      tags.add(GestureDetector(
+        onTap: () {
+          print("${activity.tags[i]['label']}");
+        },
+        child: Container(
+          margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
+          child: Text(
+            "#" + activity.tags[i]['label'],
+            style: TextStyle(
+              color: COLOR_DEEP_BLUE,
+              fontWeight: FontWeight.w200,
+              fontSize: 12,
+            ),
+          ),
+        ),
+      ));
+    }
+    return tags;
   }
 
   Widget generatePoll() {

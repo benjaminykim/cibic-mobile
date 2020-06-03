@@ -11,8 +11,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:redux/redux.dart';
 
-attemptRegister(String email, String password, String firstName,
-    String lastName, String telephone, Store store, BuildContext context, NextDispatcher next) async {
+attemptRegister(
+    String email,
+    String password,
+    String firstName,
+    String lastName,
+    String telephone,
+    Store store,
+    BuildContext context,
+    NextDispatcher next) async {
   Map<String, Map<String, dynamic>> requestBody = {
     'user': {
       'email': email,
@@ -40,7 +47,8 @@ attemptRegister(String email, String password, String firstName,
   }
 }
 
-attemptLogin(String email, String password, Store store, NextDispatcher next) async {
+attemptLogin(
+    String email, String password, Store store, NextDispatcher next) async {
   Map requestBody = {'email': '$email', 'password': '$password'};
   HttpClient httpClient = new HttpClient();
   HttpClientRequest request =
@@ -62,7 +70,6 @@ attemptLogin(String email, String password, Store store, NextDispatcher next) as
     next(LogInError(response.statusCode));
   }
 }
-
 
 // getFirebaseToken(String jwt, NextDispatcher next) async {
 //   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -105,6 +112,54 @@ attemptLogin(String email, String password, Store store, NextDispatcher next) as
 //   });
 // }
 
+filterTag(String jwt, String query, int mode, NextDispatcher next) async {
+  String url = API_BASE + ENDPOINT_SEARCH_TAG + query;
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request = await httpClient.getUrl(Uri.parse(url));
+  request.headers.add('content-type', 'application/json');
+  request.headers.add('accept', 'application/json');
+  request.headers.add('authorization', 'Bearer $jwt');
+  HttpClientResponse response = await request.close();
+  httpClient.close();
+  print("SEARCH: MODE: $mode    RESPONSE: ${response.statusCode.toString()}");
+  if (response.statusCode == 200) {
+    final responseBody = await response.transform(utf8.decoder).join();
+    List<Map<String, dynamic>> responseList =
+        SearchTagModel.fromJson(json.decode(responseBody)).tag;
+    next(PostSearchSuccess(mode, responseList));
+  } else {
+    next(PostSearchSuccess(mode, []));
+  }
+}
+
+postSearchActivityByTag(
+    String jwt, String query, int mode, NextDispatcher next) async {
+  String url = API_BASE + ENDPOINT_SEARCH_ACTIVITY_BY_TAG;
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request = await httpClient.postUrl(Uri.parse(url));
+  request.headers.add('content-type', 'application/json');
+  request.headers.add('accept', 'application/json');
+  request.headers.add('authorization', 'Bearer $jwt');
+  request.add(utf8.encode(json.encode({
+    "search": {"query": query}
+  })));
+  HttpClientResponse response = await request.close();
+  httpClient.close();
+
+  print("SEARCH: MODE: $mode    RESPONSE: ${response.statusCode.toString()}");
+  if (response.statusCode == 201) {
+    final responseBody = await response.transform(utf8.decoder).join();
+    List<ActivityModel> feed =
+        FeedModel.fromJson(json.decode('{"feed":' + responseBody + '}')).feed;
+    next(PostSearchSuccess(2, feed));
+  } else if (response.statusCode == 204) {
+    List<ActivityModel> responseList = [];
+    next(PostSearchSuccess(2, responseList));
+  } else {
+    next(PostSearchError(response.statusCode.toString()));
+  }
+}
+
 postSearchQuery(String jwt, String query, int mode, NextDispatcher next) async {
   String url = API_BASE;
   switch (mode) {
@@ -116,6 +171,12 @@ postSearchQuery(String jwt, String query, int mode, NextDispatcher next) async {
       break;
     case 2:
       url += ENDPOINT_SEARCH_ACTIVITY;
+      break;
+    case 3:
+      filterTag(jwt, query, mode, next);
+      return;
+    case 4:
+      url += ENDPOINT_SEARCH_ACTIVITY_BY_TAG;
       break;
   }
   HttpClient httpClient = new HttpClient();
@@ -129,7 +190,6 @@ postSearchQuery(String jwt, String query, int mode, NextDispatcher next) async {
   HttpClientResponse response = await request.close();
   httpClient.close();
 
-  print(request.toString());
   print("SEARCH: MODE: $mode    RESPONSE: ${response.statusCode.toString()}");
   if (response.statusCode == 201) {
     final responseBody = await response.transform(utf8.decoder).join();
@@ -147,7 +207,12 @@ postSearchQuery(String jwt, String query, int mode, NextDispatcher next) async {
         next(PostSearchSuccess(mode, responseList));
         break;
       case 2:
-        print(responseBody);
+        List<ActivityModel> feed =
+            FeedModel.fromJson(json.decode('{"feed":' + responseBody + '}'))
+                .feed;
+        next(PostSearchSuccess(mode, feed));
+        break;
+      case 4:
         List<ActivityModel> feed =
             FeedModel.fromJson(json.decode('{"feed":' + responseBody + '}'))
                 .feed;
@@ -165,6 +230,10 @@ postSearchQuery(String jwt, String query, int mode, NextDispatcher next) async {
         next(PostSearchSuccess(mode, responseList));
         break;
       case 2:
+        List<ActivityModel> responseList = [];
+        next(PostSearchSuccess(mode, responseList));
+        break;
+      case 4:
         List<ActivityModel> responseList = [];
         next(PostSearchSuccess(mode, responseList));
         break;

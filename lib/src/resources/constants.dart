@@ -26,9 +26,6 @@ const CARD_SCREEN = 6;
 const FEED_HOME = 0;
 const FEED_PUBLIC = 1;
 const FEED_USER = 2;
-const FEED_CABILDO = 3;
-const FEED_FOREIGN = 4;
-const FEED_SAVED = 5;
 
 const ACTIVITY_DISCUSS = 0;
 const ACTIVITY_PROPOSAL = 1;
@@ -172,11 +169,13 @@ const ENDPOINT_UNFOLLOW_CABILDO = "user/unfollowcabildo";
 const ENDPOINT_SEARCH_USER = "search/users";
 const ENDPOINT_SEARCH_ACTIVITY = "search/activities";
 const ENDPOINT_SEARCH_CABILDO = "search/cabildos";
+const ENDPOINT_SEARCH_ACTIVITY_BY_TAG = "search/tag";
+const ENDPOINT_SEARCH_TAG = "tag/";
 
 const ENDPOINT_UNETE_COMMENT = "cibic/comment";
 
-//const API_BASE = URL_LOCALHOST_BASE;
+const API_BASE = URL_LOCALHOST_BASE;
 //const API_BASE = URL_FIREKITTEN_BASE;
 //const API_BASE = URL_FIREKITTEN_3EA_SMONROE_BASE;
 //const API_BASE = URL_FIREKITTEN_3EA_BEKIM_BASE;
-const API_BASE = URL_AWS_BASE;
+//const API_BASE = URL_AWS_BASE;

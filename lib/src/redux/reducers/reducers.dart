@@ -1,7 +1,5 @@
-import 'package:cibic_mobile/src/models/comment_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/reaction_model.dart';
-import 'package:cibic_mobile/src/models/reply_model.dart';
 import 'package:cibic_mobile/src/onboard/onboard.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_feed.dart';
@@ -16,7 +14,8 @@ AppState appReducer(AppState prevState, dynamic action) {
 
   if (action is IsLoading) {
     newState.isLoading = true;
-  } if (action is VoteLock) {
+  }
+  if (action is VoteLock) {
     newState.feedState['voteLock'] = action.lock;
   } else if (action is LogOut) {
     newState = AppState.initial();
@@ -35,6 +34,7 @@ AppState appReducer(AppState prevState, dynamic action) {
     newState.loginState['isError'] = false;
     newState.loginState['isSuccess'] = false;
   } else if (action is LogInSuccess) {
+    print("LOG IN SUCCESS JWT ${action.jwt}");
     newState.user['jwt'] = action.jwt;
     print("loginsuccess reducer ${action.jwt}");
     newState.user['idUser'] = extractID(action.jwt);
@@ -55,9 +55,6 @@ AppState appReducer(AppState prevState, dynamic action) {
     } else if (action.mode == FEED_USER) {
       newState.feeds['selfUser'] = action.feed;
       newState.feedState['selfUserError'] = false;
-    } else if (action.mode == FEED_SAVED) {
-      newState.feeds['saved'] = action.feed;
-      newState.feedState['savedError'] = false;
     }
   } else if (action is FetchFeedError) {
     if (action.mode == FEED_HOME) {
@@ -66,8 +63,6 @@ AppState appReducer(AppState prevState, dynamic action) {
       newState.feedState['publicError'] = true;
     } else if (action.mode == FEED_USER) {
       newState.feedState['selfUserError'] = true;
-    } else if (action.mode == FEED_SAVED) {
-      newState.feedState['savedError'] = true;
     }
   } else if (action is FetchProfileSuccess) {
     print("reducer profile type: ${action.type}");
@@ -95,6 +90,21 @@ AppState appReducer(AppState prevState, dynamic action) {
   } else if (action is PostReactionSuccess) {
     List<FeedModel> feeds = orderFeeds(newState, action.mode);
 
+    if (action.mode == -1) {
+      if (action.activityId == null || action.reaction == null) {
+      } else {
+        for (int i = 0; i < newState.search['activity'].length; i++) {
+          if (newState.search['activity'][i].id == action.activityId) {
+            if (newState.search['activity'][i].reactions == null) {
+              newState.search['activity'][i].reactions = [action.reaction];
+            } else {
+              newState.search['activity'][i].reactions.add(action.reaction);
+            }
+          }
+          break;
+        }
+      }
+    }
     for (int i = 0; i < feeds.length; i++) {
       feeds[i] =
           addActivityReaction(action.activityId, action.reaction, feeds[i]);
@@ -102,60 +112,28 @@ AppState appReducer(AppState prevState, dynamic action) {
   } else if (action is PostReactionUpdate) {
     List<FeedModel> feeds = orderFeeds(newState, action.mode);
 
+    if (action.mode == -1) {
+      if (action.activityId == null) {
+      } else {
+        for (int i = 0; i < newState.search['activity'].length; i++) {
+          if (newState.search['activity'][i].id == action.activityId) {
+            for (int j = 0; j < newState.search['activity'][i].reactions.length; j++) {
+              if (action.reactionId == newState.search['activity'][i].reactions[j].id) {
+                newState.search['activity'][i].reactions[j].value = action.reactValue;
+              }
+              break;
+            }
+          }
+          break;
+        }
+      }
+    }
     for (int i = 0; i < feeds.length; i++) {
       feeds[i] = updateActivityReaction(action.activityId, action.reactionId,
           newState.user['idUser'], action.reactValue, feeds[i]);
     }
   } else if (action is PostReactionError) {
     // String error;
-  } else if (action is PostCommentSuccess) {
-    print("comment add success");
-    List<FeedModel> feeds = orderFeeds(newState, action.mode);
-    for (int i = 0; i < 1; i++) {
-      feeds[i] =
-          addActivityComment(action.idActivity, action.comment, feeds[i]);
-    }
-  } else if (action is PostCommentError) {
-    // String error;
-  } else if (action is PostReplySuccess) {
-    print("reply add success");
-    List<FeedModel> feeds = orderFeeds(newState, action.mode);
-    for (int i = 0; i < 1; i++) {
-      feeds[i] = addCommentReply(
-          action.idActivity, action.idComment, action.reply, feeds[i]);
-    }
-  } else if (action is PostReplyError) {
-    // String error;
-  } else if (action is PostCommentVoteSuccess) {
-    print("comment vote success");
-    List<FeedModel> feeds = orderFeeds(newState, action.mode);
-    for (int i = 0; i < 1; i++) {
-      feeds[i] = addCommentVote(
-          action.activityId, action.commentId, action.vote, feeds[i]);
-    }
-  } else if (action is PostCommentVoteUpdate) {
-    print("comment vote update");
-    List<FeedModel> feeds = orderFeeds(newState, action.mode);
-    for (int i = 0; i < 1; i++) {
-      feeds[i] = updateCommentVote(action.activityId, action.commentId,
-          action.voteId, action.value, feeds[i]);
-    }
-  } else if (action is PostCommentVoteError) {
-  } else if (action is PostReplyVoteSuccess) {
-    print("reply vote success");
-    List<FeedModel> feeds = orderFeeds(newState, action.mode);
-    for (int i = 0; i < 1; i++) {
-      feeds[i] = addReplyVote(
-          action.activityId, action.replyId, action.vote, feeds[i]);
-    }
-  } else if (action is PostReplyVoteUpdate) {
-    print("reply vote update");
-    List<FeedModel> feeds = orderFeeds(newState, action.mode);
-    for (int i = 0; i < 1; i++) {
-      feeds[i] = updateReplyVote(action.activityId, action.replyId,
-          action.voteId, action.value, feeds[i]);
-    }
-  } else if (action is PostReplyVoteError) {
   } else if (action is FireBaseTokenSuccess) {
     newState.user['firebaseToken'] = action.token;
     newState.user['firebaseManager'] = action.firebase;
@@ -169,6 +147,9 @@ AppState appReducer(AppState prevState, dynamic action) {
         break;
       case 2:
         newState.search['activity'] = action.resultActivity;
+        break;
+      case 3:
+        newState.search['tag'] = action.resultTag;
         break;
     }
   } else if (action is PostSearchError) {}
@@ -212,171 +193,11 @@ FeedModel updateActivityReaction(int activityId, int reactionId, int userId,
   return feed;
 }
 
-FeedModel addActivityComment(
-    int activityId, CommentModel comment, FeedModel feed) {
-  if (feed == null || feed.feed == null || activityId == null) return feed;
-  for (int i = 0; i < feed.feed.length; i++) {
-    if (feed.feed[i].id == activityId) {
-      feed.feed[i].comments.insert(0, comment);
-      break;
-    }
-  }
-  return feed;
-}
-
-FeedModel addCommentReply(
-    int activityId, int commentId, ReplyModel reply, FeedModel feed) {
-  if (feed == null || feed.feed == null || activityId == null) return feed;
-  for (int i = 0; i < feed.feed.length; i++) {
-    if (feed.feed[i].id == activityId) {
-      for (int j = 0; j < feed.feed[i].comments.length; j++) {
-        if (feed.feed[i].comments[j].id == commentId) {
-          print("insertion comment reply");
-          if (feed.feed[i].comments[j].replies == null) {
-            feed.feed[i].comments[j].replies = [reply];
-          } else {
-            feed.feed[i].comments[j].replies.insert(0, reply);
-          }
-          return feed;
-        }
-      }
-      break;
-    }
-  }
-  return feed;
-}
-
-FeedModel addCommentVote(
-    int activityId, int commentId, Map<String, int> vote, FeedModel feed) {
-  if (feed == null ||
-      feed.feed == null ||
-      activityId == null ||
-      commentId == null ||
-      vote == null) return feed;
-  for (int i = 0; i < feed.feed.length; i++) {
-    if (feed.feed[i].id == activityId) {
-      for (int j = 0; j < feed.feed[i].comments.length; j++) {
-        if (feed.feed[i].comments[j].id == commentId) {
-          if (feed.feed[i].comments[j].votes == null) {
-            feed.feed[i].comments[j].votes = [vote];
-          } else {
-            feed.feed[i].comments[j].votes.insert(0, vote);
-          }
-          feed.feed[i].comments[j].score += vote['value'];
-          break;
-        }
-      }
-      break;
-    }
-  }
-  return feed;
-}
-
-FeedModel updateCommentVote(
-    int activityId, int commentId, int voteId, int value, FeedModel feed) {
-  if (feed == null ||
-      feed.feed == null ||
-      activityId == null ||
-      commentId == null ||
-      voteId == null) return feed;
-  for (int i = 0; i < feed.feed.length; i++) {
-    if (feed.feed[i].id == activityId) {
-      for (int j = 0; j < feed.feed[i].comments.length; j++) {
-        if (feed.feed[i].comments[j].id == commentId) {
-          for (int k = 0; k < feed.feed[i].comments[j].votes.length; k++) {
-            if (feed.feed[i].comments[j].votes[k]['id'] == voteId) {
-              feed.feed[i].comments[j].score -=
-                  feed.feed[i].comments[j].votes[k]['value'];
-              feed.feed[i].comments[j].votes[k]['value'] = value;
-              feed.feed[i].comments[j].score += value;
-              print("found correct vote in comment");
-              break;
-            }
-          }
-          break;
-        }
-      }
-      break;
-    }
-  }
-  return feed;
-}
-
-FeedModel addReplyVote(
-    int activityId, int replyId, Map<String, dynamic> vote, FeedModel feed) {
-  if (feed == null ||
-      feed.feed == null ||
-      activityId == null ||
-      replyId == null ||
-      vote == null) return feed;
-  for (int i = 0; i < feed.feed.length; i++) {
-    if (feed.feed[i].id == activityId) {
-      for (int j = 0; j < feed.feed[i].comments.length; j++) {
-        for (int k = 0; k < feed.feed[i].comments[j].replies.length; k++) {
-          if (feed.feed[i].comments[j].replies[k].id == replyId) {
-            if (feed.feed[i].comments[j].replies[k].votes == null) {
-              feed.feed[i].comments[j].replies[k].votes = [vote];
-            } else {
-              feed.feed[i].comments[j].replies[k].votes.insert(0, vote);
-            }
-            feed.feed[i].comments[j].replies[k].score += vote['value'];
-            return feed;
-          }
-        }
-      }
-      break;
-    }
-  }
-  return feed;
-}
-
-FeedModel updateReplyVote(
-    int activityId, int replyId, int voteId, int value, FeedModel feed) {
-  if (feed == null || feed.feed == null || activityId == null || voteId == null)
-    return feed;
-  for (int i = 0; i < feed.feed.length; i++) {
-    if (feed.feed[i].id == activityId) {
-      print('found reply activity');
-      for (int j = 0; j < feed.feed[i].comments.length; j++) {
-        for (int k = 0; k < feed.feed[i].comments[j].replies.length; k++) {
-          if (feed.feed[i].comments[j].replies[k].id == replyId) {
-            print('found reply comment');
-            for (int l = 0;
-                l < feed.feed[i].comments[j].replies[k].votes.length;
-                l++) {
-              if (feed.feed[i].comments[j].replies[k].votes[l]['id'] ==
-                  voteId) {
-                print('found reply votes ');
-                print(feed.feed[i].comments[j].replies[k].score);
-                print(feed.feed[i].comments[j].replies[k].votes[l]['value']);
-                feed.feed[i].comments[j].replies[k].score -=
-                    feed.feed[i].comments[j].replies[k].votes[l]['value'];
-                feed.feed[i].comments[j].replies[k].votes[l]['value'] = value;
-                feed.feed[i].comments[j].replies[k].score += value;
-                print(feed.feed[i].comments[j].replies[k].score);
-                print(feed.feed[i].comments[j].replies[k].votes[l]['value']);
-                return feed;
-              }
-            }
-            return feed;
-          }
-        }
-      }
-      return feed;
-    }
-  }
-  print("update reply vote");
-  return feed;
-}
-
 List<FeedModel> orderFeeds(AppState newState, int mode) {
   List<FeedModel> feeds = [
     newState.feeds['home'],
     newState.feeds['public'],
     newState.feeds['selfUser'],
-    newState.feeds['foreignUser'],
-    newState.feeds['saved'],
   ];
-  feeds.insert(0, feeds.removeAt(mode));
   return feeds;
 }

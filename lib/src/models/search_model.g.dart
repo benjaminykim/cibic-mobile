@@ -33,3 +33,14 @@ Map<String, dynamic> _$SearchCabildoModelToJson(SearchCabildoModel instance) =>
     <String, dynamic>{
       'cabildo': instance.cabildo?.map((e) => e?.toJson())?.toList(),
     };
+
+SearchTagModel _$SearchTagModelFromJson(Map<String, dynamic> json) {
+  return SearchTagModel(
+    (json['tag'] as List)?.map((e) => e as Map<String, dynamic>)?.toList(),
+  );
+}
+
+Map<String, dynamic> _$SearchTagModelToJson(SearchTagModel instance) =>
+    <String, dynamic>{
+      'tag': instance.tag,
+    };

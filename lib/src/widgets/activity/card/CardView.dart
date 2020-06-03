@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
 
+enum ActivityOption { save, unsave }
+
 class CardView extends StatelessWidget {
   final ActivityModel activity;
   final int type;
@@ -18,25 +20,62 @@ class CardView extends StatelessWidget {
   Container generateLabel() {
     return Container(
       alignment: Alignment.topLeft,
-      width: 60,
-      height: 15,
       margin: const EdgeInsets.fromLTRB(30, 5, 0, 0),
-      child: Center(
-        child: Text(
-          labelTextPicker[this.activity.activityType],
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 10,
-            fontWeight: FontWeight.w300,
+      child: Row(
+        children: [
+          Container(
+            width: 60,
+            height: 15,
+            child: Center(
+              child: Text(
+                labelTextPicker[this.activity.activityType],
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ),
+            decoration: BoxDecoration(
+              border: Border.all(
+                  color: labelColorPicker[this.activity.activityType],
+                  width: 0.5),
+              borderRadius: BorderRadius.circular(5),
+            ),
           ),
-        ),
-      ),
-      decoration: BoxDecoration(
-        border: Border.all(
-            color: labelColorPicker[this.activity.activityType], width: 0.5),
-        borderRadius: BorderRadius.circular(5),
+          ...generateTags(),
+        ],
       ),
     );
+  }
+
+  List<Widget> generateTags() {
+    if (activity.tags == null || activity.tags.length == 0) {
+      return [];
+    }
+    List<Widget> tags = [];
+    for (int i = 0; i < activity.tags.length; i++) {
+      if (activity.tags[i]['label'] == "" ) {
+        return tags;
+      }
+      tags.add(GestureDetector(
+        onTap: () {
+          print("${activity.tags[i]['label']}");
+        },
+        child: Container(
+          margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
+          child: Text(
+            "#" + activity.tags[i]['label'],
+            style: TextStyle(
+              color: COLOR_DEEP_BLUE,
+              fontWeight: FontWeight.w200,
+              fontSize: 12,
+            ),
+          ),
+        ),
+      ));
+    }
+    return tags;
   }
 
   Widget generatePoll() {
@@ -178,8 +217,6 @@ class CardView extends StatelessWidget {
       } else {
         return generatePoll();
       }
-    } else if (this.activity.activityType == ACTIVITY_POLL &&
-        this.type == CARD_DEFAULT) {
     } else if (this.type == CARD_COMMENT_0 ||
         this.type == CARD_COMMENT_1 ||
         this.type == CARD_COMMENT_2 ||
@@ -211,45 +248,44 @@ class CardView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          // OPTIONS
-          Container(
-            alignment: Alignment.topRight,
-            margin: const EdgeInsets.fromLTRB(0, 0, 30, 0),
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                icon: Icon(Icons.more_horiz),
-                iconSize: 22,
-                elevation: 16,
-                onChanged: (String value) {},
-                items: <String>[
-                  (this.mode == FEED_SAVED)
-                      ? 'Eliminar Publicación'
-                      : 'Guardar Publicación'
-                ].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    onTap: () {
-                      this.onSave(this.activity.id);
-                    },
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
-            ),
-          ),
-          // TITLE
           Container(
             alignment: Alignment.topLeft,
             margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-            child: Text(
-              this.activity.title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w400),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // TITLE
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    child: Text(
+                      this.activity.title,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w400),
+                    ),
+                  ),
+                ),
+                // OPTIONS
+                PopupMenuButton<ActivityOption>(
+                  onSelected: (ActivityOption result) {
+                    if (result == ActivityOption.save) {
+                      this.onSave(this.activity.id);
+                    }
+                  },
+                  icon: Icon(Icons.more_horiz, size: 22),
+                  itemBuilder: (BuildContext context) {
+                    return <PopupMenuEntry<ActivityOption>>[
+                      const PopupMenuItem<ActivityOption>(
+                        value: ActivityOption.save,
+                        child: Text('Guardar Publicación'),
+                      ),
+                    ];
+                  },
+                ),
+              ],
             ),
           ),
           // LABEL

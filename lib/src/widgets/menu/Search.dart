@@ -33,7 +33,8 @@ class _SearchState extends State<Search> {
     "Todo",
     "Actividad",
     "Usuario",
-    "Cabildo"
+    "Cabildo",
+    "Tags",
   ];
 
   Widget noResultsFound = Container(
@@ -61,10 +62,33 @@ class _SearchState extends State<Search> {
     super.dispose();
   }
 
+  Widget tagItem(
+      Map<String, dynamic> tag, Function onReact, Function onSave, Function onSearchActivityByTag, int mode) {
+    return Container(
+      height: 30,
+      margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
+      child: GestureDetector(
+        onTap: () async {
+          await onSearchActivityByTag(tag['label']);
+          _controller.jumpToPage(1);
+        },
+        child: Text(
+          "#" + tag['label'],
+          style: TextStyle(
+            color: COLOR_DEEP_BLUE,
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget searchPageTodo(_SearchViewModel vm) {
     if (vm.searchActivity.length == 0 &&
         vm.searchCabildo.length == 0 &&
-        vm.searchUser.length == 0) {
+        vm.searchUser.length == 0 &&
+        vm.searchTag.length == 0) {
       return this.noResultsFound;
     } else {
       return ListView.separated(
@@ -75,7 +99,8 @@ class _SearchState extends State<Search> {
         ),
         itemCount: vm.searchActivity.length +
             vm.searchUser.length +
-            vm.searchCabildo.length,
+            vm.searchCabildo.length +
+            vm.searchTag.length,
         itemBuilder: (BuildContext context, int index) {
           if (index < vm.searchActivity.length) {
             ActivityModel activity = vm.searchActivity[index];
@@ -84,10 +109,23 @@ class _SearchState extends State<Search> {
           } else if (index < vm.searchActivity.length + vm.searchUser.length) {
             UserModel user = vm.searchUser[index - vm.searchActivity.length];
             return UserCard(user);
-          } else {
+          } else if (index <
+              vm.searchActivity.length +
+                  vm.searchUser.length +
+                  vm.searchCabildo.length) {
             CabildoModel cabildo = vm.searchCabildo[
                 index - vm.searchUser.length - vm.searchActivity.length];
             return CabildoCard(cabildo);
+          } else {
+            return tagItem(
+                vm.searchTag[index -
+                    vm.searchUser.length -
+                    vm.searchActivity.length -
+                    vm.searchCabildo.length],
+                vm.onReact,
+                vm.onSave,
+                vm.onSearchActivityByTag,
+                7);
           }
         },
       );
@@ -152,15 +190,34 @@ class _SearchState extends State<Search> {
     }
   }
 
+  Widget searchPageTag(_SearchViewModel vm) {
+    if (vm.searchTag.length == 0) {
+      return this.noResultsFound;
+    } else {
+      return ListView.separated(
+        separatorBuilder: (context, index) => Divider(
+          color: Colors.black,
+          indent: 10,
+          endIndent: 10,
+        ),
+        itemCount: vm.searchTag.length,
+        itemBuilder: (BuildContext context, int index) {
+          return tagItem(vm.searchTag[index], vm.onReact, vm.onSave, vm.onSearchActivityByTag, 7);
+        },
+      );
+    }
+  }
+
   Widget createSearchOptionButton(int mode) {
     return Container(
-      width: 68,
+      width: 55,
       height: 17,
       margin: const EdgeInsets.fromLTRB(0, 0, 7, 0),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black, width: 0.5),
         borderRadius: BorderRadius.circular(5),
-        color: (this.selectedPage == mode) ? COLOR_DEEP_BLUE : Colors.transparent,
+        color:
+            (this.selectedPage == mode) ? COLOR_DEEP_BLUE : Colors.transparent,
       ),
       child: GestureDetector(
         onTap: () {
@@ -187,17 +244,21 @@ class _SearchState extends State<Search> {
         Function submitSearchQuery =
             (String query) => {store.dispatch(PostSearchAttempt(query))};
         Function onReact = (ActivityModel activity, int reactValue) =>
-            store.dispatch(PostReactionAttempt(activity, reactValue, 6));
+            store.dispatch(PostReactionAttempt(activity, reactValue, -1));
         Function onSave = (int activityId) =>
             store.dispatch(PostSaveAttempt(activityId, true));
+        Function onSearchActivityByTag = (String query) =>
+            store.dispatch(PostSearchActivityByTagAttempt(query));
         return _SearchViewModel(
             store.state.profile['selfUser'],
             submitSearchQuery,
             store.state.search['activity'],
             store.state.search['user'],
             store.state.search['cabildo'],
+            store.state.search['tag'],
             onReact,
-            onSave);
+            onSave,
+            onSearchActivityByTag);
       },
       builder: (BuildContext context, _SearchViewModel vm) {
         return Container(
@@ -207,7 +268,8 @@ class _SearchState extends State<Search> {
           margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
           decoration: BoxDecoration(
             color: APP_BACKGROUND,
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30), topRight: Radius.circular(30)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -261,6 +323,7 @@ class _SearchState extends State<Search> {
                     createSearchOptionButton(1),
                     createSearchOptionButton(2),
                     createSearchOptionButton(3),
+                    createSearchOptionButton(4),
                     Spacer(),
                   ],
                 ),
@@ -289,6 +352,7 @@ class _SearchState extends State<Search> {
                     searchPageActivity(vm),
                     searchPageUser(vm),
                     searchPageCabildo(vm),
+                    searchPageTag(vm),
                   ],
                 ),
               ),
@@ -306,8 +370,18 @@ class _SearchViewModel {
   List<ActivityModel> searchActivity;
   List<UserModel> searchUser;
   List<CabildoModel> searchCabildo;
+  List<Map<String, dynamic>> searchTag;
   Function onReact;
   Function onSave;
-  _SearchViewModel(this.user, this.submitSearchQuery, this.searchActivity,
-      this.searchUser, this.searchCabildo, this.onReact, this.onSave);
+  Function onSearchActivityByTag;
+  _SearchViewModel(
+      this.user,
+      this.submitSearchQuery,
+      this.searchActivity,
+      this.searchUser,
+      this.searchCabildo,
+      this.searchTag,
+      this.onReact,
+      this.onSave,
+      this.onSearchActivityByTag);
 }

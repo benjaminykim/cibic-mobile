@@ -30,6 +30,7 @@ ActivityModel _$ActivityModelFromJson(Map<String, dynamic> json) {
             : ReactionModel.fromJson(e as Map<String, dynamic>))
         ?.toList(),
     (json['votes'] as List)?.map((e) => e as Map<String, dynamic>)?.toList(),
+    (json['tags'] as List)?.map((e) => e as Map<String, dynamic>)?.toList(),
   )..userId = json['userId'] as int;
 }
 
@@ -49,4 +50,5 @@ Map<String, dynamic> _$ActivityModelToJson(ActivityModel instance) =>
       'comments': instance.comments,
       'reactions': instance.reactions,
       'votes': instance.votes,
+      'tags': instance.tags,
     };

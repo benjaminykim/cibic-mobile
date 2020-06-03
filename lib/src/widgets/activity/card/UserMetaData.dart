@@ -17,6 +17,9 @@ class UserMetaData extends StatelessWidget {
       this.idCabildo, this.followers);
 
   factory UserMetaData.fromActivity(ActivityModel activity) {
+    if (activity.cabildo == null) {
+      activity.cabildo = {'name': 'todo', 'id': -1};
+    }
     return UserMetaData(
         activity.user['firstName'],
         activity.user['citizenPoints'],

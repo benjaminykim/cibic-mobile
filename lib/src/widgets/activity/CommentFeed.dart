@@ -1,22 +1,26 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:cibic_mobile/src/models/activity_model.dart';
-import 'package:cibic_mobile/src/models/feed_model.dart';
-import 'package:cibic_mobile/src/redux/AppState.dart';
-import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
+import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/resources/cibic_icons.dart';
+import 'package:cibic_mobile/src/resources/utils.dart';
+import 'package:cibic_mobile/src/widgets/profile/UserProfileScreen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/models/comment_model.dart';
 import 'package:cibic_mobile/src/models/reply_model.dart';
 import 'package:cibic_mobile/src/widgets/activity/card/UserMetaData.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux/redux.dart';
+import 'package:flutter/services.dart';
 
 class CommentFeed extends StatefulWidget {
   final ActivityModel activity;
   final int mode;
+  final String jwt;
+  final UserModel user;
 
-  CommentFeed(this.activity, this.mode);
+  CommentFeed(this.activity, this.mode, this.jwt, this.user);
 
   @override
   _CommentFeedState createState() => _CommentFeedState();
@@ -40,12 +44,439 @@ class _CommentFeedState extends State<CommentFeed> {
 
   int maxCommentView = 3;
 
-  Container comment(
-      CommentModel c, BuildContext context, _CommentFeedViewModel vm) {
-    int userId = vm.userId;
-    Function onReply = vm.onReply;
-    Function onCommentVote = vm.onCommentVote;
-    final inputCommentController = TextEditingController();
+  onComment(String jwt, int activityId, String content, int mode,
+      String firstName, int citizenPoints) async {
+    HttpClient httpClient = new HttpClient();
+    HttpClientRequest request = await httpClient
+        .postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_COMMENT));
+    request.headers.add('content-type', 'application/json');
+    request.headers.add('accept', 'application/json');
+    request.headers.add('authorization', 'Bearer $jwt');
+
+    final requestBody = {
+      "activityId": activityId,
+      "comment": {"userId": extractID(jwt), "content": content}
+    };
+    request.add(utf8.encode(json.encode(requestBody)));
+    HttpClientResponse response = await request.close();
+    httpClient.close();
+
+    if (response.statusCode == 201) {
+      var responseBody =
+          jsonDecode(await response.transform(utf8.decoder).join());
+      CommentModel comment = CommentModel(
+          responseBody['id'],
+          {
+            'userId': extractID(widget.jwt),
+            'firstName': widget.user.firstName,
+            'citizenPoints': widget.user.citizenPoints,
+          },
+          content,
+          0,
+          [],
+          []);
+      setState(() {
+        widget.activity.comments.insert(0, comment);
+      });
+    } else {}
+  }
+
+  onCommentVote(String jwt, int value, int activityId, CommentModel comment,
+      int userId, int mode) async {
+    bool newVote = true;
+    int voteId;
+    if (comment.votes != null) {
+      for (int i = 0; i < comment.votes.length; i++) {
+        if (userId == comment.votes[i]['userId']) {
+          newVote = false;
+          voteId = comment.votes[i]['id'];
+          if (comment.votes[i]['value'] == value) {
+            return;
+          }
+          break;
+        }
+      }
+    }
+
+    if (newVote) {
+      HttpClient httpClient = new HttpClient();
+      HttpClientRequest request = await httpClient
+          .postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_COMMENT_VOTE));
+      request.headers.add('content-type', 'application/json');
+      request.headers.add('accept', 'application/json');
+      request.headers.add('authorization', 'Bearer $jwt');
+
+      final requestBody = {
+        "vote": {
+          "activityId": activityId,
+          "commentId": comment.id,
+          "value": value,
+          "userId": userId
+        }
+      };
+      request.add(utf8.encode(json.encode(requestBody)));
+      HttpClientResponse response = await request.close();
+      httpClient.close();
+
+      print("DEBUG: postCommentVote: ${response.statusCode}");
+      if (response.statusCode == 201) {
+        String responseBody = await response.transform(utf8.decoder).join();
+        Map<String, dynamic> vote = jsonDecode(responseBody);
+        requestBody['vote']['id'] = vote['id'];
+        setState(() {
+          widget.activity.comments
+              .singleWhere((CommentModel c) => c.id == comment.id)
+              .votes
+              .insert(0, requestBody['vote']);
+          widget.activity.comments
+              .singleWhere((CommentModel c) => c.id == comment.id)
+              .score += value;
+        });
+      } else {}
+    } else {
+      HttpClient httpClient = new HttpClient();
+      HttpClientRequest request = await httpClient
+          .putUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_COMMENT_VOTE));
+      request.headers.add('content-type', 'application/json');
+      request.headers.add('accept', 'application/json');
+      request.headers.add('authorization', 'Bearer $jwt');
+
+      final requestBody = {"voteId": voteId, "value": value};
+      request.add(utf8.encode(json.encode(requestBody)));
+      HttpClientResponse response = await request.close();
+      httpClient.close();
+
+      print("DEBUG: putCommentVote: ${response.statusCode}");
+      if (response.statusCode == 200) {
+        setState(() {
+          widget.activity.comments
+              .singleWhere((CommentModel c) => c.id == comment.id)
+              .votes
+              .singleWhere((dynamic v) => v['id'] == voteId)['value'] = value;
+          widget.activity.comments
+              .singleWhere((CommentModel c) => c.id == comment.id)
+              .score += (value * 2);
+        });
+      } else {}
+    }
+  }
+
+  onReply(
+      String jwt,
+      int activityId,
+      int commentId,
+      int tagId,
+      String tagFirstName,
+      String content,
+      String firstName,
+      int citizenPoints,
+      int mode) async {
+    HttpClient httpClient = new HttpClient();
+    HttpClientRequest request =
+        await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_REPLY));
+    request.headers.add('content-type', 'application/json');
+    request.headers.add('accept', 'application/json');
+    request.headers.add('authorization', 'Bearer $jwt');
+
+    final requestBody = {
+      "reply": {
+        "activityId": activityId,
+        "commentId": commentId,
+        "userId": extractID(jwt),
+        "content": content
+      }
+    };
+
+    if (tagId != 0) {
+      requestBody['reply']['taggedUserId'] = tagId;
+    }
+    request.add(utf8.encode(json.encode(requestBody)));
+    HttpClientResponse response = await request.close();
+    httpClient.close();
+
+    if (response.statusCode == 201) {
+      var responseBody =
+          jsonDecode(await response.transform(utf8.decoder).join());
+      ReplyModel reply;
+      Map<String, dynamic> author = {
+        'id': extractID(jwt),
+        'firstName': firstName,
+        'citizenPoints': citizenPoints,
+      };
+      if (tagId != 0) {
+        Map<String, dynamic> taggedUser = {
+          'firstName': tagFirstName,
+          'id': tagId,
+        };
+        reply =
+            ReplyModel(responseBody['id'], author, taggedUser, content, 0, []);
+      } else {
+        reply = ReplyModel(responseBody['id'], author, null, content, 0, []);
+      }
+      setState(() {
+        (widget.activity.comments
+                .singleWhere((CommentModel c) => c.id == commentId))
+            .replies
+            .insert(0, reply);
+      });
+    } else {
+      return false;
+    }
+  }
+
+  onReplyVote(String jwt, int value, int activityId, int commentId,
+      ReplyModel reply, int userId, int mode) async {
+    bool newVote = true;
+    int voteId;
+    if (reply.votes != null) {
+      for (int i = 0; i < reply.votes.length; i++) {
+        if (userId == reply.votes[i]['userId']) {
+          newVote = false;
+          voteId = reply.votes[i]['id'];
+          if (reply.votes[i]['value'] == value) {
+            return;
+          }
+          break;
+        }
+      }
+    }
+
+    if (newVote) {
+      HttpClient httpClient = new HttpClient();
+      HttpClientRequest request = await httpClient
+          .postUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_REPLY_VOTE));
+      request.headers.add('content-type', 'application/json');
+      request.headers.add('accept', 'application/json');
+      request.headers.add('authorization', 'Bearer $jwt');
+
+      final requestBody = {
+        "vote": {"activityId": activityId, "replyId": reply.id, "value": value}
+      };
+      request.add(utf8.encode(json.encode(requestBody)));
+      HttpClientResponse response = await request.close();
+      httpClient.close();
+
+      if (response.statusCode == 201) {
+        String responseBody = await response.transform(utf8.decoder).join();
+        Map<String, dynamic> vote = jsonDecode(responseBody);
+        vote['value'] = value;
+        vote['userId'] = userId;
+        setState(() {
+          widget.activity.comments
+              .singleWhere((CommentModel c) => c.id == commentId)
+              .replies
+              .singleWhere((ReplyModel r) => r.id == reply.id)
+              .votes
+              .insert(0, vote);
+          widget.activity.comments
+              .singleWhere((CommentModel c) => c.id == commentId)
+              .replies
+              .singleWhere((ReplyModel r) => r.id == reply.id)
+              .score += value;
+        });
+      } else {}
+    } else {
+      HttpClient httpClient = new HttpClient();
+      HttpClientRequest request = await httpClient
+          .putUrl(Uri.parse(API_BASE + ENDPOINT_ACTIVITY_REPLY_VOTE));
+      request.headers.add('content-type', 'application/json');
+      request.headers.add('accept', 'application/json');
+      request.headers.add('authorization', 'Bearer $jwt');
+
+      final requestBody = {"voteId": voteId, "value": value};
+      request.add(utf8.encode(json.encode(requestBody)));
+      HttpClientResponse response = await request.close();
+      httpClient.close();
+
+      print("DEBUG: putReplyVote: ${response.statusCode}");
+      if (response.statusCode == 200) {
+        setState(() {
+          widget.activity.comments
+              .singleWhere((CommentModel c) => c.id == commentId)
+              .replies
+              .singleWhere((ReplyModel r) => r.id == reply.id)
+              .votes
+              .singleWhere((dynamic v) => v['id'] == voteId)['value'] = value;
+          widget.activity.comments
+              .singleWhere((CommentModel c) => c.id == commentId)
+              .replies
+              .singleWhere((ReplyModel r) => r.id == reply.id)
+              .score += (2 * value);
+        });
+      } else {}
+    }
+  }
+
+  Container reply(ReplyModel r, BuildContext c, int commentId,
+      ReplyController commentController) {
+    int userId = extractID(widget.jwt);
+    Color upVoteColor = Colors.black;
+    Color downVoteColor = Colors.black;
+    if (r.votes != null) {
+      for (int i = 0; i < r.votes.length; i++) {
+        if (r.votes[i]['userId'] == userId) {
+          if (r.votes[i]['value'] == 1) {
+            upVoteColor = COLOR_DEEP_BLUE;
+          } else if (r.votes[i]['value'] == -1) {
+            downVoteColor = COLOR_DEEP_BLUE;
+          }
+          break;
+        }
+      }
+    }
+    print("tagged user ${r.taggedUser}");
+    return Container(
+      margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
+      decoration: BoxDecoration(
+        color: Color(0xffcccccc),
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          // REACT SYSTEM
+          Container(
+            padding: const EdgeInsets.fromLTRB(5, 15, 0, 10),
+            width: 25,
+            height: 80,
+            child: Column(
+              children: <Widget>[
+                GestureDetector(
+                    child: Icon(Icons.keyboard_arrow_up,
+                        color: upVoteColor, size: 20),
+                    onTap: () {
+                      onReplyVote(widget.jwt, 1, widget.activity.id, commentId,
+                          r, userId, widget.mode);
+                    }),
+                Text(
+                  r.score.toString(),
+                  style: TextStyle(
+                    fontSize: 8,
+                    color: Colors.black,
+                  ),
+                ),
+                GestureDetector(
+                    child: Icon(Icons.keyboard_arrow_down,
+                        color: downVoteColor, size: 20),
+                    onTap: () {
+                      onReplyVote(widget.jwt, -1, widget.activity.id, commentId,
+                          r, userId, widget.mode);
+                    }),
+              ],
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width - 105,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // RESPONSE USER METADATA
+                Container(
+                  margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
+                  child: UserMetaData(r.user['firstName'],
+                      r.user['citizenPoints'], null, r.user['id'], null, null),
+                ),
+                // RESPONSE TEXT CONTENT
+                Container(
+                  margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  padding: EdgeInsets.fromLTRB(0, 0, 30, 0),
+                  child: ((r.taggedUser != null) &&
+                          (r.taggedUser['id'] != null))
+                      ? GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        UserProfileScreen(r.taggedUser['id'])));
+                          },
+                          child: Text.rich(
+                            TextSpan(
+                              text: "@${r.taggedUser['firstName']} ",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: COLOR_DEEP_BLUE,
+                                fontWeight: FontWeight.w200,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text: r.content,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w200,
+                                    )),
+                              ],
+                            ),
+                          ),
+                        )
+                      : Text(
+                          r.content,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                          ),
+                        ),
+                ),
+                // RESPONSE ICON
+                GestureDetector(
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(0, 0, 10, 5),
+                    alignment: Alignment.bottomRight,
+                    child: Icon(Cibic.reply, size: 20),
+                  ),
+                  onTap: () {
+                    commentController.text = "@" + r.user["firstName"] + " ";
+                    commentController.selection = TextSelection.fromPosition(
+                        TextPosition(offset: commentController.text.length));
+                    commentController.setId(r.user['id']);
+                    commentController.setTagFirstName(r.user['firstName']);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Container> generateResponseFeed(List<ReplyModel> responses,
+      BuildContext context, int commentId, ReplyController commentController) {
+    if (responses != null) {
+      List<Container> responseCards = [];
+      for (int i = 0; i < responses.length && i < this.maxCommentView; i++) {
+        responseCards.add(
+          reply(responses[i], context, commentId, commentController),
+        );
+      }
+      if (responses.length > this.maxCommentView) {
+        responseCards.add(
+            // SEE MORE COMMENTS BUTTON
+            Container(
+          margin: EdgeInsets.fromLTRB(0, 0, 30, 5),
+          alignment: Alignment.bottomRight,
+          child: GestureDetector(
+              onTap: () => {
+                    setState(() {
+                      this.maxCommentView += 2;
+                    })
+                  },
+              child: Text("ver mas...",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                  ))),
+        ));
+      }
+      return responseCards;
+    }
+    return [Container()];
+  }
+
+  Container comment(CommentModel c, BuildContext context) {
+    int userId = extractID(widget.jwt);
+    final inputCommentController = ReplyController();
     Color upVoteColor = Colors.black;
     Color downVoteColor = Colors.black;
     if (c.votes != null) {
@@ -89,7 +520,8 @@ class _CommentFeedState extends State<CommentFeed> {
                       child: Icon(Icons.keyboard_arrow_up,
                           color: upVoteColor, size: 20),
                       onTap: () {
-                        onCommentVote(1, widget.activity.id, c);
+                        onCommentVote(widget.jwt, 1, widget.activity.id, c,
+                            userId, widget.mode);
                       }),
                   Text(
                     c.score.toString(),
@@ -102,7 +534,8 @@ class _CommentFeedState extends State<CommentFeed> {
                       child: Icon(Icons.keyboard_arrow_down,
                           color: downVoteColor, size: 20),
                       onTap: () {
-                        onCommentVote(-1, widget.activity.id, c);
+                        onCommentVote(widget.jwt, -1, widget.activity.id, c,
+                            userId, widget.mode);
                       }),
                 ]),
               ),
@@ -125,7 +558,7 @@ class _CommentFeedState extends State<CommentFeed> {
           ),
           // RESPONSES
           ...generateResponseFeed(
-              c.replies, context, vm, inputCommentController),
+              c.replies, context, c.id, inputCommentController),
           // INPUT RESPONSE
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -140,7 +573,7 @@ class _CommentFeedState extends State<CommentFeed> {
                     Flexible(
                       child: Container(
                         margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                        padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                         decoration: BoxDecoration(
                           color: Color(0xffcccccc),
                           borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -158,6 +591,9 @@ class _CommentFeedState extends State<CommentFeed> {
                               controller: inputCommentController,
                               scrollPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                               maxLines: null,
+                              inputFormatters: [
+                                LengthLimitingTextInputFormatter(500),
+                              ],
                               style: TextStyle(
                                   fontWeight: FontWeight.w200,
                                   color: Colors.black,
@@ -166,8 +602,16 @@ class _CommentFeedState extends State<CommentFeed> {
                                 if (inputCommentController.text != "" &&
                                     inputCommentController.text != null &&
                                     this.isLoading == false) {
-                                  onReply(widget.activity.id, c.id,
-                                      inputCommentController.text, widget.mode);
+                                  onReply(
+                                      widget.jwt,
+                                      widget.activity.id,
+                                      c.id,
+                                      inputCommentController.getId(),
+                                      inputCommentController.getFirstName(),
+                                      inputCommentController.getText(),
+                                      widget.user.firstName,
+                                      widget.user.citizenPoints,
+                                      widget.mode);
                                   inputCommentController.clear();
                                 }
                               },
@@ -190,8 +634,16 @@ class _CommentFeedState extends State<CommentFeed> {
                         if (inputCommentController.text != "" &&
                             inputCommentController.text != null &&
                             this.isLoading == false) {
-                          onReply(widget.activity.id, c.id,
-                              inputCommentController.text, widget.mode);
+                          onReply(
+                              widget.jwt,
+                              widget.activity.id,
+                              c.id,
+                              inputCommentController.getId(),
+                              inputCommentController.getFirstName(),
+                              inputCommentController.getText(),
+                              widget.user.firstName,
+                              widget.user.citizenPoints,
+                              widget.mode);
                           inputCommentController.clear();
                         }
                       },
@@ -207,116 +659,15 @@ class _CommentFeedState extends State<CommentFeed> {
     );
   }
 
-  Container reply(ReplyModel r, BuildContext c, _CommentFeedViewModel vm,
-      TextEditingController commentController) {
-    int userId = vm.userId;
-    Function onReplyVote = vm.onReplyVote;
-    Color upVoteColor = Colors.black;
-    Color downVoteColor = Colors.black;
-    if (r.votes != null) {
-      for (int i = 0; i < r.votes.length; i++) {
-        if (r.votes[i]['userId'] == userId) {
-          if (r.votes[i]['value'] == 1) {
-            upVoteColor = COLOR_DEEP_BLUE;
-          } else if (r.votes[i]['value'] == -1) {
-            downVoteColor = COLOR_DEEP_BLUE;
-          }
-          break;
-        }
-      }
-    }
-    return Container(
-      margin: EdgeInsets.fromLTRB(30, 0, 30, 10),
-      decoration: BoxDecoration(
-        color: Color(0xffcccccc),
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          // REACT SYSTEM
-          Container(
-            padding: const EdgeInsets.fromLTRB(5, 15, 0, 10),
-            width: 25,
-            height: 80,
-            child: Column(
-              children: <Widget>[
-                GestureDetector(
-                    child: Icon(Icons.keyboard_arrow_up,
-                        color: upVoteColor, size: 20),
-                    onTap: () {
-                      onReplyVote(1, widget.activity.id, r);
-                    }),
-                Text(
-                  r.score.toString(),
-                  style: TextStyle(
-                    fontSize: 8,
-                    color: Colors.black,
-                  ),
-                ),
-                GestureDetector(
-                    child: Icon(Icons.keyboard_arrow_down,
-                        color: downVoteColor, size: 20),
-                    onTap: () {
-                      onReplyVote(-1, widget.activity.id, r);
-                    }),
-              ],
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width - 105,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // RESPONSE USER METADATA
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
-                  child: UserMetaData(r.user['firstName'],
-                      r.user['citizenPoints'], null, r.user['id'], null, null),
-                ),
-                // RESPONSE TEXT CONTENT
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  padding: EdgeInsets.fromLTRB(0, 0, 30, 0),
-                  child: Text(
-                    r.content,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-                // RESPONSE ICON
-                GestureDetector(
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 10, 5),
-                    alignment: Alignment.bottomRight,
-                    child: Icon(Cibic.reply, size: 20),
-                  ),
-                  onTap: () {
-                    print("A");
-                    print("reply id ${r.user["firstName"]}");
-                  },
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  List<Container> generateCommentFeed(
-      BuildContext context, _CommentFeedViewModel vm) {
+  List<Container> generateCommentFeed(BuildContext context) {
     List<Container> commentCards = [];
-    for (int i = 0; i < vm.comments.length; i++) {
-      commentCards.add(comment(vm.comments[i], context, vm));
+    for (int i = 0; i < widget.activity.comments.length; i++) {
+      commentCards.add(comment(widget.activity.comments[i], context));
     }
     return commentCards;
   }
 
-  Container generateNewCommentInput(
-      BuildContext context, _CommentFeedViewModel vm) {
+  Container generateNewCommentInput(BuildContext context) {
     final inputCommentController = TextEditingController();
     return Container(
       padding: EdgeInsets.fromLTRB(30, 10, 30, 2),
@@ -347,7 +698,7 @@ class _CommentFeedState extends State<CommentFeed> {
                 Flexible(
                   child: Container(
                     margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     decoration: BoxDecoration(
                       color: Color(0xffcccccc),
                       borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -365,6 +716,9 @@ class _CommentFeedState extends State<CommentFeed> {
                           controller: inputCommentController,
                           scrollPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                           maxLines: null,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(500)
+                          ],
                           style: TextStyle(
                               fontWeight: FontWeight.w200,
                               color: Colors.black,
@@ -374,8 +728,13 @@ class _CommentFeedState extends State<CommentFeed> {
                                 inputCommentController.text != null &&
                                 this.isLoading == false) {
                               String commentText = inputCommentController.text;
-                              vm.onComment(
-                                  widget.activity.id, commentText, widget.mode);
+                              onComment(
+                                  widget.jwt,
+                                  widget.activity.id,
+                                  commentText,
+                                  widget.mode,
+                                  widget.user.firstName,
+                                  widget.user.citizenPoints);
                               inputCommentController.clear();
                             }
                           },
@@ -399,8 +758,13 @@ class _CommentFeedState extends State<CommentFeed> {
                         inputCommentController.text != null &&
                         this.isLoading == false) {
                       String commentText = inputCommentController.text;
-                      vm.onComment(
-                          widget.activity.id, commentText, widget.mode);
+                      onComment(
+                          widget.jwt,
+                          widget.activity.id,
+                          commentText,
+                          widget.mode,
+                          widget.user.firstName,
+                          widget.user.citizenPoints);
                       inputCommentController.clear();
                     }
                   },
@@ -414,111 +778,74 @@ class _CommentFeedState extends State<CommentFeed> {
     );
   }
 
-  List<Container> generateResponseFeed(
-      List<ReplyModel> responses,
-      BuildContext context,
-      _CommentFeedViewModel vm,
-      TextEditingController commentController) {
-    if (responses != null) {
-      List<Container> responseCards = [];
-      for (int i = 0; i < responses.length && i < this.maxCommentView; i++) {
-        responseCards.add(
-          reply(responses[i], context, vm, commentController),
-        );
-      }
-      if (responses.length > this.maxCommentView) {
-        responseCards.add(
-            // SEE MORE COMMENTS BUTTON
-            Container(
-          margin: EdgeInsets.fromLTRB(0, 0, 30, 5),
-          alignment: Alignment.bottomRight,
-          child: GestureDetector(
-              onTap: () => {
-                    setState(() {
-                      this.maxCommentView += 2;
-                    })
-                  },
-              child: Text("ver mas...",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ))),
-        ));
-      }
-      return responseCards;
-    }
-    return [Container()];
-  }
-
-  _CommentFeedViewModel generateViewModel(Store<AppState> store) {
-    Function commentToActivity = (int idActivity, String content, int mode) =>
-        store.dispatch(PostCommentAttempt(idActivity, content, mode));
-    Function onCommentVote = (int value, int activityId,
-            CommentModel comment) =>
-        {
-          store.dispatch(
-              PostCommentVoteAttempt(value, activityId, comment, widget.mode))
-        };
-    Function onReplyVote = (int value, int activityId, ReplyModel reply) => {
-          store.dispatch(
-              PostReplyVoteAttempt(value, activityId, reply, widget.mode))
-        };
-    Function onReply = (int idActivity, int idComment, String content,
-            int mode) =>
-        store.dispatch(PostReplyAttempt(idActivity, idComment, content, mode));
-    List<CommentModel> comments;
-    FeedModel searchFeed;
-    switch (widget.mode) {
-      case FEED_PUBLIC:
-        searchFeed = store.state.feeds['public'];
-        break;
-      case FEED_HOME:
-        searchFeed = store.state.feeds['home'];
-        break;
-      case FEED_USER:
-        searchFeed = store.state.feeds['selfUser'];
-        break;
-      case FEED_CABILDO:
-        searchFeed = store.state.feeds['cabildo'];
-        break;
-      case FEED_FOREIGN:
-        searchFeed = store.state.feeds['foreignUser'];
-        break;
-      case FEED_SAVED:
-        searchFeed = store.state.feeds['saved'];
-        break;
-    }
-    for (int i = 0; i < searchFeed.feed.length; i++) {
-      if (searchFeed.feed[i].id == widget.activity.id) {
-        comments = searchFeed.feed[i].comments;
-        break;
-      }
-    }
-    return _CommentFeedViewModel(store.state.user['idUser'], commentToActivity,
-        onReply, onCommentVote, onReplyVote, comments);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, _CommentFeedViewModel>(
-        converter: (Store<AppState> store) {
-      return generateViewModel(store);
-    }, builder: (BuildContext context, _CommentFeedViewModel vm) {
-      return Column(children: [
-        generateNewCommentInput(context, vm),
-        ...generateCommentFeed(context, vm),
-      ]);
-    });
+    return Column(children: [
+      generateNewCommentInput(context),
+      ...generateCommentFeed(context),
+    ]);
   }
 }
 
-class _CommentFeedViewModel {
-  int userId;
-  Function onComment;
-  Function onReply;
-  Function onCommentVote;
-  Function onReplyVote;
-  List<CommentModel> comments;
-  _CommentFeedViewModel(this.userId, this.onComment, this.onReply,
-      this.onCommentVote, this.onReplyVote, this.comments);
+class ReplyController extends TextEditingController {
+  int id = 0;
+  String tagFirstName;
+  String content;
+
+  ReplyController() {
+    this.id = 0;
+    this.tagFirstName = "";
+    this.content = "";
+  }
+
+  void setId(int id) {
+    this.id = id;
+  }
+
+  int getId() {
+    return this.id;
+  }
+
+  void setTagFirstName(String firstName) {
+    this.tagFirstName = firstName;
+  }
+
+  String getFirstName() {
+    return this.tagFirstName;
+  }
+
+  String getText() {
+    return this.content;
+  }
+
+  @override
+  TextSpan buildTextSpan({TextStyle style, bool withComposing}) {
+    List<InlineSpan> children = [];
+    if (text.indexOf('@') == 0 && text.length == 1) {
+      text = "";
+    } else if (text.indexOf('@') == 0 && text.indexOf(' ') != -1) {
+      children.add(TextSpan(
+          style: TextStyle(
+              color: COLOR_DEEP_BLUE,
+              fontWeight: FontWeight.w200,
+              fontSize: 12),
+          text: text.substring(0, text.indexOf(' '))));
+      children.add(TextSpan(
+          style: TextStyle(
+              color: Colors.black, fontWeight: FontWeight.w200, fontSize: 12),
+          text: text.substring(text.indexOf(' '))));
+      this.content = text.substring(text.indexOf(' '));
+    } else if (text.indexOf('@') == 0 && text.indexOf(' ') == -1) {
+      text = "";
+      this.id = 0;
+      this.tagFirstName = "";
+    } else {
+      this.content = text;
+      children.add(TextSpan(
+          style: TextStyle(
+              color: Colors.black, fontWeight: FontWeight.w200, fontSize: 12),
+          text: text));
+    }
+    return TextSpan(style: style, children: children);
+  }
 }

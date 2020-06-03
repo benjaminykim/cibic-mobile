@@ -47,7 +47,9 @@ void apiMiddleware(
     } else {
       jwt = action.jwt;
     }
-    await store.dispatch(LogInSuccess(jwt));
+    print("calling log in success");
+    next(LogInSuccess(jwt));
+    store.dispatch(LogInSuccess(jwt));
     await fetchFeed(jwt, FEED_HOME, next);
     await fetchFeed(jwt, FEED_PUBLIC, next);
     await fetchProfile(jwt, "selfUser", extractID(jwt).toString(), next);
@@ -80,54 +82,15 @@ void apiMiddleware(
   } else if (action is PostReactionAttempt) {
     await postReaction(action.activity, store.state.user['jwt'],
         action.reactValue, store.state.user['idUser'], action.mode, next);
-  } else if (action is PostCommentAttempt) {
-    String jwt = store.state.user['jwt'];
-    int citizenPoints = store.state.profile['selfUser'].citizenPoints;
-    String firstName = store.state.profile['selfUser'].firstName;
-    await postComment(action.idActivity, jwt, action.content, action.mode,
-        citizenPoints, firstName, next);
-  } else if (action is PostReplyAttempt) {
-    String jwt = store.state.user['jwt'];
-    int citizenPoints = store.state.profile['selfUser'].citizenPoints;
-    String firstName = store.state.profile['selfUser'].firstName;
-    await postReply(action.idActivity, action.idComment, action.content, jwt,
-        firstName, citizenPoints, action.mode, next);
   } else if (action is PostSaveAttempt) {
     await postSaveActivity(
         action.activityId, store.state.user['jwt'], action.save, next, store);
-  } else if (action is PostSaveSuccess) {
-    await fetchFeed(store.state.user['jwt'], FEED_SAVED, next);
-  } else if (action is PostCommentVoteAttempt) {
-    if (store.state.feedState['voteLock'] == false) {
-      await store.dispatch(VoteLock(true));
-      await postCommentVote(
-          store.state.user['jwt'],
-          action.value,
-          action.activityid,
-          action.comment,
-          store.state.user['idUser'],
-          action.mode,
-          next);
-      await store.dispatch(VoteLock(false));
-    }
-  } else if (action is PostReplyVoteAttempt) {
-    if (store.state.feedState['voteLock'] == false) {
-      await store.dispatch(VoteLock(true));
-      await postReplyVote(
-          store.state.user['jwt'],
-          action.value,
-          action.activityid,
-          action.reply,
-          store.state.user['idUser'],
-          action.mode,
-          next);
-      await store.dispatch(VoteLock(false));
-    }
   } else if (action is FireBaseTokenAttempt) {
     //await getFirebaseToken(store.state.user['jwt'], next);
   } else if (action is PostSearchAttempt) {
     await postSearchQuery(store.state.user['jwt'], action.query, 0, next);
     await postSearchQuery(store.state.user['jwt'], action.query, 1, next);
     await postSearchQuery(store.state.user['jwt'], action.query, 2, next);
+    await postSearchQuery(store.state.user['jwt'], action.query, 3, next);
   }
 }

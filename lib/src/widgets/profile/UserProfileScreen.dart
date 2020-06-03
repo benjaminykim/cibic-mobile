@@ -10,7 +10,6 @@ import 'package:cibic_mobile/src/widgets/menu/loading.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/models/activity_model.dart';
-import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityView.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -358,7 +357,7 @@ class _UserProfileState extends State<UserProfileScreen> {
                                       snapshot.data.feed[index],
                                       vm.onReact,
                                       vm.onSave,
-                                      FEED_FOREIGN));
+                                      4));
                                 }),
                           );
                         } else {
@@ -372,11 +371,6 @@ class _UserProfileState extends State<UserProfileScreen> {
         ),
       ),
     );
-  }
-
-  void onActivityTapped(ActivityScreen activityScreen, BuildContext context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => activityScreen));
   }
 
   Future<UserModel> fetchProfile(String jwt, String id) async {

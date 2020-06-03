@@ -81,7 +81,7 @@ class _MyCabildosState extends State<MyCabildos> {
               child: Icon(Icons.create, size: 35),
             ),
             Text(
-              "Crear un cabildo",
+              "Crear cabildo",
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 20,

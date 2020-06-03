@@ -11,7 +11,6 @@ import 'package:cibic_mobile/src/resources/utils.dart';
 import 'package:cibic_mobile/src/widgets/menu/loading.dart';
 import 'package:flutter/material.dart';
 
-import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityView.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -43,11 +42,6 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
     this.profileHeight = 160;
     this.isFollowing = false;
     this.isLoaded = false;
-  }
-
-  void onActivityTapped(ActivityScreen activityScreen, BuildContext context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => activityScreen));
   }
 
   Future<CabildoModel> fetchCabildoProfile(String id, String jwt) async {
@@ -407,7 +401,7 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                                         snapshot.data.feed[index],
                                         vm.onReact,
                                         vm.onSave,
-                                        FEED_CABILDO));
+                                        4));
                                   }),
                             );
                           } else {

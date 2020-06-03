@@ -3,6 +3,7 @@ import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
 import 'package:flutter/material.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
@@ -99,6 +100,7 @@ class _ComposeState extends State<Compose> {
             controller: inputTitleController,
             scrollPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
             maxLines: null,
+            inputFormatters: [LengthLimitingTextInputFormatter(80)],
             style: TextStyle(
               fontWeight: FontWeight.w200,
               color: Colors.black,
@@ -153,6 +155,7 @@ class _ComposeState extends State<Compose> {
               controller: inputBodyController,
               scrollPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
               maxLines: null,
+              inputFormatters: [LengthLimitingTextInputFormatter(1500)],
               style: TextStyle(
                   fontWeight: FontWeight.w200,
                   color: Colors.black,
@@ -346,14 +349,13 @@ class _ComposeState extends State<Compose> {
         return;
       } else {
         await vm.submitActivity((selectedActivity == 0) ? 0 : 1, enteredTitle,
-            enteredBody, idCabildo, enteredTag);
+            enteredBody, idCabildo, [enteredTag]);
       }
     } else if (selectedActivity == 1) {
       if (enteredTitle.isEmpty) {
         return;
       } else {
-        print("post poll");
-        vm.submitActivity(2, enteredTitle, enteredBody, idCabildo, enteredTag);
+        vm.submitActivity(2, enteredTitle, enteredBody, idCabildo, [enteredTag]);
       }
     }
     Navigator.of(context).pop();
@@ -364,7 +366,7 @@ class _ComposeState extends State<Compose> {
     return StoreConnector<AppState, _ComposeViewModel>(
       converter: (Store<AppState> store) {
         Function submitActivityCallback =
-            (int type, String title, String body, int idCabildo, String tag) =>
+            (int type, String title, String body, int idCabildo, List<String> tag) =>
                 {
                   store.dispatch(
                       SubmitActivityAttempt(type, title, body, idCabildo, tag))

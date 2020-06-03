@@ -20,6 +20,7 @@ class ActivityModel {
   List<CommentModel> comments;
   List<ReactionModel> reactions;
   List<Map<String, dynamic>> votes;
+  List<Map<String, dynamic>> tags;
 
   ActivityModel(
     this.id,
@@ -34,7 +35,8 @@ class ActivityModel {
     this.cabildo,
     this.comments,
     this.reactions,
-    this.votes);
+    this.votes,
+    this.tags);
 
   factory ActivityModel.fromJson(Map<String, dynamic> json) => _$ActivityModelFromJson(json);
 

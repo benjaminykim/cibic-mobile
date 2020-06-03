@@ -16,13 +16,11 @@ class _CreateCabildoState extends State<CreateCabildo> {
   final inputNameController = TextEditingController();
   final inputDescController = TextEditingController();
   final inputLocationController = TextEditingController();
-  final inputTagController = TextEditingController();
 
   void dispose() {
     inputNameController.dispose();
     inputDescController.dispose();
     inputLocationController.dispose();
-    inputTagController.dispose();
     super.dispose();
   }
 
@@ -30,16 +28,12 @@ class _CreateCabildoState extends State<CreateCabildo> {
     final enteredName = inputNameController.text;
     final enteredDesc = inputDescController.text;
     final enteredLocation = inputLocationController.text;
-    final enteredTag = inputTagController.text;
 
-    if (enteredName.isEmpty ||
-        enteredDesc.isEmpty ||
-        enteredLocation.isEmpty ||
-        enteredTag.isEmpty) {
+    if (enteredName.isEmpty || enteredDesc.isEmpty || enteredLocation.isEmpty) {
       return;
     } else {
       widget.store.dispatch(SubmitCabildoAttempt(
-          enteredName, enteredDesc, enteredLocation, enteredTag, context));
+          enteredName, enteredDesc, enteredLocation, "", context));
     }
   }
 
@@ -179,24 +173,6 @@ class _CreateCabildoState extends State<CreateCabildo> {
               ),
             ),
           ),
-          Container(
-            margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
-            padding: EdgeInsets.fromLTRB(10, 14, 0, 0),
-            height: 33,
-            decoration: BoxDecoration(
-              color: Color(0xffcccccc),
-              borderRadius: BorderRadius.all(Radius.circular(13)),
-            ),
-            child: TextField(
-              controller: inputTagController,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: "tema...",
-                hintStyle: TextStyle(
-                    fontWeight: FontWeight.w200, color: Color(0xffa1a1a1)),
-              ),
-            ),
-          ),
           Spacer(),
           Row(
             children: <Widget>[
@@ -208,18 +184,17 @@ class _CreateCabildoState extends State<CreateCabildo> {
                 },
               ),
               IconButton(
-                icon: Icon(Icons.send),
-                onPressed: () {
-                  if (inputNameController.text != "" ||
-                  inputNameController.text != null ||
-                  inputDescController.text != "" ||
-                  inputDescController.text != null ||
-                  inputLocationController.text != "" ||
-                  inputLocationController.text != null) {
-                    submitCabildo();
-                  }
-                }
-              ),
+                  icon: Icon(Icons.send),
+                  onPressed: () {
+                    if (inputNameController.text != "" ||
+                        inputNameController.text != null ||
+                        inputDescController.text != "" ||
+                        inputDescController.text != null ||
+                        inputLocationController.text != "" ||
+                        inputLocationController.text != null) {
+                      submitCabildo();
+                    }
+                  }),
             ],
           ),
           SizedBox(
