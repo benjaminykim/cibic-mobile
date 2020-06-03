@@ -193,7 +193,8 @@ class _ComposeState extends State<Compose> {
                 ),
                 child: DropdownButton<String>(
                   value: dropdownValue,
-                  icon: Icon(Icons.arrow_downward),
+                  isExpanded: true,
+                  icon: Icon(Icons.keyboard_arrow_down),
                   iconSize: 24,
                   elevation: 16,
                   onChanged: (String newValue) {
@@ -214,13 +215,19 @@ class _ComposeState extends State<Compose> {
                   color: Color(0xffcccccc),
                   borderRadius: BorderRadius.all(Radius.circular(7)),
                 ),
-                child: TextFormField(
-                  controller: inputTagController,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "#tags",
-                    hintStyle: TextStyle(
-                        fontWeight: FontWeight.w200, color: Color(0xffa1a1a1)),
+                child: GestureDetector(
+                  onTap: () {
+
+                  },
+                  child: TextFormField(
+                    controller: inputTagController,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "#tags",
+                      hintStyle: TextStyle(
+                          fontWeight: FontWeight.w200,
+                          color: Color(0xffa1a1a1)),
+                    ),
                   ),
                 ),
               ),
@@ -275,7 +282,8 @@ class _ComposeState extends State<Compose> {
                 ),
                 child: DropdownButton<String>(
                   value: dropdownValue,
-                  icon: Icon(Icons.arrow_downward),
+                  isExpanded: true,
+                  icon: Icon(Icons.keyboard_arrow_down),
                   iconSize: 24,
                   elevation: 16,
                   onChanged: (String newValue) {
@@ -355,7 +363,8 @@ class _ComposeState extends State<Compose> {
       if (enteredTitle.isEmpty) {
         return;
       } else {
-        vm.submitActivity(2, enteredTitle, enteredBody, idCabildo, [enteredTag]);
+        vm.submitActivity(
+            2, enteredTitle, enteredBody, idCabildo, [enteredTag]);
       }
     }
     Navigator.of(context).pop();
@@ -365,12 +374,12 @@ class _ComposeState extends State<Compose> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _ComposeViewModel>(
       converter: (Store<AppState> store) {
-        Function submitActivityCallback =
-            (int type, String title, String body, int idCabildo, List<String> tag) =>
-                {
-                  store.dispatch(
-                      SubmitActivityAttempt(type, title, body, idCabildo, tag))
-                };
+        Function submitActivityCallback = (int type, String title, String body,
+                int idCabildo, List<String> tag) =>
+            {
+              store.dispatch(
+                  SubmitActivityAttempt(type, title, body, idCabildo, tag))
+            };
         return _ComposeViewModel(store.state.user['jwt'],
             store.state.profile['selfUser'], submitActivityCallback);
       },
