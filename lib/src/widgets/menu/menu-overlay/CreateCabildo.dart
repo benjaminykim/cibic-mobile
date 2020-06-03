@@ -115,8 +115,10 @@ class _CreateCabildoState extends State<CreateCabildo> {
                 reverse: true,
                 child: TextField(
                   controller: inputNameController,
+                  scrollPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                   maxLines: null,
                   decoration: InputDecoration(
+                    isDense: true,
                     border: InputBorder.none,
                     hintText: "Nombre del Cabildo",
                     hintStyle: TextStyle(
@@ -147,6 +149,7 @@ class _CreateCabildoState extends State<CreateCabildo> {
                   controller: inputDescController,
                   maxLines: null,
                   decoration: InputDecoration(
+                    isDense: true,
                     border: InputBorder.none,
                     hintText: "descripción...",
                     hintStyle: TextStyle(
