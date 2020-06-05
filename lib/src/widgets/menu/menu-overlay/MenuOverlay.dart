@@ -4,6 +4,7 @@ import 'package:cibic_mobile/src/widgets/menu/menu-overlay/Configuration.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/MyCabildos.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/Saved.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/Unete.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cibic_mobile/src/resources/constants.dart';
@@ -119,26 +120,34 @@ class MenuOverlay extends StatelessWidget {
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          title: Text(
-                            "Cerrar Sesion",
-                            style: TextStyle(
-                              fontSize: 20,
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(32.0))),
+                          contentPadding: EdgeInsets.only(top: 10.0),
+                          title: Center(
+                            child: Text(
+                              "Cerrar Sesion",
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
                             ),
                           ),
                           content: Text("Quieres cerrar tu sesion?"),
                           actions: <Widget>[
-                                  FlatButton(
-                                    child: new Text("Si"),
-                                    onPressed: () {
-                                      this.store.dispatch(LogOut());
-                                      storage.delete(key: "jwt");
-                                      Navigator.of(context)
-                                          .pushNamedAndRemoveUntil('/',
-                                              (Route<dynamic> route) => false);
-                                    },
-                                  ),
-                            new FlatButton(
-                              child: new Text("No"),
+                            CupertinoButton.filled(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Text("Si"),
+                              onPressed: () {
+                                this.store.dispatch(LogOut());
+                                storage.delete(key: "jwt");
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                    '/', (Route<dynamic> route) => false);
+                              },
+                            ),
+                            CupertinoButton.filled(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Text("No"),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
