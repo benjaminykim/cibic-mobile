@@ -26,8 +26,7 @@ void apiMiddleware(
         await fetchFeed(jwt, FEED_HOME, 0, next);
         await fetchFeed(jwt, FEED_PUBLIC, 0, next);
         await fetchProfile(jwt, "selfUser", extractID(jwt).toString(), next);
-        await fetchProfileFeed(
-            jwt, "selfUser", extractID(jwt).toString(), 0, next);
+        await fetchProfileFeed(jwt, extractID(jwt).toString(), 0, next);
         Navigator.pushReplacement(action.context,
             MaterialPageRoute(builder: (context) => Home(store)));
       }
@@ -45,7 +44,7 @@ void apiMiddleware(
     await fetchFeed(jwt, FEED_HOME, 0, next);
     await fetchFeed(jwt, FEED_PUBLIC, 0, next);
     await fetchProfile(jwt, "selfUser", extractID(jwt).toString(), next);
-    await fetchProfileFeed(jwt, "selfUser", extractID(jwt).toString(), 0, next);
+    await fetchProfileFeed(jwt, extractID(jwt).toString(), 0, next);
     Navigator.pushReplacement(
         action.context, MaterialPageRoute(builder: (context) => Home(store)));
   } else if (action is PostRegisterAttempt) {
@@ -58,14 +57,21 @@ void apiMiddleware(
     await fetchProfile(jwt, action.type, action.id.toString(), next);
   } else if (action is FetchProfileFeedAttempt) {
     String jwt = store.state.user['jwt'];
-    await fetchProfileFeed(jwt, action.type, action.id.toString(), action.offset, next);
+    if (action.reset == true) {
+        await fetchProfileFeed(jwt, action.id.toString(), 0, next);
+    } else {
+      int offset = store.state.profileFeed.feed.length;
+      if (offset % 20 == 0) {
+        await fetchProfileFeed(jwt, action.id.toString(), offset, next);
+      }
+    }
   } else if (action is SubmitActivityAttempt) {
     await postActivity(action, store.state.user['jwt'], next, store);
   } else if (action is SubmitActivitySuccess) {
     String jwt = store.state.user['jwt'];
     await fetchFeed(jwt, FEED_HOME, 0, next);
     await fetchFeed(jwt, FEED_PUBLIC, 0, next);
-    await fetchProfileFeed(jwt, "selfUser", extractID(jwt).toString(), 0, next);
+    await fetchProfileFeed(jwt, extractID(jwt).toString(), 0, next);
   } else if (action is SubmitCabildoAttempt) {
     await postCabildo(action, store.state.user['jwt'], next, store);
   } else if (action is SubmitCabildoSuccess) {
@@ -81,9 +87,13 @@ void apiMiddleware(
     await postSaveActivity(
         action.activityId, store.state.user['jwt'], action.save, next, store);
   } else if (action is PostSearchAttempt) {
-    await postSearchQuery(store.state.user['jwt'], action.offset, action.query, 0, next);
-    await postSearchQuery(store.state.user['jwt'], action.offset, action.query, 1, next);
-    await postSearchQuery(store.state.user['jwt'], action.offset, action.query, 2, next);
-    await postSearchQuery(store.state.user['jwt'], action.offset, action.query, 3, next);
+    await postSearchQuery(
+        store.state.user['jwt'], action.offset, action.query, 0, next);
+    await postSearchQuery(
+        store.state.user['jwt'], action.offset, action.query, 1, next);
+    await postSearchQuery(
+        store.state.user['jwt'], action.offset, action.query, 2, next);
+    await postSearchQuery(
+        store.state.user['jwt'], action.offset, action.query, 3, next);
   }
 }

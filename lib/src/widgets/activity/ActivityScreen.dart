@@ -56,7 +56,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
         this.activity =
             fetchActivity(store.state.user['jwt'], widget.activityId);
         return _UserViewModel(
-            store.state.user['jwt'], store.state.profile['selfUser']);
+            store.state.user['jwt'], store.state.profile);
       },
       builder: (BuildContext context, _UserViewModel vm) {
         return FutureBuilder<ActivityModel>(

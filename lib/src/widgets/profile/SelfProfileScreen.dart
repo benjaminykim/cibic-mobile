@@ -23,28 +23,24 @@ class _UserProfileState extends State<SelfProfileScreen> {
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   int maxLines = 4;
   double profileHeight = 160;
-  int offset = 0;
   ScrollController controller;
 
   ProfileViewModel generateProfileViewModel(Store<AppState> store) {
-    refreshFeed() {
-      store.dispatch(
-          FetchProfileAttempt(extractID(store.state.user['jwt']), "selfUser"));
-      store.dispatch(FetchProfileFeedAttempt(
-          extractID(store.state.user['jwt']), "selfUser", 0));
-      this.offset = 0;
+    String jwt = store.state.user['jwt'];
+    int userId = extractID(jwt);
+    refreshFeed() async {
+      store.dispatch(FetchProfileAttempt(userId, "selfUser"));
+      store.dispatch(FetchProfileFeedAttempt(userId, true));
       return null;
     }
 
     FeedModel userFeed;
     UserModel user;
     bool error;
-    String jwt;
 
-    user = store.state.profile['selfUser'];
-    userFeed = store.state.feeds['selfUser'];
-    error = store.state.feedState['selfUserIsError'];
-    jwt = store.state.user['jwt'];
+    user = store.state.profile;
+    userFeed = store.state.profileFeed;
+    error = store.state.profileState == Status.isError;
     Function onReact = (ActivityModel activity, int reactValue) =>
         store.dispatch(PostReactionAttempt(activity, reactValue, 3));
     Function onSave =
@@ -52,9 +48,7 @@ class _UserProfileState extends State<SelfProfileScreen> {
 
     void _scrollListener() {
       if (controller.position.maxScrollExtent == controller.offset) {
-        this.offset += 20;
-        store.dispatch(FetchProfileFeedAttempt(
-            extractID(store.state.user['jwt']), "selfUser", this.offset));
+        store.dispatch(FetchProfileFeedAttempt(userId, false));
       }
     }
 
@@ -220,17 +214,22 @@ class _UserProfileState extends State<SelfProfileScreen> {
             ),
             // feed
             Expanded(
-                child: ListView.separated(
-                    controller: vm.controller,
-                    separatorBuilder: (context, index) => Divider(
-                          color: Colors.black,
-                        ),
-                    itemCount: vm.feed.feed.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      ActivityModel activity = vm.feed.feed[index];
-                      return ActivityView(
-                          activity, vm.onReact, vm.onSave, FEED_USER);
-                    }))
+                child: RefreshIndicator(
+              onRefresh: () {
+                return vm.refresh();
+              },
+              child: ListView.separated(
+                  controller: vm.controller,
+                  separatorBuilder: (context, index) => Divider(
+                        color: Colors.black,
+                      ),
+                  itemCount: vm.feed.feed.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    ActivityModel activity = vm.feed.feed[index];
+                    return ActivityView(
+                        activity, vm.onReact, vm.onSave, FEED_USER);
+                  }),
+            ))
           ]),
         ),
       );

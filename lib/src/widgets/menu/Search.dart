@@ -251,7 +251,7 @@ class _SearchState extends State<Search> {
         Function onSearchActivityByTag = (String query) =>
             store.dispatch(PostSearchActivityByTagAttempt(query, this.offset));
         return _SearchViewModel(
-            store.state.profile['selfUser'],
+            store.state.profile,
             submitSearchQuery,
             store.state.search['activity'],
             store.state.search['user'],

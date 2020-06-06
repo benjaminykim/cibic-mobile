@@ -11,5 +11,9 @@ class FeedModel {
 
   factory FeedModel.fromJson(Map<String, dynamic> json) => _$FeedModelFromJson(json);
 
+  factory FeedModel.initial() {
+    return FeedModel([]);
+  }
+
   Map<String, dynamic> toJson() => _$FeedModelToJson(this);
 }

@@ -77,7 +77,7 @@ class FetchProfileAttempt {
 
 class FetchProfileSuccess {
   String type;
-  dynamic profile;
+  UserModel profile;
   FetchProfileSuccess(this.type, this.profile);
 }
 
@@ -89,27 +89,23 @@ class FetchProfileError {
 
 class FetchProfileFeedAttempt {
   int id;
-  String type;
-  int offset;
-  FetchProfileFeedAttempt(this.id, this.type, this.offset);
+  bool reset;
+  FetchProfileFeedAttempt(this.id, this.reset);
 }
 
 class FetchProfileFeedSuccess {
-  String type;
   FeedModel feed;
-  FetchProfileFeedSuccess(this.type, this.feed);
+  FetchProfileFeedSuccess(this.feed);
 }
 
 class FetchProfileFeedAppend {
-  String type;
   FeedModel feed;
-  FetchProfileFeedAppend(this.type, this.feed);
+  FetchProfileFeedAppend(this.feed);
 }
 
 class FetchProfileFeedError {
-  String type;
   String error;
-  FetchProfileFeedError(this.type, this.error);
+  FetchProfileFeedError(this.error);
 }
 
 class ClearProfile {

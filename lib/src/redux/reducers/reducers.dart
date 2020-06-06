@@ -74,32 +74,19 @@ AppState appReducer(AppState prevState, dynamic action) {
       newState.feedState['selfUserError'] = true;
     }
   } else if (action is FetchProfileSuccess) {
-    newState.profile[action.type] = action.profile;
-    newState.profileState[action.type + "IsSuccess"] = true;
-    newState.profileState[action.type + 'IsLoading'] = false;
-    newState.profileState[action.type + 'IsError'] = false;
+    newState.profile = action.profile;
+    newState.profileState = Status.isSuccess;
   } else if (action is FetchProfileError) {
-    newState.profileState[action.type + 'IsSuccess'] = false;
-    newState.profileState[action.type + 'IsLoading'] = false;
-    newState.profileState[action.type + 'IsError'] = true;
+    newState.profileState = Status.isError;
   } else if (action is FetchProfileFeedSuccess) {
-    newState.feeds[action.type] = action.feed;
-    newState.feedState[action.type + "IsLoading"] = false;
-    newState.feedState[action.type + "IsSuccess"] = true;
-    newState.feedState[action.type + "IsError"] = false;
+    newState.profileFeed = action.feed;
+    newState.profileState = Status.isSuccess;
   } else if (action is FetchProfileFeedAppend) {
-    newState.feeds[action.type].feed.addAll(action.feed.feed);
-    newState.feedState[action.type + "IsLoading"] = false;
-    newState.feedState[action.type + "IsSuccess"] = true;
-    newState.feedState[action.type + "IsError"] = false;
+    newState.profileFeed.feed.addAll(action.feed.feed);
+    newState.profileState = Status.isSuccess;
   } else if (action is FetchProfileFeedError) {
-    newState.feedState[action.type + "IsLoading"] = false;
-    newState.feedState[action.type + "IsSuccess"] = false;
-    newState.feedState[action.type + "IsError"] = true;
+    newState.profileState = Status.isError;
   } else if (action is SubmitActivitySuccess) {
-  } else if (action is ClearProfile) {
-    newState.profile[action.type] = null;
-    newState.feeds[action.type] = null;
   } else if (action is PostReactionSuccess) {
     List<FeedModel> feeds = orderFeeds(newState, action.mode);
 
@@ -300,7 +287,7 @@ List<FeedModel> orderFeeds(AppState newState, int mode) {
   List<FeedModel> feeds = [
     newState.feeds['home'],
     newState.feeds['public'],
-    newState.feeds['selfUser'],
+    newState.profileFeed,
   ];
   return feeds;
 }

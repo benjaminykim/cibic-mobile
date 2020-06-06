@@ -3,24 +3,38 @@ import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 
+enum Status { isLoading, isSuccess, isError, none }
+
 class AppState {
   Map<String, dynamic> user;
   Map<String, FeedModel> feeds;
-  Map<String, dynamic> profile;
+  UserModel profile;
+  FeedModel profileFeed;
   Map<String, dynamic> search;
   Map<String, bool> loginState;
   Map<String, bool> registerState;
   Map<String, bool> feedState;
-  Map<String, bool> profileState;
+  // Map<String, bool> profileState;
+  Status profileState;
   bool isLoading;
 
-  AppState(this.user, this.feeds, this.profile, this.search, this.loginState,
-      this.registerState, this.feedState, this.profileState, this.isLoading);
+  AppState(
+      this.user,
+      this.feeds,
+      this.profile,
+      this.profileFeed,
+      this.search,
+      this.loginState,
+      this.registerState,
+      this.feedState,
+      this.profileState,
+      this.isLoading);
 
   AppState.fromAppState(AppState another) {
     user = another.user;
     feeds = another.feeds;
     profile = another.profile;
+    profileFeed = another.profileFeed;
     search = another.search;
     loginState = another.loginState;
     registerState = another.registerState;
@@ -46,7 +60,6 @@ class AppState {
     Map<String, FeedModel> feeds = {
       'home': null,
       'public': null,
-      'selfUser': null,
       'saved': null,
     };
 
@@ -57,24 +70,23 @@ class AppState {
       'publicIsLoading': false,
       'publicIsSuccess': false,
       'publicIsError': false,
-      'selfUserIsLoading': false,
-      'selfUserIsSuccess': false,
-      'selfUserIsError': false,
       'savedIsLoading': false,
       'savedIsSuccess': false,
       'savedIsError': false,
       'voteLock': false,
     };
 
-    Map<String, dynamic> profile = {
-      'selfUser': null,
-    };
+    UserModel profile = UserModel.initial();
+    FeedModel profileFeed = FeedModel.initial();
+    Status profileState = Status.none;
 
+/*
     Map<String, bool> profileState = {
       'selfUserIsLoading': false,
       'selfUserIsSuccess': false,
       'selfUserIsError': false,
     };
+    */
 
     Map<String, dynamic> search = {
       'activity': List<ActivityModel>(),
@@ -98,7 +110,7 @@ class AppState {
       'isLoading': false
     };
 
-    return AppState(
-        user, feeds, profile, search, loginState, registerState, feedState, profileState, false);
+    return AppState(user, feeds, profile, profileFeed, search, loginState,
+        registerState, feedState, profileState, false);
   }
 }

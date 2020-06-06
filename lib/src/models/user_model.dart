@@ -57,5 +57,11 @@ class UserModel {
         null, null, "", "", "", "", 0, "", "");
   }
 
+  factory UserModel.initial() {
+    return UserModel(0, null, null, null, null, null, null, null, null, null,
+        null, null, "", "", "", "", 0, "", "");
+
+  }
+
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 }

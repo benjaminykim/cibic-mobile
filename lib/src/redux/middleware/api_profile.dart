@@ -3,6 +3,7 @@ import 'package:cibic_mobile/src/models/feed_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
+import 'package:cibic_mobile/src/resources/utils.dart';
 import 'package:redux/redux.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,20 +19,17 @@ fetchProfile(String jwt, String type, String id, NextDispatcher next) async {
     'authorization': "Bearer $jwt"
   });
 
+  printResponse("SELF PROFILE", "GET", response.statusCode);
   if (response.statusCode == 200) {
     UserModel user = UserModel.fromJson(json.decode(response.body));
     next(FetchProfileSuccess(type, user));
   } else {
-    next(FetchProfileSuccess(type, response.statusCode.toString()));
+    next(FetchProfileError(type, response.statusCode.toString()));
   }
 }
 
-fetchProfileFeed(
-    String jwt, String type, String id, int offset, NextDispatcher next) async {
-  String url = API_BASE;
-  if (type == "selfUser") {
-    url += ENDPOINT_USER_FEED + id + "/" + offset.toString();
-  }
+fetchProfileFeed(String jwt, String id, int offset, NextDispatcher next) async {
+  String url = API_BASE + ENDPOINT_USER_FEED + id + "/" + offset.toString();
 
   final response = await http.get(url, headers: {
     'content-type': 'application/json',
@@ -39,15 +37,18 @@ fetchProfileFeed(
     'authorization': "Bearer $jwt"
   });
 
+  printResponse("PROFILE FEED", "GET", response.statusCode);
   if (response.statusCode == 200) {
     FeedModel feed =
         FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
     if (offset != 0) {
-    next(FetchProfileFeedAppend(type, feed));
+      if (feed.feed.length != 0) {
+        next(FetchProfileFeedAppend(feed));
+      }
     } else {
-    next(FetchProfileFeedSuccess(type, feed));
+      next(FetchProfileFeedSuccess(feed));
     }
   } else {
-    next(FetchProfileFeedError(type, response.statusCode.toString()));
+    next(FetchProfileFeedError(response.statusCode.toString()));
   }
 }

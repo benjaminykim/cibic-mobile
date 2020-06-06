@@ -30,11 +30,10 @@ class _UserProfileState extends State<UserProfileScreen> {
   int maxLines = 4;
   Future<UserModel> userProfile;
   Future<FeedModel> userFeed;
-  List<ActivityModel> feed;
+  FeedModel loadedFeed;
   double profileHeight;
   bool isFollowing;
   bool isLoaded;
-  int offset = 0;
   ScrollController controller;
 
   @override
@@ -44,11 +43,17 @@ class _UserProfileState extends State<UserProfileScreen> {
     this.profileHeight = 160;
     this.isFollowing = false;
     this.isLoaded = false;
-    this.feed = [];
+    this.loadedFeed = FeedModel.initial();
+  }
+
+  @override
+  dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   refresh(String jwt) async {
-    this.offset = 0;
+    this.loadedFeed = FeedModel.initial();
     this.userFeed = fetchProfileFeed(jwt, widget.idUser.toString(), 0);
     return null;
   }
@@ -69,13 +74,9 @@ class _UserProfileState extends State<UserProfileScreen> {
 
     void _scrollListener() {
       if (controller.position.maxScrollExtent == controller.offset) {
-        this.offset += 20;
-        this.userFeed =
-            fetchProfileFeed(jwt, extractID(jwt).toString(), this.offset);
-        setState(() async {
-          this
-              .feed
-              .addAll(await this.userFeed.then((FeedModel feed) => feed.feed));
+        setState(() {
+          this.userFeed = fetchProfileFeed(
+              jwt, extractID(jwt).toString(), this.loadedFeed.feed.length);
         });
       }
     }
@@ -127,7 +128,7 @@ class _UserProfileState extends State<UserProfileScreen> {
                           ),
                           child: Column(
                             children: [
-                              // IMAGE, NAME, FOLLOW BUTTON, CABILDO METADATA
+                              // IMAGE, NAME, FOLLOW BUTTON, USER METADATA
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -372,16 +373,27 @@ class _UserProfileState extends State<UserProfileScreen> {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return Expanded(
-                            child: ListView.separated(
-                                controller: vm.controller,
-                                separatorBuilder: (context, index) => Divider(
-                                      color: Colors.black,
-                                    ),
-                                itemCount: snapshot.data.feed.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return (ActivityView(snapshot.data.feed[index],
-                                      vm.onReact, vm.onSave, 4));
-                                }),
+                            child: RefreshIndicator(
+                              onRefresh: () {
+                                return refresh(vm.jwt);
+                              },
+                              child: ListView.separated(
+                                  controller: vm.controller,
+                                  separatorBuilder: (context, index) => Divider(
+                                        color: Colors.black,
+                                      ),
+                                  //itemCount: snapshot.data.feed.length,
+                                  itemCount: this.loadedFeed.feed.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    //return (ActivityView(snapshot.data.feed[index],
+                                    return (ActivityView(
+                                        this.loadedFeed.feed[index],
+                                        vm.onReact,
+                                        vm.onSave,
+                                        4));
+                                  }),
+                            ),
                           );
                         } else {
                           return Expanded(
@@ -425,11 +437,19 @@ class _UserProfileState extends State<UserProfileScreen> {
     printResponse("USER PROFILE FEED", "GET", response.statusCode);
     if (response.statusCode == 200) {
       if (offset != 0) {
-        return FeedModel.fromJson(
-            json.decode('{"feed": ' + response.body + '}'));
+        FeedModel returnFeed =
+            FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
+        setState(() {
+          this.loadedFeed.feed.addAll(returnFeed.feed);
+        });
+        return this.loadedFeed;
       } else {
-        return FeedModel.fromJson(
-            json.decode('{"feed": ' + response.body + '}'));
+        FeedModel returnFeed =
+            FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
+        setState(() {
+          this.loadedFeed = returnFeed;
+        });
+        return this.loadedFeed;
       }
     } else {
       throw Exception(
