@@ -31,11 +31,10 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
   int maxLines;
   Future<CabildoModel> cabildoProfile;
   Future<FeedModel> cabildoFeed;
-  List<ActivityModel> feed;
+  FeedModel loadedFeed;
   double profileHeight;
   bool isFollowing;
   bool isLoaded;
-  int offset = 0;
   ScrollController controller;
 
   @override
@@ -45,9 +44,22 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
     this.profileHeight = 160;
     this.isFollowing = false;
     this.isLoaded = false;
+    this.loadedFeed = FeedModel.initial();
   }
 
-  Future<CabildoModel> fetchCabildoProfile(String id, String jwt) async {
+  @override
+  dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  refresh(String jwt) async {
+    this.loadedFeed = FeedModel.initial();
+    this.cabildoFeed = fetchCabildoFeed(jwt, widget.idCabildo.toString(), 0);
+    return null;
+  }
+
+  Future<CabildoModel> fetchCabildoProfile(String jwt, String id) async {
     String url = API_BASE + ENDPOINT_CABILDO_PROFILE + id;
 
     final response = await http.get(url, headers: {
@@ -65,8 +77,9 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
     }
   }
 
-  Future<FeedModel> fetchCabildoFeed(String id, int offset, String jwt) async {
-    String url = API_BASE + ENDPOINT_CABILDO_FEED + id + "/" + offset.toString();
+  Future<FeedModel> fetchCabildoFeed(String jwt, String id, int offset) async {
+    String url =
+        API_BASE + ENDPOINT_CABILDO_FEED + id + "/" + offset.toString();
 
     final response = await http.get(url, headers: {
       'content-type': 'application/json',
@@ -76,7 +89,21 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
 
     printResponse("CABILDO FEED", "GET", response.statusCode);
     if (response.statusCode == 200) {
-      return FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
+      if (offset != 0) {
+        FeedModel returnFeed =
+            FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
+        setState(() {
+          this.loadedFeed.feed.addAll(returnFeed.feed);
+        });
+        return this.loadedFeed;
+      } else {
+        FeedModel returnFeed =
+            FeedModel.fromJson(json.decode('{"feed": ' + response.body + '}'));
+        setState(() {
+          this.loadedFeed = returnFeed;
+        });
+        return this.loadedFeed;
+      }
     } else {
       throw Exception(
           'Failed to load Cabildo Feed ${response.statusCode.toString()}');
@@ -99,7 +126,8 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
     HttpClientResponse response = await request.close();
     httpClient.close();
 
-    printResponse((follow) ? "CABILDO FOLLOW" : "CABILDO UNFOLLOW", "POST", response.statusCode);
+    printResponse((follow) ? "CABILDO FOLLOW" : "CABILDO UNFOLLOW", "POST",
+        response.statusCode);
     if (response.statusCode == 201) {
       return true;
     } else {
@@ -107,34 +135,41 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return StoreConnector<AppState, _CabildoViewModel>(
-      converter: (Store<AppState> store) {
-        String jwt = store.state.user['jwt'];
-        if (this.isLoaded == false) {
-          this.cabildoProfile =
-              fetchCabildoProfile(widget.idCabildo.toString(), jwt);
-          this.cabildoFeed = fetchCabildoFeed(widget.idCabildo.toString(), this.offset, jwt);
-          this.isLoaded = true;
-        }
-        Function onReact = (ActivityModel activity, int reactValue) =>
-            store.dispatch(PostReactionAttempt(activity, reactValue, 3));
-        Function onSave = (int activityId) =>
-            store.dispatch(PostSaveAttempt(activityId, true));
-            void _scrollListener() async {
+  _CabildoViewModel generateCabildoViewModel(
+      Store<AppState> store, int idUser) {
+    String jwt = store.state.user['jwt'];
+    if (this.isLoaded == false) {
+      this.cabildoProfile =
+          fetchCabildoProfile(jwt, widget.idCabildo.toString());
+      this.cabildoFeed = fetchCabildoFeed(jwt, widget.idCabildo.toString(), 0);
+      this.isLoaded = true;
+    }
+
+    Function onReact = (ActivityModel activity, int reactValue) =>
+        store.dispatch(PostReactionAttempt(activity, reactValue, 3));
+    Function onSave =
+        (int activityId) => store.dispatch(PostSaveAttempt(activityId, true));
+    void _scrollListener() async {
       if (controller.position.maxScrollExtent == controller.offset) {
-        this.offset += 20;
-        this.cabildoFeed = fetchCabildoFeed(widget.idCabildo.toString(), this.offset, jwt);
+        this.cabildoFeed = fetchCabildoFeed(
+            jwt, widget.idCabildo.toString(), this.loadedFeed.feed.length);
       }
     }
 
     controller = new ScrollController()..addListener(_scrollListener);
-        return _CabildoViewModel(
-          store.state.user['jwt'],
-          onReact,
-          onSave,
-        );
+    return _CabildoViewModel(
+      jwt,
+      onReact,
+      onSave,
+      controller,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StoreConnector<AppState, _CabildoViewModel>(
+      converter: (Store<AppState> store) {
+        return generateCabildoViewModel(store, widget.idCabildo);
       },
       builder: (BuildContext context, _CabildoViewModel vm) {
         return MaterialApp(
@@ -400,19 +435,26 @@ class _CabildoProfileState extends State<CabildoProfileScreen> {
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             return Expanded(
-                              child: ListView.separated(
-                                  separatorBuilder: (context, index) => Divider(
-                                        color: Colors.black,
-                                      ),
-                                  itemCount: snapshot.data.feed.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return (ActivityView(
-                                        snapshot.data.feed[index],
-                                        vm.onReact,
-                                        vm.onSave,
-                                        4));
-                                  }),
+                              child: RefreshIndicator(
+                                onRefresh: () {
+                                  return refresh(vm.jwt);
+                                },
+                                child: ListView.separated(
+                                    controller: vm.controller,
+                                    separatorBuilder: (context, index) =>
+                                        Divider(
+                                          color: Colors.black,
+                                        ),
+                                    itemCount: this.loadedFeed.feed.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return (ActivityView(
+                                          this.loadedFeed.feed[index],
+                                          vm.onReact,
+                                          vm.onSave,
+                                          4));
+                                    }),
+                              ),
                             );
                           } else {
                             return Expanded(
@@ -434,7 +476,8 @@ class _CabildoViewModel {
   int userId;
   Function onReact;
   Function onSave;
-  _CabildoViewModel(this.jwt, this.onReact, this.onSave) {
+  ScrollController controller;
+  _CabildoViewModel(this.jwt, this.onReact, this.onSave, this.controller) {
     userId = extractID(jwt);
   }
 }
