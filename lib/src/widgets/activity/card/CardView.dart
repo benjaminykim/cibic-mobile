@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
@@ -270,15 +272,21 @@ class _CardViewState extends State<CardView> {
   }
 
   Widget generateDiscussion() {
+    String displayText;
+    if (this.widget.activity.text.length > 280) {
+      displayText = this.widget.activity.text.substring(0, 280);
+      displayText += "...";
+    } else {
+      displayText = this.widget.activity.text;
+    }
+
     return Column(
       children: <Widget>[
         Container(
           margin: EdgeInsets.fromLTRB(30, 5, 30, 0),
           alignment: Alignment.topLeft,
           child: Text(
-            this.widget.activity.text,
-            maxLines: 4,
-            overflow: TextOverflow.ellipsis,
+            displayText,
             style: TextStyle(
               color: Colors.black,
               fontSize: 14,

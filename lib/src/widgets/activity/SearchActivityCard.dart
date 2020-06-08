@@ -1,10 +1,17 @@
 import 'package:cibic_mobile/src/models/activity_model.dart';
+import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
+import 'package:cibic_mobile/src/resources/cibic_icons.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
+import 'package:cibic_mobile/src/resources/utils.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
+import 'package:cibic_mobile/src/widgets/activity/card/CardView.dart';
 import 'package:cibic_mobile/src/widgets/activity/card/ReactionSlider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
-class SearchActivityCard extends StatelessWidget {
+class SearchActivityCard extends StatefulWidget {
   final ActivityModel activity;
   final int type;
   final Function onReact;
@@ -14,201 +21,273 @@ class SearchActivityCard extends StatelessWidget {
   SearchActivityCard(
       this.activity, this.type, this.onReact, this.onSave, this.mode);
 
+  @override
+  _SearchActivityCardState createState() => _SearchActivityCardState();
+}
+
+class _SearchActivityCardState extends State<SearchActivityCard> {
+  Color upVoteColor;
+  Color downVoteColor;
+  Color abstainColor;
+
+  @override
+  initState() {
+    super.initState();
+    this.upVoteColor = Colors.black;
+    this.downVoteColor = Colors.black;
+    this.abstainColor = Colors.black;
+  }
+
   void openActivityScreen(BuildContext context) async {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ActivityScreen(
-                this.activity.id, this.onReact, this.onSave, this.mode)));
+            builder: (context) => ActivityScreen(this.widget.activity.id,
+                this.widget.onReact, this.widget.onSave, this.widget.mode)));
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => this.openActivityScreen(context),
-      child: Container(
-        margin: EdgeInsets.fromLTRB(5, 0, 5, 5),
-        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-        decoration: BoxDecoration(
-            color: CARD_BACKGROUND,
-            borderRadius: BorderRadius.all(Radius.circular(30)),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black,
-                  blurRadius: 3.0,
-                  spreadRadius: 0,
-                  offset: Offset(3.0, 3.0))
-            ]),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            // OPTIONS
-            Container(
-              alignment: Alignment.topRight,
-              margin: const EdgeInsets.fromLTRB(0, 0, 30, 0),
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  icon: Icon(Icons.more_horiz),
-                  iconSize: 22,
-                  elevation: 16,
-                  onChanged: (String value) {},
-                  items: <String>['Guardar Publicación']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      onTap: () {
-                        this.onSave(this.activity.id);
-                      },
-                      child: Text(value),
-                    );
-                  }).toList(),
+    return Container(
+      width: MediaQuery.of(context).size.width - 20,
+      margin: EdgeInsets.fromLTRB(10, 0, 10, 5),
+      decoration: BoxDecoration(
+          color: CARD_BACKGROUND,
+          borderRadius: BorderRadius.all(Radius.circular(30)),
+          boxShadow: [
+            BoxShadow(
+                color: labelColorPicker[this.widget.activity.activityType],
+                blurRadius: 3.0,
+                spreadRadius: 0,
+                offset: Offset(3.0, 3.0))
+          ]),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            alignment: Alignment.topLeft,
+            margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // TITLE
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+                        child: Text(
+                          this.widget.activity.title,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                      generateLabel(),
+                      generateTags(),
+                    ],
+                  ),
                 ),
-              ),
+                // OPTIONS
+                PopupMenuButton<ActivityOption>(
+                  onSelected: (ActivityOption result) {
+                    if (result == ActivityOption.save) {
+                      this.widget.onSave(this.widget.activity.id);
+                    }
+                  },
+                  icon: Icon(Icons.more_horiz, size: 22),
+                  itemBuilder: (BuildContext context) {
+                    return <PopupMenuEntry<ActivityOption>>[
+                      const PopupMenuItem<ActivityOption>(
+                        value: ActivityOption.save,
+                        child: Text('Guardar Publicación'),
+                      ),
+                    ];
+                  },
+                ),
+              ],
             ),
-            // TITLE
-            Container(
-              alignment: Alignment.topLeft,
-              margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-              child: Text(
-                this.activity.title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w400),
-              ),
-            ),
-            // LABEL
-            generateLabel(),
-            // CONTENTS
-            generateContent(),
-          ],
-        ),
+          ),
+          // CONTENTS
+          generateContent(),
+        ],
       ),
     );
   }
 
   Container generateLabel() {
     return Container(
-      alignment: Alignment.topLeft,
-      margin: const EdgeInsets.fromLTRB(30, 5, 0, 0),
-      child: Row(
-        children: [
-          Container(
-            width: 60,
-            height: 15,
-            child: Center(
-              child: Text(
-                labelTextPicker[this.activity.activityType],
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
-            ),
-            decoration: BoxDecoration(
-              border: Border.all(
-                  color: labelColorPicker[this.activity.activityType],
-                  width: 0.5),
-              borderRadius: BorderRadius.circular(5),
-            ),
+      width: 60,
+      height: 15,
+      margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+      child: Center(
+        child: Text(
+          labelTextPicker[this.widget.activity.activityType],
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 10,
+            fontWeight: FontWeight.w300,
           ),
-          ...generateTags(),
-        ],
+        ),
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(
+            color: labelColorPicker[this.widget.activity.activityType],
+            width: 0.5),
+        borderRadius: BorderRadius.circular(5),
       ),
     );
   }
 
-  List<Widget> generateTags() {
-    if (activity.tags == null || activity.tags.length == 0) {
-      return [];
+  Widget generateTags() {
+    if (widget.activity.tags == null || widget.activity.tags.length == 0) {
+      return Container();
     }
     List<Widget> tags = [];
-    for (int i = 0; i < activity.tags.length; i++) {
-      if (activity.tags[i]['label'] == null ||
-          activity.tags[i]['label'] == "") {
-        continue;
-      } else {
-        tags.add(GestureDetector(
-          onTap: () {
-            // TODO TAG TOUCH
-          },
-          child: Container(
-            margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
-            child: Text(
-              "#" + activity.tags[i]['label'],
-              style: TextStyle(
-                color: COLOR_DEEP_BLUE,
-                fontWeight: FontWeight.w200,
-                fontSize: 12,
-              ),
-            ),
-          ),
-        ));
+    for (int i = 0; i < widget.activity.tags.length; i++) {
+      if (widget.activity.tags[i]['label'] == "") {
+        return Container();
       }
-    }
-    return tags;
-  }
-
-  Widget generatePoll() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(right: 30),
-            padding: const EdgeInsets.only(top: 26),
-            child: Icon(Icons.thumb_down, size: 50),
-          ),
-          Container(
-            margin: EdgeInsets.only(right: 30),
-            padding: const EdgeInsets.only(top: 10),
-            child: Icon(Icons.cancel, size: 30),
-          ),
-          Container(
-            child: Icon(Icons.thumb_up, size: 50),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget generateScreen() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Container(
-          alignment: Alignment.topLeft,
-          margin: EdgeInsets.fromLTRB(30, 10, 30, 0),
+      tags.add(GestureDetector(
+        onTap: () {
+          // TODO TAG TOUCH
+        },
+        child: Container(
+          margin: EdgeInsets.fromLTRB(0, 0, 15, 0),
           child: Text(
-            this.activity.text,
+            "#" + widget.activity.tags[i]['label'],
             style: TextStyle(
-              color: Colors.black,
-              fontSize: 14,
-              fontWeight: FontWeight.w300,
+              color: COLOR_DEEP_BLUE,
+              fontWeight: FontWeight.w200,
+              fontSize: 12,
             ),
           ),
         ),
-        ReactionSlider(this.activity, this.onReact),
-      ],
+      ));
+    }
+    return Row(children: tags);
+  }
+
+  Widget generatePoll() {
+    return StoreConnector<AppState, _PollViewModel>(
+      converter: (Store<AppState> store) {
+        String jwt = store.state.user['jwt'];
+        int id = extractID(jwt);
+        Function onPollVote = (ActivityModel activity, int reactValue) {
+          store.dispatch(PostPollAttempt(activity, reactValue, widget.mode));
+        };
+        if (widget.activity.votes != null) {
+          for (int i = 0; i < widget.activity.votes.length; i++) {
+            if (widget.activity.votes[i]['userId'] == id) {
+              switch (widget.activity.votes[i]['value']) {
+                case -1:
+                  this.downVoteColor = COLOR_SOFT_BLUE;
+                  this.abstainColor = Colors.black;
+                  this.upVoteColor = Colors.black;
+                  break;
+                case 0:
+                  this.downVoteColor = Colors.black;
+                  this.abstainColor = COLOR_SOFT_BLUE;
+                  this.upVoteColor = Colors.black;
+                  break;
+                case 1:
+                  this.downVoteColor = Colors.black;
+                  this.abstainColor = Colors.black;
+                  this.upVoteColor = COLOR_SOFT_BLUE;
+                  break;
+              }
+              break;
+            }
+          }
+        }
+        return _PollViewModel(jwt, onPollVote);
+      },
+      builder: (BuildContext context, _PollViewModel vm) {
+        return Container(
+          margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+          child: Column(children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    vm.onPollVote(widget.activity, -1);
+                    setState(() {
+                      this.downVoteColor = COLOR_SOFT_BLUE;
+                      this.abstainColor = Colors.black;
+                      this.upVoteColor = Colors.black;
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: Icon(Cibic.dislike,
+                        color: this.downVoteColor, size: 50),
+                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    vm.onPollVote(widget.activity, 0);
+                    setState(() {
+                      this.downVoteColor = Colors.black;
+                      this.abstainColor = COLOR_SOFT_BLUE;
+                      this.upVoteColor = Colors.black;
+                    });
+                  },
+                  child: Container(
+                    width: 90,
+                    height: 30,
+                    color: Colors.transparent,
+                    alignment: Alignment.centerLeft,
+                    child: Icon(Cibic.abstain, color: this.abstainColor),
+                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    vm.onPollVote(widget.activity, 1);
+                    setState(() {
+                      this.downVoteColor = Colors.black;
+                      this.abstainColor = Colors.black;
+                      this.upVoteColor = COLOR_SOFT_BLUE;
+                    });
+                  },
+                  child: Container(
+                    child: Icon(Cibic.like, color: this.upVoteColor, size: 50),
+                  ),
+                )
+              ],
+            ),
+          ]),
+        );
+      },
     );
   }
 
   Widget generateDiscussion() {
+    String displayText;
+    if (this.widget.activity.text.length > 280) {
+      displayText = this.widget.activity.text.substring(0, 280);
+      displayText += "...";
+    } else {
+      displayText = this.widget.activity.text;
+    }
+
     return Column(
       children: <Widget>[
         Container(
-          margin: EdgeInsets.fromLTRB(30, 10, 30, 0),
+          margin: EdgeInsets.fromLTRB(30, 5, 30, 0),
           alignment: Alignment.topLeft,
           child: Text(
-            this.activity.text,
-            maxLines: 15,
-            overflow: TextOverflow.ellipsis,
+            displayText,
             style: TextStyle(
               color: Colors.black,
               fontSize: 14,
@@ -216,16 +295,22 @@ class SearchActivityCard extends StatelessWidget {
             ),
           ),
         ),
-        ReactionSlider(this.activity, this.onReact),
+        ReactionSlider(this.widget.activity, this.widget.onReact),
       ],
     );
   }
 
   Widget generateContent() {
-    if (this.activity.activityType == ACTIVITY_POLL) {
+    if (this.widget.activity.activityType == ACTIVITY_POLL) {
       return generatePoll();
     } else {
       return generateDiscussion();
     }
   }
+}
+
+class _PollViewModel {
+  String jwt;
+  Function onPollVote;
+  _PollViewModel(this.jwt, this.onPollVote);
 }
