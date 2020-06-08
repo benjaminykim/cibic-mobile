@@ -158,6 +158,7 @@ const ENDPOINT_ACTIVITY_UNSAVE = "activity/unsave";
 const ENDPOINT_CABILDOS = "cabildo/";
 const ENDPOINT_CABILDO_PROFILE = "cabildo/profile/";
 const ENDPOINT_CABILDO_FEED = "cabildo/feed/";
+const ENDPOINT_CABILDO_DESCRIPTION = "cabildo/description/";
 
 const ENDPOINT_USER = "user/";
 const ENDPOINT_USER_FEED = "user/feed/";
