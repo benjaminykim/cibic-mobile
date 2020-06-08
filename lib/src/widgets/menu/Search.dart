@@ -268,28 +268,28 @@ class _SearchState extends State<Search> {
 
         void _userListener() {
           if (userController.position.maxScrollExtent ==
-              userController.offset) {
+              userController.offset && store.state.search['user'].length % 20 == 0) {
             store.dispatch(PostSearchAppendAttempt(inputSearchController.text, 0));
           }
         }
 
         void _cabildoListener() {
           if (cabildoController.position.maxScrollExtent ==
-              cabildoController.offset) {
+              cabildoController.offset && store.state.search['cabildo'].length % 20 == 0) {
             store.dispatch(PostSearchAppendAttempt(inputSearchController.text, 1));
           }
         }
 
         void _activityListener() {
           if (activityController.position.maxScrollExtent ==
-              activityController.offset) {
+              activityController.offset && store.state.search['activity'].length % 20 == 0) {
             store.dispatch(PostSearchAppendAttempt(inputSearchController.text, 2));
           }
         }
 
         void _tagListener() {
           if (tagController.position.maxScrollExtent ==
-              tagController.offset) {
+              tagController.offset && store.state.search['tag'].length % 20 == 0) {
             store.dispatch(PostSearchAppendAttempt(inputSearchController.text, 3));
           }
         }

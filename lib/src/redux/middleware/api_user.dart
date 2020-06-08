@@ -161,7 +161,7 @@ postSearchQuery(
         if (offset == 0) {
           next(PostSearchSuccess(mode, responseList));
         } else {
-          //next(PostSearchAppendSuccess(mode, responseList));
+          next(PostSearchAppend(mode, responseList));
         }
         break;
       case 1:
@@ -170,7 +170,9 @@ postSearchQuery(
             .cabildo;
         if (offset == 0) {
           next(PostSearchSuccess(mode, responseList));
-        } else {}
+        } else {
+          next(PostSearchAppend(mode, responseList));
+        }
         break;
       case 2:
         List<ActivityModel> feed =
@@ -178,7 +180,9 @@ postSearchQuery(
                 .feed;
         if (offset == 0) {
           next(PostSearchSuccess(mode, feed));
-        } else {}
+        } else {
+          next(PostSearchAppend(mode, feed));
+        }
         break;
       case 4:
         List<ActivityModel> feed =
@@ -186,7 +190,9 @@ postSearchQuery(
                 .feed;
         if (offset == 0) {
           next(PostSearchSuccess(mode, feed));
-        } else {}
+        } else {
+          next(PostSearchAppend(mode, feed));
+        }
         break;
     }
   } else if (response.statusCode == 204) {

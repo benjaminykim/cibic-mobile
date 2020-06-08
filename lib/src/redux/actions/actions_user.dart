@@ -199,6 +199,7 @@ class PostSearchAppend {
     }
   }
 }
+
 class PostSearchError {
   String error;
   PostSearchError(this.error);
