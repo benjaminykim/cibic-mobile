@@ -216,10 +216,9 @@ class _ComposeState extends State<Compose> {
                   borderRadius: BorderRadius.all(Radius.circular(7)),
                 ),
                 child: GestureDetector(
-                  onTap: () {
-
-                  },
+                  onTap: () {},
                   child: TextFormField(
+                    inputFormatters: [LengthLimitingTextInputFormatter(25), new WhitelistingTextInputFormatter(RegExp("[0-9a-zA-Z]"))],
                     controller: inputTagController,
                     decoration: InputDecoration(
                       border: InputBorder.none,
@@ -380,8 +379,8 @@ class _ComposeState extends State<Compose> {
               store.dispatch(
                   SubmitActivityAttempt(type, title, body, idCabildo, tag))
             };
-        return _ComposeViewModel(store.state.user['jwt'],
-            store.state.profile, submitActivityCallback);
+        return _ComposeViewModel(store.state.user['jwt'], store.state.profile,
+            submitActivityCallback);
       },
       builder: (BuildContext context, _ComposeViewModel vm) {
         return Container(
