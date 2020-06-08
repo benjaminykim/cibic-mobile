@@ -21,7 +21,22 @@ class Saved extends StatefulWidget {
 class _SavedState extends State<Saved> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   Future<FeedModel> savedFeed;
-  int offset = 0;
+  FeedModel loadedFeed;
+  bool isLoaded;
+  ScrollController controller;
+
+  @override
+  initState() {
+    super.initState();
+    this.isLoaded = false;
+    this.loadedFeed = FeedModel.initial();
+  }
+
+  refresh(String jwt) async {
+    this.loadedFeed = FeedModel.initial();
+    this.savedFeed = fetchSavedFeed(jwt, 0);
+    return null;
+  }
 
   Future<FeedModel> fetchSavedFeed(String jwt, int offset) async {
     var url = API_BASE + ENDPOINT_ACTIVITY_SAVE_FEED + "/" + offset.toString();
@@ -30,27 +45,55 @@ class _SavedState extends State<Saved> {
     var response = await http.get(url, headers: header);
     printResponse("SAVED FEED", "GET", response.statusCode);
     if (response != null && response.statusCode == 200) {
-      FeedModel feed =
-          FeedModel.fromJson(json.decode('{"feed":' + response.body + '}'));
-      return feed;
+      if (offset != 0) {
+        FeedModel feed =
+            FeedModel.fromJson(json.decode('{"feed":' + response.body + '}'));
+        setState(() {
+          this.loadedFeed.feed.addAll(feed.feed);
+        });
+      } else {
+        FeedModel feed =
+            FeedModel.fromJson(json.decode('{"feed":' + response.body + '}'));
+        setState(() {
+          this.loadedFeed = feed;
+        });
+      }
+      return this.loadedFeed;
     } else {
       throw Exception("Could Not Fetch Saved Feed");
     }
   }
 
   FeedViewModel generateFeedViewModel(Store<AppState> store) {
+    String jwt = store.state.user['jwt'];
     Function onReact = (ActivityModel activity, int reactValue) =>
         store.dispatch(PostReactionAttempt(activity, reactValue, 4));
     Function onSave =
         (int activityId) => store.dispatch(PostSaveAttempt(activityId, false));
-    return FeedViewModel(store.state.user['jwt'], onReact, onSave);
+    if (this.isLoaded == false) {
+      this.savedFeed = fetchSavedFeed(jwt, 0);
+      this.isLoaded = true;
+    }
+
+    void _scrollListener() async {
+      if (controller.position.maxScrollExtent == controller.offset) {
+        this.savedFeed = fetchSavedFeed(jwt, this.loadedFeed.feed.length);
+      }
+    }
+
+    controller = new ScrollController()..addListener(_scrollListener);
+    return FeedViewModel(
+      jwt,
+      onReact,
+      onSave,
+      controller,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, FeedViewModel>(
       converter: (Store<AppState> store) {
-        this.savedFeed = fetchSavedFeed(store.state.user['jwt'], this.offset);
         return generateFeedViewModel(store);
       },
       builder: (BuildContext context, FeedViewModel vm) {
@@ -77,15 +120,21 @@ class _SavedState extends State<Saved> {
               future: savedFeed,
               builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                 if (snapshot.hasData) {
-                  return ListView.separated(
-                    separatorBuilder: (context, index) => Divider(
-                      color: Colors.black,
-                    ),
-                    itemCount: snapshot.data.feed.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      ActivityModel activity = snapshot.data.feed[index];
-                      return ActivityView(activity, vm.onReact, vm.onSave, 4);
+                  return RefreshIndicator(
+                    onRefresh: () {
+                      return refresh(vm.jwt);
                     },
+                    child: ListView.separated(
+                      controller: vm.controller,
+                      separatorBuilder: (context, index) => Divider(
+                        color: Colors.black,
+                      ),
+                      itemCount: snapshot.data.feed.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        ActivityModel activity = snapshot.data.feed[index];
+                        return ActivityView(activity, vm.onReact, vm.onSave, 4);
+                      },
+                    ),
                   );
                 } else if (snapshot.hasError) {
                   return Center(
@@ -114,6 +163,7 @@ class FeedViewModel {
   String jwt;
   final Function onReact;
   final Function onSave;
+  ScrollController controller;
 
-  FeedViewModel(this.jwt, this.onReact, this.onSave);
+  FeedViewModel(this.jwt, this.onReact, this.onSave, this.controller);
 }
