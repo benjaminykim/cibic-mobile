@@ -157,25 +157,38 @@ postSearchQuery(String jwt, int offset, String query, int mode, NextDispatcher n
         List<UserModel> responseList = SearchUserModel.fromJson(
                 json.decode('{"user":' + responseBody + '}'))
             .user;
-        next(PostSearchSuccess(mode, responseList));
+        if (offset == 0) {
+          next(PostSearchSuccess(mode, responseList));
+        } else {
+          //next(PostSearchAppendSuccess(mode, responseList));
+        }
         break;
       case 1:
         List<CabildoModel> responseList = SearchCabildoModel.fromJson(
                 json.decode('{"cabildo":' + responseBody + '}'))
             .cabildo;
+        if (offset == 0) {
         next(PostSearchSuccess(mode, responseList));
+        } else {
+        }
         break;
       case 2:
         List<ActivityModel> feed =
             FeedModel.fromJson(json.decode('{"feed":' + responseBody + '}'))
                 .feed;
+        if (offset == 0) {
         next(PostSearchSuccess(mode, feed));
+        } else {
+        }
         break;
       case 4:
         List<ActivityModel> feed =
             FeedModel.fromJson(json.decode('{"feed":' + responseBody + '}'))
                 .feed;
+        if (offset == 0) {
         next(PostSearchSuccess(mode, feed));
+        } else {
+        }
         break;
     }
   } else if (response.statusCode == 204) {

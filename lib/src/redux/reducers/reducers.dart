@@ -14,8 +14,7 @@ AppState appReducer(AppState prevState, dynamic action) {
 
   if (action is IsLoading) {
     newState.isLoading = true;
-  }
-  if (action is VoteLock) {
+  } else if (action is VoteLock) {
     newState.feedState['voteLock'] = action.lock;
   } else if (action is LogOut) {
     newState = AppState.initial();
@@ -202,6 +201,21 @@ AppState appReducer(AppState prevState, dynamic action) {
         break;
       case 3:
         newState.search['tag'] = action.resultTag;
+        break;
+    }
+  } else if (action is PostSearchAppend) {
+    switch (action.mode) {
+      case 0:
+        newState.search['user'].addAll(action.resultUser);
+        break;
+      case 1:
+        newState.search['cabildo'].addAll(action.resultCabildo);
+        break;
+      case 2:
+        newState.search['activity'].addAll(action.resultActivity);
+        break;
+      case 3:
+        newState.search['tag'].addAll(action.resultTag);
         break;
     }
   } else if (action is PostSearchError) {}

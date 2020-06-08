@@ -14,7 +14,6 @@ class AppState {
   Map<String, bool> loginState;
   Map<String, bool> registerState;
   Map<String, bool> feedState;
-  // Map<String, bool> profileState;
   Status profileState;
   bool isLoading;
 
@@ -79,14 +78,6 @@ class AppState {
     UserModel profile = UserModel.initial();
     FeedModel profileFeed = FeedModel.initial();
     Status profileState = Status.none;
-
-/*
-    Map<String, bool> profileState = {
-      'selfUserIsLoading': false,
-      'selfUserIsSuccess': false,
-      'selfUserIsError': false,
-    };
-    */
 
     Map<String, dynamic> search = {
       'activity': List<ActivityModel>(),

@@ -119,10 +119,15 @@ class FetchSavedFeedAttempt {
 
 class PostSearchAttempt {
   String query;
-  int offset;
-  PostSearchAttempt(this.query, this.offset);
+  bool reset;
+  PostSearchAttempt(this.query, this.reset);
 }
 
+class PostSearchAppendAttempt {
+  String query;
+  int mode;
+  PostSearchAppendAttempt(this.query, this.mode);
+}
 class PostSearchActivityByTagAttempt {
   String query;
   int offset;
@@ -157,6 +162,33 @@ class PostSearchSuccess {
   }
 }
 
+class PostSearchAppend {
+  int mode; // 0 -> user, 1 -> cabildo, 2 -> activity, 3 -> tag, 4-> activity by tag
+  List<UserModel> resultUser;
+  List<CabildoModel> resultCabildo;
+  List<ActivityModel> resultActivity;
+  List<Map<String, dynamic>> resultTag;
+  List<ActivityModel> resultActivityByTag;
+  PostSearchAppend(this.mode, result) {
+    switch (this.mode) {
+      case 0:
+        this.resultUser = result;
+        break;
+      case 1:
+        this.resultCabildo = result;
+        break;
+      case 2:
+        this.resultActivity = result;
+        break;
+      case 3:
+        this.resultTag = result;
+        break;
+      case 4:
+        this.resultActivityByTag = result;
+        break;
+    }
+  }
+}
 class PostSearchError {
   String error;
   PostSearchError(this.error);

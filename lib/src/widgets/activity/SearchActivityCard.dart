@@ -1,7 +1,6 @@
 import 'package:cibic_mobile/src/models/activity_model.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityScreen.dart';
-import 'package:cibic_mobile/src/widgets/activity/card/IconTag.dart';
 import 'package:cibic_mobile/src/widgets/activity/card/ReactionSlider.dart';
 import 'package:flutter/material.dart';
 
@@ -55,9 +54,8 @@ class SearchActivityCard extends StatelessWidget {
                   iconSize: 22,
                   elevation: 16,
                   onChanged: (String value) {},
-                  items: <String>[
-                    'Guardar Publicación'
-                  ].map<DropdownMenuItem<String>>((String value) {
+                  items: <String>['Guardar Publicación']
+                      .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       onTap: () {
@@ -131,22 +129,27 @@ class SearchActivityCard extends StatelessWidget {
     }
     List<Widget> tags = [];
     for (int i = 0; i < activity.tags.length; i++) {
-      tags.add(GestureDetector(
-        onTap: () {
-          // TODO TAG TOUCH
-        },
-        child: Container(
-          margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
-          child: Text(
-            "#" + activity.tags[i]['label'],
-            style: TextStyle(
-              color: COLOR_DEEP_BLUE,
-              fontWeight: FontWeight.w200,
-              fontSize: 12,
+      if (activity.tags[i]['label'] == null ||
+          activity.tags[i]['label'] == "") {
+        continue;
+      } else {
+        tags.add(GestureDetector(
+          onTap: () {
+            // TODO TAG TOUCH
+          },
+          child: Container(
+            margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
+            child: Text(
+              "#" + activity.tags[i]['label'],
+              style: TextStyle(
+                color: COLOR_DEEP_BLUE,
+                fontWeight: FontWeight.w200,
+                fontSize: 12,
+              ),
             ),
           ),
-        ),
-      ));
+        ));
+      }
     }
     return tags;
   }
@@ -169,55 +172,6 @@ class SearchActivityCard extends StatelessWidget {
           ),
           Container(
             child: Icon(Icons.thumb_up, size: 50),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget generateComment() {
-    int commentIndex = 0;
-    if (this.type >= CARD_COMMENT_0 && this.type <= CARD_COMMENT_2) {
-      commentIndex = this.type - CARD_COMMENT_0;
-    }
-    return Container(
-      margin: EdgeInsets.fromLTRB(30, 10, 30, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconTag(Icon(Icons.person, size: 17),
-                  this.activity.comments[commentIndex].user['firstName']),
-              IconTag(
-                  Icon(Icons.offline_bolt, size: 17),
-                  this
-                      .activity
-                      .comments[commentIndex]
-                      .user['citizenPoints']
-                      .toString()),
-            ],
-          ),
-          Text(
-            this.activity.comments[commentIndex].content,
-            maxLines: 15,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.black,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
-            child: Center(
-              child: Text(
-                this.activity.comments[commentIndex].score.toString(),
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.black,
-                ),
-              ),
-            ),
           )
         ],
       ),
@@ -268,16 +222,8 @@ class SearchActivityCard extends StatelessWidget {
   }
 
   Widget generateContent() {
-    if (this.activity.activityType == ACTIVITY_POLL &&
-        this.type == CARD_DEFAULT) {
+    if (this.activity.activityType == ACTIVITY_POLL) {
       return generatePoll();
-    } else if (this.type == CARD_COMMENT_0 ||
-        this.type == CARD_COMMENT_1 ||
-        this.type == CARD_COMMENT_2 ||
-        this.type == CARD_LAST) {
-      return generateComment();
-    } else if (this.type == CARD_SCREEN) {
-      return generateScreen();
     } else {
       return generateDiscussion();
     }

@@ -58,7 +58,7 @@ void apiMiddleware(
   } else if (action is FetchProfileFeedAttempt) {
     String jwt = store.state.user['jwt'];
     if (action.reset == true) {
-        await fetchProfileFeed(jwt, action.id.toString(), 0, next);
+      await fetchProfileFeed(jwt, action.id.toString(), 0, next);
     } else {
       int offset = store.state.profileFeed.feed.length;
       if (offset % 20 == 0) {
@@ -87,13 +87,30 @@ void apiMiddleware(
     await postSaveActivity(
         action.activityId, store.state.user['jwt'], action.save, next, store);
   } else if (action is PostSearchAttempt) {
-    await postSearchQuery(
-        store.state.user['jwt'], action.offset, action.query, 0, next);
-    await postSearchQuery(
-        store.state.user['jwt'], action.offset, action.query, 1, next);
-    await postSearchQuery(
-        store.state.user['jwt'], action.offset, action.query, 2, next);
-    await postSearchQuery(
-        store.state.user['jwt'], action.offset, action.query, 3, next);
+    if (action.reset == true) {
+      await postSearchQuery(store.state.user['jwt'], 0, action.query, 0, next);
+      await postSearchQuery(store.state.user['jwt'], 0, action.query, 1, next);
+      await postSearchQuery(store.state.user['jwt'], 0, action.query, 2, next);
+      await postSearchQuery(store.state.user['jwt'], 0, action.query, 3, next);
+    }
+  } else if (action is PostSearchAppendAttempt) {
+    switch (action.mode) {
+      case 0:
+        await postSearchQuery(store.state.user['jwt'],
+            store.state.search['user'].length, action.query, 0, next);
+        break;
+      case 1:
+        await postSearchQuery(store.state.user['jwt'],
+            store.state.search['cabildo'].length, action.query, 1, next);
+        break;
+      case 2:
+        await postSearchQuery(store.state.user['jwt'],
+            store.state.search['activity'].length, action.query, 2, next);
+        break;
+      case 3:
+        await postSearchQuery(store.state.user['jwt'],
+            store.state.search['tag'].length, action.query, 3, next);
+        break;
+    }
   }
 }

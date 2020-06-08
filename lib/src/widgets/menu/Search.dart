@@ -25,10 +25,13 @@ class _SearchState extends State<Search> {
       borderRadius: BorderRadius.zero,
       borderSide: BorderSide(width: 1, color: Colors.transparent));
   int selectedPage = 0;
-  PageController _controller = PageController(
+  PageController _pageController = PageController(
     initialPage: 0,
   );
-  int offset = 0;
+  ScrollController activityController;
+  ScrollController userController;
+  ScrollController cabildoController;
+  ScrollController tagController;
 
   List<String> searchButtonTextPicker = [
     "Todo",
@@ -59,19 +62,23 @@ class _SearchState extends State<Search> {
   @override
   void dispose() {
     inputSearchController.dispose();
-    _controller.dispose();
+    _pageController.dispose();
+    activityController.dispose();
+    userController.dispose();
+    cabildoController.dispose();
+    tagController.dispose();
     super.dispose();
   }
 
-  Widget tagItem(
-      Map<String, dynamic> tag, Function onReact, Function onSave, Function onSearchActivityByTag, int mode) {
+  Widget tagItem(Map<String, dynamic> tag, Function onReact, Function onSave,
+      Function onSearchActivityByTag, int mode) {
     return Container(
       height: 30,
       margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
       child: GestureDetector(
         onTap: () async {
           await onSearchActivityByTag(tag['label']);
-          _controller.jumpToPage(1);
+          _pageController.jumpToPage(1);
         },
         child: Text(
           "#" + tag['label'],
@@ -104,6 +111,9 @@ class _SearchState extends State<Search> {
             vm.searchTag.length,
         itemBuilder: (BuildContext context, int index) {
           if (index < vm.searchActivity.length) {
+            print("SEARCH ACTIVITY");
+            print("LENGTH: ${vm.searchActivity.length}");
+            print("INDEX: $index");
             ActivityModel activity = vm.searchActivity[index];
             return SearchActivityCard(
                 activity, activity.activityType, vm.onReact, vm.onSave, 6);
@@ -138,6 +148,7 @@ class _SearchState extends State<Search> {
       return this.noResultsFound;
     } else {
       return ListView.separated(
+        controller: activityController,
         separatorBuilder: (context, index) => Divider(
           color: Colors.black,
           indent: 10,
@@ -158,6 +169,7 @@ class _SearchState extends State<Search> {
       return this.noResultsFound;
     } else {
       return ListView.separated(
+        controller: userController,
         separatorBuilder: (context, index) => Divider(
           color: Colors.black,
           indent: 10,
@@ -177,6 +189,7 @@ class _SearchState extends State<Search> {
       return this.noResultsFound;
     } else {
       return ListView.separated(
+        controller: cabildoController,
         separatorBuilder: (context, index) => Divider(
           color: Colors.black,
           indent: 10,
@@ -196,6 +209,7 @@ class _SearchState extends State<Search> {
       return this.noResultsFound;
     } else {
       return ListView.separated(
+        controller: tagController,
         separatorBuilder: (context, index) => Divider(
           color: Colors.black,
           indent: 10,
@@ -203,7 +217,8 @@ class _SearchState extends State<Search> {
         ),
         itemCount: vm.searchTag.length,
         itemBuilder: (BuildContext context, int index) {
-          return tagItem(vm.searchTag[index], vm.onReact, vm.onSave, vm.onSearchActivityByTag, 7);
+          return tagItem(vm.searchTag[index], vm.onReact, vm.onSave,
+              vm.onSearchActivityByTag, 7);
         },
       );
     }
@@ -222,7 +237,7 @@ class _SearchState extends State<Search> {
       ),
       child: GestureDetector(
         onTap: () {
-          _controller.jumpToPage(mode);
+          _pageController.jumpToPage(mode);
         },
         child: Center(
           child: Text(
@@ -243,13 +258,46 @@ class _SearchState extends State<Search> {
     return StoreConnector<AppState, _SearchViewModel>(
       converter: (Store<AppState> store) {
         Function submitSearchQuery =
-            (String query) => {store.dispatch(PostSearchAttempt(query, this.offset))};
+            (String query) => {store.dispatch(PostSearchAttempt(query, true))};
         Function onReact = (ActivityModel activity, int reactValue) =>
             store.dispatch(PostReactionAttempt(activity, reactValue, -1));
         Function onSave = (int activityId) =>
             store.dispatch(PostSaveAttempt(activityId, true));
         Function onSearchActivityByTag = (String query) =>
-            store.dispatch(PostSearchActivityByTagAttempt(query, this.offset));
+            store.dispatch(PostSearchActivityByTagAttempt(query, 0));
+
+        void _userListener() {
+          if (userController.position.maxScrollExtent ==
+              userController.offset) {
+            store.dispatch(PostSearchAppendAttempt(inputSearchController.text, 0));
+          }
+        }
+
+        void _cabildoListener() {
+          if (cabildoController.position.maxScrollExtent ==
+              cabildoController.offset) {
+            store.dispatch(PostSearchAppendAttempt(inputSearchController.text, 1));
+          }
+        }
+
+        void _activityListener() {
+          if (activityController.position.maxScrollExtent ==
+              activityController.offset) {
+            store.dispatch(PostSearchAppendAttempt(inputSearchController.text, 2));
+          }
+        }
+
+        void _tagListener() {
+          if (tagController.position.maxScrollExtent ==
+              tagController.offset) {
+            store.dispatch(PostSearchAppendAttempt(inputSearchController.text, 3));
+          }
+        }
+
+        activityController = ScrollController()..addListener(_activityListener);
+        userController = ScrollController()..addListener(_userListener);
+        cabildoController = ScrollController()..addListener(_cabildoListener);
+        tagController = ScrollController()..addListener(_tagListener);
         return _SearchViewModel(
             store.state.profile,
             submitSearchQuery,
@@ -342,7 +390,7 @@ class _SearchState extends State<Search> {
                   )),
                 ),
                 child: PageView(
-                  controller: _controller,
+                  controller: _pageController,
                   onPageChanged: (int pageIndex) {
                     setState(() {
                       this.selectedPage = pageIndex;
