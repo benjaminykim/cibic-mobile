@@ -108,6 +108,16 @@ class FetchProfileFeedError {
   FetchProfileFeedError(this.error);
 }
 
+class PutDescriptionAttempt {
+  String description;
+  PutDescriptionAttempt(this.description);
+}
+
+class PutDescriptionSuccess {
+  String description;
+  PutDescriptionSuccess(this.description);
+}
+
 class ClearProfile {
   String type;
   ClearProfile(this.type);

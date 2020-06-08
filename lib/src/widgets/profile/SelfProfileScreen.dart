@@ -7,6 +7,7 @@ import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:cibic_mobile/src/resources/utils.dart';
 import 'package:cibic_mobile/src/widgets/activity/ActivityView.dart';
+import 'package:cibic_mobile/src/widgets/profile/Description.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_redux/flutter_redux.dart';
@@ -25,18 +26,34 @@ class _UserProfileState extends State<SelfProfileScreen> {
   double profileHeight = 160;
   ScrollController controller;
 
+  void _startDescription(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      elevation: 5,
+      backgroundColor: Colors.transparent,
+      builder: (bContext) {
+        return GestureDetector(
+          onTap: () {},
+          child: Description(),
+          behavior: HitTestBehavior.opaque,
+        );
+      },
+    );
+  }
+
   ProfileViewModel generateProfileViewModel(Store<AppState> store) {
     String jwt = store.state.user['jwt'];
     int userId = extractID(jwt);
+    FeedModel userFeed;
+    UserModel user;
+    bool error;
+
     refreshFeed() async {
       store.dispatch(FetchProfileAttempt(userId, "selfUser"));
       store.dispatch(FetchProfileFeedAttempt(userId, true));
       return null;
     }
-
-    FeedModel userFeed;
-    UserModel user;
-    bool error;
 
     user = store.state.profile;
     userFeed = store.state.profileFeed;
@@ -176,7 +193,7 @@ class _UserProfileState extends State<SelfProfileScreen> {
                                 ),
                               ],
                             ),
-                            // user introduction
+                            // USER DESCRIPTION
                             Container(
                               margin: EdgeInsets.only(top: 10),
                               alignment: Alignment.topLeft,
@@ -185,6 +202,12 @@ class _UserProfileState extends State<SelfProfileScreen> {
                                   setState(() {
                                     this.maxLines = 100;
                                   });
+                                },
+                                onDoubleTap: () {
+                                  _startDescription(context);
+                                },
+                                onLongPress: () {
+                                  _startDescription(context);
                                 },
                                 child: Container(
                                   height: 76,

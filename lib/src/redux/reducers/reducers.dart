@@ -86,6 +86,8 @@ AppState appReducer(AppState prevState, dynamic action) {
   } else if (action is FetchProfileFeedError) {
     newState.profileState = Status.isError;
   } else if (action is SubmitActivitySuccess) {
+  } else if (action is PutDescriptionSuccess) {
+    newState.profile.desc = action.description;
   } else if (action is PostReactionSuccess) {
     List<FeedModel> feeds = orderFeeds(newState, action.mode);
 

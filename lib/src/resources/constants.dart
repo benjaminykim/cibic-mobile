@@ -166,6 +166,7 @@ const ENDPOINT_FOLLOW_USER = "user/followuser";
 const ENDPOINT_UNFOLLOW_USER = "user/unfollowuser";
 const ENDPOINT_FOLLOW_CABILDO = "user/followcabildo";
 const ENDPOINT_UNFOLLOW_CABILDO = "user/unfollowcabildo";
+const ENDPOINT_USER_DESCRIPTION = "user/description";
 
 const ENDPOINT_SEARCH_USER = "search/users";
 const ENDPOINT_SEARCH_ACTIVITY = "search/activities";

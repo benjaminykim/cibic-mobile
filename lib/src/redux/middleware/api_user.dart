@@ -119,7 +119,8 @@ postSearchActivityByTag(
   }
 }
 
-postSearchQuery(String jwt, int offset, String query, int mode, NextDispatcher next) async {
+postSearchQuery(
+    String jwt, int offset, String query, int mode, NextDispatcher next) async {
   String url = API_BASE;
   switch (mode) {
     case 0:
@@ -168,27 +169,24 @@ postSearchQuery(String jwt, int offset, String query, int mode, NextDispatcher n
                 json.decode('{"cabildo":' + responseBody + '}'))
             .cabildo;
         if (offset == 0) {
-        next(PostSearchSuccess(mode, responseList));
-        } else {
-        }
+          next(PostSearchSuccess(mode, responseList));
+        } else {}
         break;
       case 2:
         List<ActivityModel> feed =
             FeedModel.fromJson(json.decode('{"feed":' + responseBody + '}'))
                 .feed;
         if (offset == 0) {
-        next(PostSearchSuccess(mode, feed));
-        } else {
-        }
+          next(PostSearchSuccess(mode, feed));
+        } else {}
         break;
       case 4:
         List<ActivityModel> feed =
             FeedModel.fromJson(json.decode('{"feed":' + responseBody + '}'))
                 .feed;
         if (offset == 0) {
-        next(PostSearchSuccess(mode, feed));
-        } else {
-        }
+          next(PostSearchSuccess(mode, feed));
+        } else {}
         break;
     }
   } else if (response.statusCode == 204) {
@@ -212,5 +210,23 @@ postSearchQuery(String jwt, int offset, String query, int mode, NextDispatcher n
     }
   } else {
     next(PostSearchError(response.statusCode.toString()));
+  }
+}
+
+putDescription(String jwt, String desc, NextDispatcher next) async {
+  String url = API_BASE + ENDPOINT_USER_DESCRIPTION;
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request = await httpClient.putUrl(Uri.parse(url));
+  request.headers.add('content-type', 'application/json');
+  request.headers.add('accept', 'application/json');
+  request.headers.add('authorization', 'Bearer $jwt');
+  request.add(utf8.encode(json.encode({"newDesc": desc})));
+  HttpClientResponse response = await request.close();
+  httpClient.close();
+
+  printResponse("USER DESCRIPTION", "PUT", response.statusCode);
+  if (response.statusCode == 200) {
+    next(PutDescriptionSuccess(desc));
+  } else {
   }
 }

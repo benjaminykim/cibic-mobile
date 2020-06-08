@@ -65,6 +65,8 @@ void apiMiddleware(
         await fetchProfileFeed(jwt, action.id.toString(), offset, next);
       }
     }
+  } else if (action is PutDescriptionAttempt) {
+    await putDescription(store.state.user['jwt'], action.description, next);
   } else if (action is SubmitActivityAttempt) {
     await postActivity(action, store.state.user['jwt'], next, store);
   } else if (action is SubmitActivitySuccess) {
