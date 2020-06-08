@@ -1,7 +1,9 @@
 import 'package:cibic_mobile/src/models/cabildo_model.dart';
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
+import 'package:cibic_mobile/src/resources/utils.dart';
 import 'package:cibic_mobile/src/widgets/menu/menu-overlay/CreateCabildo.dart';
 import 'package:cibic_mobile/src/widgets/profile/CabildoProfileScreen.dart';
 import 'package:flutter/material.dart';
@@ -17,12 +19,6 @@ class MyCabildos extends StatefulWidget {
 
 class _MyCabildosState extends State<MyCabildos> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-
-  Future<Null> refreshUser() async {
-    refreshKey.currentState?.show(atTop: false);
-    await Future.delayed(Duration(seconds: 2));
-    return null;
-  }
 
   Widget cabildoAdd() {
     return Container(
@@ -99,8 +95,7 @@ class _MyCabildosState extends State<MyCabildos> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    CabildoProfileScreen(cabildo.id)));
+                builder: (context) => CabildoProfileScreen(cabildo.id)));
       },
       child: Container(
         height: 65,
@@ -135,7 +130,11 @@ class _MyCabildosState extends State<MyCabildos> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _MyCabildosViewModel>(
       converter: (Store<AppState> store) {
-        return _MyCabildosViewModel(store.state.profile, store);
+        Function onRefresh = () async {
+          await store.dispatch(FetchProfileAttempt(extractID(store.state.user['jwt']), "selfUser"));
+          return null;
+        };
+        return _MyCabildosViewModel(store.state.profile, store, onRefresh);
       },
       builder: (BuildContext context, _MyCabildosViewModel vm) {
         List<CabildoModel> cabildos = vm.user.cabildos;
@@ -162,7 +161,7 @@ class _MyCabildosState extends State<MyCabildos> {
               color: APP_BACKGROUND,
               child: RefreshIndicator(
                 key: refreshKey,
-                onRefresh: refreshUser,
+                onRefresh: vm.onRefresh,
                 child: ListView.separated(
                   separatorBuilder: (context, index) => Divider(
                     color: Colors.black,
@@ -193,5 +192,6 @@ class _MyCabildosState extends State<MyCabildos> {
 class _MyCabildosViewModel {
   UserModel user;
   Store store;
-  _MyCabildosViewModel(this.user, this.store);
+  Function onRefresh;
+  _MyCabildosViewModel(this.user, this.store, this.onRefresh);
 }
