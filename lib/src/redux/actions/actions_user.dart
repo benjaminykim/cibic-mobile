@@ -133,6 +133,16 @@ class PostSearchAttempt {
   PostSearchAttempt(this.query, this.reset);
 }
 
+class PostTagFilterAttempt {
+  String query;
+  PostTagFilterAttempt(this.query);
+}
+
+class PostTagFilterSuccess {
+  List<Map<String, dynamic>> resultTag;
+  PostTagFilterSuccess(this.resultTag);
+}
+
 class PostSearchAppendAttempt {
   String query;
   int mode;

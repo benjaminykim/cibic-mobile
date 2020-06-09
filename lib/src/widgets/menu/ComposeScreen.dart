@@ -1,6 +1,7 @@
 import 'package:cibic_mobile/src/models/user_model.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_activity.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:flutter/material.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +21,7 @@ class _ComposeState extends State<Compose> {
   final inputCabildoController = TextEditingController();
   final inputTagController = TextEditingController();
   int selectedActivity = 0;
+  List<int> selectedItems = [];
   PageController _controller = PageController(
     initialPage: 0,
   );
@@ -176,8 +178,12 @@ class _ComposeState extends State<Compose> {
         ),
       ),
       Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Icon(Icons.people, size: 40),
+          Container(
+            margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+            child: Icon(Icons.people, size: 40),
+          ),
           SizedBox(width: 8),
           Column(
             children: <Widget>[
@@ -218,18 +224,107 @@ class _ComposeState extends State<Compose> {
                 child: GestureDetector(
                   onTap: () {},
                   child: TextFormField(
-                    inputFormatters: [LengthLimitingTextInputFormatter(25), new WhitelistingTextInputFormatter(RegExp("[0-9a-zA-Z]"))],
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(25),
+                      new WhitelistingTextInputFormatter(RegExp("[0-9a-zA-Z]"))
+                    ],
+                    style: TextStyle(
+                      fontWeight: FontWeight.w200,
+                      color: COLOR_DEEP_BLUE,
+                      fontSize: 15,
+                    ),
                     controller: inputTagController,
+                    onChanged: (String value) {
+                      if (value == "" || value == null) {
+                        // clear the search cache
+                        vm.filterTag(value);
+                      } else {
+                        // TAG FILTER
+                        vm.filterTag(value);
+                        print(vm.tags);
+                      }
+                    },
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: "#tags",
                       hintStyle: TextStyle(
-                          fontWeight: FontWeight.w200,
-                          color: Color(0xffa1a1a1)),
+                        fontWeight: FontWeight.w200,
+                        color: COLOR_DEEP_BLUE,
+                        fontSize: 15,
+                      ),
                     ),
                   ),
                 ),
               ),
+              (vm.tags.length != 0)
+                  ? Container(
+                      margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      width: MediaQuery.of(context).size.width - 108,
+                      decoration: BoxDecoration(
+                        color: Color(0xffcccccc),
+                        borderRadius: BorderRadius.all(Radius.circular(7)),
+                      ),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: 100,
+                          minHeight: 30,
+                        ),
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          separatorBuilder: (BuildContext context, int index) {
+                            return Divider(
+                              indent: 5,
+                              endIndent: 5,
+                              color: Colors.grey,
+                            );
+                          },
+                          itemCount: vm.tags.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return GestureDetector(
+                              onTap: () {
+                                inputTagController.text =
+                                    vm.tags[index]['label'];
+                                inputTagController.selection =
+                                    TextSelection.fromPosition(TextPosition(
+                                        offset:
+                                            inputTagController.text.length));
+                                vm.filterTag("");
+                              },
+                              child: Container(
+                                height: 25,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        "#" + vm.tags[index]['label'],
+                                        style: TextStyle(
+                                          color: COLOR_DEEP_BLUE,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w200,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                      child: Text(
+                                        vm.tags[index]['count'].toString(),
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w200,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    )
+                  : Container(height: 0),
             ],
           ),
         ],
@@ -379,8 +474,13 @@ class _ComposeState extends State<Compose> {
               store.dispatch(
                   SubmitActivityAttempt(type, title, body, idCabildo, tag))
             };
+        Function filterTag = (String query) {
+          store.dispatch(PostTagFilterAttempt(query));
+        };
+
+        List<Map<String, dynamic>> tags = store.state.search['composeTags'];
         return _ComposeViewModel(store.state.user['jwt'], store.state.profile,
-            submitActivityCallback);
+            submitActivityCallback, filterTag, tags);
       },
       builder: (BuildContext context, _ComposeViewModel vm) {
         return Container(
@@ -447,5 +547,8 @@ class _ComposeViewModel {
   String jwt;
   UserModel user;
   Function submitActivity;
-  _ComposeViewModel(this.jwt, this.user, this.submitActivity);
+  Function filterTag;
+  List<Map<String, dynamic>> tags;
+  _ComposeViewModel(
+      this.jwt, this.user, this.submitActivity, this.filterTag, this.tags);
 }

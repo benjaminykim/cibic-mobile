@@ -114,5 +114,7 @@ void apiMiddleware(
             store.state.search['tag'].length, action.query, 3, next);
         break;
     }
+  } else if (action is PostTagFilterAttempt) {
+    await filterComposeTag(store.state.user['jwt'], action.query, next);
   }
 }

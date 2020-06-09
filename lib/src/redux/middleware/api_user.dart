@@ -91,6 +91,32 @@ filterTag(String jwt, String query, int mode, NextDispatcher next) async {
   }
 }
 
+filterComposeTag(String jwt, String query, NextDispatcher next) async {
+  if (query == null || query == "") {
+    next(PostTagFilterSuccess([]));
+    return;
+  }
+  String url = API_BASE + ENDPOINT_SEARCH_TAG + query;
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request = await httpClient.getUrl(Uri.parse(url));
+  request.headers.add('content-type', 'application/json');
+  request.headers.add('accept', 'application/json');
+  request.headers.add('authorization', 'Bearer $jwt');
+  HttpClientResponse response = await request.close();
+  httpClient.close();
+  printResponse("SEARCH FILTER", "GET", response.statusCode);
+  if (response.statusCode == 200) {
+    final responseBody = await response.transform(utf8.decoder).join();
+    List<Map<String, dynamic>> responseList =
+        SearchTagModel.fromJson(json.decode(responseBody)).tags;
+        print(responseBody);
+        print(responseList);
+    next(PostTagFilterSuccess(responseList));
+  } else {
+    next(PostTagFilterSuccess([]));
+  }
+}
+
 postSearchActivityByTag(
     String jwt, String query, int mode, NextDispatcher next) async {
   String url = API_BASE + ENDPOINT_SEARCH_ACTIVITY_BY_TAG;

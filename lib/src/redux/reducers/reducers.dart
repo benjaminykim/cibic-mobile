@@ -220,7 +220,10 @@ AppState appReducer(AppState prevState, dynamic action) {
         newState.search['tag'].addAll(action.resultTag);
         break;
     }
-  } else if (action is PostSearchError) {}
+  } else if (action is PostSearchError) {
+  } else if (action is PostTagFilterSuccess) {
+    newState.search['composeTags'] = action.resultTag;
+  }
   return newState;
 }
 

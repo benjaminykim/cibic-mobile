@@ -84,6 +84,7 @@ class AppState {
       'cabildo': List<CabildoModel>(),
       'user': List<UserModel>(),
       'tag': List<Map<String, dynamic>>(),
+      'composeTags': List<Map<String, dynamic>>(),
       'isLoading': false,
       'isSuccess': false,
       'isError': false,
