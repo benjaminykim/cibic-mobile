@@ -40,7 +40,7 @@ const Map<int, Color> labelColorPicker = {
 const Map<int, String> labelTextPicker = {
   ACTIVITY_PROPOSAL: 'Propuesta',
   ACTIVITY_DISCUSS: 'Discusión',
-  ACTIVITY_POLL: 'encuesta',
+  ACTIVITY_POLL: 'Encuesta',
 };
 
 ThemeData get cibicTheme {
