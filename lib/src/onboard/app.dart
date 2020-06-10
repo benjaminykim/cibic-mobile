@@ -5,6 +5,7 @@ import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/redux/middleware/thunk.dart';
 import 'package:cibic_mobile/src/redux/reducers/reducers.dart';
+import 'package:cibic_mobile/src/widgets/menu/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -41,7 +42,7 @@ class App extends StatelessWidget {
           future: jwtOrEmpty,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return CircularProgressIndicator();
+              return LoadingScreen();
             }
             if (snapshot.data != "") {
               var str = snapshot.data;

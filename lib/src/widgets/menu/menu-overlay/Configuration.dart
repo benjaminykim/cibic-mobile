@@ -73,7 +73,7 @@ class _ConfigurationState extends State<Configuration> {
                       Expanded(
                         child: Container(
                           child: Text(
-                            'Politíca de privacidad',
+                            'Politícas de privacidad',
                             style: TextStyle(color: Colors.black),
                           ),
                         ),

@@ -38,8 +38,8 @@ const Map<int, Color> labelColorPicker = {
   ACTIVITY_POLL: LABEL_POLL_COLOR,
 };
 const Map<int, String> labelTextPicker = {
-  ACTIVITY_PROPOSAL: 'propuesta',
-  ACTIVITY_DISCUSS: 'discusión',
+  ACTIVITY_PROPOSAL: 'Propuesta',
+  ACTIVITY_DISCUSS: 'Discusión',
   ACTIVITY_POLL: 'encuesta',
 };
 
@@ -177,8 +177,8 @@ const ENDPOINT_SEARCH_TAG = "tag/";
 
 const ENDPOINT_UNETE_COMMENT = "cibic/comment";
 
-const API_BASE = URL_LOCALHOST_BASE;
+//const API_BASE = URL_LOCALHOST_BASE;
 //const API_BASE = URL_FIREKITTEN_BASE;
 //const API_BASE = URL_FIREKITTEN_3EA_SMONROE_BASE;
 //const API_BASE = URL_FIREKITTEN_3EA_BEKIM_BASE;
-//const API_BASE = URL_AWS_BASE;
+const API_BASE = URL_AWS_BASE;

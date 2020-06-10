@@ -1,11 +1,13 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:cibic_mobile/src/onboard/onboard.dart';
+import 'package:cibic_mobile/src/onboard/privacy.dart';
+import 'package:cibic_mobile/src/redux/AppState.dart';
+import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:redux/redux.dart';
 
 class Register extends StatefulWidget {
   final storage;
@@ -17,371 +19,94 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  bool isChecked = false;
-  bool isSubmitable = false;
+  final FocusScopeNode _node = FocusScopeNode();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  List<String> titles;
+  List<bool> shouldValidate;
+  List<bool> isValid;
+  List<TextInputType> keyboards;
+  bool privacy;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  List<String> inputLabels = [
-    "correo electrónico",
-    "nombre de pila",
-    "apellido",
-    "número de teléfono",
-    "contraseña"
-  ];
-  List<TextEditingController> inputCtlrs;
-  String idUser;
-  final _formkey = GlobalKey<FormState>();
-  // FocusNode myFocusNode;
-  final FocusScopeNode _node = FocusScopeNode();
+  final TextEditingController _passwordConfirmController =
+      TextEditingController();
+  final storage = FlutterSecureStorage();
+  bool isSubmitable;
 
   @override
   initState() {
     super.initState();
-    this.inputCtlrs = [
-      _emailController,
-      _firstNameController,
-      _lastNameController,
-      _phoneController,
-      _passwordController
+    titles = [
+      "Correo electrónico",
+      "Nombre",
+      "Apellido",
+      "Número móvil",
+      "Contraseña",
+      "Confirmar contraseña"
     ];
-    // node = FocusScopeNode();
-    // myFocusNode = FocusNode();
+    this.isValid = [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ];
+    this.shouldValidate = [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ];
+    this.keyboards = [
+      TextInputType.emailAddress,
+      TextInputType.text,
+      TextInputType.text,
+      TextInputType.number,
+      TextInputType.text,
+      TextInputType.text,
+    ];
+    this.isSubmitable = false;
+    this.privacy = false;
   }
 
-  Map<String, dynamic> createUserRequestBody() {
-    Map<String, Map<String, dynamic>> userRequest = {
-      'user': {
-        'password': '${_passwordController.text}',
-        'email': '${_emailController.text}',
-        'firstName': '${_firstNameController.text}',
-        'lastName': '${_lastNameController.text}',
-        'phone': _phoneController.text,
-        'cabildos': [],
-        'files': "none",
-        'followers': [],
-        'following': [],
-        'activityFeed': []
-      }
-    };
-    return userRequest;
+  @override
+  void dispose() {
+    _node.dispose();
+    super.dispose();
   }
 
-  Future<String> attemptSubmit() async {
-    Map requestBody = createUserRequestBody();
-    HttpClient httpClient = new HttpClient();
-    HttpClientRequest request =
-        await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_USER));
-    request.headers.set('content-type', 'application/json');
-    request.add(utf8.encode(json.encode(requestBody)));
-    HttpClientResponse response = await request.close();
-    httpClient.close();
-
-    if (response.statusCode == 201) {
-      final responseBody = await response.transform(utf8.decoder).join();
-      Map<String, dynamic> idResponse = jsonDecode(responseBody);
-      return idResponse['id'];
-    } else {
-      setState(() {
-        this.isSubmitable = false;
-      });
-      return null;
-    }
-  }
-
-  Future<String> attemptLogin() async {
-    Map requestBody = {
-      'email': '${_emailController.text}',
-      'password': '${_passwordController.text}'
-    };
-    HttpClient httpClient = new HttpClient();
-    HttpClientRequest request =
-        await httpClient.postUrl(Uri.parse(API_BASE + ENDPOINT_LOGIN));
-    request.headers.set('content-type', 'application/json');
-    request.add(utf8.encode(json.encode(requestBody)));
-    HttpClientResponse response = await request.close();
-    httpClient.close();
-
-    if (response.statusCode == 201) {
-      final responseBody = await response.transform(utf8.decoder).join();
-      Map<String, dynamic> jwtResponse = jsonDecode(responseBody);
-      return jwtResponse['access_token'];
-    } else {
-      setState(() {
-        this.isSubmitable = false;
-      });
-      return null;
-    }
+  void _startShowPrivacyScreen(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      elevation: 5,
+      backgroundColor: Colors.transparent,
+      builder: (bContext) {
+        return GestureDetector(
+          onTap: () {},
+          child: PrivacyScreen(),
+          behavior: HitTestBehavior.opaque,
+        );
+      },
+    );
   }
 
   bool computeSubmitable() {
-    if ((_emailController.text != null) &&
-        (_firstNameController.text != null) &&
-        (_lastNameController.text != null) &&
-        (_phoneController.text != null) &&
-        (_passwordController.text != null) &&
-        (_emailController.text != "") &&
-        (_firstNameController.text != "") &&
-        (_lastNameController.text != "") &&
-        (_phoneController.text != "") &&
-        (_passwordController.text != "") &&
-        (this.isChecked)) {
-      return true;
+    if (this.privacy == false) {
+      return false;
     }
-    return false;
-  }
-
-  Container createInputView(int index) {
-    String str = this.inputLabels[index];
-    TextEditingController ctlr = this.inputCtlrs[index];
-    TextField textField;
-
-    // phone number input
-    if (index == 5) {
-      textField = TextField(
-        onEditingComplete: _node.nextFocus,
-        // focusNode: myFocusNode,
-        controller: ctlr,
-        textAlign: TextAlign.center,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: str + "*",
-          hintStyle: REGISTER_INPUT_TXT,
-        ),
-        keyboardType: TextInputType.number,
-        inputFormatters: <TextInputFormatter>[
-          WhitelistingTextInputFormatter.digitsOnly
-        ],
-      );
-    } else {
-      textField = TextField(
-        // focusNode: myFocusNode,
-        controller: ctlr,
-        textAlign: TextAlign.center,
-        obscureText: (index == 6), // password label obscurity
-        onChanged: (_) {
-          setState(() {
-            this.isSubmitable = computeSubmitable();
-          });
-        },
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: str + "*",
-          hintStyle: REGISTER_INPUT_TXT,
-        ),
-      );
+    for (int i = 0; i < this.isValid.length; i++) {
+      if (this.isValid[i] == false) {
+        return false;
+      }
     }
-    return Container(
-      height: 40,
-      decoration: REGISTER_INPUT_DEC,
-      alignment: Alignment.center,
-      margin: EdgeInsets.fromLTRB(35, 0, 35, 7),
-      child: Center(
-        child: textField,
-      ),
-    );
-  }
-
-  Container createInputView2(int index) {
-    String str = this.inputLabels[index];
-    TextEditingController ctlr = this.inputCtlrs[index];
-    TextFormField textFormField;
-
-    switch (index) {
-      case 0:
-        textFormField = TextFormField(
-          onEditingComplete: _node.nextFocus,
-          // focusNode: myFocusNode,
-          // validator: ,
-          // controller: ctlr,
-          textAlign: TextAlign.center,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: str + "*",
-            hintStyle: REGISTER_INPUT_TXT,
-          ),
-          // autofocus: true,
-          // enabled: true,
-          textAlignVertical: TextAlignVertical.center,
-          keyboardType: TextInputType.emailAddress,
-          onChanged: (value) {
-            // setState(() {
-            //   email = value;
-            //   this.isSubmitable = computeSubmitable();
-            // });
-          },
-        );
-        break;
-      case 1:
-        textFormField = TextFormField(
-            validator: (value) {
-              if (value.trim().length == 0) {
-                return "Username is empty";
-              } else if (value.trim().length > 16) {
-                return "Username too long";
-              } else if (value.startsWith("',")) //patterns for special case
-              {
-                return "Invalid Username";
-              }
-              // else if (value.) {
-              //   return "Username too long";
-              // }
-              else {
-                return null;
-              }
-            },
-            // maxLengthEnforced: true,
-            // maxLength: 16,
-            controller: ctlr,
-            textAlign: TextAlign.center,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: str + "*",
-              hintStyle: REGISTER_INPUT_TXT,
-            ),
-            autofocus: true,
-            enabled: true,
-            // keyboardType: TextInputType.text,
-            onSaved: (value) {
-              // setState(() {
-              //   username = value;
-              //   this.isSubmitable = computeSubmitable();
-              // });
-            }
-            // onChanged: (value) {
-            //   setState(() {
-            //     username = value;
-            //     this.isSubmitable = computeSubmitable();
-            //   });
-            // },
-            );
-
-        break;
-
-      case 2:
-        textFormField = TextFormField(
-          // validator: () {},
-          controller: ctlr,
-          textAlign: TextAlign.center,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: str + "*",
-            hintStyle: REGISTER_INPUT_TXT,
-          ),
-          autofocus: true,
-          enabled: true,
-          // keyboardType: TextInputType.text,
-          onChanged: (value) {
-            // setState(() {
-            //   firstname = value;
-            //   this.isSubmitable = computeSubmitable();
-            // });
-          },
-        );
-
-        break;
-      case 3:
-        textFormField = TextFormField(
-          // validator: () {},
-          controller: ctlr,
-          textAlign: TextAlign.center,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: str + "*",
-            hintStyle: REGISTER_INPUT_TXT,
-          ),
-          autofocus: true,
-          enabled: true,
-          // keyboardType: TextInputType.text,
-          onChanged: (value) {
-            // setState(() {
-            //   surname = value;
-            //   this.isSubmitable = computeSubmitable();
-            // });
-          },
-        );
-        break;
-      case 4:
-        textFormField = TextFormField(
-          // validator: () {},
-          controller: ctlr,
-          textAlign: TextAlign.center,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: str + "*",
-            hintStyle: REGISTER_INPUT_TXT,
-          ),
-          autofocus: true,
-          enabled: true,
-
-          // keyboardType: TextInputType.text,
-          onChanged: (value) {
-            // setState(() {
-            //   sex = value;
-            //   this.isSubmitable = computeSubmitable();
-            // });
-          },
-        );
-        break;
-
-      case 5:
-        textFormField = TextFormField(
-          // validator: () {},
-          controller: ctlr,
-          textAlign: TextAlign.center,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: str + "*",
-            hintStyle: REGISTER_INPUT_TXT,
-          ),
-          autofocus: true,
-          enabled: true,
-          // keyboardType: TextInputType.text,
-          onChanged: (value) {
-            // setState(() {
-            //   telephone = value;
-            //   this.isSubmitable = computeSubmitable();
-            // });
-          },
-        );
-        break;
-      case 6:
-        textFormField = TextFormField(
-          scrollPadding: EdgeInsets.all(10),
-          // validator: () {},
-          controller: ctlr,
-          textAlign: TextAlign.center,
-          obscureText: true,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: str + "*",
-            hintStyle: REGISTER_INPUT_TXT,
-          ),
-          autofocus: true,
-          enabled: true,
-          // keyboardType: TextInputType.text,
-          onChanged: (value) {
-            // setState(() {
-            //   password = value;
-            //   this.isSubmitable = computeSubmitable();
-            // });
-          },
-        );
-        break;
-
-      default:
-    }
-    return Container(
-      height: 40,
-      decoration: REGISTER_INPUT_DEC,
-      alignment: Alignment.center,
-      margin: EdgeInsets.fromLTRB(35, 0, 35, 7),
-      child: Center(
-        child: textFormField,
-      ),
-    );
+    return true;
   }
 
   Widget createPrivacyCheck() {
@@ -391,20 +116,37 @@ class _RegisterState extends State<Register> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Checkbox(
-            value: isChecked,
+            value: privacy,
             onChanged: (value) {
-              // setState(() {
-              //   this.isChecked = value;
-              //   this.isSubmitable = computeSubmitable();
-              // });
+              setState(() {
+                this.privacy = value;
+                this.isSubmitable = computeSubmitable();
+              });
             },
           ),
-          Text(
-            "Acepto las políticas de privacidad.",
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.white,
-              fontWeight: FontWeight.w200,
+          GestureDetector(
+            onTap: () {
+              _startShowPrivacyScreen(context);
+            },
+            child: Text.rich(
+              TextSpan(
+                text: 'Acepto las ',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w200,
+                ),
+                children: <TextSpan>[
+                  TextSpan(
+                      text: "políticas de privacidad.",
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w200,
+                      )),
+                ],
+              ),
             ),
           ),
         ],
@@ -412,47 +154,138 @@ class _RegisterState extends State<Register> {
     );
   }
 
-  Widget createSubmitButton(String str) {
-    return GestureDetector(
-      onTap: () {
-        if (this.isSubmitable) {
-          Future<String> userCreation = attemptSubmit();
-          userCreation.then((idUser) {
-            if (idUser != null) {
-              this.idUser = idUser;
+  void updateSubmitable(int index) {
+    this.isValid[index] = true;
+    this.isSubmitable = computeSubmitable();
+  }
 
-              Future<String> userLogin = attemptLogin();
-              userLogin.then((jwt) {
-                if (jwt != null) {
-                  widget.storage.write(key: "jwt", value: jwt);
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => Onboard(null)));
-                } else {
-                  setState(() {
-                    this.isSubmitable = false;
-                  });
-                }
-              });
-            } else {
-              setState(() {
-                this.isSubmitable = false;
-              });
-            }
-          });
+  Container textFieldInput({int index, TextEditingController controller}) {
+    String _validator(String value) {
+      if (index == 0) {
+        // EMAIL
+        String p = "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+            "\\@" +
+            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+            "(" +
+            "\\." +
+            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+            ")+";
+        if (value.isEmpty) {
+          return 'Introduce un correo electrónico válido';
+        } else if (RegExp(p).hasMatch(value)) {
+          updateSubmitable(index);
+          return null;
+        } else {
+          return 'Introduce un correo electrónico válido';
         }
-      },
-      child: Container(
-        height: 40,
-        decoration: BoxDecoration(
-          color: (this.isSubmitable) ? COLOR_SOFT_BLUE : Colors.grey,
-          borderRadius: BorderRadius.circular(10),
+      } else if (index == 1) {
+        // FIRSTNAME
+        String p = "[a-zA-Z]{1,16}";
+        RegExp regExp = RegExp(p);
+        if (value.trim().isEmpty) {
+          return "Introduce un nombre válido";
+        } else if (regExp.hasMatch(value)) {
+          updateSubmitable(index);
+          return null;
+        } else {
+          return "Introduce un nombre válido";
+        }
+      } else if (index == 2) {
+        // LASTNAME
+        String p = "[a-zA-Z]{1,16}";
+        RegExp regExp = RegExp(p);
+        if (value.trim().isEmpty) {
+          return "Introduce un apellido válido";
+        } else if (regExp.hasMatch(value)) {
+          updateSubmitable(index);
+          return null;
+        } else {
+          return "Introduce un apellido válido";
+        }
+      } else if (index == 3) {
+        // PHONE NUMBER
+        String p = "[0-9]{9}";
+        RegExp regExp = RegExp(p);
+        if (value.trim().isEmpty) {
+          return "Introduce un número válido";
+        } else if (regExp.hasMatch(value)) {
+          updateSubmitable(index);
+          return null;
+        } else {
+          return "Introduce un número válido";
+        }
+      }
+      // password
+      else if (index == 4) {
+        String reg = r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$";
+        RegExp regExp = RegExp(reg);
+        if (value.trim().isEmpty) {
+          return "Introduce una contraseña válida";
+        } else if (regExp.hasMatch(value.trim())) {
+          updateSubmitable(index);
+          return null;
+        } else {
+          return "Introduce una contraseña válida";
+        }
+      } else if (index == 5) {
+        if (_passwordController.text != _passwordConfirmController.text) {
+          return ("Las contraseñas no coinciden");
+        } else {
+          updateSubmitable(index);
+          return null;
+        }
+      } else {
+        return null;
+      }
+    }
+
+    return Container(
+      height: 60,
+      margin: EdgeInsets.symmetric(
+        vertical: 2,
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal: 30,
+        vertical: 0,
+      ),
+      child: TextFormField(
+        obscureText: (index == 4 || index == 5),
+        onEditingComplete: () {
+          if (index != 5) {
+            _node.nextFocus();
+          }
+          shouldValidate[index] = true;
+        },
+        textInputAction:
+            (index == 5) ? TextInputAction.done : TextInputAction.next,
+        textAlign: TextAlign.center,
+        controller: controller,
+        autovalidate: shouldValidate[index],
+        validator: _validator,
+        keyboardType: this.keyboards[index],
+        onChanged: (value) {},
+        decoration: InputDecoration(
+          alignLabelWithHint: true,
+          filled: true,
+          fillColor: Colors.white,
+          focusColor: COLOR_DEEP_BLUE,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          hintText: this.titles[index],
+          hintStyle: TextStyle(
+            fontSize: 15,
+            color: Colors.grey,
+          ),
+          contentPadding:
+              const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
-        alignment: Alignment.center,
-        margin: EdgeInsets.fromLTRB(35, 10, 35, 7),
-        child: Text(
-          str,
-          textAlign: TextAlign.center,
-          style: REGISTER_TXT,
+        style: TextStyle(
+          color: Colors.black,
         ),
       ),
     );
@@ -460,93 +293,166 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // resizeToAvoidBottomInset: true,
-      //  resizeToAvoidBottomPadding: false,
-      body: Container(
-        color: COLOR_DEEP_BLUE,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              color: COLOR_SOFT_BLUE,
-              height: 100,
-              padding: EdgeInsets.only(top: 60),
+    return StoreConnector<AppState, _RegisterViewModel>(
+      converter: (Store<AppState> store) {
+        Function onRegister = (String email, String password, String firstName,
+            String lastName, String telephone, BuildContext context) {
+          store.dispatch(PostRegisterAttempt(
+              email, password, firstName, lastName, telephone, context));
+        };
+        return _RegisterViewModel(
+          store,
+          onRegister,
+          store.state.loginState['isSuccess'],
+          store.state.loginState['isLoading'],
+          store.state.loginState['isError'],
+        );
+      },
+      builder: (BuildContext context, _RegisterViewModel vm) {
+        return Scaffold(
+          appBar: AppBar(
+            elevation: 0.0,
+            backgroundColor: COLOR_SOFT_BLUE,
+            automaticallyImplyLeading: false,
+            title: Center(
               child: Text(
-                "REGISTRARSE",
-                textAlign: TextAlign.center,
+                "REGÍSTRARSE",
                 style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
                   color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 26,
                 ),
               ),
             ),
-            SingleChildScrollView(
-              child: Container(
-                height: MediaQuery.of(context).size.height - 120,
-                child: Form(
-                  key: _formkey,
-                  // usage :
-                  // _formkey.currentState.validate();
-                  autovalidate: true,
-                  child: FocusScope(
-                    autofocus: true,
-                    node: _node,
-                    child: ListView(
+          ),
+          body: GestureDetector(
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+            },
+            child: Container(
+              color: COLOR_DEEP_BLUE,
+              child: Form(
+                key: _formKey,
+                child: FocusScope(
+                  node: _node,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        // HEADER
+                        SizedBox(
+                          height: 15,
+                        ),
                         Center(
                           child: Text(
-                            "DATOS PERSONALES",
+                            "Regístrate en Cibic",
                             style: TextStyle(
                               fontSize: 20,
+                              color: Colors.white,
                             ),
                           ),
                         ),
                         Center(
                           child: Text(
-                            "Tus datos son privados.",
+                            "y sé un ciudadano o ciudadana inteligente",
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w200,
+                              color: Colors.white,
                             ),
                           ),
                         ),
                         SizedBox(height: 15),
-                        createInputView2(0),
-                        Padding(
-                          padding: const EdgeInsets.all(30.0),
-                          child: createInputView2(1),
+                        textFieldInput(
+                          index: 0,
+                          controller: _emailController,
                         ),
-                        createInputView(2),
-                        createInputView(3),
-                        createInputView(4),
-                        createInputView(5),
-                        createInputView(6),
+                        textFieldInput(
+                          index: 1,
+                          controller: _firstNameController,
+                        ),
+                        textFieldInput(
+                          index: 2,
+                          controller: _lastNameController,
+                        ),
+                        textFieldInput(
+                          index: 3,
+                          controller: _phoneController,
+                        ),
+                        textFieldInput(
+                          index: 4,
+                          controller: _passwordController,
+                        ),
+                        textFieldInput(
+                          index: 5,
+                          controller: _passwordConfirmController,
+                        ),
                         SizedBox(height: 2),
                         // PASSWORD RULES
-                        Center(
+                        Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          padding: EdgeInsets.symmetric(horizontal: 35),
                           child: Text(
-                            'Mínimo 8 caractéres, un número y una mayúscula',
+                            'Mínimo 8 caractéres incluyendo una mayúscula',
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 12,
                               fontWeight: FontWeight.w200,
+                              color: Colors.white,
                             ),
                           ),
                         ),
                         createPrivacyCheck(),
-                        createSubmitButton("siguiente"),
-                        // DIVIDER
+                        // submit
+                        GestureDetector(
+                          onTap: () async {
+                            if (_formKey.currentState.validate() && privacy) {
+                              if (this.isSubmitable && vm.isLoading == false) {
+                                this.isSubmitable = false;
+                                await vm.onRegister(
+                                    _emailController.text,
+                                    _passwordController.text,
+                                    _firstNameController.text,
+                                    _lastNameController.text,
+                                    _phoneController.text,
+                                    context);
+                                if (vm.isSuccess) {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              Onboard(vm.store)));
+                                }
+                              }
+                            }
+                          },
+                          child: Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: (this.isSubmitable)
+                                  ? COLOR_SOFT_BLUE
+                                  : COLOR_SOFT_BLUE,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.fromLTRB(35, 10, 35, 7),
+                            child: Text(
+                              "Siguiente",
+                              textAlign: TextAlign.center,
+                              style: REGISTER_TXT,
+                            ),
+                          ),
+                        ),
                         Divider(
                           indent: 30,
                           endIndent: 30,
                           color: Colors.white,
                           thickness: 1,
                         ),
-                        // DYNAMIC SPACING
-                        SizedBox(
-                          height: MediaQuery.of(context).viewInsets.bottom,
+                        Container(
+                          height: MediaQuery.of(context).size.height / 2,
+                          color: COLOR_DEEP_BLUE,
                         ),
                       ],
                     ),
@@ -554,9 +460,19 @@ class _RegisterState extends State<Register> {
                 ),
               ),
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
+}
+
+class _RegisterViewModel {
+  Store store;
+  Function onRegister;
+  bool isLoading;
+  bool isSuccess;
+  bool isError;
+  _RegisterViewModel(this.store, this.onRegister, this.isLoading,
+      this.isSuccess, this.isError);
 }

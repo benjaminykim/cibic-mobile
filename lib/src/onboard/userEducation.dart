@@ -177,7 +177,7 @@ class _UserEducationState extends State<UserEducation> {
         Container(
           padding: EdgeInsets.symmetric(horizontal: 50),
           child: Text(
-            "Registrate en Cibic, genera temas de discusion, informarte, expresate y transformate en un Ciudadano Inteligente.",
+            "Regístrate en Cibic, genera temas de discusión, informarte, expresate y transformate en un Ciudadano Inteligente.",
             textAlign: TextAlign.left,
             style: descStyle,
           ),

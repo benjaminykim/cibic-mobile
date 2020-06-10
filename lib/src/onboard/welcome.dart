@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:cibic_mobile/src/onboard/register2.dart';
+import 'package:cibic_mobile/src/onboard/register.dart';
 import 'package:cibic_mobile/src/redux/AppState.dart';
 import 'package:cibic_mobile/src/redux/actions/actions_user.dart';
 import 'package:cibic_mobile/src/resources/constants.dart';
@@ -130,7 +130,7 @@ class _WelcomeState extends State<Welcome> {
                   children: <Widget>[
                     SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
                     Text(
-                      '\u00a9 cibic 2020',
+                      '\u00a9 Cibic 2020',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 12, color: Colors.black),
                     ),
@@ -143,7 +143,7 @@ class _WelcomeState extends State<Welcome> {
                                 builder: (context) =>
                                     Register(this.storage)));
                       },
-                      child: createButtonView("Registrate"),
+                      child: createButtonView("Regístrate"),
                     ),
                     SizedBox(height: 10),
                     (this.showLogin)
@@ -223,11 +223,11 @@ class _WelcomeState extends State<Welcome> {
                     SizedBox(height: 10),
                     (this.showLogin)
                         ? (createInputView(
-                            "contraseña", this._passwordController))
+                            "Contraseña", this._passwordController))
                         : Container(),
                     (this.showLogin)
                         ? (createInputView(
-                            "correo electrónico", this._emailController))
+                            "Correo electrónico", this._emailController))
                         : Container(),
                     SizedBox(height: 30),
                     // WELCOME
