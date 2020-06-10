@@ -96,7 +96,7 @@ class _WelcomeState extends State<Welcome> {
         child: TextField(
           controller: ctlr,
           textAlign: TextAlign.center,
-          obscureText: (str == "contraseña"), // password label obscurity
+          obscureText: (str == "Contraseña"), // password label obscurity
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: str,

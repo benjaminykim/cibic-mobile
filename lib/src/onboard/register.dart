@@ -277,6 +277,11 @@ class _RegisterState extends State<Register> {
             fontSize: 15,
             color: Colors.grey,
           ),
+          prefixText: (index == 3) ? "+569": null,
+          prefixStyle: (index == 3) ? TextStyle(
+            color: Colors.black,
+            fontSize: 15,
+          ) : null,
           contentPadding:
               const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
           enabledBorder: UnderlineInputBorder(
