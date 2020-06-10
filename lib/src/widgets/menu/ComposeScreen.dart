@@ -55,10 +55,13 @@ class _ComposeState extends State<Compose> {
       height: 17,
       margin: const EdgeInsets.fromLTRB(0, 0, 7, 0),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black, width: 0.5),
+        border: Border.all(
+          color: labelColorPicker[type],
+          width: 0.5,
+        ),
         borderRadius: BorderRadius.circular(5),
         color: (pageIndex == this.selectedActivity)
-            ? COLOR_DEEP_BLUE
+            ? labelColorPicker[type]
             : Colors.transparent,
       ),
       child: GestureDetector(
@@ -398,16 +401,110 @@ class _ComposeState extends State<Compose> {
                   color: Color(0xffcccccc),
                   borderRadius: BorderRadius.all(Radius.circular(7)),
                 ),
-                child: TextFormField(
-                  controller: inputTagController,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "#tags",
-                    hintStyle: TextStyle(
-                        fontWeight: FontWeight.w200, color: Color(0xffa1a1a1)),
+                child: GestureDetector(
+                  onTap: () {},
+                  child: TextFormField(
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(25),
+                      new WhitelistingTextInputFormatter(RegExp("[0-9a-zA-Z]"))
+                    ],
+                    style: TextStyle(
+                      fontWeight: FontWeight.w200,
+                      color: COLOR_DEEP_BLUE,
+                      fontSize: 15,
+                    ),
+                    controller: inputTagController,
+                    onChanged: (String value) {
+                      if (value == "" || value == null) {
+                        // clear the search cache
+                        vm.filterTag(value);
+                      } else {
+                        // TAG FILTER
+                        vm.filterTag(value);
+                        print(vm.tags);
+                      }
+                    },
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "#tags",
+                      hintStyle: TextStyle(
+                        fontWeight: FontWeight.w200,
+                        color: COLOR_DEEP_BLUE,
+                        fontSize: 15,
+                      ),
+                    ),
                   ),
                 ),
               ),
+              (vm.tags.length != 0)
+                  ? Container(
+                      margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      width: MediaQuery.of(context).size.width - 108,
+                      decoration: BoxDecoration(
+                        color: Color(0xffcccccc),
+                        borderRadius: BorderRadius.all(Radius.circular(7)),
+                      ),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: 100,
+                          minHeight: 30,
+                        ),
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          separatorBuilder: (BuildContext context, int index) {
+                            return Divider(
+                              indent: 5,
+                              endIndent: 5,
+                              color: Colors.grey,
+                            );
+                          },
+                          itemCount: vm.tags.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return GestureDetector(
+                              onTap: () {
+                                inputTagController.text =
+                                    vm.tags[index]['label'];
+                                inputTagController.selection =
+                                    TextSelection.fromPosition(TextPosition(
+                                        offset:
+                                            inputTagController.text.length));
+                                vm.filterTag("");
+                              },
+                              child: Container(
+                                height: 25,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        "#" + vm.tags[index]['label'],
+                                        style: TextStyle(
+                                          color: COLOR_DEEP_BLUE,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w200,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                      child: Text(
+                                        vm.tags[index]['count'].toString(),
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w200,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    )
+                  : Container(height: 0)
             ],
           ),
         ],
