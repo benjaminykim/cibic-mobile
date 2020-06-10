@@ -120,11 +120,16 @@ class MenuOverlay extends StatelessWidget {
                       context: context,
                       builder: (context) {
                         return AlertDialog(
+                          // insetPadding: EdgeInsets.all(20),
                           backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(32.0))),
-                          contentPadding: EdgeInsets.only(top: 10.0),
+                          contentPadding: EdgeInsets.only(
+                            top: 15.0,
+                            left: 15.0,
+                            bottom: 15.0,
+                          ),
                           title: Center(
                             child: Text(
                               "Cerrar Sesion",

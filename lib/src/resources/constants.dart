@@ -109,22 +109,22 @@ const REGISTER_TXT = TextStyle(
 );
 
 get serverError => ListView(
-  children: <Widget>[
-    Container(
-      height: 200,
-      padding: EdgeInsets.all(50),
-      alignment: Alignment.center,
-      child: Text(
-        "Cibic server error",
-        style: TextStyle(
-          fontSize: 20,
-          color: Colors.black,
+      children: <Widget>[
+        Container(
+          height: 200,
+          padding: EdgeInsets.all(50),
+          alignment: Alignment.center,
+          child: Text(
+            "Cibic server error",
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.black,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ),
-        textAlign: TextAlign.center,
-      ),
-    ),
-  ],
-);
+      ],
+    );
 
 Map<String, String> getAuthHeader(String jwt) {
   return {
@@ -135,6 +135,7 @@ Map<String, String> getAuthHeader(String jwt) {
 }
 
 const URL_LOCALHOST_BASE = "http://10.0.2.2:30012/";
+const URL_LOCALHOST_BASE_MINE = "http://10.10.187.179:5100/";
 const URL_FIREKITTEN_BASE = "http://10.10.126.56:4444/";
 const URL_FIREKITTEN_3EA_SMONROE_BASE = "http://192.168.8.130:4445/";
 const URL_FIREKITTEN_3EA_BEKIM_BASE = "http://192.168.8.130:3001/";
@@ -179,4 +180,4 @@ const ENDPOINT_UNETE_COMMENT = "cibic/comment";
 //const API_BASE = URL_FIREKITTEN_BASE;
 //const API_BASE = URL_FIREKITTEN_3EA_SMONROE_BASE;
 //const API_BASE = URL_FIREKITTEN_3EA_BEKIM_BASE;
-const API_BASE = URL_AWS_BASE;
+const API_BASE = URL_LOCALHOST_BASE_MINE;
