@@ -100,7 +100,7 @@ class MenuOverlay extends StatelessWidget {
                 ListTile(
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
-                    'About @cibic',
+                    'Acerca de Cibic',
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
