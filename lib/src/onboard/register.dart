@@ -316,7 +316,7 @@ class _RegisterState extends State<Register> {
             automaticallyImplyLeading: false,
             title: Center(
               child: Text(
-                "REGÍSTRARSE",
+                "REGISTRO",
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,

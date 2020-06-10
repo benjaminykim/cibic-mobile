@@ -111,7 +111,18 @@ class MenuOverlay extends StatelessWidget {
                 ListTile(
                   contentPadding: EdgeInsets.only(left: 20),
                   title: Text(
-                    'Cerrar la Sesión',
+                    'Únete!',
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Unete()));
+                  },
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.only(left: 20),
+                  title: Text(
+                    'Cerrar sesión',
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onTap: () {
@@ -120,23 +131,22 @@ class MenuOverlay extends StatelessWidget {
                       builder: (context) {
                         return AlertDialog(
                           title: Text(
-                            "Cerrar Sesion",
+                            "Cerrar sesión",
                             style: TextStyle(
                               fontSize: 20,
                             ),
                           ),
-                          content: Text("Quieres cerrar tu sesion?"),
+                          content: Text("¿Quieres cerrar tu sesión?"),
                           actions: <Widget>[
-                                  FlatButton(
-                                    child: new Text("Si"),
-                                    onPressed: () {
-                                      this.store.dispatch(LogOut());
-                                      storage.delete(key: "jwt");
-                                      Navigator.of(context)
-                                          .pushNamedAndRemoveUntil('/',
-                                              (Route<dynamic> route) => false);
-                                    },
-                                  ),
+                            FlatButton(
+                              child: new Text("Si"),
+                              onPressed: () {
+                                this.store.dispatch(LogOut());
+                                storage.delete(key: "jwt");
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                    '/', (Route<dynamic> route) => false);
+                              },
+                            ),
                             new FlatButton(
                               child: new Text("No"),
                               onPressed: () {
@@ -147,17 +157,6 @@ class MenuOverlay extends StatelessWidget {
                         );
                       },
                     );
-                  },
-                ),
-                ListTile(
-                  contentPadding: EdgeInsets.only(left: 20),
-                  title: Text(
-                    'Únete!',
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Unete()));
                   },
                 ),
                 Spacer(),
