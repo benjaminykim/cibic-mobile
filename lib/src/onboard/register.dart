@@ -356,7 +356,7 @@ class _RegisterState extends State<Register> {
                         ),
                         Center(
                           child: Text(
-                            "y sé un ciudadano o ciudadana inteligente",
+                            "y conviértete en ciudadan@ inteligente",
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w200,
