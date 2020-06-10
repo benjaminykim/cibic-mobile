@@ -72,8 +72,8 @@ class UserMetaData extends StatelessWidget {
                 onTap: () => this.onUserTapped(context),
                 child: IconTag(Icon(Icons.person, size: 20), firstName)),
             Spacer(),
-            IconTag(Icon(Icons.offline_bolt, size: 20), cp.toString()),
-            Spacer(),
+            //IconTag(Icon(Icons.offline_bolt, size: 20), cp.toString()),
+            //Spacer(),
             GestureDetector(
                 onTap: () => this.onCabildoTapped(context),
                 child: IconTag(Icon(Icons.looks, size: 20), cabildoName)),
